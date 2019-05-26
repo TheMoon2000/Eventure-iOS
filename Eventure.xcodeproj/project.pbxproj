@@ -16,9 +16,13 @@
 		CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F565229AD523008FABEA /* FirstTabViewController.swift */; };
 		CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* SecondTabViewController.swift */; };
 		CC18F56A229AD570008FABEA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CC18F569229AD570008FABEA /* README.md */; };
+		DAA8704C960D87AABD9E6D36 /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eventure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		63D1A1BD399D7A73CB427818 /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
+		CBAE5CDD93116CEE3D41AC0E /* Pods-Eventure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.release.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.release.xcconfig"; sourceTree = "<group>"; };
 		CC18F54B229AD4EB008FABEA /* Eventure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eventure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC18F54E229AD4EB008FABEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC18F553229AD4EB008FABEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -37,18 +41,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAA8704C960D87AABD9E6D36 /* Pods_Eventure.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		042CA0B629DDCA6A479AD861 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CC18F542229AD4EB008FABEA = {
 			isa = PBXGroup;
 			children = (
 				CC18F54D229AD4EB008FABEA /* Eventure */,
 				CC18F569229AD570008FABEA /* README.md */,
 				CC18F54C229AD4EB008FABEA /* Products */,
+				D866B2B729EC4A8C3978B7BD /* Pods */,
+				042CA0B629DDCA6A479AD861 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -76,6 +91,15 @@
 			path = Eventure;
 			sourceTree = "<group>";
 		};
+		D866B2B729EC4A8C3978B7BD /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				63D1A1BD399D7A73CB427818 /* Pods-Eventure.debug.xcconfig */,
+				CBAE5CDD93116CEE3D41AC0E /* Pods-Eventure.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,9 +107,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CC18F560229AD4EC008FABEA /* Build configuration list for PBXNativeTarget "Eventure" */;
 			buildPhases = (
+				5EF67C5781F60E1336D00575 /* [CP] Check Pods Manifest.lock */,
 				CC18F547229AD4EB008FABEA /* Sources */,
 				CC18F548229AD4EB008FABEA /* Frameworks */,
 				CC18F549229AD4EB008FABEA /* Resources */,
+				7366F4C7A7F7C2A244A73A44 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -142,6 +168,53 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		5EF67C5781F60E1336D00575 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Eventure-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7366F4C7A7F7C2A244A73A44 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CC18F547229AD4EB008FABEA /* Sources */ = {
@@ -296,6 +369,7 @@
 		};
 		CC18F561229AD4EC008FABEA /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 63D1A1BD399D7A73CB427818 /* Pods-Eventure.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -314,6 +388,7 @@
 		};
 		CC18F562229AD4EC008FABEA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CBAE5CDD93116CEE3D41AC0E /* Pods-Eventure.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
