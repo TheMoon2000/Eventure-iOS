@@ -8,22 +8,28 @@
 
 /* Begin PBXBuildFile section */
 		CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F54E229AD4EB008FABEA /* AppDelegate.swift */; };
-		CC18F551229AD4EB008FABEA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F550229AD4EB008FABEA /* ViewController.swift */; };
 		CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC18F552229AD4EB008FABEA /* Main.storyboard */; };
 		CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CC18F555229AD4EB008FABEA /* Eventure.xcdatamodeld */; };
 		CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC18F558229AD4EC008FABEA /* Assets.xcassets */; };
 		CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC18F55A229AD4EC008FABEA /* LaunchScreen.storyboard */; };
+		CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F563229AD518008FABEA /* MainTabBarController.swift */; };
+		CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F565229AD523008FABEA /* FirstTabViewController.swift */; };
+		CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* SecondTabViewController.swift */; };
+		CC18F56A229AD570008FABEA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = CC18F569229AD570008FABEA /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CC18F54B229AD4EB008FABEA /* Eventure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eventure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC18F54E229AD4EB008FABEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		CC18F550229AD4EB008FABEA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CC18F553229AD4EB008FABEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CC18F556229AD4EB008FABEA /* Eventure.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Eventure.xcdatamodel; sourceTree = "<group>"; };
 		CC18F558229AD4EC008FABEA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CC18F55B229AD4EC008FABEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CC18F55D229AD4EC008FABEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CC18F563229AD518008FABEA /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		CC18F565229AD523008FABEA /* FirstTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstTabViewController.swift; sourceTree = "<group>"; };
+		CC18F567229AD535008FABEA /* SecondTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTabViewController.swift; sourceTree = "<group>"; };
+		CC18F569229AD570008FABEA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +47,7 @@
 			isa = PBXGroup;
 			children = (
 				CC18F54D229AD4EB008FABEA /* Eventure */,
+				CC18F569229AD570008FABEA /* README.md */,
 				CC18F54C229AD4EB008FABEA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,7 +64,9 @@
 			isa = PBXGroup;
 			children = (
 				CC18F54E229AD4EB008FABEA /* AppDelegate.swift */,
-				CC18F550229AD4EB008FABEA /* ViewController.swift */,
+				CC18F563229AD518008FABEA /* MainTabBarController.swift */,
+				CC18F565229AD523008FABEA /* FirstTabViewController.swift */,
+				CC18F567229AD535008FABEA /* SecondTabViewController.swift */,
 				CC18F552229AD4EB008FABEA /* Main.storyboard */,
 				CC18F558229AD4EC008FABEA /* Assets.xcassets */,
 				CC18F55A229AD4EC008FABEA /* LaunchScreen.storyboard */,
@@ -127,6 +136,7 @@
 			files = (
 				CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */,
 				CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */,
+				CC18F56A229AD570008FABEA /* README.md in Resources */,
 				CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,8 +149,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
-				CC18F551229AD4EB008FABEA /* ViewController.swift in Sources */,
+				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
+				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
+				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,6 +300,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Eventure/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,6 +318,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = Eventure/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
