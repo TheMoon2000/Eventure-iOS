@@ -24,7 +24,7 @@ class SecondTabViewController: UIViewController {
     /// Remove this!
     private func makeButton() {
         let button = UIButton(type: .system)
-        button.setTitle("UIButton", for: .normal)
+        button.setTitle("Get Current IP", for: .normal)
         button.layer.borderColor = MAIN_TINT.cgColor
         button.titleLabel?.font = .systemFont(ofSize: 17)
         button.layer.borderWidth = 1
@@ -33,7 +33,7 @@ class SecondTabViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         
-        button.widthAnchor.constraint(equalToConstant: 184).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 186).isActive = true
         button.heightAnchor.constraint(equalToConstant: 48).isActive = true
         button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
