@@ -1,6 +1,11 @@
 # Eventure-iOS
 iOS Frontend for the Eventure app.
 
+## Get Started
+- Make sure you have [CocoaPods](https://cocoapods.org "Official site for CocoaPods") installed.
+- Navigate to the project directory in Terminal, and run `pod install`.
+- Open `Eventure.workspace` in Xcode. 
+
 ## Guidelines
 Here are a few guidelines that you should follow when contributing.
 1. Include documentation for every defined function.
