@@ -16,18 +16,35 @@ class SecondTabViewController: UIViewController {
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .white
         self.title = "Second Tab"
-        self.makeLabel()
+        
+        // remove this example UIButton
+        self.makeButton()
     }
     
     /// Remove this!
-    private func makeLabel() {
-        let label = UILabel()
-        label.text = "UILabel"
-        label.font = .systemFont(ofSize: 28)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    private func makeButton() {
+        let button = UIButton(type: .system)
+        button.setTitle("UIButton", for: .normal)
+        button.layer.borderColor = MAIN_TINT.cgColor
+        button.titleLabel?.font = .systemFont(ofSize: 17)
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 24
+        button.tintColor = MAIN_TINT
+        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(button)
+        
+        button.widthAnchor.constraint(equalToConstant: 184).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+    }
+    
+    /// Remove this!
+    
+    @objc private func buttonPressed() {
+        print("Button pressed at \(Date())")
     }
     
     /*

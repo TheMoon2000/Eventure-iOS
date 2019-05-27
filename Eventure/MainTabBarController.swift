@@ -20,6 +20,8 @@ class MainTabBarController: UITabBarController {
     
     private func setupTabs() {
         
+        tabBar.tintColor = MAIN_TINT
+        
         // Here are some demo tabs. Replace them!
         let tab1 = FirstTabViewController()
         let tab2 = SecondTabViewController()
@@ -28,7 +30,10 @@ class MainTabBarController: UITabBarController {
         
         self.viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            nav.navigationBar.barTintColor = UIColor(white: 0.93, alpha: 1)
+            
+            /// REPLACE
+            nav.navigationBar.barTintColor = NAVBAR_TINT
+            
             return nav
         }
     }
