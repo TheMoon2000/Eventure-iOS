@@ -44,7 +44,42 @@ class SecondTabViewController: UIViewController {
     /// Remove this!
     
     @objc private func buttonPressed() {
-        print("Button pressed at \(Date())")
+        // Get the IP of the user
+        
+        let apiURL = URL(string: API_BASE_URL + "/network/GetIP")!
+        
+        
+        // Setup alert view controller
+        let alert = UIAlertController(title: "IP Address Lookup",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss",
+                                      style: .default,
+                                      handler: nil))
+        
+        let task = CUSTOM_SESSION.dataTask(with: apiURL) {
+            data, response, error in
+            
+            guard error == nil else {
+                print(error!)
+                alert.message = "Connection error."
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: nil)
+                }
+                return
+            }
+            
+            if let ip = String(data: data!, encoding: .utf8) {
+                alert.message = "Your IP is \(ip)."
+            } else {
+                alert.message = "Unable to retrieve IP."
+            }
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
+        task.resume()
     }
     
     /*
