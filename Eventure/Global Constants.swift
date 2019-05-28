@@ -27,3 +27,15 @@ let CUSTOM_SESSION: URLSession = {
     print("setup")
     return URLSession(configuration: config)
 }()
+
+/// URL Encode & Decode
+extension String {
+    var encoded: String {
+        return self.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? self
+    }
+    
+    var decoded: String {
+        return self.removingPercentEncoding ?? self
+    }
+}
+
