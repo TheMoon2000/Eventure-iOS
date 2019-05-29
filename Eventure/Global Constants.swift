@@ -5,14 +5,18 @@
 //  Created by Jia Rui Shan on 2019/5/27.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
-//  This file documents all global constants used by the app
+//  This file defines all global constants used by the app.
 
 import UIKit
 
 /// The URL prefix for all the APIs
-let API_BASE_URL = "https://api.caleventbrite-test.tk"
+let API_BASE_URL = "https://api.eventure-app.com"
 
-/// Todo: REPLACE THIS WITH THE APP's THEME COLOR
+/// Credentials: DO NOT include when committing
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
+
+/// Todo: Replace this with the app's theme color
 let MAIN_TINT = UIColor(red: 0.5, green: 0.7, blue: 0.92, alpha: 1)
 
 /// Todo: REPLACE THIS WITH THE NAVIGATION BAR COLOR
@@ -24,7 +28,6 @@ let CUSTOM_SESSION: URLSession = {
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
     config.urlCache = nil
     config.timeoutIntervalForRequest = 5.0
-    print("setup")
     return URLSession(configuration: config)
 }()
 
@@ -39,3 +42,5 @@ extension String {
     }
 }
 
+/// Documents directory URL
+let DOCUMENTS_URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]

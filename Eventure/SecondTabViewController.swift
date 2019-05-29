@@ -24,7 +24,7 @@ class SecondTabViewController: UIViewController {
     /// Remove this!
     private func makeButton() {
         let button = UIButton(type: .system)
-        button.setTitle("Get Current IP", for: .normal)
+        button.setTitle("Upload Example", for: .normal)
         button.layer.borderColor = MAIN_TINT.cgColor
         button.titleLabel?.font = .systemFont(ofSize: 17)
         button.layer.borderWidth = 1
@@ -38,11 +38,10 @@ class SecondTabViewController: UIViewController {
         button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         button.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
-        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(uploadFile), for: .touchUpInside)
     }
     
-    /// Remove this!
-    
+    /// Remove this! Example of HTTP get request
     @objc private func buttonPressed() {
         // Get the IP of the user
         
@@ -69,7 +68,7 @@ class SecondTabViewController: UIViewController {
                 return
             }
             
-            if let ip = String(data: data!, encoding: .utf8) {
+            if let ip = String(data: data!, encoding: .ascii) {
                 alert.message = "Your IP is \(ip)."
             } else {
                 alert.message = "Unable to retrieve IP."
@@ -80,6 +79,56 @@ class SecondTabViewController: UIViewController {
         }
         
         task.resume()
+    }
+    
+    /// Remove this! Example for upload file with authorization
+    @objc private func uploadFile() {
+        guard let fileURL = Bundle.main.url(forResource: "Example file",
+                                            withExtension: "pdf") else {
+            print("Resource does not exist")
+            return
+        }
+        
+        // Setup the request
+        let apiURL = URL(string: API_BASE_URL + "/debug/FileDump")!
+        var request = URLRequest(url: apiURL)
+        request.httpMethod = "POST"
+        
+        // Set authentication
+        let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
+        request.setValue("Basic \(token)", forHTTPHeaderField: "Authorization")
+        
+        // Setup alert view controller
+        let alert = UIAlertController(title: "IP Address Lookup",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss",
+                                      style: .default,
+                                      handler: nil))
+        
+        let uploadTask = CUSTOM_SESSION.uploadTask(with: request, fromFile: fileURL) {
+            data, response, error in
+            
+            guard error == nil else {
+                print(error!)
+                alert.message = "Connection error."
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: nil)
+                }
+                return
+            }
+            
+            if let str = String(data: data!, encoding: .ascii) {
+                alert.message = str
+            } else {
+                alert.message = "Unable to retrieve return message."
+            }
+            
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        uploadTask.resume()
     }
     
     /*
