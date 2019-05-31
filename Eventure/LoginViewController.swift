@@ -9,29 +9,30 @@
 import UIKit
 
 class LoginViewController: UIViewController {
-
+    var usr = UITextField()
+    var pswd = UITextField()
+    var logOrReg = UIButton(type: .system)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = MAIN_TINT
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         self.setupLogins()
-        // Do any additional setup after loading the view.
     }
     
     private func setupLogins() {
-        let usr = UITextField()
         usr.placeholder = "email"
         usr.borderStyle = .roundedRect
-        
-        let pswd = UITextField()
+        usr.keyboardType = UIKeyboardType.default
+    
         pswd.placeholder = "password"
         pswd.borderStyle = .roundedRect
+        pswd.keyboardType = UIKeyboardType.default
         
-        let logOrReg = UIButton(type: .system)
         logOrReg.setTitle("Log In / Join", for: .normal)
         logOrReg.titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)
         logOrReg.tintColor = .white
-        logOrReg.backgroundColor = UIColor(red: 0/255, green: 219/255, blue: 182/255, alpha: 1)
+        logOrReg.backgroundColor = MAIN_TINT_DARK
         logOrReg.layer.cornerRadius = 18
         
         view.addSubview(usr)
@@ -42,6 +43,7 @@ class LoginViewController: UIViewController {
         usr.translatesAutoresizingMaskIntoConstraints = false
         logOrReg.translatesAutoresizingMaskIntoConstraints = false
         
+        //Let pswd be the center anchor
         pswd.widthAnchor.constraint(equalToConstant: 210).isActive = true
         pswd.heightAnchor.constraint(equalToConstant: 45).isActive = true
         pswd.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -56,15 +58,25 @@ class LoginViewController: UIViewController {
         logOrReg.heightAnchor.constraint(equalToConstant: 48).isActive = true
         logOrReg.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         logOrReg.centerYAnchor.constraint(equalTo: pswd.centerYAnchor, constant: 65).isActive = true
+        //login/register transition page
+        logOrReg.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        
     }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @objc private func buttonPressed() {
+        //TODO: NEED API here
+        //print(sender.text)
+        let nextVC = MainTabBarController()
+        //nextVC.modalTransitionStyle = .coverVertical
+        self.present(nextVC, animated: true, completion: nil)
     }
-    */
-
+    @objc private func dismissKeyboard() {
+        if (usr.isEditing) {
+            print("usr")
+            usr.resignFirstResponder()
+        } else if (pswd.isEditing) {
+            print("pswd")
+            pswd.resignFirstResponder()
+        }
+    }
+    
 }
