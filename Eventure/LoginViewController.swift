@@ -21,7 +21,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+      
         self.view.backgroundColor = MAIN_TINT
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         self.setupCanvas()
@@ -92,7 +92,7 @@ class LoginViewController: UIViewController {
         registerButton.layer.cornerRadius = 5
         registerButton.layer.borderColor = UIColor.white.cgColor
         registerButton.layer.borderWidth = 2.0
-        
+
         canvas.addSubview(usr)
         canvas.addSubview(pswd)
         canvas.addSubview(loginButton)
@@ -190,6 +190,7 @@ class LoginViewController: UIViewController {
                               API_Name: "account/Authenticate",
                               parameters: loginParameters)!
         var request = URLRequest(url: apiURL)
+
         let token = "\(authUsr):\(authPswd)".data(using: .utf8)!.base64EncodedString()
         request.httpMethod = "POST"
         request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
@@ -242,9 +243,7 @@ class LoginViewController: UIViewController {
             // Determine whether additional space is needed to fully display the keyboard
             let bottomSpace = max(0, kbSize.height - canvas.frame.height +  textfield.frame.maxY + 8)
             canvas.contentOffset.y = bottomSpace
-        }
-    }
-    
+          
     @objc private func keyboardDidHide(_ notification: Notification) {
         canvas.contentInset = .zero
         canvas.scrollIndicatorInsets = .zero
@@ -254,16 +253,15 @@ class LoginViewController: UIViewController {
     @objc private func dismissKeyboard() {
         canvas.endEditing(true)
     }
+}    
     
-    
-}
 
 
 // Add editing events detection
 extension LoginViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        activeField = textField
+        activeField = textField as? CustomTextField
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -275,6 +273,7 @@ extension LoginViewController: UITextFieldDelegate {
             pswd.becomeFirstResponder()
         } else {
             self.dismissKeyboard()
+
         }
         return true
     }
