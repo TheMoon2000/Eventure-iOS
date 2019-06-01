@@ -13,8 +13,8 @@ import UIKit
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "eventure"
-let PASSWORD = "MeiYouMiMa"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 
