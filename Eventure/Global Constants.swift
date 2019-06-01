@@ -55,9 +55,9 @@ extension URL {
      Custom URL formatter.
      
      - Parameters:
-     - base: The base / parent URL of the API.
-     - API_Name: The API name.
-     - parameters: The url parameters in the form of a Swift native dictionary.
+        - base: The base / parent URL of the API.
+        - API_Name: The API name.
+        - parameters: The url parameters in the form of a Swift native dictionary.
      
      - Returns: An optional URL object (URL?) formed from the provided information.
      */
