@@ -12,18 +12,18 @@ class RegisterViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = MAIN_TINT
+        
+        self.view.backgroundColor = .white
         let g = UISwipeGestureRecognizer(target: self, action: #selector(returnToLogin))
         g.direction = UISwipeGestureRecognizer.Direction.right
         self.view.addGestureRecognizer(g)
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
         // Do any additional setup after loading the view.
     }
     
-
     @objc private func returnToLogin() {
         //TODO: Use navigation controller for better animation
-        let nextVC = LoginViewController()
-        nextVC.modalTransitionStyle = .flipHorizontal
-        self.present(nextVC, animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
 }
+
