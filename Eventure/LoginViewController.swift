@@ -37,7 +37,9 @@ class LoginViewController: UIViewController {
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
     // UI setup
     private func setupCanvas() {
         canvas = UIScrollView()
@@ -163,12 +165,14 @@ class LoginViewController: UIViewController {
         // First verifies that the username and password are not blank
         guard let username = usr.text, username != "" else {
             print("username is empty")
+            usr.shake()
             reset()
             return
         }
         
         guard let password = pswd.text, password != "" else {
             print("password is empty")
+            pswd.shake()
             reset()
             return
         }
@@ -212,7 +216,7 @@ class LoginViewController: UIViewController {
                 print(servermsg!)
                 if (servermsg == "success") {
                     let nextVC = MainTabBarController()
-                    self.present(nextVC, animated: true, completion: nil)
+                    self.navigationController?.pushViewController(nextVC, animated: true)
                 } else {
                     //UI related events belong in main thread
                     DispatchQueue.main.async {
@@ -231,7 +235,7 @@ class LoginViewController: UIViewController {
     
     @objc private func registerPressed() {
         let nextVC = RegisterViewController()
-        self.present(nextVC, animated: true, completion: nil)
+        self.navigationController?.pushViewController(nextVC, animated: true)
     }
     // Notification handlers to make sure that the active textfield is always visible
 
@@ -277,5 +281,14 @@ extension LoginViewController: UITextFieldDelegate {
 
         }
         return true
+    }
+}
+extension UIView {
+    func shake() {
+        let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+        animation.duration = 0.5
+        animation.values = [-10.0, 10.0, -10.0, 10.0, -5.0, 5.0, -2.5, 2.5, 0.0 ]
+        layer.add(animation, forKey: "shake")
     }
 }
