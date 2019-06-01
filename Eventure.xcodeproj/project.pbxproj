@@ -21,6 +21,7 @@
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCF8CF17229E398300F3C6B8 /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
+		D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */; };
 		DAA8704C960D87AABD9E6D36 /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +59,7 @@
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		F857A70E71D2037A6A5B29E1 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -120,6 +122,7 @@
 				CC18F565229AD523008FABEA /* FirstTabViewController.swift */,
 				CC18F567229AD535008FABEA /* SecondTabViewController.swift */,
 				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
+				D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */,
 				CC18F552229AD4EB008FABEA /* Main.storyboard */,
 				CC18F558229AD4EC008FABEA /* Assets.xcassets */,
 				CC18F55A229AD4EC008FABEA /* LaunchScreen.storyboard */,
@@ -351,6 +354,7 @@
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
+				D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */,
 				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
