@@ -243,7 +243,8 @@ class LoginViewController: UIViewController {
             // Determine whether additional space is needed to fully display the keyboard
             let bottomSpace = max(0, kbSize.height - canvas.frame.height +  textfield.frame.maxY + 8)
             canvas.contentOffset.y = bottomSpace
-          
+        }
+    }
     @objc private func keyboardDidHide(_ notification: Notification) {
         canvas.contentInset = .zero
         canvas.scrollIndicatorInsets = .zero
@@ -261,7 +262,7 @@ class LoginViewController: UIViewController {
 extension LoginViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        activeField = textField as? CustomTextField
+        activeField = textField as? UITextField
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
