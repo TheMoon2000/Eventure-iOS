@@ -94,7 +94,8 @@ class LoginViewController: UIViewController {
         prepareField(textfield: usr)
         
         pswd.delegate = self
-        pswd.placeholder = "password"
+        pswd.placeholder = "Password"
+        pswd.textContentType = .password
         pswd.isSecureTextEntry = true
         pswd.returnKeyType = .done
         prepareField(textfield: pswd)
@@ -103,7 +104,7 @@ class LoginViewController: UIViewController {
         loginButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         loginButton.tintColor = .white
         loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
-        loginButton.layer.cornerRadius = 0 //18
+        loginButton.layer.cornerRadius = 0.0
         
         canvas.addSubview(usr)
         canvas.addSubview(pswd)
@@ -116,12 +117,12 @@ class LoginViewController: UIViewController {
         //Let pswd be the center anchor
         
         pswd.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        pswd.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        pswd.heightAnchor.constraint(equalToConstant: 46).isActive = true
         pswd.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
         pswd.centerYAnchor.constraint(equalTo: canvas.centerYAnchor).isActive = true
         
         usr.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        usr.heightAnchor.constraint(equalToConstant: 46).isActive = true
         usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
         usr.centerYAnchor.constraint(equalTo: pswd.centerYAnchor,
                                      constant: -50).isActive = true
@@ -132,14 +133,17 @@ class LoginViewController: UIViewController {
         loginButton.centerYAnchor.constraint(equalTo: pswd.centerYAnchor, constant: 66).isActive = true
         
         //login/register transition page
+        loginButton.addTarget(self, action: #selector(buttonLifted(_:)),
+                              for: [.touchUpInside, .touchUpOutside, .touchDragExit, .touchDragExit, .touchCancel])
         loginButton.addTarget(self,
                               action: #selector(beginLoginRequest),
                               for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(buttonPressed(_:)),
                               for: .touchDown)
-        loginButton.addTarget(self, action: #selector(buttonLifted(_:)),
-                              for: [.touchUpOutside, .touchDragExit])
     }
+    
+    
+    // Button appearance
     
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
@@ -151,23 +155,35 @@ class LoginViewController: UIViewController {
         sender.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
     }
     
+    
+    
     @objc private func beginLoginRequest() {
+        
+        let reset = {
+            self.loginButton.setTitleColor(.white, for: .normal)
+            self.loginButton.setTitle("Sign In", for: .normal)
+            self.loginButton.isEnabled = true
+            self.loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+        }
         
         // First verifies that the username and password are not blank
         guard let username = usr.text, username != "" else {
             print("username is empty")
+            reset()
             return
         }
         
         guard let password = pswd.text, password != "" else {
             print("password is empty")
+            reset()
             return
         }
         
         // Change the button style to reflect that a login request is in progress
         loginButton.isEnabled = false
-        loginButton.setTitle("Signing In...", for: .normal)
         loginButton.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
+        loginButton.setTitle("Signing In...", for: .normal)
+        loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
         
         // Construct the URL parameters to be delivered
         let loginParameters = [
@@ -187,18 +203,18 @@ class LoginViewController: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                self.loginButton.setTitleColor(.white, for: .normal)
-                self.loginButton.setTitle("Sign In", for: .normal)
-                self.loginButton.isEnabled = true
+                reset()
             }
             
             guard error == nil else {
                 print(error!); return
             }
             
-            if let json = try? JSON(data: data!) {
-                print(json)
+            if let result = try? JSON(data: data!).dictionary {
+                
                 // TODO: determine if login is successful or not
+                print(result)
+                
                 // Write code here...
             } else {
                 // handles internet / server errors
@@ -211,7 +227,7 @@ class LoginViewController: UIViewController {
     }
     
     
-    // Notification handlers
+    // Notification handlers to make sure that the active textfield is always visible
     
     @objc private func keyboardDidShow(_ notification: Notification) {
         let kbSize = ((notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey]) as! CGRect).size
@@ -264,11 +280,11 @@ extension LoginViewController: UITextFieldDelegate {
 /// A special subclass of UITextField that adds 10 pixels of inset in the horizontal direction.
 class CustomTextField: UITextField {
     override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
+        return bounds.inset(by: UIEdgeInsets(top: 0, left: 10, bottom: -1, right: 10))
     }
     
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.inset(by: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10))
+        return bounds.inset(by: UIEdgeInsets(top: 0, left: 10, bottom: -1, right: 10))
     }
     
     override func borderRect(forBounds bounds: CGRect) -> CGRect {
