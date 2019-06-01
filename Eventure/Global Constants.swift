@@ -6,7 +6,6 @@
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 //  This file documents all global constants used by the app
-
 import UIKit
 
 /// The URL prefix for all the APIs
@@ -17,7 +16,6 @@ let USERNAME = "__replace__"
 let PASSWORD = "__replace__"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
-
 let MAIN_TINT2 = UIColor(red: 0.5, green: 0.7, blue: 0.92, alpha: 1)
 let MAIN_TINT = UIColor(red: 127/255, green: 219/255, blue: 203/255, alpha: 1.0)
 let MAIN_TINT_DARK = UIColor(red: 73/255, green: 188/255, blue: 167/255, alpha: 1)
@@ -48,7 +46,6 @@ extension String {
 }
 
 /// Initialize new URL with url parameters
-
 extension URL {
     
     /**
