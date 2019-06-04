@@ -8,11 +8,6 @@
 import UIKit
 import SwiftyJSON
 
-//TODO: verify email format
-//TODO: change gender to options
-//TODO: pswd requirements
-//TODO: better ui
-
 
 
 class LoginViewController: UIViewController {
