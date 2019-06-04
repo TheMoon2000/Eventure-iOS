@@ -8,6 +8,13 @@
 import UIKit
 import SwiftyJSON
 
+//TODO: verify email format
+//TODO: change gender to options
+//TODO: pswd requirements
+//TODO: better ui
+
+
+
 class LoginViewController: UIViewController {
     let authUsr = "eventure-frontend"
     let authPswd = "MeiYouMiMa"
@@ -17,12 +24,26 @@ class LoginViewController: UIViewController {
     var loginButton = UIButton(type: .system)
     var registerButton = UIButton(type: .system)
     var activeField: UITextField?
+    var logo = UIImageView()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
       
-        self.view.backgroundColor = MAIN_TINT
+        //self.view.backgroundColor = MAIN_TINT3
+        let topColor = MAIN_TINT8
+        let buttomColor = MAIN_TINT6
+        let gradientColors = [topColor.cgColor, buttomColor.cgColor]
+        
+        let gradientLocations:[NSNumber] = [0.0, 1.0]
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = gradientColors
+        gradientLayer.locations = gradientLocations
+        
+        gradientLayer.frame = self.view.frame
+        self.view.layer.insertSublayer(gradientLayer, at: 0)
+        
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         self.setupCanvas()
         self.setupLogins()
@@ -61,9 +82,7 @@ class LoginViewController: UIViewController {
         textfield.clearButtonMode = .whileEditing
         textfield.backgroundColor = .white
         textfield.borderStyle = .roundedRect
-        let inset = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: textfield.frame.height))
-        textfield.leftView = inset
-        textfield.leftViewMode = .always
+        textfield.doInset()
     }
     
     private func setupLogins() {
@@ -84,8 +103,12 @@ class LoginViewController: UIViewController {
         loginButton.setTitle("Sign In", for: .normal)
         loginButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)
         loginButton.tintColor = .white
-        loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+        //loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+        loginButton.backgroundColor = .clear
         loginButton.layer.cornerRadius = 18
+        //delete these
+        loginButton.layer.borderColor = UIColor.white.cgColor
+        loginButton.layer.borderWidth = 2.0
         
         registerButton.setTitle("Register", for: .normal)
         registerButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
@@ -94,32 +117,44 @@ class LoginViewController: UIViewController {
         registerButton.layer.cornerRadius = 5
         registerButton.layer.borderColor = UIColor.white.cgColor
         registerButton.layer.borderWidth = 2.0
+        
+        logo.image = UIImage(named: "logo")
 
         canvas.addSubview(usr)
         canvas.addSubview(pswd)
         canvas.addSubview(loginButton)
         canvas.addSubview(registerButton)
+        canvas.addSubview(logo)
+        
+        logo.frame = CGRect(x: 0, y: 0, width: 50, height: 30)
+        logo.contentMode = .scaleAspectFit
+        logo.clipsToBounds = true
+        logo.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        logo.heightAnchor.constraint(equalToConstant: 250).isActive = true
+        logo.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+        logo.bottomAnchor.constraint(equalTo: usr.topAnchor, constant: 50).isActive = true
         
         pswd.translatesAutoresizingMaskIntoConstraints = false
         usr.translatesAutoresizingMaskIntoConstraints = false
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         registerButton.translatesAutoresizingMaskIntoConstraints = false
+        logo.translatesAutoresizingMaskIntoConstraints = false
         
         //Let pswd be the center anchor
         
         pswd.widthAnchor.constraint(equalToConstant: 210).isActive = true
-        pswd.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        pswd.heightAnchor.constraint(equalToConstant: 40).isActive = true
         pswd.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
         pswd.centerYAnchor.constraint(equalTo: canvas.centerYAnchor).isActive = true
         
         usr.widthAnchor.constraint(equalToConstant: 210).isActive = true
-        usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        usr.heightAnchor.constraint(equalToConstant: 40).isActive = true
         usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
         usr.centerYAnchor.constraint(equalTo: pswd.centerYAnchor,
                                      constant: -50).isActive = true
         
         loginButton.widthAnchor.constraint(equalToConstant: 186).isActive = true
-        loginButton.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        loginButton.heightAnchor.constraint(equalToConstant: 42).isActive = true
         loginButton.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
         loginButton.centerYAnchor.constraint(equalTo: pswd.centerYAnchor, constant: 65).isActive = true
         
@@ -143,12 +178,13 @@ class LoginViewController: UIViewController {
     // Button appearance
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
-        sender.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
+        sender.backgroundColor = UIColor(white: 1, alpha: 0.2)
     }
     
     @objc private func buttonLifted(_ sender: UIButton) {
         sender.setTitleColor(.white, for: .normal)
-        sender.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+        sender.backgroundColor = .clear
+        //sender.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
     }
     
     
@@ -159,7 +195,8 @@ class LoginViewController: UIViewController {
             self.loginButton.setTitleColor(.white, for: .normal)
             self.loginButton.setTitle("Sign In", for: .normal)
             self.loginButton.isEnabled = true
-            self.loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+            self.loginButton.backgroundColor = .clear
+            //self.loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
         }
         
         // First verifies that the username and password are not blank
@@ -181,7 +218,8 @@ class LoginViewController: UIViewController {
         loginButton.isEnabled = false
         loginButton.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
         loginButton.setTitle("Signing In...", for: .normal)
-        loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
+        loginButton.backgroundColor = .clear
+        //loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
         
         // Construct the URL parameters to be delivered
         let loginParameters = [
