@@ -8,6 +8,9 @@
 
 import UIKit
 import SwiftyJSON
+//TODO: change gender to options
+//TODO: better ui
+//TODO: fix bad scroll
 /*
 struct cellData {
     var blank : String
@@ -97,7 +100,7 @@ class RegisterViewController: UITableViewController {
     
     @objc private func sendRegistration() {
         dismissKeyboard()
-
+        
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd" // e.g. 2019-06-02
         df.locale = Locale(identifier: "en_US")
@@ -125,6 +128,22 @@ class RegisterViewController: UITableViewController {
                 loginParameters[front2back[c.blank.text!]!] = field.text
             }
         }
+        
+        let validate = {
+            if (!String.isValidEmail(email: loginParameters["email"] ?? "")) {
+                print("invalid email")
+                inputs[0]?.backgroundColor = UIColor.red
+                reset()
+                shouldEnd = true
+            }
+            if (!String.isValidPswd(pswd: loginParameters["password"] ?? "")) {
+                print("invalid password")
+                inputs[2]?.backgroundColor = UIColor.red
+                reset()
+                shouldEnd = true
+            }
+        }()
+        
         if (shouldEnd) {
             return
         }
@@ -227,6 +246,7 @@ extension RegisterViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.layer.borderColor = UIColor.black.cgColor
+        textField.backgroundColor = UIColor.white
         activeField = textField as UITextField
     }
     
@@ -254,5 +274,18 @@ class regLabel : UILabel {
     override open func draw(_ rect: CGRect) {
         let inset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
         self.drawText(in: rect.inset(by: inset))
+    }
+}
+
+extension String {
+    static func isValidEmail(email: String) -> Bool {
+        let reg = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9]+\\.[A-Za-z]{2,64}"
+        let test = NSPredicate(format:"SELF MATCHES %@", reg)
+        return test.evaluate(with: email)
+    }
+    static func isValidPswd(pswd: String) -> Bool {
+        let reg = "^(?=.*[A-Za-z])(?=.*[0-9])(?!.*[^A-Za-z0-9]).{8,20}$"
+        let test = NSPredicate(format:"SELF MATCHES %@", reg)
+        return test.evaluate(with: pswd)
     }
 }
