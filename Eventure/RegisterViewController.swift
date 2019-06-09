@@ -30,7 +30,7 @@ class RegisterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        inputs = Array(repeatElement(nil, count: blanks.count))
+        inputs = Array(repeatElement(nil, count: blanks.count - 1))
         
         self.view.backgroundColor = .white
         let g = UISwipeGestureRecognizer(target: self, action: #selector(returnToLogin))
@@ -53,7 +53,7 @@ class RegisterViewController: UITableViewController {
     }
     private func setupTable() {
         self.tableView.separatorStyle = .none
-        self.tableView.register(RegisterCell.self, forCellReuseIdentifier: "register")
+        self.tableView.register(TextCell.self, forCellReuseIdentifier: "register")
         self.tableView.register(GenderCell.self, forCellReuseIdentifier: "gender")
         self.tableView.delegate = self
         self.tableView.dataSource = self
@@ -119,27 +119,41 @@ class RegisterViewController: UITableViewController {
         //storing user inputs
         var shouldEnd = false
         for c in cells {
-            let field = c.info
-            if (field.text == nil || field.text == "") {
-                shouldEnd = true
-                print(front2back[c.blank.text!]! + " is empty")
-                field.layer.borderColor = UIColor.magenta.cgColor
-                reset()
-            } else {
-                loginParameters[front2back[c.blank.text!]!] = field.text
+            if (type(of: c) == TextCell.self) {
+                let c = c as! TextCell
+                let field = c.info
+                print(c.blank.text)
+                if (field.text == nil || field.text == "") {
+                    shouldEnd = true
+                    print(front2back[c.blank.text!]! + " is empty")
+                    field.layer.borderColor = UIColor.magenta.cgColor
+                    reset()
+                } else {
+                    loginParameters[front2back[c.blank.text!]!] = field.text
+                }
+            } else if (type(of: c) == GenderCell.self) {
+                let c = c as! GenderCell
+                if (c.choice == -1) {
+                    shouldEnd = true
+                    print(front2back[c.blank.text!]! + " is not chosen")
+                    c.info.layer.borderColor = UIColor.magenta.cgColor
+                    reset()
+                } else {
+                    loginParameters[front2back[c.blank.text!]!] = String(c.choice)
+                }
             }
         }
-        
+        //print(loginParameters)
         let validate = {
             if (!String.isValidEmail(email: loginParameters["email"] ?? "")) {
                 print("invalid email")
-                inputs[0]?.backgroundColor = UIColor.red
+                inputs[0]?.layer.borderColor = UIColor.magenta.cgColor
                 reset()
                 shouldEnd = true
             }
             if (!String.isValidPswd(pswd: loginParameters["password"] ?? "")) {
                 print("invalid password")
-                inputs[2]?.backgroundColor = UIColor.red
+                inputs[2]?.layer.borderColor = UIColor.magenta.cgColor
                 reset()
                 shouldEnd = true
             }
@@ -171,7 +185,6 @@ class RegisterViewController: UITableViewController {
             
             do {
                 print(String(data: data!, encoding: .ascii)!)
-                print(1)
                 let result = try JSON(data: data!).dictionary
                 let servermsg = result?["status"]?.rawString()
                 print(servermsg!)
@@ -197,25 +210,27 @@ class RegisterViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.tableView.dequeueReusableCell(withIdentifier: "register") as! RegisterCell
-        cell.blank.text = blanks[indexPath.row]
-        //do not initialize blank or info here for it has passed the super init stage for a cell
-        inputs[indexPath.row] = cell.info
-        if (indexPath.row == 0) {
-            cell.info.keyboardType = .emailAddress
-        }
-        if (indexPath.row < inputs.count - 2) {
-            cell.info.returnKeyType = .next
-        } else if (indexPath.row == inputs.count - 2) {
-            cell.info.returnKeyType = .done
+        if (indexPath.row <= inputs.count - 1) {
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "register") as! TextCell
+            cell.blank.text = blanks[indexPath.row]
+            //do not initialize blank or info here for it has passed the super init stage for a cell
+            inputs[indexPath.row] = cell.info
+            if (indexPath.row == 0) {
+                cell.info.keyboardType = .emailAddress
+            }
+            if (indexPath.row < inputs.count - 1) {
+                cell.info.returnKeyType = .next
+            } else if (indexPath.row == inputs.count - 1) {
+                cell.info.returnKeyType = .done
+            }
+            cell.info.delegate = self
+            return cell
         } else {
             //the last option is a new cell type that uses radio buttons
             let genderCell = self.tableView.dequeueReusableCell(withIdentifier: "gender") as! GenderCell
             genderCell.blank.text = blanks[indexPath.row]
             return genderCell
         }
-        cell.info.delegate = self
-        return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
