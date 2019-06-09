@@ -4,7 +4,7 @@
 target 'Eventure' do
   use_frameworks!
   pod 'SwiftyJSON'
-
+  pod 'DLRadioButton', '~> 1.4'
 end
 
 target 'EventureAPITests' do
