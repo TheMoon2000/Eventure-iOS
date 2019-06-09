@@ -54,6 +54,7 @@ class RegisterViewController: UITableViewController {
     private func setupTable() {
         self.tableView.separatorStyle = .none
         self.tableView.register(RegisterCell.self, forCellReuseIdentifier: "register")
+        self.tableView.register(GenderCell.self, forCellReuseIdentifier: "gender")
         self.tableView.delegate = self
         self.tableView.dataSource = self
         //TODO: Resize
@@ -203,10 +204,15 @@ class RegisterViewController: UITableViewController {
         if (indexPath.row == 0) {
             cell.info.keyboardType = .emailAddress
         }
-        if (indexPath.row < inputs.count - 1) {
+        if (indexPath.row < inputs.count - 2) {
             cell.info.returnKeyType = .next
-        } else if (indexPath.row == inputs.count - 1) {
+        } else if (indexPath.row == inputs.count - 2) {
             cell.info.returnKeyType = .done
+        } else {
+            //the last option is a new cell type that uses radio buttons
+            let genderCell = self.tableView.dequeueReusableCell(withIdentifier: "gender") as! GenderCell
+            genderCell.blank.text = blanks[indexPath.row]
+            return genderCell
         }
         cell.info.delegate = self
         return cell
@@ -267,13 +273,6 @@ extension RegisterViewController: UITextFieldDelegate {
             }
         }
         return true
-    }
-}
-
-class regLabel : UILabel {
-    override open func draw(_ rect: CGRect) {
-        let inset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        self.drawText(in: rect.inset(by: inset))
     }
 }
 
