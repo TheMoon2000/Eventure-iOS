@@ -139,7 +139,7 @@ class GenderCell: RegisterCell {
     }
     private func prepareButton(b: DLRadioButton, msg: String) {
         //b.titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)
-        let color = MAIN_TINT_DARK
+        let color = MAIN_TINT6
         b.iconColor = color.withAlphaComponent(0.8)
         b.indicatorColor = color.withAlphaComponent(1)
         b.isIconSquare = false

@@ -99,7 +99,7 @@ extension URL {
 
 extension UITextField {
     func doInset() {
-        var inset = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: self.frame.height))
+        let inset = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: self.frame.height))
         self.leftView = inset
         self.leftViewMode = .always
     }
