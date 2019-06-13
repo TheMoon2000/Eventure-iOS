@@ -71,7 +71,7 @@ class RegisterViewController: UITableViewController {
         register.setTitle("Register", for: .normal)
         register.titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)
         register.tintColor = .white
-        register.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+        register.backgroundColor = MAIN_TINT8.withAlphaComponent(0.8)
         register.layer.cornerRadius = 18
         
         register.translatesAutoresizingMaskIntoConstraints = false
@@ -91,12 +91,12 @@ class RegisterViewController: UITableViewController {
     }
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
-        sender.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
+        sender.backgroundColor = MAIN_TINT8.withAlphaComponent(1.0)
     }
     
     @objc private func buttonLifted(_ sender: UIButton) {
         sender.setTitleColor(.white, for: .normal)
-        sender.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+        sender.backgroundColor = MAIN_TINT8.withAlphaComponent(0.8)
     }
     
     @objc private func sendRegistration() {
@@ -112,7 +112,7 @@ class RegisterViewController: UITableViewController {
             self.register.setTitleColor(.white, for: .normal)
             self.register.setTitle("Register", for: .normal)
             self.register.isEnabled = true
-            self.register.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(0.8)
+            self.register.backgroundColor = MAIN_TINT8.withAlphaComponent(0.8)
         }
         let cells = self.tableView.visibleCells as! [RegisterCell]
         
@@ -122,7 +122,7 @@ class RegisterViewController: UITableViewController {
             if (type(of: c) == TextCell.self) {
                 let c = c as! TextCell
                 let field = c.info
-                print(c.blank.text)
+                print(c.blank.text!)
                 if (field.text == nil || field.text == "") {
                     shouldEnd = true
                     print(front2back[c.blank.text!]! + " is empty")

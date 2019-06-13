@@ -18,6 +18,7 @@ class LoginViewController: UIViewController {
     var pswd = UITextField()
     var loginButton = UIButton(type: .system)
     var registerButton = UIButton(type: .system)
+    var forgotButton = UIButton(type: .system)
     var activeField: UITextField?
     var logo = UIImageView()
     
@@ -113,12 +114,21 @@ class LoginViewController: UIViewController {
         registerButton.layer.borderColor = UIColor.white.cgColor
         registerButton.layer.borderWidth = 2.0
         
+        let forgotTitle =  NSAttributedString(string: "Forgot Password",
+                                              attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue, NSAttributedString.Key.font: UIFont.systemFont(ofSize: UIFont.systemFontSize - 3)])
+        forgotButton.setAttributedTitle(forgotTitle, for: .normal)
+        forgotButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: UIFont.systemFontSize)
+        forgotButton.tintColor = .white
+        forgotButton.backgroundColor = .clear
+        
+        
         logo.image = UIImage(named: "logo")
 
         canvas.addSubview(usr)
         canvas.addSubview(pswd)
         canvas.addSubview(loginButton)
         canvas.addSubview(registerButton)
+        canvas.addSubview(forgotButton)
         canvas.addSubview(logo)
         
         logo.frame = CGRect(x: 0, y: 0, width: 50, height: 30)
@@ -133,6 +143,7 @@ class LoginViewController: UIViewController {
         usr.translatesAutoresizingMaskIntoConstraints = false
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         registerButton.translatesAutoresizingMaskIntoConstraints = false
+        forgotButton.translatesAutoresizingMaskIntoConstraints = false
         logo.translatesAutoresizingMaskIntoConstraints = false
         
         //Let pswd be the center anchor
@@ -148,16 +159,22 @@ class LoginViewController: UIViewController {
         usr.centerYAnchor.constraint(equalTo: pswd.centerYAnchor,
                                      constant: -50).isActive = true
         
-        loginButton.widthAnchor.constraint(equalToConstant: 186).isActive = true
+        loginButton.widthAnchor.constraint(equalToConstant: 210).isActive = true
         loginButton.heightAnchor.constraint(equalToConstant: 42).isActive = true
         loginButton.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
         loginButton.centerYAnchor.constraint(equalTo: pswd.centerYAnchor, constant: 65).isActive = true
         
-        registerButton.widthAnchor.constraint(equalToConstant: 93).isActive = true
+        registerButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
         registerButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         registerButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        registerButton.centerYAnchor.constraint(equalTo: view.bottomAnchor, constant: -25).isActive = true
+        registerButton.centerYAnchor.constraint(equalTo: view.bottomAnchor, constant: -45).isActive = true
         registerButton.addTarget(self, action: #selector(registerPressed), for: .touchUpInside)
+        
+        forgotButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        forgotButton.heightAnchor.constraint(equalToConstant: 15).isActive = true
+        forgotButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        forgotButton.centerYAnchor.constraint(equalTo: view.bottomAnchor, constant: -15).isActive = true
+        forgotButton.addTarget(self, action: #selector(registerPressed), for: .touchUpInside)
         
         //login/register transition page
         loginButton.addTarget(self, action: #selector(buttonLifted(_:)),
@@ -299,7 +316,7 @@ class LoginViewController: UIViewController {
 extension LoginViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        activeField = textField as? UITextField
+        activeField = textField
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
