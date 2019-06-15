@@ -38,6 +38,7 @@ class RegisterViewController: UITableViewController {
         self.view.addGestureRecognizer(g)
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.navigationBar.barTintColor = MAIN_TINT8
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardDidShow(_:)),
@@ -49,23 +50,34 @@ class RegisterViewController: UITableViewController {
                                                object: nil)
         
         setupTable()
+        NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupUI()
     }
+    @objc private func rotated() {
+        setupUI()
+    }
+   
     private func setupTable() {
         self.tableView.separatorStyle = .none
         self.tableView.register(TextCell.self, forCellReuseIdentifier: "register")
         self.tableView.register(GenderCell.self, forCellReuseIdentifier: "gender")
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        //TODO: Resize
-        foot = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: 500))
-        self.tableView.tableFooterView = foot
-        foot.backgroundColor = .white
-        
     }
     
     private func setupUI() {
-        //self.tableView.tableFooterView!.addSubview(register)
+        var s :CGFloat = 0
+        let cells = self.tableView.visibleCells as! [RegisterCell]
+        for c in cells{
+            s += c.contentView.frame.height
+        }
+        
+        foot = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: self.view.frame.height - s - (self.navigationController?.navigationBar.frame.height)!))
+        self.tableView.tableFooterView = foot
+        foot.backgroundColor = .red
         foot.addSubview(register)
         
         register.setTitle("Register", for: .normal)
