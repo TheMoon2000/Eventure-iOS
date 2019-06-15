@@ -10,11 +10,11 @@ import UIKit
 import DLRadioButton
 
 class RegisterCell: UITableViewCell {
+    var blank : regLabel = regLabel()
 }
 
 class TextCell: RegisterCell{
     var info : UITextField = UITextField()
-    var blank : regLabel = regLabel()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -63,7 +63,7 @@ class TextCell: RegisterCell{
 }
 class GenderCell: RegisterCell {
     var info : UIView = UIView()
-    var blank : regLabel = regLabel()
+    
     var buttons : [DLRadioButton] = []
     var labels : [UILabel] = []
     var choice : Int = -1
