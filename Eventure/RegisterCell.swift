@@ -9,8 +9,21 @@
 import UIKit
 import DLRadioButton
 
+//TODO: Find a way to let frame dependent UI constraint update after rotation
+
 class RegisterCell: UITableViewCell {
     var blank : regLabel = regLabel()
+    func setupBlank() {
+        blank.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(blank)
+        blank.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        blank.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        blank.leftAnchor.constraint(equalTo: self.leftAnchor, constant: self.frame.width / 7).isActive = true
+        blank.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        //blank.layer.borderColor = UIColor.black.cgColor
+        //blank.layer.borderWidth = 1
+        blank.font = UIFont.boldSystemFont(ofSize: 12)
+    }
 }
 
 class TextCell: RegisterCell{
@@ -24,25 +37,17 @@ class TextCell: RegisterCell{
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        blank.translatesAutoresizingMaskIntoConstraints = false
+        self.setupBlank()
         info.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(blank)
         self.addSubview(info)
-        blank.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        blank.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        blank.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        blank.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        blank.layer.borderColor = UIColor.black.cgColor
-        blank.layer.borderWidth = 1
-        blank.font = UIFont.systemFont(ofSize: 10)
-        
         info.widthAnchor.constraint(equalToConstant: 200).isActive = true
         info.heightAnchor.constraint(equalTo: blank.heightAnchor).isActive = true
         info.leftAnchor.constraint(equalTo: blank.rightAnchor, constant: 10).isActive = true
         info.topAnchor.constraint(equalTo: blank.topAnchor).isActive = true
         info.layer.borderColor = UIColor.black.cgColor
-        info.layer.borderWidth = 1
+        info.layer.borderWidth = 0.7
         info.borderStyle = .roundedRect
+        info.layer.cornerRadius = 5
         info.doInset()
         info.autocorrectionType = .no
         info.autocapitalizationType = .none
@@ -76,18 +81,9 @@ class GenderCell: RegisterCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        blank.translatesAutoresizingMaskIntoConstraints = false
+        self.setupBlank()
         info.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(blank)
         self.addSubview(info)
-        blank.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        blank.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        blank.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        blank.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        blank.layer.borderColor = UIColor.black.cgColor
-        blank.layer.borderWidth = 1
-        blank.font = UIFont.systemFont(ofSize: 10)
-        
         info.widthAnchor.constraint(equalToConstant: 300).isActive = true
         info.heightAnchor.constraint(equalTo: blank.heightAnchor).isActive = true
         info.leftAnchor.constraint(equalTo: blank.rightAnchor, constant: 10).isActive = true
