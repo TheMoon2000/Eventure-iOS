@@ -53,9 +53,14 @@ class LoginViewController: UIViewController {
                                                selector: #selector(keyboardDidHide(_:)),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
+        
+        //to detect rotation change and any kind of unexpected UI changes/lack of changes
+        NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+        //this will be called when the next VC is rotated and switched back to this one
+        rotated()
     }
     // UI setup
     private func setupCanvas() {
@@ -71,7 +76,23 @@ class LoginViewController: UIViewController {
         canvas.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
-    
+    //TODO: FIX THE ROTATION GLITCH
+    @objc private func rotated() {
+        //see viewWillAppear for another call to this method
+        //seems like at launch this will be called twice for some reason
+        let topColor = MAIN_TINT8
+        let buttomColor = MAIN_TINT6
+        let gradientColors = [topColor.cgColor, buttomColor.cgColor]
+        
+        let gradientLocations:[NSNumber] = [0.0, 1.0]
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = gradientColors
+        gradientLayer.locations = gradientLocations
+        
+        gradientLayer.frame = self.view.frame
+        self.view.layer.replaceSublayer(self.view.layer.sublayers![0], with: gradientLayer)
+    }
     private func prepareField(textfield: UITextField) {
         textfield.autocorrectionType = .no
         textfield.autocapitalizationType = .none

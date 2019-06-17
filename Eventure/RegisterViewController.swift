@@ -8,14 +8,9 @@
 
 import UIKit
 import SwiftyJSON
-//TODO: change gender to options
 //TODO: better ui
 //TODO: fix bad scroll
-/*
-struct cellData {
-    var blank : String
-    var info : UITextField
-}*/
+
 class RegisterViewController: UITableViewController {
     let authUsr = "eventure-frontend"
     let authPswd = "MeiYouMiMa"
@@ -26,6 +21,7 @@ class RegisterViewController: UITableViewController {
     var activeField: UITextField?
     var register = UIButton(type: .system)
     var foot : UIView!
+    var head : UIView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +34,9 @@ class RegisterViewController: UITableViewController {
         self.view.addGestureRecognizer(g)
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.navigationBar.barTintColor = MAIN_TINT8
-        
+        //self.navigationController?.navigationBar.barTintColor = MAIN_TINT9.withAlphaComponent(0.2)
+        self.navigationController?.navigationBar.barStyle = .blackTranslucent
+        //self.navigationController?.navigationBar.backItem?.backBarButtonItem?.
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardDidShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification,
@@ -50,8 +47,11 @@ class RegisterViewController: UITableViewController {
                                                object: nil)
         
         setupTable()
+        
+        //to detect rotation change and any kind of unexpected UI changes/lack of changes
         NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
+    //Need to use viewWillAppear since we need the frame to be drawn but not presented
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupUI()
@@ -69,15 +69,24 @@ class RegisterViewController: UITableViewController {
     }
     
     private func setupUI() {
+        setupHeader()
+        setupFooter()
+    }
+    private func setupHeader() {
+        head = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: self.view.frame.height / 5))
+        self.tableView.tableHeaderView = head
+        head.backgroundColor = .gray
+    }
+    private func setupFooter() {
         var s :CGFloat = 0
         let cells = self.tableView.visibleCells as! [RegisterCell]
         for c in cells{
             s += c.contentView.frame.height
         }
         
-        foot = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: self.view.frame.height - s - (self.navigationController?.navigationBar.frame.height)!))
+        foot = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: self.view.frame.height - s - head.frame.height - (self.navigationController?.navigationBar.frame.height)!))
         self.tableView.tableFooterView = foot
-        foot.backgroundColor = .red
+        foot.backgroundColor = .brown
         foot.addSubview(register)
         
         register.setTitle("Register", for: .normal)
@@ -90,16 +99,15 @@ class RegisterViewController: UITableViewController {
         register.widthAnchor.constraint(equalToConstant: 186).isActive = true
         register.heightAnchor.constraint(equalToConstant: 48).isActive = true
         register.centerXAnchor.constraint(equalTo: foot.centerXAnchor).isActive = true
-        register.centerYAnchor.constraint(equalTo: foot.bottomAnchor, constant: -45).isActive = true
+        register.centerYAnchor.constraint(equalTo: foot.bottomAnchor, constant: -35).isActive = true
         
         register.addTarget(self, action: #selector(buttonLifted(_:)),
-                              for: [.touchUpOutside, .touchDragExit, .touchDragExit, .touchCancel])
+                           for: [.touchUpOutside, .touchDragExit, .touchDragExit, .touchCancel])
         register.addTarget(self,
-                              action: #selector(sendRegistration),
-                              for: .touchUpInside)
+                           action: #selector(sendRegistration),
+                           for: .touchUpInside)
         register.addTarget(self, action: #selector(buttonPressed(_:)),
-                              for: .touchDown)
-        
+                           for: .touchDown)
     }
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
@@ -250,7 +258,6 @@ class RegisterViewController: UITableViewController {
     }
     
     @objc private func returnToLogin() {
-        //TODO: Use navigation controller for better animation
         self.navigationController?.popViewController(animated: true)
     }
     
