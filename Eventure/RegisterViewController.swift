@@ -84,7 +84,11 @@ class RegisterViewController: UITableViewController {
             s += c.contentView.frame.height
         }
         
-        foot = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: self.view.frame.height - s - head.frame.height - (self.navigationController?.navigationBar.frame.height)!))
+        foot = UIView(frame: CGRect(x: 0, y: 0, width: 300, height: self.view.frame.height - s - head.frame.height - (self.navigationController?.navigationBar.subviews[0].subviews[1].frame.height)!))
+        /*for v in (self.navigationController?.navigationBar.subviews[0].subviews)! {
+            print(v) //shows that the visualeffectview is in there
+            //(somehow the visual effect view is larger than bar)
+        }*/
         self.tableView.tableFooterView = foot
         foot.backgroundColor = .brown
         foot.addSubview(register)
@@ -204,13 +208,17 @@ class RegisterViewController: UITableViewController {
             }
             
             do {
-                print(String(data: data!, encoding: .ascii)!)
-                let result = try JSON(data: data!).dictionary
-                let servermsg = result?["status"]?.rawString()
-                print(servermsg!)
+                let servermsg = (String(data: data!, encoding: .ascii)!)
+                //let result = try JSON(data: data!).dictionary
+                //let servermsg = result?["status"]?.rawString()
+                print(servermsg)
                 if (servermsg == "success") {
                     let nextVC = MainTabBarController()
-                    self.navigationController?.pushViewController(nextVC, animated: true)
+                    print("presenting...")
+                    DispatchQueue.main.async {
+                        self.navigationController?.pushViewController(nextVC, animated: true)
+                    }
+                
                 } else {
                     //UI related events belong in main thread
                     DispatchQueue.main.async {

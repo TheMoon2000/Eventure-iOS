@@ -287,7 +287,9 @@ class LoginViewController: UIViewController {
                 print(servermsg!)
                 if (servermsg == "success") {
                     let nextVC = MainTabBarController()
-                    self.navigationController?.pushViewController(nextVC, animated: true)
+                    DispatchQueue.main.async {
+                        self.navigationController?.pushViewController(nextVC, animated: true)
+                    }
                 } else {
                     //UI related events belong in main thread
                     DispatchQueue.main.async {
