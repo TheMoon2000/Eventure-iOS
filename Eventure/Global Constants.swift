@@ -9,7 +9,7 @@
 import UIKit
 
 /// The URL prefix for all the APIs
-let API_BASE_URL = "https://api.eventure-app.com/"
+let API_BASE_URL = "https://cal-eventbrite-api.appspot.com/"
 
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
