@@ -21,6 +21,7 @@
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCF8CF17229E398300F3C6B8 /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
+		D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */; };
 		D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */; };
 		D53CC3D722A6DD3A00CD5DE0 /* RegisterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */; };
 		DAA8704C960D87AABD9E6D36 /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */; };
@@ -60,6 +61,7 @@
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPSWDViewController.swift; sourceTree = "<group>"; };
 		D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterCell.swift; sourceTree = "<group>"; };
 		F857A70E71D2037A6A5B29E1 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -124,6 +126,7 @@
 				CC18F565229AD523008FABEA /* FirstTabViewController.swift */,
 				CC18F567229AD535008FABEA /* SecondTabViewController.swift */,
 				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
+				D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */,
 				D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */,
 				D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */,
 				CC18F552229AD4EB008FABEA /* Main.storyboard */,
@@ -343,6 +346,7 @@
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
+				D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */,
 				D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */,
 				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
