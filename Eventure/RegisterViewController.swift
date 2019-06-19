@@ -12,8 +12,8 @@ import SwiftyJSON
 //TODO: fix bad scroll
 
 class RegisterViewController: UITableViewController {
-    let authUsr = "eventure-frontend"
-    let authPswd = "MeiYouMiMa"
+    let authUsr = "__replace__"
+    let authPswd = "__replace__"
     var front2back = ["Email": "email", "Name": "displayedName", "Password": "password", "Gender": "gender"]
     var loginParameters = ["email": "", "displayedName": "", "password": "", "gender": "", "date": ""]
     let blanks = ["Email", "Name", "Password", "Gender"]

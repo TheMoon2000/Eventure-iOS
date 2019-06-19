@@ -11,8 +11,6 @@ import SwiftyJSON
 
 
 class LoginViewController: UIViewController {
-    let authUsr = "eventure-frontend"
-    let authPswd = "MeiYouMiMa"
     var canvas: UIScrollView!
     var usr = UITextField()
     var pswd = UITextField()
@@ -22,6 +20,11 @@ class LoginViewController: UIViewController {
     var activeField: UITextField?
     var logo = UIImageView()
     
+    
+    // Make the status bar white
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -269,8 +272,7 @@ class LoginViewController: UIViewController {
                               parameters: loginParameters)!
         var request = URLRequest(url: apiURL)
 
-        let token = "\(authUsr):\(authPswd)".data(using: .utf8)!.base64EncodedString()
-        request.httpMethod = "POST"
+        let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
         request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
@@ -310,8 +312,9 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func registerPressed() {
-        let nextVC = RegisterViewController()
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        let nextVC = RegisterController()
+        let nav = UINavigationController(rootViewController: nextVC)
+        self.present(nav, animated: true, completion: nil)
     }
     // Notification handlers to make sure that the active textfield is always visible
 
