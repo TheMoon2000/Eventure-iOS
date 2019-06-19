@@ -17,6 +17,9 @@
 		CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F565229AD523008FABEA /* FirstTabViewController.swift */; };
 		CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* SecondTabViewController.swift */; };
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
+		CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED022B98AC700248AB7 /* RegisterController.swift */; };
+		CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */; };
+		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
 		CC94308A229FA8F900291675 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC943089229FA8F900291675 /* Global Constants.swift */; };
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCF8CF17229E398300F3C6B8 /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
@@ -55,15 +58,18 @@
 		CC18F567229AD535008FABEA /* SecondTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTabViewController.swift; sourceTree = "<group>"; };
 		CC18F569229AD570008FABEA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
+		CC6DEED022B98AC700248AB7 /* RegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterController.swift; path = ../RegisterController.swift; sourceTree = "<group>"; };
+		CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditableTextCell.swift; path = ../EditableTextCell.swift; sourceTree = "<group>"; };
+		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
 		CC943089229FA8F900291675 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
-		CCF5896B22A22E0300F509C4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		CCF5896B22A22E0300F509C4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Eventure/LoginViewController.swift; sourceTree = SOURCE_ROOT; };
 		CCF8CF16229E398300F3C6B8 /* Example file.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "Example file.pdf"; path = "../Eventure/Example file.pdf"; sourceTree = "<group>"; };
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPSWDViewController.swift; sourceTree = "<group>"; };
-		D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
-		D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterCell.swift; sourceTree = "<group>"; };
+		D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ForgotPSWDViewController.swift; path = ../ForgotPSWDViewController.swift; sourceTree = "<group>"; };
+		D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RegisterViewController.swift; path = ../RegisterViewController.swift; sourceTree = "<group>"; };
+		D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterCell.swift; path = ../RegisterCell.swift; sourceTree = "<group>"; };
 		F857A70E71D2037A6A5B29E1 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -125,10 +131,7 @@
 				CC18F563229AD518008FABEA /* MainTabBarController.swift */,
 				CC18F565229AD523008FABEA /* FirstTabViewController.swift */,
 				CC18F567229AD535008FABEA /* SecondTabViewController.swift */,
-				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
-				D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */,
-				D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */,
-				D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */,
+				CC6DEED422BA89F400248AB7 /* Login */,
 				CC18F552229AD4EB008FABEA /* Main.storyboard */,
 				CC18F558229AD4EC008FABEA /* Assets.xcassets */,
 				CC18F55A229AD4EC008FABEA /* LaunchScreen.storyboard */,
@@ -136,6 +139,20 @@
 				CC18F555229AD4EB008FABEA /* Eventure.xcdatamodeld */,
 			);
 			path = Eventure;
+			sourceTree = "<group>";
+		};
+		CC6DEED422BA89F400248AB7 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
+				CC6DEED022B98AC700248AB7 /* RegisterController.swift */,
+				CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */,
+				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
+				D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */,
+				D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */,
+				D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 		CCFB7A1E229FA6810082FEC6 /* EventureAPITests */ = {
@@ -345,12 +362,15 @@
 			files = (
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
+				CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */,
 				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
 				D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */,
 				D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */,
 				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
+				CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
+				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
 				D53CC3D722A6DD3A00CD5DE0 /* RegisterCell.swift in Sources */,
 			);
@@ -517,14 +537,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5Q42CPKUAT;
+				DEVELOPMENT_TEAM = GR353CPP2V;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.MyCompanyName.Eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.themoon2000.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -537,14 +557,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5Q42CPKUAT;
+				DEVELOPMENT_TEAM = GR353CPP2V;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.MyCompanyName.Eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.themoon2000.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
