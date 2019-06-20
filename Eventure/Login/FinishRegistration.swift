@@ -8,9 +8,11 @@
 
 import UIKit
 
+/// A special view controller that can display an account registration status.
+
 class FinishRegistration: UIViewController {
     
-    var parameters: [String : String]?
+    var userInputs: [String : String]?
     var regVC: RegisterController?
     
     private var spinner: UIActivityIndicatorView!
@@ -112,6 +114,14 @@ class FinishRegistration: UIViewController {
         }
     }
     
+    
+    /**
+     Displays a failure message.
+     
+     - Parameters:
+        - msg: The failure message to display to the user.
+     */
+    
     private func failed(msg: String) {
         spinner.stopAnimating()
         spinnerCaption.text = msg
@@ -119,6 +129,9 @@ class FinishRegistration: UIViewController {
         button.setTitle("Return to Registration", for: .normal)
         completionImage.image = #imageLiteral(resourceName: "error")
     }
+    
+    
+    /// Displays the success message.
     
     private func succeeded() {
         spinner.stopAnimating()
@@ -128,23 +141,29 @@ class FinishRegistration: UIViewController {
         completionImage.image = #imageLiteral(resourceName: "done")
     }
     
+    
+    /// Initiates an API call to `account/Register` with the information provided by the user.
+    
     private func createAccount() {
         
-        guard var parameters = self.parameters else {
+        // First copy the user inputs from the registration screen to the parameters
+        guard var parameters = self.userInputs else {
             return
         }
         
+        // Add `displayedName` parameter
         if parameters["displayedName"] == nil {
             parameters["displayedName"] = parameters["email"]
         }
         
+        // Add `date` parameter
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd" // e.g. 2019-06-02
         df.locale = Locale(identifier: "en_US")
         let dateStr = df.string(from: Date()) // pass this to the URL parameters
         parameters["date"] = dateStr
         
-        print(parameters) // The finalized URL parameters
+        print("About to register account with these parameters:\n \(parameters)")
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/Register",
