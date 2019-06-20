@@ -9,13 +9,15 @@
 import UIKit
 import SwiftyJSON
 
+/// TOOD: Rewrite the forgot password page using UITableViewController
+
 class ForgotPSWDViewController: UIViewController {
     var canvas: UIScrollView!
     var forgot = UITextField()
     var retrieveButton = UIButton(type: .system)
     var activeField: UITextField?
-    let authforgot = "eventure-frontend"
-    let authPswd = "MeiYouMiMa"
+    let authforgot = "__replace__"
+    let authPswd = "__replace__"
 
     override func viewDidLoad() {
         super.viewDidLoad()
