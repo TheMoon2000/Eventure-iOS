@@ -8,7 +8,8 @@
 
 import UIKit
 
-/// An special type of UITextViewCell that has enhanced functionality
+/// A special type of UITextViewCell that has enhanced functionality
+
 class EditableTextCell: UITableViewCell, UITextFieldDelegate {
     
     private var rightConstraint: NSLayoutConstraint?

@@ -9,15 +9,22 @@
 import UIKit
 
 class RegisterController: UITableViewController, UIPickerViewDataSource, UIPickerViewDelegate {
-        
+    
+    /// A boolean indicating whether the picker view is currently visible.
     private var showingPicker = false
-    private var picker: UIPickerView?
+    
+    ///
+    private var currentPicker: UIPickerView?
+    
+    /// A pointer to the top right `Sign Up` bar button
     private var signupButton: UIBarButtonItem?
-    private(set) var parameters = [String: String]() {
+    
+    ///
+    private(set) var userInputs = [String: String]() {
         didSet {
             var valid = true
             for item in ["email", "password", "gender"] {
-                valid = valid && parameters.keys.contains(item)
+                valid = valid && userInputs.keys.contains(item)
             }
             signupButton?.isEnabled = valid
         }
@@ -52,7 +59,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
     @objc private func signup(_ sender: UIBarButtonItem) {
         let finishRegVC = FinishRegistration()
         finishRegVC.regVC = self
-        finishRegVC.parameters = parameters
+        finishRegVC.userInputs = userInputs
         self.present(finishRegVC, animated: true, completion: nil)
     }
 
@@ -152,7 +159,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
                 cell.textField.endEditing(true)
             }
             cell.changeHandler = {
-                self.parameters["displayedName"] = cell.textField.text!.isEmpty ? nil : cell.textField.text!
+                self.userInputs["displayedName"] = cell.textField.text!.isEmpty ? nil : cell.textField.text!
             }
             
             return cell
@@ -160,7 +167,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
             let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
             cell.textLabel?.text = "Gender"
             cell.detailTextLabel?.text = "Unspecified"
-            parameters["gender"] = "-1"
+            userInputs["gender"] = "-1"
             cell.accessoryType = .disclosureIndicator
             
             return cell
@@ -170,7 +177,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
             picker.dataSource = self
             picker.delegate = self
             picker.showsSelectionIndicator = true
-            self.picker = picker
+            self.currentPicker = picker
             
             picker.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(picker)
@@ -207,17 +214,26 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
             }
             
             if showingPicker {
-                let row = parameters["gender"] ?? "-1"
-                picker?.selectRow(Int(row)! + 1, inComponent: 0, animated: false)
+                let row = userInputs["gender"] ?? "-1"
+                currentPicker?.selectRow(Int(row)! + 1, inComponent: 0,
+                                         animated: false)
             }
             
             tableView.deselectRow(at: indexPath, animated: true)
         }
     }
     
+    /**
+     Initiates email verification process on the given cell.
+     
+     - Parameters:
+        - cell: The cell that contains the email address.
+        - editing: Whether the verification is triggered by text change instead of end editing. Default is `false`.
+     */
+    
     private func verifyEmail(cell: EditableTextCell, editing: Bool = false) {
         
-        self.parameters["email"] = nil
+        self.userInputs["email"] = nil
         
         if editing {
             cell.status = .none
@@ -260,7 +276,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
                     cell.status = str == "not found" ? .tick : .fail
                     if str == "not found" {
                         cell.status = .tick
-                        self.parameters["email"] = cell.textField.text!
+                        self.userInputs["email"] = cell.textField.text!
                     } else {
                         cell.status = .fail
                     }
@@ -275,15 +291,23 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
         task.resume()
     }
     
+    /**
+     Initiates password verification process on the first password cell.
+     
+     - Parameters:
+        - cell: The cell that contains the password (NOT the repeat).
+        - editing: Whether the verification is triggered by text change instead of end editing. Default is `false`.
+     */
+    
     private func verifyPassword(cell: EditableTextCell, editing: Bool = false) {
-        self.parameters["password"] = nil
+        self.userInputs["password"] = nil
         if cell.textField.text!.count >= 8 {
             let nextCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as! EditableTextCell
             
             if nextCell.textField.text == cell.textField.text {
                 cell.status = .tick
                 nextCell.status = .tick
-                self.parameters["password"] = cell.textField.text
+                self.userInputs["password"] = cell.textField.text
             } else if editing {
                 cell.status = .none
             } else if !nextCell.textField.text!.isEmpty {
@@ -294,6 +318,15 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
             cell.status = editing ? .none : .fail
         }
     }
+    
+    /**
+     Initiates verification process on the password repeat cell.
+     
+     - Parameters:
+        - cell: The cell that contains the password.
+        - cell2: The cell that contains the repeated password.
+        - editing: Whether the verification is triggered by text change instead of end editing. Default is `false`.
+     */
     
     private func verifyPasswords(cell: EditableTextCell, cell2: EditableTextCell, editing: Bool = false) {
         let pass = cell.textField.text ?? ""
@@ -309,11 +342,11 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
             } else {
                 cell2.status = .fail
             }
-            parameters["password"] = nil
+            userInputs["password"] = nil
         } else {
             cell.status = .tick
             cell2.status = .tick
-            parameters["password"] = pass
+            userInputs["password"] = pass
         }
     }
     
@@ -335,7 +368,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 1))
         cell?.detailTextLabel?.text = ["Unspecified", "Male", "Female", "Non-binary"][row]
-        parameters["gender"] = String(row - 1)
+        userInputs["gender"] = String(row - 1)
     }
     
 
