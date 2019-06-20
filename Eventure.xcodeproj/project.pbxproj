@@ -25,8 +25,6 @@
 		CCF8CF17229E398300F3C6B8 /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
 		D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */; };
-		D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */; };
-		D53CC3D722A6DD3A00CD5DE0 /* RegisterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */; };
 		DAA8704C960D87AABD9E6D36 /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */; };
 /* End PBXBuildFile section */
 
@@ -68,8 +66,6 @@
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ForgotPSWDViewController.swift; path = ../ForgotPSWDViewController.swift; sourceTree = "<group>"; };
-		D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RegisterViewController.swift; path = ../RegisterViewController.swift; sourceTree = "<group>"; };
-		D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterCell.swift; path = ../RegisterCell.swift; sourceTree = "<group>"; };
 		F857A70E71D2037A6A5B29E1 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,8 +144,6 @@
 				CC6DEED022B98AC700248AB7 /* RegisterController.swift */,
 				CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */,
 				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
-				D53CC3D622A6DD3A00CD5DE0 /* RegisterCell.swift */,
-				D53CC3D222A33DDC00CD5DE0 /* RegisterViewController.swift */,
 				D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */,
 			);
 			path = Login;
@@ -365,14 +359,12 @@
 				CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */,
 				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
 				D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */,
-				D53CC3D322A33DDC00CD5DE0 /* RegisterViewController.swift in Sources */,
 				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
 				CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
-				D53CC3D722A6DD3A00CD5DE0 /* RegisterCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

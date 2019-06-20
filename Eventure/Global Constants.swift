@@ -36,7 +36,7 @@ let MAIN_TINT12 = UIColor(red: 255/255, green: 81/255, blue: 47/255, alpha: 1.0)
 let MAIN_TINT13 = UIColor(red: 240/255, green: 152/255, blue: 25/255, alpha: 1.0)
 
 let MAIN_TINT14 = UIColor(red: 242/255, green: 153/255, blue: 74/255, alpha: 1.0)
-let MAIN_TINT15 = UIColor(red: 242/255, green: 201/255, blue: 76/255, alpha: 1.0)
+let MAIN_TINT15 = UIColor(red: 252/255, green: 211/255, blue: 86/255, alpha: 1.0)
 
 let MAIN_TINT16 = UIColor(red: 255/255, green: 179/255, blue: 71/255, alpha: 1.0)
 let MAIN_TINT17 = UIColor(red: 255/255, green: 204/255, blue: 51/255, alpha: 1.0)
