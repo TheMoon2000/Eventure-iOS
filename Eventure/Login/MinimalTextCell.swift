@@ -169,21 +169,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        /*
-         
-         Suppose that the user focuses onto another text field. Should we refresh
-         the status of the current field? There are two scenarios where we SHOULD
-         refresh the status.
-         
-         1. The text has been modified.
-         2. Although the text field hasn't been modified, it is the empty string.
-         
-         */
-        
-        if originalText != textField.text! || originalText.isEmpty {
-            completionHandler?()
-        }
+        completionHandler?()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
