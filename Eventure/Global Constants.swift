@@ -12,8 +12,8 @@ import UIKit
 let API_BASE_URL = "https://api.eventure-app.online/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "__replace__"
-let PASSWORD = "__replace__"
+let USERNAME = "eventure-frontend"
+let PASSWORD = "MeiYouMiMa"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT2 = UIColor(red: 0.5, green: 0.7, blue: 0.92, alpha: 1)
@@ -50,6 +50,9 @@ let MAIN_TINT21 = UIColor(red: 141/255, green: 194/255, blue: 111/255, alpha: 1.
 /// Todo: REPLACE THIS WITH THE NAVIGATION BAR COLOR
 let NAVBAR_TINT = UIColor(white: 0.93, alpha: 1)
 
+/// Alpha value for disabled UI elements.
+let DISABLED_ALPHA: CGFloat = 0.5
+
 /// Custom URLSessionConfiguration with no caching
 let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
@@ -69,6 +72,12 @@ extension String {
     /// URL decode.
     var decoded: String {
         return self.removingPercentEncoding ?? self
+    }
+    
+    /// Email verification method.
+    func isValidEmail() -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self)
     }
 }
 
