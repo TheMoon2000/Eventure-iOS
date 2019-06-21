@@ -58,7 +58,7 @@ class RegisterController: UITableViewController, UIPickerViewDataSource, UIPicke
     
     @objc private func signup(_ sender: UIBarButtonItem) {
         let finishRegVC = FinishRegistration()
-        finishRegVC.regVC = self
+//        finishRegVC.regVC = self
         finishRegVC.userInputs = userInputs
         self.present(finishRegVC, animated: true, completion: nil)
     }

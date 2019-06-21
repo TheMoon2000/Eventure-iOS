@@ -74,9 +74,9 @@ class EditableTextCell: UITableViewCell, UITextFieldDelegate {
         
         self.addSubview(textField)
         
-        textField.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 15).isActive = true
-        textField.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        textField.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        textField.leftAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leftAnchor, constant: 15).isActive = true
+        textField.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor).isActive = true
+        textField.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.bottomAnchor).isActive = true
         textField.heightAnchor.constraint(equalToConstant: 48).isActive = true
         
 
