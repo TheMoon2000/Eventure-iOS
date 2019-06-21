@@ -10,7 +10,7 @@ import UIKit
 
 class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     
-    let RADIUS: CGFloat = 26
+    private let RADIUS: CGFloat = 26
     private var overlay: UIView!
     var auxiliaryView: UIButton!
     private var spinner: UIActivityIndicatorView!
@@ -41,7 +41,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
             
             switch status {
             case .none:
-                inset = -20
+                inset = -22
                 self.auxiliaryView.setImage(nil, for: .normal)
             case .tick:
                 for state: UIControl.State in [.normal, .highlighted] {
@@ -70,7 +70,6 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     init() {
         super.init(style: .default, reuseIdentifier: nil)
         
-        tintColor = .init(red: 1, green: 156/255, blue: 138/255, alpha: 1)
         selectionStyle = .none
         
         overlay = makeBackgroundOverlay()
