@@ -31,7 +31,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
                 signupButton?.alpha = 1.0
                 signupButton?.isEnabled = true
             } else {
-                signupButton?.alpha = 0.5
+                signupButton?.alpha = DISABLED_ALPHA
                 signupButton?.isEnabled = false
             }
         }
@@ -47,6 +47,8 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
 
         view.backgroundColor = .white
         
+        tableView.tintColor = MAIN_TINT
+        tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.keyboardDismissMode = .interactive
         tableView.showsHorizontalScrollIndicator = false
@@ -209,10 +211,10 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             
             return cell
         case (2, 0):
-            let cell = ButtonCell()
+            let cell = ButtonCell(width: 225)
             signupButton = cell.button
             cell.button.isEnabled = canSignUp
-            cell.button.alpha = canSignUp ? 1.0 : 0.5
+            cell.button.alpha = canSignUp ? 1.0 : DISABLED_ALPHA
             cell.primaryAction = {
                 let finishRegVC = FinishRegistration()
                 finishRegVC.regVC = self
@@ -285,7 +287,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: candidate)
         }
         
-        guard isValidEmail(cell.textField.text!) else {
+        guard cell.textField.text!.isValidEmail() else {
             cell.status = .fail
             validity["email"] = .fail
             return

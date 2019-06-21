@@ -260,8 +260,10 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func forgotPSWD(_ sender: UIButton) {
-        let nextVC = ForgotPSWDViewController()
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        let nextVC = ForgotPassword() // ForgotPSWDViewController()
+        nextVC.loginView = self
+//        self.navigationController?.pushViewController(nextVC, animated: true)
+        self.present(nextVC, animated: true, completion: nil)
     }
     
     @objc private func beginLoginRequest() {
