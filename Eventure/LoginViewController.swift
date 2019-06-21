@@ -83,7 +83,7 @@ class LoginViewController: UIViewController {
         canvas.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
     }
     //TODO: FIX THE ROTATION GLITCH
-    @objc func rotated(frame: CGRect) {
+    func rotated(frame: CGRect?) {
         //see viewWillAppear for another call to this method
         //seems like at launch this will be called twice for some reason
         let topColor = MAIN_TINT8
@@ -96,7 +96,8 @@ class LoginViewController: UIViewController {
         gradientLayer.colors = gradientColors
         gradientLayer.locations = gradientLocations
         
-        gradientLayer.frame = frame
+        gradientLayer.frame = frame ?? UIScreen.main.bounds
+        
         self.view.layer.replaceSublayer(self.view.layer.sublayers![0], with: gradientLayer)
     }
     
@@ -348,6 +349,7 @@ class LoginViewController: UIViewController {
     
     @objc private func registerPressed() {
         let nextVC = RegisterTableController() // RegisterController()
+        nextVC.loginView = self
 //        let nav = UINavigationController(rootViewController: nextVC)
         self.present(nextVC, animated: true, completion: nil)
     }
