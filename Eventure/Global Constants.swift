@@ -17,7 +17,7 @@ let PASSWORD = "__replace__"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT2 = UIColor(red: 0.5, green: 0.7, blue: 0.92, alpha: 1)
-let MAIN_TINT = UIColor(red: 127/255, green: 219/255, blue: 203/255, alpha: 1.0)
+let MAIN_TINT = UIColor(red: 1.0, green: 127/255, blue: 114/255, alpha: 1.0)
 let MAIN_TINT_DARK = UIColor(red: 73/255, green: 188/255, blue: 167/255, alpha: 1)
 
 let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
