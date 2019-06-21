@@ -110,7 +110,11 @@ class FinishRegistration: UIViewController {
         self.dismiss(animated: true, completion: nil)
         
         if sender.title(for: .normal) == "Return to Login" {
-            self.regVC?.dismiss(animated: true, completion: nil)
+            self.regVC?.dismiss(animated: true) {
+                let alert = UIAlertController(title: "New Account Requires Activation", message: "Please check your inbox to verify your email address and activate your account.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self.regVC?.loginView?.present(alert, animated: true, completion: nil)
+            }
         }
     }
     
