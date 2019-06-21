@@ -13,7 +13,7 @@ import UIKit
 class FinishRegistration: UIViewController {
     
     var userInputs: [String : String]?
-    var regVC: RegisterController?
+    var regVC: RegisterTableController?
     
     private var spinner: UIActivityIndicatorView!
     private var spinnerCaption: UILabel!
