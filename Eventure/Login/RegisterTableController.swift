@@ -211,10 +211,12 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             
             tableView.reloadRows(at: [IndexPath(row: 2, section: 1)], with: .fade)
             
+            let currentY = tableView.contentOffset.y
+            
             tableView.scrollToRow(at: IndexPath(row: 2, section: 1),
                                   at: .none, animated: true)
             UIView.animate(withDuration: 0.2) {
-                tableView.contentOffset.y = max(-20, tableView.contentOffset.y)
+                tableView.contentOffset.y = max(currentY, tableView.contentOffset.y)
             }
             
             let cell = tableView.cellForRow(at: indexPath) as! GenderSelectionCell
