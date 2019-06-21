@@ -15,17 +15,31 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     /// A boolean indicating whether the picker view is currently visible.
     private var showingPicker = false
     
-    /// A pointer to the current picker view
+    /// A pointer to the current picker view.
     private var currentPicker: UIPickerView?
     
+    /// A pointer to the current signup button.
+    private var signupButton: UIButton?
+    
     /// Stores the raw inputs from the user.
-    private(set) var userInputs = [String: String]() {
+    private(set) var userInputs = [String : String]()
+    
+    /// A dictionary that stores the validity status of the email and password fields (the icons).
+    private var validity = [String : MinimalTextCell.StatusIcon]() {
         didSet {
-            var valid = true
-            for item in ["email", "password", "gender"] {
-                valid = valid && userInputs.keys.contains(item)
+            if canSignUp {
+                signupButton?.alpha = 1.0
+                signupButton?.isEnabled = true
+            } else {
+                signupButton?.alpha = 0.5
+                signupButton?.isEnabled = false
             }
         }
+    }
+    
+    /// A computed variable that indicates whether the signup button should be lit up.
+    private var canSignUp: Bool {
+        return (validity["email"] ?? .none) == .tick && (validity["password"] ?? .none) == .tick && (validity["repeat"] ?? .none) == .tick
     }
 
     override func viewDidLoad() {
@@ -85,6 +99,8 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             
         case (0, 1):
             let cell = MinimalTextCell()
+            cell.textField.text = userInputs["email"]
+            cell.status = validity["email"] ?? .none
             cell.textField.placeholder = "Email Address"
             cell.textField.keyboardType = .emailAddress
             cell.textField.autocorrectionType = .no
@@ -104,6 +120,8 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             return cell
         case (0, 2):
             let cell = MinimalTextCell()
+            cell.textField.text = userInputs["password"]
+            cell.status = validity["password"] ?? .none
             cell.textField.isSecureTextEntry = true
             cell.textField.placeholder = "Password"
             cell.textField.textContentType = .init(rawValue: "")
@@ -122,6 +140,8 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             return cell
         case (0, 3):
             let cell = MinimalTextCell()
+            cell.status = validity["repeat"] ?? .none
+            cell.textField.text = userInputs["repeat"]
             cell.textField.isSecureTextEntry = true
             cell.textField.placeholder = "Re-type Password"
             cell.textField.textContentType = .init(rawValue: "")
@@ -146,6 +166,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             return cell
         case (1, 0):
             let cell = MinimalTextCell()
+            cell.textField.text = userInputs["displayedName"]
             cell.textField.placeholder = "Display Name"
             cell.textField.autocorrectionType = .no
             cell.textField.autocapitalizationType = .words
@@ -178,15 +199,20 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             picker.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(picker)
             
-            picker.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
-            picker.topAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.topAnchor).isActive = true
-            picker.bottomAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.bottomAnchor).isActive = true
+            picker.centerXAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            picker.centerYAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            picker.heightAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.heightAnchor).isActive = true
+//            picker.topAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.topAnchor).isActive = true
+//            picker.bottomAnchor.constraint(equalTo: cell.safeAreaLayoutGuide.bottomAnchor).isActive = true
             picker.widthAnchor.constraint(equalTo: cell.widthAnchor,
                                           constant: -80).isActive = true
             
             return cell
         case (2, 0):
             let cell = ButtonCell()
+            signupButton = cell.button
+            cell.button.isEnabled = canSignUp
+            cell.button.alpha = canSignUp ? 1.0 : 0.5
             cell.primaryAction = {
                 let finishRegVC = FinishRegistration()
                 finishRegVC.regVC = self
@@ -195,7 +221,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             }
             cell.secondaryAction = {
                 self.dismiss(animated: true) {
-                    self.loginView?.rotated(frame: self.view.frame)
+                    self.loginView?.rotated(frame: nil)
                 }
             }
             return cell
@@ -246,10 +272,11 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     
     private func verifyEmail(cell: MinimalTextCell, editing: Bool = false) {
         
-        self.userInputs["email"] = nil
+        self.userInputs["email"] = cell.textField.text
         
         if editing {
             cell.status = .none
+            validity["email"] = .none
             return
         }
         
@@ -259,7 +286,8 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
         }
         
         guard isValidEmail(cell.textField.text!) else {
-            cell.status = editing ? .none : .fail
+            cell.status = .fail
+            validity["email"] = .fail
             return
         }
         
@@ -288,14 +316,16 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
                     cell.status = str == "not found" ? .tick : .fail
                     if str == "not found" {
                         cell.status = .tick
-                        self.userInputs["email"] = cell.textField.text!
+                        self.validity["email"] = .tick
                     } else {
                         cell.status = .fail
+                        self.validity["email"] = .fail
                     }
                 }
             } else {
                 DispatchQueue.main.async {
                     cell.status = .disconnected
+                    self.validity["email"] = .disconnected
                 }
             }
         }
@@ -313,22 +343,27 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
      */
     
     private func verifyPassword(cell: MinimalTextCell, editing: Bool = false) {
-        self.userInputs["password"] = nil
+        self.userInputs["password"] = cell.textField.text
         if cell.textField.text!.count >= 8 {
             let nextCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as! MinimalTextCell
             
             if nextCell.textField.text == cell.textField.text {
                 cell.status = .tick
                 nextCell.status = .tick
-                self.userInputs["password"] = cell.textField.text
+                validity["password"] = .tick
+                validity["repeat"] = .tick
             } else if editing {
                 cell.status = .none
+                validity["password"] = .none
             } else if !nextCell.textField.text!.isEmpty {
                 cell.status = .fail
                 nextCell.status = .fail
+                validity["password"] = .fail
+                validity["repeat"] = .fail
             }
         } else {
             cell.status = editing ? .none : .fail
+            validity["password"] = cell.status
         }
     }
     
@@ -342,24 +377,34 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
      */
     
     private func verifyPasswords(cell: MinimalTextCell, cell2: MinimalTextCell, editing: Bool = false) {
+        
+        
         let pass = cell.textField.text ?? ""
         let pass2 = cell2.textField.text ?? ""
+        
+        userInputs["password"] = pass
+        userInputs["repeat"] = pass2
         
         if (pass != pass2 || pass.count < 8) {
             if !editing {
                 cell.status = .fail
                 cell2.status = .fail
+                validity["password"] = .fail
+                validity["repeat"] = .fail
             } else if pass != pass2 {
                 cell.status = .none
                 cell2.status = .none
+                validity["password"] = .none
+                validity["repeat"] = .none
             } else {
                 cell2.status = .fail
+                validity["repeat"] = .fail
             }
-            userInputs["password"] = nil
         } else {
             cell.status = .tick
             cell2.status = .tick
-            userInputs["password"] = pass
+            validity["password"] = .tick
+            validity["repeat"] = .tick
         }
     }
     
