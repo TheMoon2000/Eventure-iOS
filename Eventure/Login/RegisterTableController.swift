@@ -231,18 +231,18 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+
         if indexPath.row == 1 && indexPath.section == 1 {
             view.endEditing(true) // dismiss the keyboard
             showingPicker = !showingPicker
             
             tableView.reloadRows(at: [IndexPath(row: 2, section: 1)], with: .fade)
-            
-            let currentY = tableView.contentOffset.y
-            
+
             tableView.scrollToRow(at: IndexPath(row: 2, section: 1),
                                   at: .none, animated: true)
             UIView.animate(withDuration: 0.2) {
-                tableView.contentOffset.y = max(currentY, tableView.contentOffset.y)
+                tableView.contentOffset.y = max(-UIApplication.shared.statusBarFrame.height, tableView.contentOffset.y)
             }
             
             let cell = tableView.cellForRow(at: indexPath) as! GenderSelectionCell
