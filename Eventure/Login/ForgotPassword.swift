@@ -162,9 +162,12 @@ class ForgotPassword: UITableViewController {
             }
             
             guard error == nil else {
-                alert.title = "Connection Failure"
+                alert.title = "Unable to Connect"
                 alert.message = "Please check your internet connection."
                 alert.addAction(.init(title: "OK", style: .default, handler: nil))
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true, completion: nil)
+                }
                 return
             }
             
