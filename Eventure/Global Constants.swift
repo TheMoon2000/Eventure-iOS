@@ -50,6 +50,9 @@ let MAIN_TINT21 = UIColor(red: 141/255, green: 194/255, blue: 111/255, alpha: 1.
 /// Todo: REPLACE THIS WITH THE NAVIGATION BAR COLOR
 let NAVBAR_TINT = UIColor(white: 0.93, alpha: 1)
 
+/// Alpha value for disabled UI elements.
+let DISABLED_ALPHA: CGFloat = 0.5
+
 /// Custom URLSessionConfiguration with no caching
 let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
@@ -69,6 +72,12 @@ extension String {
     /// URL decode.
     var decoded: String {
         return self.removingPercentEncoding ?? self
+    }
+    
+    /// Email verification method.
+    func isValidEmail() -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self)
     }
 }
 
