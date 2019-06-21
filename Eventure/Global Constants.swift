@@ -12,8 +12,8 @@ import UIKit
 let API_BASE_URL = "https://api.eventure-app.online/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "eventure-frontend"
-let PASSWORD = "MeiYouMiMa"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT2 = UIColor(red: 0.5, green: 0.7, blue: 0.92, alpha: 1)
