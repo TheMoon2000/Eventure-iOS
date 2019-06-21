@@ -36,8 +36,7 @@ class ButtonCell: UITableViewCell {
         button.setTitle("Sign Up", for: .normal)
         button.tintColor = .white
         button.backgroundColor = MAIN_TINT
-        // button.titleLabel?.font = .systemFont(ofSize: 18.5, weight: .semibold)
-        button.titleLabel?.font = UIFont(name: "ProximaNova-Semibold", size: 18.5)
+         button.titleLabel?.font = .systemFont(ofSize: 18.5, weight: .semibold)
         button.layer.cornerRadius = 26
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
