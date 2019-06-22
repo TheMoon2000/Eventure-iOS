@@ -58,15 +58,15 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 3
+        return 4
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: CGRect(origin: .zero, size: .init(width: 0, height: [70, 20, 0][section])))
+        return UIView(frame: .init(x: 0, y: 0, width: 0, height: [0, 70, 20, 0][section]))
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath.section == 1 && indexPath.row == 2) {
+        if (indexPath == IndexPath(row: 2, section: 2)) {
             return showingPicker ? 216 : 0
         } else {
             return super.tableView(tableView, heightForRowAt: indexPath)
@@ -75,13 +75,20 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return [4, 3, 1][section]
+        return [1, 4, 3, 1][section]
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
+            let cell = NavBackCell()
+            cell.action = {
+                self.loginView?.navBar?.popViewController(animated: true)
+            }
+            
+            return cell
+        case (1, 0):
             let label = UILabel()
             label.text = "Register"
             label.font = .systemFont(ofSize: 28, weight: .semibold)
@@ -99,7 +106,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             label.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: -22).isActive = true
             return cell
             
-        case (0, 1):
+        case (1, 1):
             let cell = MinimalTextCell()
             cell.textField.text = userInputs["email"]
             cell.status = validity["email"] ?? .none
@@ -111,7 +118,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
                 self.verifyEmail(cell: cell)
             }
             cell.returnHandler = {
-                if let nextCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? MinimalTextCell {
+                if let nextCell = tableView.cellForRow(at: IndexPath(row: 2, section: 1)) as? MinimalTextCell {
                     nextCell.textField.becomeFirstResponder()
                 }
             }
@@ -120,7 +127,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             }
             
             return cell
-        case (0, 2):
+        case (1, 2):
             let cell = MinimalTextCell()
             cell.textField.text = userInputs["password"]
             cell.status = validity["password"] ?? .none
@@ -131,7 +138,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
                 self.verifyPassword(cell: cell)
             }
             cell.returnHandler = {
-                if let nextCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? MinimalTextCell {
+                if let nextCell = tableView.cellForRow(at: IndexPath(row: 3, section: 1)) as? MinimalTextCell {
                     nextCell.textField.becomeFirstResponder()
                 }
             }
@@ -140,7 +147,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             }
             
             return cell
-        case (0, 3):
+        case (1, 3):
             let cell = MinimalTextCell()
             cell.status = validity["repeat"] ?? .none
             cell.textField.text = userInputs["repeat"]
@@ -148,17 +155,17 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             cell.textField.placeholder = "Re-type Password"
             cell.textField.textContentType = .init(rawValue: "")
             cell.completionHandler = {
-                if let lastCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? MinimalTextCell {
+                if let lastCell = tableView.cellForRow(at: IndexPath(row: 2, section: 1)) as? MinimalTextCell {
                     self.verifyPasswords(cell: lastCell, cell2: cell)
                 }
             }
             cell.returnHandler = {
-                if let nextCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? MinimalTextCell {
+                if let nextCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? MinimalTextCell {
                     nextCell.textField.becomeFirstResponder()
                 }
             }
             cell.changeHandler = {
-                if let lastCell = tableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? MinimalTextCell {
+                if let lastCell = tableView.cellForRow(at: IndexPath(row: 2, section: 1)) as? MinimalTextCell {
                     self.verifyPasswords(cell: lastCell,
                                          cell2: cell,
                                          editing: true)
@@ -166,7 +173,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             }
             
             return cell
-        case (1, 0):
+        case (2, 0):
             let cell = MinimalTextCell()
             cell.textField.text = userInputs["displayedName"]
             cell.textField.placeholder = "Display Name"
@@ -184,13 +191,13 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             cell.auxiliaryView.addTarget(self, action: #selector(showDisplayNameHelp), for: .touchUpInside)
             
             return cell
-        case (1, 1):
+        case (2, 1):
             let cell = GenderSelectionCell()
             let index = Int(userInputs["gender"] ?? "-1")!
             cell.gender = GenderSelectionCell.Gender(rawValue: index + 1)!
             userInputs["gender"] = String(index)
             return cell
-        case (1, 2):
+        case (2, 2):
             let cell = UITableViewCell()
             let picker = UIPickerView()
             picker.dataSource = self
@@ -210,21 +217,17 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
                                           constant: -80).isActive = true
             
             return cell
-        case (2, 0):
+        case (3, 0):
             let cell = ButtonCell(width: 225)
             signupButton = cell.button
             cell.button.isEnabled = canSignUp
             cell.button.alpha = canSignUp ? 1.0 : DISABLED_ALPHA
+            cell.altButton.isHidden = true
             cell.primaryAction = {
                 let finishRegVC = FinishRegistration()
                 finishRegVC.regVC = self
                 finishRegVC.userInputs = self.userInputs
                 self.present(finishRegVC, animated: true, completion: nil)
-            }
-            cell.secondaryAction = {
-                self.dismiss(animated: true) {
-                    self.loginView?.rotated(frame: nil)
-                }
             }
             return cell
         default:
@@ -239,9 +242,9 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             view.endEditing(true) // dismiss the keyboard
             showingPicker = !showingPicker
             
-            tableView.reloadRows(at: [IndexPath(row: 2, section: 1)], with: .fade)
+            tableView.reloadRows(at: [IndexPath(row: 2, section: 2)], with: .fade)
 
-            tableView.scrollToRow(at: IndexPath(row: 2, section: 1),
+            tableView.scrollToRow(at: IndexPath(row: 2, section: 2),
                                   at: .none, animated: true)
             UIView.animate(withDuration: 0.2) {
                 tableView.contentOffset.y = max(-UIApplication.shared.statusBarFrame.height, tableView.contentOffset.y)
@@ -347,7 +350,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     private func verifyPassword(cell: MinimalTextCell, editing: Bool = false) {
         self.userInputs["password"] = cell.textField.text
         if cell.textField.text!.count >= 8 {
-            let nextCell = tableView.cellForRow(at: IndexPath(row: 3, section: 0)) as! MinimalTextCell
+            let nextCell = tableView.cellForRow(at: IndexPath(row: 3, section: 1)) as! MinimalTextCell
             
             if nextCell.textField.text == cell.textField.text {
                 cell.status = .tick
@@ -433,7 +436,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 1)) as! GenderSelectionCell
+        let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 2)) as! GenderSelectionCell
         cell.gender = GenderSelectionCell.Gender(rawValue: row) ?? .unspecified
         userInputs["gender"] = String(row - 1)
     }

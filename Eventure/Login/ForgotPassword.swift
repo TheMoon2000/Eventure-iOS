@@ -24,34 +24,42 @@ class ForgotPassword: UITableViewController {
         tableView.showsHorizontalScrollIndicator = false
         tableView.tintColor = MAIN_TINT
     }
+    
+    @objc private func closeVC() {
+        loginView?.navBar?.popViewController(animated: true)
+    }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [2, 1][section]
+        return [1, 2, 1][section]
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return UIView(frame: CGRect(x: 0,
                                     y: 0,
                                     width: 0,
-                                    height: [40, 10][section]))
+                                    height: [10, 40, 10][section]))
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
+            let cell = NavBackCell()
+            cell.action = closeVC
+            return cell
+        case (1, 0):
             let cell = MessageCell()
             cell.title = "Forgot Password"
             cell.caption = "If your provided email is associated with an account, we will send you a link for you to reset your password."
             
             return cell
-        case (0, 1):
+        case (1, 1):
             let cell = MinimalTextCell()
             cell.textField.placeholder = "Email Address"
             cell.textField.autocorrectionType = .no
@@ -69,17 +77,14 @@ class ForgotPassword: UITableViewController {
             }
             
             return cell
-        case (1, 0):
+        case (2, 0):
             let cell = ButtonCell(width: 270)
             cell.button.setTitle(buttonTitle, for: .normal)
             cell.altButton.setTitle("Back to Login", for: .normal)
+            cell.altButton.isHidden = true
             
             cell.primaryAction = {
                 self.submitRequest()
-            }
-            
-            cell.secondaryAction = {
-                self.dismiss(animated: true, completion: nil)
             }
             
             if !email.isValidEmail() {
@@ -106,8 +111,8 @@ class ForgotPassword: UITableViewController {
         
         email = cell.textField.text!
         
-        guard let buttonCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? ButtonCell else {
-            preconditionFailure("The cell at section 1 row 0 shouldn't be empty")
+        guard let buttonCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? ButtonCell else {
+            preconditionFailure("The cell at section 2 row 0 shouldn't be empty")
         }
         
         if email.isValidEmail() {
@@ -123,12 +128,12 @@ class ForgotPassword: UITableViewController {
     private func submitRequest() {
         
         guard email.isValidEmail() else {
-            tableView.cellForRow(at: IndexPath(row: 1, section: 0))?.shake()
+            tableView.cellForRow(at: IndexPath(row: 1, section: 1))?.shake()
             return
         }
         
         tableView.endEditing(true)
-        guard let buttonCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? ButtonCell else {
+        guard let buttonCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? ButtonCell else {
             preconditionFailure("The cell at section 1 row 0 shouldn't be empty")
         }
         

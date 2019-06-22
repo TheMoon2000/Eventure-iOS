@@ -66,7 +66,7 @@ class ButtonCell: UITableViewCell {
         altButton.topAnchor.constraint(equalTo: self.button.bottomAnchor,
                                        constant: 16).isActive = true
         altButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
-                                          constant: -40).isActive = true
+                                          constant: -30).isActive = true
         
         altButton.addTarget(self,
                             action: #selector(altButtonTriggered),

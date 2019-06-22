@@ -19,6 +19,7 @@ class LoginViewController: UIViewController {
     var activeField: UITextField?
     var logo = UIImageView()
     
+    var navBar: UINavigationController?
     
     // Make the status bar white
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -262,8 +263,8 @@ class LoginViewController: UIViewController {
     @objc private func forgotPSWD(_ sender: UIButton) {
         let nextVC = ForgotPassword() // ForgotPSWDViewController()
         nextVC.loginView = self
-//        self.navigationController?.pushViewController(nextVC, animated: true)
-        self.present(nextVC, animated: true, completion: nil)
+        self.navigationController?.pushViewController(nextVC, animated: true)
+//        self.present(nextVC, animated: true, completion: nil)
     }
     
     @objc private func beginLoginRequest() {
@@ -352,8 +353,8 @@ class LoginViewController: UIViewController {
     @objc private func registerPressed() {
         let nextVC = RegisterTableController() // RegisterController()
         nextVC.loginView = self
-//        let nav = UINavigationController(rootViewController: nextVC)
-        self.present(nextVC, animated: true, completion: nil)
+        let nav = UINavigationController(rootViewController: nextVC)
+        navBar?.pushViewController(nextVC, animated: true)
     }
     
     

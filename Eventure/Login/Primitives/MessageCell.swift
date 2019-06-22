@@ -49,6 +49,8 @@ class MessageCell: UITableViewCell {
     init() {
         super.init(style: .default, reuseIdentifier: nil)
         
+        selectionStyle = .none
+        
         titleLabel = makeTitle()
         captionTextView = makeCaption()
     }
@@ -79,7 +81,7 @@ class MessageCell: UITableViewCell {
         textView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor,
                                        constant: 30).isActive = true
         textView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor,
-                                        constant: -30).isActive = true
+                                        constant: -20).isActive = true
         textView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
                                          constant: -10).isActive = true
         return textView

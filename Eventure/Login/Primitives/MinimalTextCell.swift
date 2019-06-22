@@ -73,9 +73,9 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         selectionStyle = .none
         
         overlay = makeBackgroundOverlay()
-        configureTextfield()
         auxiliaryView = makeAuxiliaryView()
         spinner = makeSpinner()
+        configureTextfield()
     }
     
     private func makeBackgroundOverlay() -> UIView {
