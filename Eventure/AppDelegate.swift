@@ -20,7 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         let entrypoint = LoginViewController()
         let nvc = UINavigationController(rootViewController: entrypoint)
-        nvc.setNavigationBarHidden(true, animated: false)
+        nvc.isNavigationBarHidden = true
+        entrypoint.navBar = nvc
         window?.rootViewController = nvc
         
         window?.makeKeyAndVisible()
