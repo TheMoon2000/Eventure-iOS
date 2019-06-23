@@ -43,7 +43,7 @@ class ForgotPassword: UITableViewController {
         return UIView(frame: CGRect(x: 0,
                                     y: 0,
                                     width: 0,
-                                    height: [10, 40, 10][section]))
+                                    height: [10, 40, 0][section]))
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

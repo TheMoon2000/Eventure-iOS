@@ -45,7 +45,7 @@ class ButtonCell: UITableViewCell {
         button.heightAnchor.constraint(equalToConstant: 52).isActive = true
         button.widthAnchor.constraint(equalToConstant: width).isActive = true
         button.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
-        button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
         
         button.addTarget(self, action: #selector(primaryButtonTriggered), for: .touchUpInside)
         button.addTarget(self, action: #selector(primaryButtonPressed(_:)), for: .touchDown)
