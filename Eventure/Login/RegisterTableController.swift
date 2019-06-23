@@ -238,7 +238,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
 
-        if indexPath.row == 1 && indexPath.section == 1 {
+        if indexPath.row == 1 && indexPath.section == 2 {
             view.endEditing(true) // dismiss the keyboard
             showingPicker = !showingPicker
             
