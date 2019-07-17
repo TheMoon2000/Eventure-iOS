@@ -160,9 +160,7 @@ class FinishRegistration: UIViewController {
         }
         
         // Add `date` parameter
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd" // e.g. 2019-06-02
-        df.locale = Locale(identifier: "en_US")
+        let df = ISO8601DateFormatter()
         let dateStr = df.string(from: Date()) // pass this to the URL parameters
         parameters["date"] = dateStr
         
