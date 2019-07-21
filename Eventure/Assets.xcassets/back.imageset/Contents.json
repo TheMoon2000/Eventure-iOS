@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "logo-1.png",
+      "filename" : "icons8-ios-filled-50.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-ios-filled-101.png",
       "scale" : "2x"
     },
     {
