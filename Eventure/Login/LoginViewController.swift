@@ -125,7 +125,7 @@ class LoginViewController: UIViewController {
         
         // Logo image
         
-        logo.image = #imageLiteral(resourceName: "logo")
+        logo.image =  #imageLiteral(resourceName: "logo")
         logo.translatesAutoresizingMaskIntoConstraints = false
         canvas.addSubview(logo)
         
