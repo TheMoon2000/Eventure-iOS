@@ -330,7 +330,7 @@ class LoginViewController: UIViewController {
                 let servermsg = result?["status"]?.rawString()
                 print(servermsg!)
                 if (servermsg == "success") {
-                    let nextVC = MainTabBarController()
+                    let nextVC = PreferenceViewController()
                     DispatchQueue.main.async {
                         self.navigationController?.pushViewController(nextVC, animated: true)
                     }
