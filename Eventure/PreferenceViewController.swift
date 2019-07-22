@@ -91,11 +91,21 @@ class PreferenceViewController: UIViewController {
         
     }
     @objc private func choose(_ sender: UIButton) {
-        cnt += 1
+        if (sender.isSelected == false) {
+            cnt += 1
+            sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
+            sender.backgroundColor = .clear
+            sender.isSelected = true
+        } else {
+            cnt -= 1
+            sender.setTitleColor(.white, for: .normal)
+            sender.backgroundColor = .init(white: 1, alpha: 0.05)
+            sender.isSelected = false
+        }
+        
         if (cnt == 3) {
             let nextVC = MainTabBarController()
             self.navigationController?.pushViewController(nextVC, animated: true)
-            
         }
     }
 
