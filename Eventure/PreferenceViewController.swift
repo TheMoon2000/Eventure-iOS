@@ -48,7 +48,6 @@ class PreferenceViewController: UIViewController {
         space.widthAnchor.constraint(equalToConstant: view.frame.width).isActive = true
         space.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         space.setBackGroundColor(color: MAIN_TINT)
-        space.alpha = 0.7
         
         let perRow = 3
         assert(preferences.count % perRow == 0, "you don't have the right number of preferences")
@@ -94,7 +93,7 @@ class PreferenceViewController: UIViewController {
         if (sender.isSelected == false) {
             cnt += 1
             sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
-            sender.backgroundColor = .clear
+            sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
             sender.isSelected = true
         } else {
             cnt -= 1
