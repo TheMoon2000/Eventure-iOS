@@ -17,11 +17,13 @@
 		CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F565229AD523008FABEA /* FirstTabViewController.swift */; };
 		CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* SecondTabViewController.swift */; };
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
+		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
+		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
+		CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
 		CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED022B98AC700248AB7 /* RegisterController.swift */; };
 		CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */; };
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
-		CC94308A229FA8F900291675 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC943089229FA8F900291675 /* Global Constants.swift */; };
 		CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */; };
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
 		CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */; };
@@ -29,7 +31,6 @@
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
 		CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A822BD773A003E3315 /* ForgotPassword.swift */; };
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
-		CCF8CF17229E398300F3C6B8 /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
 		D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */; };
 		D5632A8522E51FB5006D7594 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5632A8422E51FB5006D7594 /* PreferenceViewController.swift */; };
@@ -64,11 +65,11 @@
 		CC18F567229AD535008FABEA /* SecondTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTabViewController.swift; sourceTree = "<group>"; };
 		CC18F569229AD570008FABEA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
+		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
 		CC6DEED022B98AC700248AB7 /* RegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterController.swift; sourceTree = "<group>"; };
 		CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTextCell.swift; sourceTree = "<group>"; };
 		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
-		CC943089229FA8F900291675 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
 		CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalTextCell.swift; sourceTree = "<group>"; };
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
 		CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionCell.swift; sourceTree = "<group>"; };
@@ -158,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
+				CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */,
 				CCC824F522BC181100FFD251 /* RegisterTableController.swift */,
 				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
 				CCE176A822BD773A003E3315 /* ForgotPassword.swift */,
@@ -193,7 +195,6 @@
 			isa = PBXGroup;
 			children = (
 				CCF8CF16229E398300F3C6B8 /* Example file.pdf */,
-				CC943089229FA8F900291675 /* Global Constants.swift */,
 				CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */,
 				CCFB7A21229FA6810082FEC6 /* Info.plist */,
 			);
@@ -298,7 +299,6 @@
 			files = (
 				CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */,
 				CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */,
-				CCF8CF17229E398300F3C6B8 /* Example file.pdf in Resources */,
 				CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,6 +307,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +403,7 @@
 				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */,
+				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
@@ -419,7 +421,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,
-				CC94308A229FA8F900291675 /* Global Constants.swift in Sources */,
+				CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
