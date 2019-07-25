@@ -18,8 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         window = UIWindow(frame: UIScreen.main.bounds)
+        
+        // TODO: Decide whether the user is already logged in. If not, set `entrypoint` to `LoginViewController`; otherwise, set it to the main view.
         let entrypoint = LoginViewController()
-        let nvc = UINavigationController(rootViewController: entrypoint)
+        let nvc = InteractivePopNavigationController(rootViewController: entrypoint)
         nvc.isNavigationBarHidden = true
         entrypoint.navBar = nvc
         window?.rootViewController = nvc
