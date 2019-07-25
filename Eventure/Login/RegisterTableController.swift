@@ -199,6 +199,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             return cell
         case (2, 2):
             let cell = UITableViewCell()
+            cell.selectionStyle = .none
             let picker = UIPickerView()
             picker.dataSource = self
             picker.delegate = self
