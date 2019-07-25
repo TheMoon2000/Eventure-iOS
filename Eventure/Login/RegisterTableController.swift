@@ -196,6 +196,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
             let index = Int(userInputs["gender"] ?? "-1")!
             cell.gender = GenderSelectionCell.Gender(rawValue: index + 1)!
             userInputs["gender"] = String(index)
+            if showingPicker { cell.expandDisclosure(animated: false) }
             return cell
         case (2, 2):
             let cell = UITableViewCell()

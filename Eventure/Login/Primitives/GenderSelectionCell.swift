@@ -86,14 +86,22 @@ class GenderSelectionCell: UITableViewCell {
         return icon
     }
     
-    func collapseDisclosure() {
-        UIView.animate(withDuration: 0.25) {
+    func collapseDisclosure(animated: Bool = false) {
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                self.disclosure.transform = CGAffineTransform(rotationAngle: 0)
+            }
+        } else {
             self.disclosure.transform = CGAffineTransform(rotationAngle: 0)
         }
     }
     
-    func expandDisclosure() {
-        UIView.animate(withDuration: 0.25) {
+    func expandDisclosure(animated: Bool = true) {
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                self.disclosure.transform = CGAffineTransform(rotationAngle: .pi / 2)
+            }
+        } else {
             self.disclosure.transform = CGAffineTransform(rotationAngle: .pi / 2)
         }
     }
