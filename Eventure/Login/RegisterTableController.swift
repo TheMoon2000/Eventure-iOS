@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class RegisterTableController: UITableViewController {
     
     var loginView: LoginViewController?
     
@@ -194,7 +194,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
         case (2, 1):
             let cell = GenderSelectionCell()
             let index = Int(userInputs["gender"] ?? "-1")!
-            cell.gender = GenderSelectionCell.Gender(rawValue: index + 1)!
+            cell.gender = User.Gender(rawValue: index)!
             userInputs["gender"] = String(index)
             if showingPicker { cell.expandDisclosure(animated: false) }
             return cell
@@ -422,6 +422,10 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
+
+}
+
+extension RegisterTableController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     // Datasource & delegate for Picker View
     
@@ -439,8 +443,7 @@ class RegisterTableController: UITableViewController, UIPickerViewDelegate, UIPi
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 2)) as! GenderSelectionCell
-        cell.gender = GenderSelectionCell.Gender(rawValue: row) ?? .unspecified
+        cell.gender = [.unspecified, .male, .female, .non_binary][row]
         userInputs["gender"] = String(row - 1)
     }
-
 }

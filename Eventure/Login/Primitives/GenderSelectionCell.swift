@@ -11,7 +11,7 @@ import UIKit
 class GenderSelectionCell: UITableViewCell {
     
     
-    var gender: Gender = .unspecified {
+    var gender: User.Gender = .unspecified {
         didSet {
             switch gender {
             case .male:
@@ -86,7 +86,7 @@ class GenderSelectionCell: UITableViewCell {
         return icon
     }
     
-    func collapseDisclosure(animated: Bool = false) {
+    func collapseDisclosure(animated: Bool = true) {
         if animated {
             UIView.animate(withDuration: 0.25) {
                 self.disclosure.transform = CGAffineTransform(rotationAngle: 0)
@@ -104,11 +104,6 @@ class GenderSelectionCell: UITableViewCell {
         } else {
             self.disclosure.transform = CGAffineTransform(rotationAngle: .pi / 2)
         }
-    }
-    
-    // Order matters here! Don't change
-    enum Gender: Int {
-        case unspecified = 0, male, female, non_binary
     }
 
 }

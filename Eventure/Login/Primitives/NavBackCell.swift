@@ -35,9 +35,9 @@ class NavBackCell: UITableViewCell {
         button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
         button.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
                                        constant: 10).isActive = true
-        button.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor,
-                                     constant: 7).isActive = true
+        button.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
         button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 50).isActive = true
         return button
     }
     
