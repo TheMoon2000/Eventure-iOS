@@ -21,9 +21,13 @@
 		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
+		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
+		CC6D277022F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
 		CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED022B98AC700248AB7 /* RegisterController.swift */; };
 		CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */; };
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
+		CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
+		CCC4A0B022F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
 		CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */; };
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
 		CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */; };
@@ -67,9 +71,11 @@
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
+		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		CC6DEED022B98AC700248AB7 /* RegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterController.swift; sourceTree = "<group>"; };
 		CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTextCell.swift; sourceTree = "<group>"; };
 		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
+		CCC4A0AE22F24EA000AB9557 /* TagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCell.swift; sourceTree = "<group>"; };
 		CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalTextCell.swift; sourceTree = "<group>"; };
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
 		CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionCell.swift; sourceTree = "<group>"; };
@@ -142,7 +148,7 @@
 				CC18F54E229AD4EB008FABEA /* AppDelegate.swift */,
 				CC1AF7A4229B732C003471F2 /* Global Constants.swift */,
 				CC18F563229AD518008FABEA /* MainTabBarController.swift */,
-				D5632A8422E51FB5006D7594 /* PreferenceViewController.swift */,
+				CC6D277122F24484007E2C5A /* Tag Picker */,
 				CC18F565229AD523008FABEA /* FirstTabViewController.swift */,
 				CC18F567229AD535008FABEA /* SecondTabViewController.swift */,
 				CC6DEED422BA89F400248AB7 /* Login */,
@@ -151,15 +157,32 @@
 				CC18F55A229AD4EC008FABEA /* LaunchScreen.storyboard */,
 				CC18F55D229AD4EC008FABEA /* Info.plist */,
 				CC18F555229AD4EB008FABEA /* Eventure.xcdatamodeld */,
+				CC6D276D22F23470007E2C5A /* Resources */,
 			);
 			path = Eventure;
+			sourceTree = "<group>";
+		};
+		CC6D276D22F23470007E2C5A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CC6D277122F24484007E2C5A /* Tag Picker */ = {
+			isa = PBXGroup;
+			children = (
+				CC6D276E22F23685007E2C5A /* TagPickerView.swift */,
+				CCC4A0AE22F24EA000AB9557 /* TagCell.swift */,
+			);
+			path = "Tag Picker";
 			sourceTree = "<group>";
 		};
 		CC6DEED422BA89F400248AB7 /* Login */ = {
 			isa = PBXGroup;
 			children = (
 				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
-				CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */,
 				CCC824F522BC181100FFD251 /* RegisterTableController.swift */,
 				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
 				CCE176A822BD773A003E3315 /* ForgotPassword.swift */,
@@ -184,6 +207,7 @@
 		CCE176A522BD7364003E3315 /* Deprecated */ = {
 			isa = PBXGroup;
 			children = (
+				D5632A8422E51FB5006D7594 /* PreferenceViewController.swift */,
 				CC6DEED022B98AC700248AB7 /* RegisterController.swift */,
 				CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */,
 				D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */,
@@ -393,6 +417,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */,
 				D5632A8522E51FB5006D7594 /* PreferenceViewController.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
@@ -410,6 +435,7 @@
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
 				CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
+				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
@@ -420,8 +446,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCC4A0B022F24EA000AB9557 /* TagCell.swift in Sources */,
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,
 				CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */,
+				CC6D277022F23685007E2C5A /* TagPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

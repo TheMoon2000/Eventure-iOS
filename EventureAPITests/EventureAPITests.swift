@@ -106,8 +106,7 @@ class EventureAPITests: XCTestCase {
         request.httpMethod = "POST"
         
         // Authentication
-        let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
-        request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
+        request.addAuthHeader()
 
         let task = CUSTOM_SESSION.uploadTask(with: request, fromFile: resourceURL) {
             data, response, error in
