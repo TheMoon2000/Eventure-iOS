@@ -91,7 +91,9 @@ class TagPickerView: UIViewController {
             picker.register(TagCell.classForCoder(), forCellWithReuseIdentifier: "tag")
             picker.allowsMultipleSelection = true
             picker.contentInset.top = 130 // Arbitrary height of top banner
+            picker.scrollIndicatorInsets.top = 130
             picker.contentInset.bottom = 75 // The arbitrary height of bottom banner
+            picker.scrollIndicatorInsets.bottom = 75
             picker.contentInsetAdjustmentBehavior = .always
             picker.delegate = self
             picker.dataSource = self
