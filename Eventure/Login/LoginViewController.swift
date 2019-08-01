@@ -10,14 +10,15 @@ import SwiftyJSON
 
 
 class LoginViewController: UIViewController {
+    
     var canvas: UIScrollView!
-    var usr = UITextField()
-    var pswd = UITextField()
-    var loginButton = UIButton(type: .system)
-    var registerButton = UIButton(type: .system)
-    var forgotButton = UIButton(type: .system)
+    var usr: UITextField!
+    var pswd: UITextField!
+    var loginButton: UIButton!
+    var registerButton: UIButton!
+    var forgotButton: UIButton!
     var activeField: UITextField?
-    var logo = UIImageView()
+    var logo: UIImageView!
     
     var navBar: UINavigationController?
     
@@ -25,6 +26,8 @@ class LoginViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
+    
+    // MARK: - UI Setup
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,9 +47,23 @@ class LoginViewController: UIViewController {
         self.view.layer.insertSublayer(gradientLayer, at: 0)
         
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
-        self.setupCanvas()
+    
+        canvas = {
+            let canvas = UIScrollView()
+            canvas.translatesAutoresizingMaskIntoConstraints = false
+            canvas.keyboardDismissMode = .interactive
+            view.addSubview(canvas)
+            
+            canvas.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+            canvas.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+            canvas.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            canvas.bottomAnchor.constraint(equalTo:
+                view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+            
+            return canvas
+        }()
+        
         self.setupLogins()
-        canvas.contentOffset = .zero
         
         // Setup keyboard show/hide observers
         NotificationCenter.default.addObserver(self,
@@ -61,6 +78,7 @@ class LoginViewController: UIViewController {
         // to detect rotation change and any kind of unexpected UI changes/lack of changes
         // NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
         //this will be called when the next VC is rotated and switched back to this one
@@ -71,19 +89,7 @@ class LoginViewController: UIViewController {
         rotated(frame: CGRect(origin: .zero, size: size))
     }
     
-    // UI setup
-    private func setupCanvas() {
-        canvas = UIScrollView()
-        canvas.translatesAutoresizingMaskIntoConstraints = false
-        canvas.keyboardDismissMode = .interactive
-        view.addSubview(canvas)
-        
-        canvas.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-        canvas.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-        canvas.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        canvas.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-    }
-    //TODO: FIX THE ROTATION GLITCH
+    
     func rotated(frame: CGRect?) {
         //see viewWillAppear for another call to this method
         //seems like at launch this will be called twice for some reason
@@ -125,72 +131,102 @@ class LoginViewController: UIViewController {
         
         // Logo image
         
-        logo.image =  #imageLiteral(resourceName: "logo")
-        logo.translatesAutoresizingMaskIntoConstraints = false
-        canvas.addSubview(logo)
+        logo = {
+            let logo = UIImageView()
+            logo.image = #imageLiteral(resourceName: "logo")
+            logo.contentMode = .scaleAspectFit
+            logo.clipsToBounds = true
+            logo.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(logo)
+            
+            logo.widthAnchor.constraint(equalToConstant: 290).isActive = true
+            logo.heightAnchor.constraint(equalToConstant: 160).isActive = true
+            logo.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+            logo.topAnchor.constraint(greaterThanOrEqualTo: canvas.topAnchor,
+                                      constant: -35).isActive = true
+            let c = logo.centerYAnchor.constraint(equalTo: canvas.centerYAnchor,
+                                                  constant: -156)
+            c.priority = .defaultLow
+            c.isActive = true
+            
+            return logo
+        }()
         
-        logo.contentMode = .scaleAspectFit
-        logo.clipsToBounds = true
-        logo.widthAnchor.constraint(equalToConstant: 290).isActive = true
-        logo.heightAnchor.constraint(equalToConstant: 160).isActive = true
-        logo.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-//        logo.topAnchor.constraint(greaterThanOrEqualTo: canvas.topAnchor,
-//                                  constant: -15).isActive = true
-        let c = logo.centerYAnchor.constraint(equalTo: canvas.centerYAnchor,
-                                              constant: -156)
-        c.priority = .defaultLow
-        c.isActive = true
         
         // Username field
         
-        usr.placeholder = "Email"
-        usr.keyboardType = .emailAddress
-        usr.adjustsFontSizeToFitWidth = true
-        usr.returnKeyType = .next
-        prepareField(textfield: usr)
-        usr.translatesAutoresizingMaskIntoConstraints = false
-        canvas.addSubview(usr)
-
-        usr.widthAnchor.constraint(equalToConstant: 230).isActive = true
-        usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-        usr.topAnchor.constraint(equalTo: logo.bottomAnchor,
-                                 constant: 3).isActive = true
+        usr = {
+            let usr = UITextField()
+            usr.placeholder = "Email"
+            usr.keyboardType = .emailAddress
+            usr.adjustsFontSizeToFitWidth = true
+            usr.returnKeyType = .next
+            prepareField(textfield: usr)
+            usr.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(usr)
+            
+            usr.widthAnchor.constraint(equalToConstant: 230).isActive = true
+            usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
+            usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+            usr.topAnchor.constraint(equalTo: logo.bottomAnchor,
+                                     constant: 3).isActive = true
+            
+            return usr
+        }()
         
         
         // Password field
             
-        pswd.placeholder = "Password"
-        pswd.isSecureTextEntry = true
-        pswd.returnKeyType = .go
-        prepareField(textfield: pswd)
-        pswd.translatesAutoresizingMaskIntoConstraints = false
-        canvas.addSubview(pswd)
-        
-        pswd.widthAnchor.constraint(equalTo: usr.widthAnchor).isActive = true
-        pswd.heightAnchor.constraint(equalTo: usr.heightAnchor).isActive = true
-        pswd.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-        pswd.topAnchor.constraint(equalTo: usr.bottomAnchor,
-                                  constant: 8).isActive = true
+        pswd = {
+            let pswd = UITextField()
+            pswd.placeholder = "Password"
+            pswd.isSecureTextEntry = true
+            pswd.returnKeyType = .go
+            prepareField(textfield: pswd)
+            pswd.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(pswd)
+            
+            pswd.widthAnchor.constraint(equalTo: usr.widthAnchor).isActive = true
+            pswd.heightAnchor.constraint(equalTo: usr.heightAnchor).isActive = true
+            pswd.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+            pswd.topAnchor.constraint(equalTo: usr.bottomAnchor,
+                                      constant: 8).isActive = true
+            
+            return pswd
+        }()
         
         
         // Sign in button
         
-        loginButton.setTitle("Sign In", for: .normal)
-        loginButton.titleLabel?.font = .systemFont(ofSize: 17.2, weight: .semibold)
-        loginButton.tintColor = .white
-        loginButton.backgroundColor = .init(white: 1, alpha: 0.05)
-        loginButton.layer.cornerRadius = 5
-        loginButton.layer.borderColor = UIColor.white.cgColor
-        loginButton.layer.borderWidth = 1.0
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        canvas.addSubview(loginButton)
-        
-        loginButton.widthAnchor.constraint(equalTo: usr.widthAnchor).isActive = true
-        loginButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        loginButton.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-        loginButton.topAnchor.constraint(equalTo: pswd.bottomAnchor,
-                                             constant: 32).isActive = true
+        loginButton = {
+            let button = UIButton(type: .system)
+            button.setTitle("Sign In", for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 17.2, weight: .semibold)
+            button.tintColor = .white
+            button.backgroundColor = .init(white: 1, alpha: 0.05)
+            button.layer.cornerRadius = 5
+            button.layer.borderColor = UIColor.white.cgColor
+            button.layer.borderWidth = 1.0
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
+            
+            button.widthAnchor.constraint(equalTo: usr.widthAnchor).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            button.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+            button.topAnchor.constraint(equalTo: pswd.bottomAnchor, constant: 32).isActive = true
+            
+            // Actions
+            button.addTarget(self,
+                             action: #selector(buttonLifted(_:)),
+                             for: [.touchUpOutside, .touchDragExit, .touchDragExit, .touchCancel])
+            button.addTarget(self,
+                             action: #selector(beginLoginRequest),
+                             for: .touchUpInside)
+            button.addTarget(self, action: #selector(buttonPressed(_:)),
+                             for: .touchDown)
+            
+            return button
+        }()
         
         
         // Vertical separator
@@ -202,53 +238,49 @@ class LoginViewController: UIViewController {
         
         separator.widthAnchor.constraint(equalToConstant: 1.6).isActive = true
         separator.heightAnchor.constraint(equalToConstant: 28).isActive = true
-        separator.bottomAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.bottomAnchor,
-                                           constant: -14).isActive = true
+        separator.bottomAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.bottomAnchor, constant: -14).isActive = true
         separator.centerXAnchor.constraint(equalTo: canvas.centerXAnchor, constant: -18).isActive = true
-        separator.topAnchor.constraint(greaterThanOrEqualTo: loginButton.bottomAnchor,
-                                       constant: 25).isActive = true
+        separator.topAnchor.constraint(greaterThanOrEqualTo: loginButton.bottomAnchor, constant: 25).isActive = true
         
         
         // Register button
         
-        registerButton.setTitle("Register", for: .normal)
-        registerButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        registerButton.tintColor = .init(white: 1, alpha: 0.95)
-        registerButton.translatesAutoresizingMaskIntoConstraints = false
-        registerButton.addTarget(self,
-                                 action: #selector(registerPressed),
-                                 for: .touchUpInside)
-        canvas.addSubview(registerButton)
+        registerButton = {
+            let button = UIButton(type: .system)
+            button.setTitle("Register", for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            button.tintColor = .init(white: 1, alpha: 0.95)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
+            
+            button.centerYAnchor.constraint(equalTo: separator.centerYAnchor).isActive = true
+            button.rightAnchor.constraint(equalTo: separator.leftAnchor, constant: -45).isActive = true
+            
+            button.addTarget(self, action: #selector(registerPressed), for: .touchUpInside)
+            
+            return button
+        }()
         
-        registerButton.centerYAnchor.constraint(equalTo: separator.centerYAnchor).isActive = true
-        registerButton.rightAnchor.constraint(equalTo: separator.leftAnchor,
-                                              constant: -45).isActive = true
+        forgotButton = {
+            let button = UIButton(type: .system)
+            button.setTitle("Forgot Password", for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            button.tintColor = .init(white: 1, alpha: 0.95)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
+            
+            button.centerYAnchor.constraint(equalTo: separator.centerYAnchor).isActive = true
+            button.leftAnchor.constraint(equalTo: separator.rightAnchor, constant: 44).isActive = true
+            
+            button.addTarget(self, action: #selector(forgotPSWD), for: .touchDown)
+            
+            return button
+        }()
         
-        forgotButton.setTitle("Forgot Password", for: .normal)
-        forgotButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        forgotButton.tintColor = .init(white: 1, alpha: 0.95)
-        forgotButton.translatesAutoresizingMaskIntoConstraints = false
-        canvas.addSubview(forgotButton)
-        
-        forgotButton.centerYAnchor.constraint(equalTo: separator.centerYAnchor).isActive = true
-        forgotButton.leftAnchor.constraint(equalTo: separator.rightAnchor,
-                                           constant: 44).isActive = true
-
-        
-        //login/register transition page
-        
-        loginButton.addTarget(self, action: #selector(buttonLifted(_:)),
-                              for: [.touchUpOutside, .touchDragExit, .touchDragExit, .touchCancel])
-        loginButton.addTarget(self,
-                              action: #selector(beginLoginRequest),
-                              for: .touchUpInside)
-        loginButton.addTarget(self, action: #selector(buttonPressed(_:)),
-                              for: .touchDown)
-        forgotButton.addTarget(self, action: #selector(forgotPSWD), for: .touchDown)
     }
     
+    // MARK: - Button actions
     
-    // Button appearance
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
         sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
@@ -310,9 +342,7 @@ class LoginViewController: UIViewController {
                               API_Name: "account/Authenticate",
                               parameters: loginParameters)!
         var request = URLRequest(url: apiURL)
-
-        let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
-        request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
+        request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
@@ -327,12 +357,13 @@ class LoginViewController: UIViewController {
             
             do {
                 let result = try JSON(data: data!).dictionary
-                let servermsg = result?["status"]?.rawString()
-                print(servermsg!)
+                let servermsg = result?["status"]?.stringValue
                 if (servermsg == "success") {
-                    let nextVC = PreferenceViewController()
+                    let nextVC = TagPickerView()
+                    User.current = User(userInfo: result!["user info"]!)
+                    print(User.current!)
                     DispatchQueue.main.async {
-                        self.navigationController?.pushViewController(nextVC, animated: true)
+                        self.present(nextVC, animated: true, completion: nil)
                     }
                 } else {
                     //UI related events belong in main thread
@@ -358,7 +389,7 @@ class LoginViewController: UIViewController {
     }
     
     
-    // Notification handlers to make sure that the active textfield is always visible
+    // MARK: - Keyboard events
 
     @objc private func keyboardDidShow(_ notification: Notification) {
         let kbSize = ((notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey]) as! CGRect).size
@@ -383,7 +414,8 @@ class LoginViewController: UIViewController {
     
 
 
-// Add editing events detection
+// MARK: - Editing events detection
+
 extension LoginViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -404,6 +436,9 @@ extension LoginViewController: UITextFieldDelegate {
         return true
     }
 }
+
+// MARK: - Add shake effect
+
 extension UIView {
     func shake() {
         let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")

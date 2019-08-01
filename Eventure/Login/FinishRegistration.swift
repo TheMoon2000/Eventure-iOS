@@ -12,6 +12,7 @@ import UIKit
 
 class FinishRegistration: UIViewController {
     
+    /// A copy of the information the user entered on the registration page.
     var userInputs: [String : String]?
     var regVC: RegisterTableController?
     
@@ -25,84 +26,75 @@ class FinishRegistration: UIViewController {
 
         view.backgroundColor = .white
         
-        spinner = makeSpinner()
-        spinner.startAnimating()
-
-        spinnerCaption = makeLabel()
+        spinner = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.color = UIColor(white: 0.75, alpha: 1)
+            spinner.hidesWhenStopped = true
+            spinner.startAnimating()
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor,
+                                             constant: -25).isActive = true
+            return spinner
+        }()
         
-        button = makeButton()
-        button.isHidden = true
+        spinnerCaption = {
+            let label = UILabel()
+            label.textAlignment = .center
+            label.lineBreakMode = .byWordWrapping
+            label.numberOfLines = 2
+            label.text = "Creating your Account..."
+            label.font = .systemFont(ofSize: 18)
+            label.textColor = UIColor(white: 0.3, alpha: 1)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor,
+                                       constant: 24).isActive = true
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor,
+                                        constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor,
+                                         constant: -30).isActive = true
+            
+            return label
+        }()
         
-        completionImage = makeImageView()
+        button = {
+            let button = UIButton(type: .system)
+            button.tintColor = MAIN_TINT
+            button.isHidden = true
+            button.titleLabel?.font = .systemFont(ofSize: 19, weight: .medium)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(button)
+            
+            button.widthAnchor.constraint(equalToConstant: 220).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                           constant: -29).isActive = true
+            
+            button.addTarget(self, action: #selector(returnToLogin), for: .touchUpInside)
+            
+            return button
+        }()
+        
+        completionImage = {
+            let imageView = UIImageView()
+            imageView.contentMode = .scaleAspectFit
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(imageView)
+            
+            imageView.widthAnchor.constraint(equalToConstant: 52).isActive = true
+            imageView.heightAnchor.constraint(equalToConstant: 56).isActive = true
+            imageView.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+            imageView.centerYAnchor.constraint(equalTo: spinner.centerYAnchor).isActive = true
+            
+            return imageView
+        }()
         
         createAccount()
-    }
-    
-    private func makeSpinner() -> UIActivityIndicatorView {
-        let spinner = UIActivityIndicatorView(style: .whiteLarge)
-        spinner.color = UIColor(white: 0.75, alpha: 1)
-        spinner.hidesWhenStopped = true
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(spinner)
-        
-        spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor,
-                                         constant: -25).isActive = true
-        return spinner
-    }
-    
-    private func makeLabel() -> UILabel {
-        let label = UILabel()
-        label.textAlignment = .center
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
-        label.text = "Creating your Account..."
-        label.font = .systemFont(ofSize: 18)
-        label.textColor = UIColor(white: 0.3, alpha: 1)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        
-        label.topAnchor.constraint(equalTo: spinner.bottomAnchor,
-                                   constant: 24).isActive = true
-        label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor,
-                                    constant: 30).isActive = true
-        label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor,
-                                     constant: -30).isActive = true
-        
-        
-        return label
-    }
-    
-    private func makeButton() -> UIButton {
-        let button = UIButton(type: .system)
-        button.tintColor = MAIN_TINT_DARK
-        button.titleLabel?.font = .systemFont(ofSize: 19, weight: .medium)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(button)
-        
-        button.widthAnchor.constraint(equalToConstant: 220).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 48).isActive = true
-        button.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                       constant: -29).isActive = true
-        
-        button.addTarget(self, action: #selector(returnToLogin), for: .touchUpInside)
-        
-        return button
-    }
-    
-    private func makeImageView() -> UIImageView {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
-        
-        imageView.widthAnchor.constraint(equalToConstant: 52).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 56).isActive = true
-        imageView.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: spinner.centerYAnchor).isActive = true
-        
-        return imageView
     }
     
     
@@ -173,8 +165,7 @@ class FinishRegistration: UIViewController {
         var request = URLRequest(url: url)
         
         // Authentication
-        let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
-        request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
+        request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
