@@ -11,6 +11,7 @@ import SwiftyJSON
 
 class TagPickerView: UIViewController {
     
+    private var topBanner: UIVisualEffectView!
     private var titleLabel: UILabel!
     private var subtitleLabel: UILabel!
     private var spinner: UIActivityIndicatorView!
@@ -41,30 +42,46 @@ class TagPickerView: UIViewController {
         
         view.backgroundColor = .white
         
-        titleLabel = {
-            let label = UILabel()
-            label.text = "What Interests You?"
-            label.font = .systemFont(ofSize: 26, weight: .semibold)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+        topBanner = {
+            let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            banner.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(banner)
             
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30).isActive = true
+            banner.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            banner.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            banner.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            banner.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 130).isActive = true
             
-            return label
-        }()
-        
-        subtitleLabel = {
-            let label = UILabel()
-            label.text = "Pick at least one. The more the better!"
-            label.font = .systemFont(ofSize: 16)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            // Banner content
             
-            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
-            label.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor).isActive = true
+            titleLabel = {
+                let label = UILabel()
+                label.text = "What Interests You?"
+                label.font = .systemFont(ofSize: 26, weight: .semibold)
+                label.translatesAutoresizingMaskIntoConstraints = false
+                banner.contentView.addSubview(label)
+                
+                label.centerXAnchor.constraint(equalTo: banner.centerXAnchor).isActive = true
+                label.topAnchor.constraint(equalTo: banner.safeAreaLayoutGuide.topAnchor,
+                                           constant: 30).isActive = true
+                
+                return label
+            }()
             
-            return label
+            subtitleLabel = {
+                let label = UILabel()
+                label.text = "Pick at least one. The more the better!"
+                label.font = .systemFont(ofSize: 16)
+                label.translatesAutoresizingMaskIntoConstraints = false
+                banner.contentView.addSubview(label)
+                
+                label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
+                label.centerXAnchor.constraint(equalTo: banner.centerXAnchor).isActive = true
+                
+                return label
+            }()
+            
+            return banner
         }()
         
 
@@ -73,16 +90,17 @@ class TagPickerView: UIViewController {
             picker.backgroundColor = .init(white: 0.95, alpha: 1)
             picker.register(TagCell.classForCoder(), forCellWithReuseIdentifier: "tag")
             picker.allowsMultipleSelection = true
-            picker.contentInset.bottom = 75
+            picker.contentInset.top = 130 // Arbitrary height of top banner
+            picker.contentInset.bottom = 75 // The arbitrary height of bottom banner
             picker.contentInsetAdjustmentBehavior = .always
             picker.delegate = self
             picker.dataSource = self
             picker.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(picker)
+            view.insertSubview(picker, belowSubview: topBanner)
             
             picker.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             picker.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            picker.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 30).isActive = true
+            picker.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             picker.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
             return picker
@@ -154,7 +172,6 @@ class TagPickerView: UIViewController {
         
         loadTags()
     }
-    
 
     private func loadTags() {
         
@@ -317,6 +334,7 @@ extension TagPickerView: UICollectionViewDelegateFlowLayout {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { context in
+            self.tagPicker.contentInset.top = self.topBanner.frame.height - self.view.safeAreaLayoutGuide.layoutFrame.minX
             self.tagPicker.collectionViewLayout.invalidateLayout()
         }, completion: nil)
     }
