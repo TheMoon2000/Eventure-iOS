@@ -5,8 +5,12 @@
 //  Created by Jia Rui Shan on 2019/5/27.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
-//  This file documents all global constants used by the app
+//  This file documents all global constants and configurations used by the app.
+
 import UIKit
+import SwiftyJSON
+
+// MARK: - Global constants
 
 /// The URL prefix for all the APIs
 let API_BASE_URL = "https://api.eventure-app.online/"
@@ -14,11 +18,12 @@ let API_BASE_URL = "https://api.eventure-app.online/"
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
 let PASSWORD = "__replace__"
+let INTERNAL_ERROR = "internal error"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
-let MAIN_TINT2 = UIColor(red: 0.5, green: 0.7, blue: 0.92, alpha: 1)
 let MAIN_TINT = UIColor(red: 1.0, green: 127/255, blue: 114/255, alpha: 1.0)
-let MAIN_TINT_DARK = UIColor(red: 73/255, green: 188/255, blue: 167/255, alpha: 1)
+let MAIN_DISABLED = UIColor(red: 1.0, green: 170/255, blue: 159/255, alpha: 1.0)
+let MAIN_TINT_DARK = UIColor(red: 238/255, green: 102/255, blue: 81/255, alpha: 1)
 
 let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
 
@@ -42,6 +47,74 @@ let CUSTOM_SESSION: URLSession = {
     return URLSession(configuration: config)
 }()
 
+// MARK: - Classes and Extensions
+
+class User: CustomStringConvertible {
+    
+    /// The current user, if the app is logged in.
+    static var current: User?
+    
+    /// The UUID of the user.
+    var uuid: Int
+    var email: String
+    var password_MD5: String
+    var displayedName: String
+    var gender: Gender
+    var isPublisher: Bool
+    var subscriptions: [String]
+    var tags: [String]
+    var activated: Bool
+    var dateRegistered: String // Only for debugging purpose
+    
+    enum Gender: Int {
+        case unspecified = -1
+        case male = 0
+        case female = 1
+        case non_binary = 2
+    }
+    
+    init(userInfo: JSON) {
+        let dictionary = userInfo.dictionary!
+        
+        uuid = dictionary["uuid"]?.int ?? -1
+        email = dictionary["Email"]?.string ?? ""
+        password_MD5 = dictionary["Password MD5"]?.string ?? ""
+        displayedName = dictionary["Displayed name"]?.string ?? ""
+        gender = Gender(rawValue: (dictionary["Gender"]?.int ?? -1)) ?? .unspecified
+        isPublisher = (dictionary["Publisher"]?.int ?? 0) == 0
+        
+        if let subscription_raw = dictionary["Subscriptions"]?.string {
+            subscriptions = (JSON(parseJSON: subscription_raw).arrayObject as? [String]) ?? [String]()
+        } else {
+            subscriptions = [String]()
+        }
+        
+        if let tags_raw = dictionary["Tags"]?.string {
+            tags = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+        } else {
+            tags = [String]()
+        }
+        
+        activated = (dictionary["Activated"]?.int ?? 0) == 0
+        dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
+    }
+    
+    var description: String {
+        var str = "User <\(displayedName)>:\n"
+        str += "  uuid = \(uuid)\n"
+        str += "  email = \(email)\n"
+        str += "  gender = \(gender.rawValue)\n"
+        str += "  isPublisher = \(isPublisher)\n"
+        str += "  subscriptions = \(subscriptions)\n"
+        str += "  tags = \(tags)\n"
+        str += "  activated = \(activated)"
+        str += "  dateRegistered = \(dateRegistered)"
+        
+        return str
+    }
+    
+}
+
 extension String {
     
     /// URL encode.
@@ -61,7 +134,6 @@ extension String {
     }
 }
 
-/// Initialize new URL with url parameters
 extension URL {
     
     /**
@@ -86,6 +158,15 @@ extension URL {
     }
 }
 
+extension URLRequest {
+    
+    /// Add a basic authorization header for the current request.
+    mutating func addAuthHeader() {
+        let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
+        self.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
+    }
+}
+
 extension UITextField {
     func doInset() {
         let inset = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: self.frame.height))
@@ -98,3 +179,16 @@ let DOCUMENTS_URL = FileManager.default.urls(for: .documentDirectory, in: .userD
 
 /// Cache directory URL.
 let CACHES = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+
+
+func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
+    let alert = UIAlertController(title: "Expected Error", message: "Oops, looks like our server is unavailable or under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+        action in
+        DispatchQueue.main.async {
+            handler?()
+        }
+    }))
+    
+    vc.present(alert, animated: true, completion: nil)
+}
