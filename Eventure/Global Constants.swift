@@ -13,7 +13,7 @@ import SwiftyJSON
 // MARK: - Global constants
 
 /// The URL prefix for all the APIs
-let API_BASE_URL = "https://api.eventure-app.online/"
+let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
@@ -22,8 +22,8 @@ let INTERNAL_ERROR = "internal error"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT = UIColor(red: 1.0, green: 127/255, blue: 114/255, alpha: 1.0)
-let MAIN_DISABLED = UIColor(red: 1.0, green: 170/255, blue: 159/255, alpha: 1.0)
-let MAIN_TINT_DARK = UIColor(red: 238/255, green: 102/255, blue: 81/255, alpha: 1)
+let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
+let MAIN_TINT_DARK = UIColor(red: 222/255, green: 97/255, blue: 82/255, alpha: 1)
 
 let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
 
