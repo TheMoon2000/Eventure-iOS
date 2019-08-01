@@ -359,9 +359,14 @@ class LoginViewController: UIViewController {
                 let result = try JSON(data: data!).dictionary
                 let servermsg = result?["status"]?.stringValue
                 if (servermsg == "success") {
-                    let nextVC = TagPickerView()
-                    User.current = User(userInfo: result!["user info"]!)
-                    print(User.current!)
+                    let userInfo = result!["user info"]!
+                    User.current = User(userInfo: userInfo)
+                    let nextVC: UIViewController
+                    if userInfo.dictionary?["Tags"] == "[]" {
+                        nextVC = TagPickerView()
+                    } else {
+                        nextVC = MainTabBarController()
+                    }
                     DispatchQueue.main.async {
                         self.present(nextVC, animated: true, completion: nil)
                     }
