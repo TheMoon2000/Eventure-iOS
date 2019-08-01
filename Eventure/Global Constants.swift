@@ -107,7 +107,7 @@ class User: CustomStringConvertible {
         str += "  isPublisher = \(isPublisher)\n"
         str += "  subscriptions = \(subscriptions)\n"
         str += "  tags = \(tags)\n"
-        str += "  activated = \(activated)"
+        str += "  activated = \(activated)\n"
         str += "  dateRegistered = \(dateRegistered)"
         
         return str
