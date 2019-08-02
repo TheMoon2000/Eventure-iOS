@@ -22,22 +22,30 @@ class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = MAIN_TINT
         
-        // Here are some demo tabs. Replace them!
-        let tab1 = FirstTabViewController()
-        let tab2 = SecondTabViewController()
+        let tab1 = EventsViewController()
         tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
-        tab2.tabBarItem = UITabBarItem(title: "Second Tab", image: #imageLiteral(resourceName: "settings"), tag: 1)
+
+        let tab2 = OrganizationsViewController()
+        tab2.tabBarItem = UITabBarItem(title: "Organizations", image: #imageLiteral(resourceName: "settings"), tag: 1)
         
-        self.viewControllers = [tab1, tab2].map {
+        let tab3 = AccountViewController()
+        tab3.tabBarItem = UITabBarItem(title: "Me", image: #imageLiteral(resourceName: "home"), tag: 2)
+        
+        
+        viewControllers = [tab1, tab2, tab3].map {
             let nav = UINavigationController(rootViewController: $0)
             
             /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
-            
+         
             return nav
         }
     }
     
+    /// Should be called when user finished login.
+    func screenOpened() {
+        print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
+    }
     
     /*
      // MARK: - Navigation

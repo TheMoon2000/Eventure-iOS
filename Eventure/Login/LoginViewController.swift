@@ -11,6 +11,8 @@ import SwiftyJSON
 
 class LoginViewController: UIViewController {
     
+    var mainTabsVC: MainTabBarController!
+    
     var canvas: UIScrollView!
     var usr: UITextField!
     var pswd: UITextField!
@@ -299,6 +301,8 @@ class LoginViewController: UIViewController {
 //        self.present(nextVC, animated: true, completion: nil)
     }
     
+    // MARK: - Begin login request
+    
     @objc private func beginLoginRequest() {
         dismissKeyboard()
         let reset = {
@@ -361,15 +365,19 @@ class LoginViewController: UIViewController {
                 if (servermsg == "success") {
                     let userInfo = result!["user info"]!
                     User.current = User(userInfo: userInfo)
-                    let nextVC: UIViewController
                     if userInfo.dictionary?["Tags"] == "[]" {
-                        nextVC = TagPickerView()
+                        let nextVC = TagPickerView()
+                        DispatchQueue.main.async {
+                            self.present(nextVC, animated: true, completion: nil)
+                        }
                     } else {
-                        nextVC = MainTabBarController()
+                        DispatchQueue.main.async {
+                            self.dismiss(animated: true) {
+                                self.mainTabsVC.screenOpened()
+                            }
+                        }
                     }
-                    DispatchQueue.main.async {
-                        self.present(nextVC, animated: true, completion: nil)
-                    }
+                    
                 } else {
                     //UI related events belong in main thread
                     DispatchQueue.main.async {
@@ -389,7 +397,6 @@ class LoginViewController: UIViewController {
     @objc private func registerPressed() {
         let nextVC = RegisterTableController() // RegisterController()
         nextVC.loginView = self
-        let nav = UINavigationController(rootViewController: nextVC)
         navBar?.pushViewController(nextVC, animated: true)
     }
     

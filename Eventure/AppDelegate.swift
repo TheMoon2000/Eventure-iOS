@@ -20,13 +20,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         
         // TODO: Decide whether the user is already logged in. If not, set `entrypoint` to `LoginViewController`; otherwise, set it to the main view.
-        let entrypoint = LoginViewController()
-        let nvc = InteractivePopNavigationController(rootViewController: entrypoint)
+
+        let entrypoint = MainTabBarController()
+        
+        window?.rootViewController = entrypoint
+        
+        let login = LoginViewController()
+        login.mainTabsVC = entrypoint
+        let nvc = InteractivePopNavigationController(rootViewController: login)
         nvc.isNavigationBarHidden = true
-        entrypoint.navBar = nvc
-        window?.rootViewController = nvc
+        login.navBar = nvc
         
         window?.makeKeyAndVisible()
+        
+        entrypoint.present(nvc, animated: false, completion: nil)
         
         return true
     }

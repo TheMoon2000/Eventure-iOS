@@ -14,8 +14,8 @@ class EventsViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .white
-        self.title = "Events"
+        view.backgroundColor = .white
+        title = "Events"
     }
     
     

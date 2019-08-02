@@ -21,6 +21,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         field.autocapitalizationType = .none
         field.clearButtonMode = .whileEditing
         field.returnKeyType = .next
+        field.textContentType = .init(rawValue: "")
         return field
     }()
     
