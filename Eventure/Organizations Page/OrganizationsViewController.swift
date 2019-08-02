@@ -1,5 +1,5 @@
 //
-//  SecondTabViewController.swift
+//  OrganizationsViewController.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/5/26.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SecondTabViewController: UIViewController {
+class OrganizationsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()

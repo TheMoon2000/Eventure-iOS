@@ -1,5 +1,5 @@
 //
-//  FirstTabViewController.swift
+//  EventsViewController.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/5/26.
@@ -8,26 +8,14 @@
 
 import UIKit
 
-class FirstTabViewController: UIViewController {
+class EventsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .white
-        self.title = "First Tab"
-        makeLabel()
-    }
-    
-    /// Remove this!
-    private func makeLabel() {
-        let label = UILabel()
-        label.text = "UILabel"
-        label.font = .systemFont(ofSize: 28)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(label)
-        label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        self.title = "Events"
     }
     
     

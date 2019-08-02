@@ -25,7 +25,7 @@ class MainTabBarController: UITabBarController {
         // Here are some demo tabs. Replace them!
         let tab1 = FirstTabViewController()
         let tab2 = SecondTabViewController()
-        tab1.tabBarItem = UITabBarItem(title: "First Tab", image: #imageLiteral(resourceName: "search"), tag: 0)
+        tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
         tab2.tabBarItem = UITabBarItem(title: "Second Tab", image: #imageLiteral(resourceName: "settings"), tag: 1)
         
         self.viewControllers = [tab1, tab2].map {

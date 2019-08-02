@@ -14,9 +14,11 @@
 		CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC18F558229AD4EC008FABEA /* Assets.xcassets */; };
 		CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC18F55A229AD4EC008FABEA /* LaunchScreen.storyboard */; };
 		CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F563229AD518008FABEA /* MainTabBarController.swift */; };
-		CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F565229AD523008FABEA /* FirstTabViewController.swift */; };
-		CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* SecondTabViewController.swift */; };
+		CC18F566229AD523008FABEA /* EventsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F565229AD523008FABEA /* EventsViewController.swift */; };
+		CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* OrganizationsViewController.swift */; };
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
+		CC2538AC22F4E47700690503 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2538AB22F4E47700690503 /* AccountViewController.swift */; };
+		CC2538AD22F4E47700690503 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2538AB22F4E47700690503 /* AccountViewController.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
@@ -65,10 +67,11 @@
 		CC18F55B229AD4EC008FABEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CC18F55D229AD4EC008FABEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC18F563229AD518008FABEA /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
-		CC18F565229AD523008FABEA /* FirstTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstTabViewController.swift; sourceTree = "<group>"; };
-		CC18F567229AD535008FABEA /* SecondTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondTabViewController.swift; sourceTree = "<group>"; };
+		CC18F565229AD523008FABEA /* EventsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViewController.swift; sourceTree = "<group>"; };
+		CC18F567229AD535008FABEA /* OrganizationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationsViewController.swift; sourceTree = "<group>"; };
 		CC18F569229AD570008FABEA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
+		CC2538AB22F4E47700690503 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
 		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
@@ -148,9 +151,9 @@
 				CC18F54E229AD4EB008FABEA /* AppDelegate.swift */,
 				CC1AF7A4229B732C003471F2 /* Global Constants.swift */,
 				CC18F563229AD518008FABEA /* MainTabBarController.swift */,
-				CC6D277122F24484007E2C5A /* Tag Picker */,
-				CC18F565229AD523008FABEA /* FirstTabViewController.swift */,
-				CC18F567229AD535008FABEA /* SecondTabViewController.swift */,
+				CC2538B122F4E4B300690503 /* Events Page */,
+				CC2538B022F4E49B00690503 /* Organizations Page */,
+				CC2538AE22F4E47F00690503 /* Account Page */,
 				CC6DEED422BA89F400248AB7 /* Login */,
 				CC18F552229AD4EB008FABEA /* Main.storyboard */,
 				CC18F558229AD4EC008FABEA /* Assets.xcassets */,
@@ -160,6 +163,30 @@
 				CC6D276D22F23470007E2C5A /* Resources */,
 			);
 			path = Eventure;
+			sourceTree = "<group>";
+		};
+		CC2538AE22F4E47F00690503 /* Account Page */ = {
+			isa = PBXGroup;
+			children = (
+				CC2538AB22F4E47700690503 /* AccountViewController.swift */,
+			);
+			path = "Account Page";
+			sourceTree = "<group>";
+		};
+		CC2538B022F4E49B00690503 /* Organizations Page */ = {
+			isa = PBXGroup;
+			children = (
+				CC18F567229AD535008FABEA /* OrganizationsViewController.swift */,
+			);
+			path = "Organizations Page";
+			sourceTree = "<group>";
+		};
+		CC2538B122F4E4B300690503 /* Events Page */ = {
+			isa = PBXGroup;
+			children = (
+				CC18F565229AD523008FABEA /* EventsViewController.swift */,
+			);
+			path = "Events Page";
 			sourceTree = "<group>";
 		};
 		CC6D276D22F23470007E2C5A /* Resources */ = {
@@ -183,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
+				CC6D277122F24484007E2C5A /* Tag Picker */,
 				CCC824F522BC181100FFD251 /* RegisterTableController.swift */,
 				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
 				CCE176A822BD773A003E3315 /* ForgotPassword.swift */,
@@ -425,14 +453,15 @@
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */,
-				CC18F568229AD535008FABEA /* SecondTabViewController.swift in Sources */,
+				CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */,
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
-				CC18F566229AD523008FABEA /* FirstTabViewController.swift in Sources */,
+				CC18F566229AD523008FABEA /* EventsViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
+				CC2538AC22F4E47700690503 /* AccountViewController.swift in Sources */,
 				CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
@@ -447,6 +476,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CCC4A0B022F24EA000AB9557 /* TagCell.swift in Sources */,
+				CC2538AD22F4E47700690503 /* AccountViewController.swift in Sources */,
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,
 				CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */,
 				CC6D277022F23685007E2C5A /* TagPickerView.swift in Sources */,
