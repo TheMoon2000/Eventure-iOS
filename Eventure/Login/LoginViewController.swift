@@ -215,7 +215,8 @@ class LoginViewController: UIViewController {
             button.widthAnchor.constraint(equalTo: usr.widthAnchor).isActive = true
             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
             button.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-            button.topAnchor.constraint(equalTo: pswd.bottomAnchor, constant: 32).isActive = true
+            button.topAnchor.constraint(lessThanOrEqualTo: pswd.bottomAnchor, constant: 32).isActive = true
+            button.topAnchor.constraint(greaterThanOrEqualTo: pswd.bottomAnchor, constant: 20).isActive = true
             
             // Actions
             button.addTarget(self,
@@ -231,18 +232,19 @@ class LoginViewController: UIViewController {
         }()
         
         
-        // Vertical separator
-        
-        let separator = UIView()
-        separator.backgroundColor = .init(white: 1, alpha: 0.7)
-        separator.translatesAutoresizingMaskIntoConstraints = false
-        canvas.addSubview(separator)
-        
-        separator.widthAnchor.constraint(equalToConstant: 1.6).isActive = true
-        separator.heightAnchor.constraint(equalToConstant: 28).isActive = true
-        separator.bottomAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.bottomAnchor, constant: -14).isActive = true
-        separator.centerXAnchor.constraint(equalTo: canvas.centerXAnchor, constant: -18).isActive = true
-        separator.topAnchor.constraint(greaterThanOrEqualTo: loginButton.bottomAnchor, constant: 25).isActive = true
+        let bottomStack: UIStackView = {
+            let stack = UIStackView()
+            stack.alignment = .center
+            stack.spacing = 25
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(stack)
+            
+            stack.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
+            stack.topAnchor.constraint(greaterThanOrEqualTo: loginButton.bottomAnchor, constant: 15).isActive = true
+            
+            return stack
+        }()
         
         
         // Register button
@@ -251,17 +253,25 @@ class LoginViewController: UIViewController {
             let button = UIButton(type: .system)
             button.setTitle("Register", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-            button.tintColor = .init(white: 1, alpha: 0.95)
+            button.tintColor = .init(white: 1, alpha: 0.9)
             button.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(button)
             
-            button.centerYAnchor.constraint(equalTo: separator.centerYAnchor).isActive = true
-            button.rightAnchor.constraint(equalTo: separator.leftAnchor, constant: -45).isActive = true
+            bottomStack.addArrangedSubview(button)
             
             button.addTarget(self, action: #selector(registerPressed), for: .touchUpInside)
             
             return button
         }()
+        
+        // Vertical separator
+        
+        let separator = UIView()
+        separator.backgroundColor = .init(white: 1, alpha: 0.7)
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        bottomStack.addArrangedSubview(separator)
+        
+        separator.widthAnchor.constraint(equalToConstant: 1.6).isActive = true
+        separator.heightAnchor.constraint(equalToConstant: 28).isActive = true
         
         forgotButton = {
             let button = UIButton(type: .system)
@@ -269,10 +279,7 @@ class LoginViewController: UIViewController {
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
             button.tintColor = .init(white: 1, alpha: 0.95)
             button.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(button)
-            
-            button.centerYAnchor.constraint(equalTo: separator.centerYAnchor).isActive = true
-            button.leftAnchor.constraint(equalTo: separator.rightAnchor, constant: 44).isActive = true
+            bottomStack.addArrangedSubview(button)
             
             button.addTarget(self, action: #selector(forgotPSWD), for: .touchDown)
             
