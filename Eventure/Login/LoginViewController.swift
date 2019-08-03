@@ -159,7 +159,7 @@ class LoginViewController: UIViewController {
         
         usr = {
             let usr = UITextField()
-            usr.placeholder = "Email"
+            usr.placeholder = "Email / Organization ID"
             usr.keyboardType = .emailAddress
             usr.adjustsFontSizeToFitWidth = true
             usr.returnKeyType = .next
