@@ -374,14 +374,13 @@ class LoginViewController: UIViewController {
                     User.current = User(userInfo: userInfo)
                     if userInfo.dictionary?["Tags"] == "[]" {
                         let nextVC = TagPickerView()
+                        nextVC.loginVC = self
                         DispatchQueue.main.async {
                             self.present(nextVC, animated: true, completion: nil)
                         }
                     } else {
                         DispatchQueue.main.async {
-                            self.dismiss(animated: true) {
-                                self.mainTabsVC.screenOpened()
-                            }
+                            self.mainTabsVC.openScreen()
                         }
                     }
                     

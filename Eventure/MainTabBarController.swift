@@ -43,7 +43,8 @@ class MainTabBarController: UITabBarController {
     }
     
     /// Should be called when user finished login.
-    func screenOpened() {
+    func openScreen() {
+        dismiss(animated: true, completion: nil)
         print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
     }
     

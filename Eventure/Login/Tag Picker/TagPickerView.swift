@@ -11,6 +11,8 @@ import SwiftyJSON
 
 class TagPickerView: UIViewController {
     
+    var loginVC: LoginViewController!
+    
     private var topBanner: UIVisualEffectView!
     private var titleLabel: UILabel!
     private var subtitleLabel: UILabel!
@@ -178,7 +180,7 @@ class TagPickerView: UIViewController {
     private func loadTags() {
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/tags",
+                           API_Name: "events/Tags",
                            parameters: ["withDefault": "1"])!
         
         var request = URLRequest(url: url)
@@ -189,6 +191,7 @@ class TagPickerView: UIViewController {
             
             guard error == nil else {
                 print(error!)
+                // TODO: Need to display some error alert here.
                 return
             }
             
@@ -258,6 +261,9 @@ class TagPickerView: UIViewController {
             case "success":
                 print("successfully updated tags")
                 User.current!.tags = tagsArray
+                DispatchQueue.main.async {
+                    self.loginVC.mainTabsVC.openScreen()
+                }
             default:
                 break
             }

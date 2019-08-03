@@ -21,9 +21,9 @@ let PASSWORD = "__replace__"
 let INTERNAL_ERROR = "internal error"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
-let MAIN_TINT = UIColor(red: 1.0, green: 127/255, blue: 114/255, alpha: 1.0)
+let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
-let MAIN_TINT_DARK = UIColor(red: 222/255, green: 97/255, blue: 82/255, alpha: 1)
+let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
 
 let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
 
