@@ -1,29 +1,29 @@
 //
-//  FinishRegistration.swift
+//  OrgFinishRegistration.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/6/19.
+//  Created by Jia Rui Shan on 2019/8/5.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 
-/// A special view controller that can display an account registration status.
+class OrgFinishRegistration: UIViewController {
 
-class FinishRegistration: UIViewController {
-    
     /// A copy of the information the user entered on the registration page.
-    var userInputs: [String : String]?
-    var regVC: RegisterTableController?
+    var registrationData: OrganizationRegistrationData!
+    
+    /// The parent view controller.
+    var regVC: RegisterOrganization!
     
     private var spinner: UIActivityIndicatorView!
     private var spinnerCaption: UILabel!
     private var button: UIButton!
     private var completionImage: UIImageView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .white
         
         spinner = {
@@ -44,7 +44,7 @@ class FinishRegistration: UIViewController {
             let label = UILabel()
             label.textAlignment = .center
             label.lineBreakMode = .byWordWrapping
-            label.numberOfLines = 2
+            label.numberOfLines = 0
             label.text = "Creating your Account..."
             label.font = .systemFont(ofSize: 18)
             label.textColor = UIColor(white: 0.3, alpha: 1)
@@ -114,7 +114,7 @@ class FinishRegistration: UIViewController {
      Displays a failure message.
      
      - Parameters:
-        - msg: The failure message to display to the user.
+     - msg: The failure message to display to the user.
      */
     
     private func failed(msg: String) {
@@ -130,7 +130,7 @@ class FinishRegistration: UIViewController {
     
     private func succeeded() {
         spinner.stopAnimating()
-        spinnerCaption.text = "Your Eventure account was created!"
+        spinnerCaption.text = "Your organization account was created!"
         button.isHidden = false
         button.setTitle("Return to Login", for: .normal)
         completionImage.image = #imageLiteral(resourceName: "done")
@@ -141,28 +141,11 @@ class FinishRegistration: UIViewController {
     
     private func createAccount() {
         
-        // First copy the user inputs from the registration screen to the parameters
-        guard var parameters = self.userInputs else {
-            return
-        }
-        
-        // Add `displayedName` parameter
-        if parameters["displayedName"] == nil {
-            parameters["displayedName"] = parameters["email"]
-        }
-        
-        // Add `date` parameter
-        let df = ISO8601DateFormatter()
-        let dateStr = df.string(from: Date()) // pass this to the URL parameters
-        parameters["date"] = dateStr
-        
-        print("About to register account with these parameters:\n \(parameters)")
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/Register",
-                           parameters: parameters)!
+        let url = URL(string: API_BASE_URL + "account/RegisterOrg")!
         
         var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addMultipartBody(parameters: registrationData.parameters, files: registrationData.fileData)
         
         // Authentication
         request.addAuthHeader()
@@ -175,28 +158,18 @@ class FinishRegistration: UIViewController {
                 return
             }
             
-            if let str = String(data: data!, encoding: .ascii) {
-                print(str)
+            if let str = String(data: data!, encoding: .utf8) {
                 DispatchQueue.main.async {
-                    switch str {
-                    case "success":
+                    if str == "success" {
                         self.succeeded()
-                    case "invalid email":
-                        self.failed(msg: "The provided email was invalid.")
-                    case "internal error":
-                        self.failed(msg: "The server is temporarily unavailable.")
-                    case "email exists":
-                        self.failed(msg: "The provided email is already registered.")
-                    default:
-                        self.failed(msg: "An unknown error has occurred.")
+                    } else {
+                        self.failed(msg: str)
                     }
                 }
-                
             }
         }
         
         task.resume()
         
     }
-
 }

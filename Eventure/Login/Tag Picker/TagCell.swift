@@ -54,11 +54,18 @@ class TagCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            if isSelected {
-                bgTint.backgroundColor = MAIN_TINT_DARK
-            } else {
-                bgTint.backgroundColor = MAIN_TINT
-            }
+            UIView.animate(
+                withDuration: 0.1,
+                delay: 0,
+                options: .curveEaseOut,
+                animations: {
+                    if self.isSelected {
+                        self.bgTint.backgroundColor = MAIN_TINT_DARK
+                    } else {
+                        self.bgTint.backgroundColor = MAIN_TINT
+                    }
+                },
+                completion: nil)
         }
     }
     
