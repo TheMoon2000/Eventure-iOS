@@ -21,13 +21,13 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         field.autocapitalizationType = .none
         field.clearButtonMode = .whileEditing
         field.returnKeyType = .next
-        field.textContentType = .init(rawValue: "")
+        field.textContentType = .middleName
         return field
     }()
     
     var returnHandler: (() -> ())?
-    var completionHandler: (() -> ())?
-    var changeHandler: (() -> ())?
+    var completionHandler: ((MinimalTextCell) -> ())?
+    var changeHandler: ((MinimalTextCell) -> ())?
     
     var status: StatusIcon = .none {
         didSet {
@@ -36,13 +36,13 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
                 textField.removeConstraint(r)
             }
             
-            self.spinner.stopAnimating()
+            spinner.stopAnimating()
             
             var inset: CGFloat = -46
             
             switch status {
             case .none:
-                inset = -22
+                inset = -20
                 self.auxiliaryView.setImage(nil, for: .normal)
             case .tick:
                 for state: UIControl.State in [.normal, .highlighted] {
@@ -66,6 +66,13 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
             rightConstraint = textField.rightAnchor.constraint(equalTo: overlay.rightAnchor, constant: inset)
             rightConstraint?.isActive = true
         }
+    }
+    
+    override func becomeFirstResponder() -> Bool {
+        super.becomeFirstResponder()
+        
+        textField.becomeFirstResponder()
+        return true
     }
     
     init() {
@@ -169,7 +176,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        completionHandler?()
+        completionHandler?(self)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -178,7 +185,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     }
     
     @objc private func textDidChange() {
-        changeHandler?()
+        changeHandler?(self)
     }
 
 }

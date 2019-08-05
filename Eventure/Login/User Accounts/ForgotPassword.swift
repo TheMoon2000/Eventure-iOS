@@ -56,7 +56,7 @@ class ForgotPassword: UITableViewController {
         case (1, 0):
             let cell = MessageCell()
             cell.title = "Forgot Password"
-            cell.caption = "If your provided email is associated with an account, we will send you a link for you to reset your password."
+            cell.caption = "If the provided email is associated with an account, we will send you a link for you to reset your password."
             
             return cell
         case (1, 1):
@@ -68,7 +68,7 @@ class ForgotPassword: UITableViewController {
             cell.textField.returnKeyType = .send
             cell.textField.text = email
             
-            cell.changeHandler = {
+            cell.changeHandler = { cell in
                 self.verifyEmail(cell: cell)
             }
             
@@ -80,8 +80,6 @@ class ForgotPassword: UITableViewController {
         case (2, 0):
             let cell = ButtonCell(width: 270)
             cell.button.setTitle(buttonTitle, for: .normal)
-            cell.altButton.setTitle("Back to Login", for: .normal)
-            cell.altButton.isHidden = true
             
             cell.primaryAction = {
                 self.submitRequest()

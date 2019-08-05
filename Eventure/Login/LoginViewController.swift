@@ -240,7 +240,7 @@ class LoginViewController: UIViewController {
             view.addSubview(stack)
             
             stack.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
+            stack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15).isActive = true
             stack.topAnchor.constraint(greaterThanOrEqualTo: loginButton.bottomAnchor, constant: 15).isActive = true
             
             return stack
@@ -387,8 +387,12 @@ class LoginViewController: UIViewController {
                     UserDefaults.standard.synchronize()
                     
                 } else {
-                    //UI related events belong in main thread
                     DispatchQueue.main.async {
+                        if servermsg == "internal error" {
+                            serverMaintenanceError(vc: self)
+                            return
+                        }
+                        
                         let alert = UIAlertController(title: "Login Error", message: servermsg, preferredStyle: .alert)
                         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
                         self.present(alert, animated: true, completion: nil)
@@ -403,9 +407,29 @@ class LoginViewController: UIViewController {
     }
     
     @objc private func registerPressed() {
-        let nextVC = RegisterTableController() // RegisterController()
-        nextVC.loginView = self
-        navBar?.pushViewController(nextVC, animated: true)
+        
+        let handler: ((UIAlertAction) -> Void) = { action in
+            let nextVC: UIViewController
+            if action.title == "User Account" {
+                let vc = RegisterTableController() // RegisterController()
+                vc.loginView = self
+                nextVC = vc
+            } else {
+                let vc = RegisterOrganization()
+                vc.loginView = self
+                nextVC = vc
+            }
+            self.navBar?.pushViewController(nextVC, animated: true)
+        }
+        
+        let alert = UIAlertController(title: "What type of account do you want?", message: "A user account is used for engaging with events; an organization account is used for publishing event posts.", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "User Account", style: .default, handler: handler))
+        alert.addAction(UIAlertAction(title: "Organization Account", style: .default, handler: handler))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+        
+        
     }
     
     

@@ -21,20 +21,22 @@ class NavBackCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        let h = heightAnchor.constraint(equalToConstant: 40)
+        h.priority = .defaultHigh
+        h.isActive = true
         button = createButton()
     }
     
     private func createButton() -> UIButton {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "back"), for: .normal)
+        button.tintColor = MAIN_TINT
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         addSubview(button)
         
-        button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
-        button.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
-                                       constant: 10).isActive = true
+        button.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         button.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
         button.heightAnchor.constraint(equalToConstant: 24).isActive = true
         button.widthAnchor.constraint(equalToConstant: 50).isActive = true

@@ -125,6 +125,29 @@ class EventureAPITests: XCTestCase {
         
         wait(for: [expectation], timeout: TIMEOUT)
     }
+    
+    func testGetOrgInfo() {
+        
+        let expectation = XCTestExpectation(description: "Get org info")
+        
+        let url = URL.with(base: API_BASE_URL, API_Name: "account/GetOrgInfo", parameters: ["id": "社团"])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            XCTAssertNil(error, "error should be nil!")
+            if let msg = String(data: data!, encoding: .utf8) {
+                print(msg)
+                expectation.fulfill()
+            }
+        }
+        
+        task.resume()
+        
+        wait(for: [expectation], timeout: TIMEOUT)
+    }
 
 
     func testPerformanceExample() {

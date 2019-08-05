@@ -24,6 +24,7 @@ let INTERNAL_ERROR = "internal error"
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
+let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
 
 let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
 
@@ -165,6 +166,37 @@ extension URLRequest {
         let token = "\(USERNAME):\(PASSWORD)".data(using: .utf8)!.base64EncodedString()
         self.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
     }
+    
+    /// Add multipart data to the request.
+    mutating func addMultipartBody(parameters: [String : String], files: [String: Data] = [:]) {
+        
+        // Build the body data
+        
+        let boundary = "----Eventure-API-Multipart-Boundary"
+        let prefix = "--" + boundary + "\r\n"
+        
+        var data = Data()
+        
+        for parameter in parameters {
+            data.append(string: prefix)
+            data.append(string: "Content-Disposition: form-data; name=\"\(parameter.key)\"\r\n\r\n")
+            data.append(string: parameter.value + "\r\n")
+        }
+        
+        for file in files {
+            data.append(string: prefix)
+            data.append(string: "Content-Disposition: form-data; name=\"\(file.key)\"\r\n")
+            data.append(string: "Content-Type: image/png\r\n\r\n")
+            data.append(file.value)
+            data.append(string: "\r\n")
+        }
+        
+        data.append(string: "--" + boundary + "--")
+        
+        // Begin mutating the request
+        self.addValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        self.httpBody = data
+    }
 }
 
 extension UITextField {
@@ -174,6 +206,14 @@ extension UITextField {
         self.leftViewMode = .always
     }
 }
+
+extension Data {
+    mutating func append(string: String) {
+        let data = string.data(using: .utf8)!
+        append(data)
+    }
+}
+
 /// Documents directory URL.
 let DOCUMENTS_URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
