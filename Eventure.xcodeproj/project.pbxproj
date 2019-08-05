@@ -85,7 +85,7 @@
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		CCE176A622BD742F003E3315 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		CCE176A822BD773A003E3315 /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
-		CCF5896B22A22E0300F509C4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Eventure/Login/LoginViewController.swift; sourceTree = SOURCE_ROOT; };
+		CCF5896B22A22E0300F509C4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = /Users/victorli/Desktop/Eventure/frontend/Eventure/Login/LoginViewController.swift; sourceTree = "<absolute>"; };
 		CCF8CF16229E398300F3C6B8 /* Example file.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "Example file.pdf"; path = "../Eventure/Example file.pdf"; sourceTree = "<group>"; };
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
