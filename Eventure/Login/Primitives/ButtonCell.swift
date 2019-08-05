@@ -33,7 +33,7 @@ class ButtonCell: UITableViewCell {
         button.setTitle("Sign Up", for: .normal)
         button.tintColor = .white
         button.backgroundColor = MAIN_TINT
-         button.titleLabel?.font = .systemFont(ofSize: 18.5, weight: .semibold)
+        button.titleLabel?.font = .systemFont(ofSize: 18.5, weight: .semibold)
         button.layer.cornerRadius = 26
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -42,8 +42,8 @@ class ButtonCell: UITableViewCell {
         button.heightAnchor.constraint(equalToConstant: 52).isActive = true
         button.widthAnchor.constraint(equalToConstant: width).isActive = true
         button.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
-        button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
-        button.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
+        button.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
+        button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40).isActive = true
         
         button.addTarget(self, action: #selector(primaryButtonTriggered), for: .touchUpInside)
         button.addTarget(self, action: #selector(primaryButtonPressed(_:)), for: .touchDown)
