@@ -18,6 +18,7 @@ class MainTabBarController: UITabBarController {
         self.setupTabs()
     }
     
+    
     private func setupTabs() {
         
         tabBar.tintColor = MAIN_TINT
@@ -48,6 +49,13 @@ class MainTabBarController: UITabBarController {
         print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
     }
     
+    func isLoggedIn(loginNavBar: InteractivePopNavigationController) {
+        print(UserDefaults.standard.bool(forKey: "m"))
+        if (!UserDefaults.standard.bool(forKey: "m")) {
+            print(UserDefaults.standard.bool(forKey: "m"))
+            self.present(loginNavBar, animated: false, completion: nil)
+        }
+    }
     /*
      // MARK: - Navigation
      

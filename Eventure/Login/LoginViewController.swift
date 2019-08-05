@@ -383,6 +383,8 @@ class LoginViewController: UIViewController {
                             self.mainTabsVC.openScreen()
                         }
                     }
+                    UserDefaults.standard.setValue(true, forKey: "m")
+                    UserDefaults.standard.synchronize()
                     
                 } else {
                     //UI related events belong in main thread
