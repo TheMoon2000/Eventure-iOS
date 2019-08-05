@@ -431,8 +431,9 @@ class LoginViewController: UIViewController {
         } else if org == nil {
             handleUserLogin(user: user!)
         } else {
-            let alert = UIAlertController(title: "Multiple Accounts Detected", message: "The login credential is associated with both a user account and an organization account. Which one would you like to login as?", preferredStyle: .actionSheet)
-            alert.addAction(.init(title: "As User", style: .default, handler: {
+            let alert = UIAlertController(title: "Multiple Accounts Detected", message: "The login credential is associated with both a user account and an organization account. Which identity would you like to sign in as?", preferredStyle: .actionSheet)
+            let username = user!.displayedName == user!.email ? "user" : user!.displayedName
+            alert.addAction(.init(title: "As \(username)", style: .default, handler: {
                 action in
                 
                 DispatchQueue.main.async {
