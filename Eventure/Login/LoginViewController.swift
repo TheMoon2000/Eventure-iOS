@@ -162,6 +162,7 @@ class LoginViewController: UIViewController {
             usr.placeholder = "Email / Organization ID"
             usr.keyboardType = .emailAddress
             usr.adjustsFontSizeToFitWidth = true
+            usr.textContentType = .emailAddress
             usr.returnKeyType = .next
             prepareField(textfield: usr)
             usr.translatesAutoresizingMaskIntoConstraints = false
