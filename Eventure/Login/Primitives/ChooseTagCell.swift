@@ -10,10 +10,11 @@ import UIKit
 
 class ChooseTagCell: UITableViewCell {
     
-    private var parentVC: UIViewController!
+    private var parentVC: RegisterOrganization!
     private(set) var selectedTags = Set<String>() {
         didSet {
-            print("selected tags: \(selectedTags)")
+            parentVC.registrationData.tags = selectedTags.description
+            print(parentVC.registrationData)
         }
     }
     
@@ -39,7 +40,7 @@ class ChooseTagCell: UITableViewCell {
     private var statusIcon: UIImageView!
     private var disclosure: UIImageView!
 
-    required init(vc: UIViewController) {
+    required init(vc: RegisterOrganization) {
         super.init(style: .default, reuseIdentifier: nil)
         
         parentVC = vc

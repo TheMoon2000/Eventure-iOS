@@ -61,10 +61,8 @@ class User: CustomStringConvertible {
     var password_MD5: String
     var displayedName: String
     var gender: Gender
-    var isPublisher: Bool
-    var subscriptions: [String]
-    var tags: [String]
-    var activated: Bool
+    var subscriptions = [String]()
+    var tags = [String]()
     var dateRegistered: String // Only for debugging purpose
     
     enum Gender: Int {
@@ -82,21 +80,15 @@ class User: CustomStringConvertible {
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
         displayedName = dictionary["Displayed name"]?.string ?? ""
         gender = Gender(rawValue: (dictionary["Gender"]?.int ?? -1)) ?? .unspecified
-        isPublisher = (dictionary["Publisher"]?.int ?? 0) == 0
         
         if let subscription_raw = dictionary["Subscriptions"]?.string {
             subscriptions = (JSON(parseJSON: subscription_raw).arrayObject as? [String]) ?? [String]()
-        } else {
-            subscriptions = [String]()
         }
         
         if let tags_raw = dictionary["Tags"]?.string {
             tags = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
-        } else {
-            tags = [String]()
         }
         
-        activated = (dictionary["Activated"]?.int ?? 0) == 0
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
     }
     
@@ -105,11 +97,60 @@ class User: CustomStringConvertible {
         str += "  uuid = \(uuid)\n"
         str += "  email = \(email)\n"
         str += "  gender = \(gender.rawValue)\n"
-        str += "  isPublisher = \(isPublisher)\n"
         str += "  subscriptions = \(subscriptions)\n"
         str += "  tags = \(tags)\n"
-        str += "  activated = \(activated)\n"
         str += "  dateRegistered = \(dateRegistered)"
+        
+        return str
+    }
+}
+
+class Organization: CustomStringConvertible {
+    static var current: Organization?
+    
+    var id: String
+    var title: String
+    var orgDescription: String
+    var website: String
+    var members = [String]()
+    var password_MD5: String
+    var tags = [String]()
+    var contactName: String
+    var contactEmail: String
+    var active: Bool
+    var dateRegistered: String
+    
+    init(orgInfo: JSON) {
+        let dictionary = orgInfo.dictionary!
+        
+        id = dictionary["ID"]?.string ?? ""
+        title = dictionary["Title"]?.string ?? ""
+        orgDescription = dictionary["Description"]?.string ?? ""
+        website = dictionary["Website"]?.string ?? ""
+        
+        if let members_raw = dictionary["Members"]?.string {
+            members = (JSON(parseJSON: members_raw).arrayObject as? [String]) ?? [String]()
+        }
+        
+        if let tags_raw = dictionary["Tags"]?.string {
+            tags = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+        } else {
+            tags = [String]()
+        }
+        
+        password_MD5 = dictionary["Password MD5"]?.string ?? ""
+        contactName = dictionary["Name"]?.string ?? ""
+        contactEmail = dictionary["Email"]?.string ?? ""
+        active = (dictionary["Active"]?.int ?? 1) == 1
+        dateRegistered = dictionary["Date registered"]?.string ?? ""
+    }
+    
+    var description: String {
+        var str = "Organization \"\(title)\":\n"
+        str += "  id = \(id)\n"
+        str += "  website = \(website)\n"
+        str += "  tags = \(tags.description)\n"
+        str += "  date registered = \(dateRegistered)"
         
         return str
     }
@@ -221,6 +262,8 @@ let DOCUMENTS_URL = FileManager.default.urls(for: .documentDirectory, in: .userD
 let CACHES = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
 
 
+// MARK: - Standard alerts
+
 func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
     let alert = UIAlertController(title: "Expected Error", message: "Oops, looks like our server is unavailable or under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
@@ -230,5 +273,18 @@ func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
         }
     }))
     
+    vc.present(alert, animated: true, completion: nil)
+}
+
+func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) {
+    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+    alert.title = "Unable to Connect"
+    alert.message = "Please check your internet connection."
+    alert.addAction(.init(title: "OK", style: .default, handler: {
+        action in
+        DispatchQueue.main.async {
+            handler?()
+        }
+    }))
     vc.present(alert, animated: true, completion: nil)
 }

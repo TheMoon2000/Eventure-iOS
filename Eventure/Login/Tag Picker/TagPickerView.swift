@@ -220,8 +220,11 @@ class TagPickerView: UIViewController {
             data, response, error in
             
             guard error == nil else {
-                print(error!)
-                // TODO: Need to display some error alert here.
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) {
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
                 return
             }
             

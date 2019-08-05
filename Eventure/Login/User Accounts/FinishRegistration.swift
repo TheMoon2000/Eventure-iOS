@@ -166,17 +166,10 @@ class FinishRegistration: UIViewController {
             if let str = String(data: data!, encoding: .ascii) {
                 print(str)
                 DispatchQueue.main.async {
-                    switch str {
-                    case "success":
+                    if str == "success" {
                         self.succeeded()
-                    case "invalid email":
-                        self.failed(msg: "The provided email was invalid.")
-                    case "internal error":
-                        self.failed(msg: "The server is temporarily unavailable.")
-                    case "email exists":
-                        self.failed(msg: "The provided email is already registered.")
-                    default:
-                        self.failed(msg: "An unknown error has occurred.")
+                    } else {
+                        self.failed(msg: str)
                     }
                 }
                 

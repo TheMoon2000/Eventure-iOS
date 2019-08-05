@@ -138,7 +138,7 @@ class EventureAPITests: XCTestCase {
             data, response, error in
             
             XCTAssertNil(error, "error should be nil!")
-            if let msg = String(data: data!, encoding: .utf8) {
+            if let msg = String(data: data!, encoding: .ascii) {
                 print(msg)
                 expectation.fulfill()
             }

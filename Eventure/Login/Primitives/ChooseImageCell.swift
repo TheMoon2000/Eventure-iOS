@@ -10,7 +10,7 @@ import UIKit
 
 class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    private var parentVC: UIViewController!
+    private var parentVC: RegisterOrganization!
     private var overlay: UIView!
     private var titleLabel: UILabel!
     private var logo: UIImageView!
@@ -18,7 +18,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
     
     private var logoShadeColor = UIColor(white: 0.92, alpha: 1)
 
-    init(vc: UIViewController) {
+    init(vc: RegisterOrganization) {
         super.init(style: .default, reuseIdentifier: nil)
         
         parentVC = vc
@@ -106,6 +106,8 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         logo.image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         logo.backgroundColor = nil
         clearButton.isHidden = false
+        logo.layer.borderWidth = 0
+        parentVC.registrationData.logo = logo.image
         picker.dismiss(animated: true, completion: nil)
     }
     
@@ -118,6 +120,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
                 self.logo.backgroundColor = self.logoShadeColor
                 self.logo.image = nil
                 self.clearButton.isHidden = true
+                self.logo.layer.borderWidth = 1
             },
             completion: nil)
         

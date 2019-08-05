@@ -46,7 +46,7 @@ class OrgFinishRegistration: UIViewController {
             label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 0
             label.text = "Creating your Account..."
-            label.font = .systemFont(ofSize: 18)
+            label.font = .systemFont(ofSize: 18, weight: .medium)
             label.textColor = UIColor(white: 0.3, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -102,8 +102,8 @@ class OrgFinishRegistration: UIViewController {
         self.dismiss(animated: true, completion: nil)
         
         if sender.title(for: .normal) == "Return to Login" {
-            self.regVC?.loginView?.navBar?.popViewController(animated: true)
-            let alert = UIAlertController(title: "New Account Requires Activation", message: "Please check your inbox to verify your email address and activate your account.", preferredStyle: .alert)
+            regVC.navigationController?.popViewController(animated: true)
+            let alert = UIAlertController(title: "New Account Requires Activation", message: "Please check your inbox to verify your email address and activate your organization account.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.regVC?.loginView?.present(alert, animated: true, completion: nil)
         }
@@ -154,7 +154,11 @@ class OrgFinishRegistration: UIViewController {
             data, response, error in
             
             guard error == nil else {
-                print(error!)
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self, handler: {
+                        self.dismiss(animated: true, completion: nil)
+                    })
+                }
                 return
             }
             

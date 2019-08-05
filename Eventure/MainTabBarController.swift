@@ -44,9 +44,13 @@ class MainTabBarController: UITabBarController {
     }
     
     /// Should be called when user finished login.
-    func openScreen() {
+    func openScreen(isUserAccount: Bool = true) {
         dismiss(animated: true, completion: nil)
-        print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
+        if isUserAccount {
+            print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
+        } else {
+            print("Logged in as organization '\(Organization.current!.title)'")
+        }
     }
     
     func isLoggedIn(loginNavBar: InteractivePopNavigationController) {

@@ -344,7 +344,7 @@ class LoginViewController: UIViewController {
         
         // Construct the URL parameters to be delivered
         let loginParameters = [
-            "email": username,
+            "login": username,
             "password": password
         ]
         
@@ -363,29 +363,27 @@ class LoginViewController: UIViewController {
             }
             
             guard error == nil else {
-                print(error!); return
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
             }
             
             do {
                 let result = try JSON(data: data!).dictionary
                 let servermsg = result?["status"]?.stringValue
                 if (servermsg == "success") {
-                    let userInfo = result!["user info"]!
-                    User.current = User(userInfo: userInfo)
-                    if userInfo.dictionary?["Tags"] == "[]" {
-                        let nextVC = TagPickerView()
-                        nextVC.loginVC = self
-                        DispatchQueue.main.async {
-                            self.present(nextVC, animated: true, completion: nil)
-                        }
-                    } else {
-                        DispatchQueue.main.async {
-                            self.mainTabsVC.openScreen()
-                        }
+                    var userObject: User?
+                    var orgObject: Organization?
+                    if let userInfo = result!["user info"] {
+                        userObject = User(userInfo: userInfo)
                     }
-                    UserDefaults.standard.setValue(true, forKey: "m")
-                    UserDefaults.standard.synchronize()
-                    
+                    if let orgInfo = result!["org info"] {
+                        orgObject = Organization(orgInfo: orgInfo)
+                    }
+                    DispatchQueue.main.async {
+                        self.handleLoginResults(user: userObject, org: orgObject)
+                    }
                 } else {
                     DispatchQueue.main.async {
                         if servermsg == "internal error" {
@@ -403,6 +401,57 @@ class LoginViewController: UIViewController {
             }
         }
         task.resume()
+        
+    }
+    
+    private func handleLoginResults(user: User?, org: Organization?) {
+        
+        func handleUserLogin(user: User) {
+            User.current = user
+            
+            if user.tags.isEmpty {
+                let nextVC = TagPickerView()
+                nextVC.loginVC = self
+                present(nextVC, animated: true, completion: nil)
+            } else {
+                mainTabsVC.openScreen()
+            }
+            
+            UserDefaults.standard.setValue(true, forKey: "m")
+            UserDefaults.standard.synchronize()
+        }
+        
+        func handleOrgLogin(org: Organization) {
+            Organization.current = org
+            mainTabsVC.openScreen(isUserAccount: false)
+        }
+        
+        if user == nil {
+            handleOrgLogin(org: org!)
+        } else if org == nil {
+            handleUserLogin(user: user!)
+        } else {
+            let alert = UIAlertController(title: "Multiple Accounts Detected", message: "The login credential is associated with both a user account and an organization account. Which one would you like to login as?", preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "As User", style: .default, handler: {
+                action in
+                
+                DispatchQueue.main.async {
+                    handleUserLogin(user: user!)
+                }
+            }))
+            
+            alert.addAction(.init(title: "As '\(org!.title)'", style: .default, handler: { action in
+                
+                DispatchQueue.main.async {
+                    handleOrgLogin(org: org!)
+                }
+            }))
+            
+            alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(alert, animated: true, completion: nil)
+        }
+        
         
     }
     

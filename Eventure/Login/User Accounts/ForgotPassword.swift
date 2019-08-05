@@ -165,11 +165,8 @@ class ForgotPassword: UITableViewController {
             }
             
             guard error == nil else {
-                alert.title = "Unable to Connect"
-                alert.message = "Please check your internet connection."
-                alert.addAction(.init(title: "OK", style: .default, handler: nil))
                 DispatchQueue.main.async {
-                    self.present(alert, animated: true, completion: nil)
+                    internetUnavailableError(vc: self)
                 }
                 return
             }
@@ -177,9 +174,9 @@ class ForgotPassword: UITableViewController {
             let msg = String(data: data!, encoding: .ascii) ?? ""
             switch msg {
             case "internal error":
-                alert.title = "Internal Error"
-                alert.message = "Our server is termporarily unavailable. Please try again later."
-                alert.addAction(.init(title: "OK", style: .default, handler: nil))
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
             case "not found":
                 alert.title = "No Matches Found"
                 alert.message = "Your provided email address does not match an Eventure account. Please check that you have entered it correctly."

@@ -72,7 +72,6 @@ class RegisterOrganization: UITableViewController {
             cell.textField.placeholder = "Organization Title"
             cell.textField.autocapitalizationType = .words
             cell.textField.enablesReturnKeyAutomatically = true
-            cell.textField.keyboardType = .asciiCapable
             cell.textField.returnKeyType = .next
             
             cell.changeHandler = { cell in
@@ -220,6 +219,10 @@ class RegisterOrganization: UITableViewController {
                 self.registrationData.contactName = cell.textField.text!
             }
             
+            cell.completionHandler = { cell in
+                self.verifyContactName(cell)
+            }
+            
             cell.returnHandler = {
                 self.pageCells[10].becomeFirstResponder()
             }
@@ -256,6 +259,8 @@ class RegisterOrganization: UITableViewController {
         let registerButtonCell: UITableViewCell = {
             let cell = ButtonCell(width: 220)
             cell.button.setTitle("Register", for: .normal)
+            cell.button.isEnabled = false
+            cell.alpha = DISABLED_ALPHA
             cell.primaryAction = {
                 self.registerOrg()
             }
@@ -348,6 +353,8 @@ class RegisterOrganization: UITableViewController {
         let finishScreen = OrgFinishRegistration()
         finishScreen.regVC = self
         finishScreen.registrationData = registrationData
+        
+        present(finishScreen, animated: true, completion: nil)
     }
     
 }
@@ -524,6 +531,14 @@ extension RegisterOrganization {
         } else {
             passwordCell.status = password.count >= 8 && password.hasPrefix(retype)  ? .none : .fail
             retypeCell.status = passwordCell.status
+        }
+    }
+    
+    private func verifyContactName(_ cell: MinimalTextCell) {
+        if !cell.textField.text!.isEmpty && cell.textField.text!.count < 255 {
+            cell.status = .tick
+        } else {
+            cell.status = .fail
         }
     }
 }
