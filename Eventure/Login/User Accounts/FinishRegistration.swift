@@ -13,7 +13,7 @@ import UIKit
 class FinishRegistration: UIViewController {
     
     /// A copy of the information the user entered on the registration page.
-    var userInputs: [String : String]?
+    var registrationData: UserRegistrationData!
     var regVC: RegisterTableController?
     
     private var spinner: UIActivityIndicatorView!
@@ -141,26 +141,14 @@ class FinishRegistration: UIViewController {
     
     private func createAccount() {
         
-        // First copy the user inputs from the registration screen to the parameters
-        guard var parameters = self.userInputs else {
-            return
+        // Add `displayedName` parameter if it's initially empty
+        if registrationData.displayName.isEmpty {
+            registrationData.displayName = registrationData.email
         }
-        
-        // Add `displayedName` parameter
-        if parameters["displayedName"] == nil {
-            parameters["displayedName"] = parameters["email"]
-        }
-        
-        // Add `date` parameter
-        let df = ISO8601DateFormatter()
-        let dateStr = df.string(from: Date()) // pass this to the URL parameters
-        parameters["date"] = dateStr
-        
-        print("About to register account with these parameters:\n \(parameters)")
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/Register",
-                           parameters: parameters)!
+                           parameters: registrationData.parameters)!
         
         var request = URLRequest(url: url)
         
