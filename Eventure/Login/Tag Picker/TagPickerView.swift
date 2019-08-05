@@ -21,20 +21,31 @@ class TagPickerView: UIViewController {
     private var bottomBanner: UIVisualEffectView!
     private var continueButton: UIButton!
     
+    var customContinueMethod: ((TagPickerView) -> ())?
+    var customTitle: String?
+    var customSubtitle: String?
+    var customButtonTitle: String?
+    var maxPicks: Int?
+    
     var tagPicker: UICollectionView!
     var tags = [String]()
     var selectedTags = Set<String>() {
         didSet {
-            if selectedTags.isEmpty {
-                continueButton.isUserInteractionEnabled = false
-                UIView.animate(withDuration: 0.15) {
-                    self.continueButton.backgroundColor = MAIN_DISABLED
-                }
-            } else {
-                continueButton.isUserInteractionEnabled = true
-                UIView.animate(withDuration: 0.15) {
-                    self.continueButton.backgroundColor = MAIN_TINT
-                }
+            if tags.isEmpty { return }
+            updateUI()
+        }
+    }
+    
+    private func updateUI() {
+        if selectedTags.isEmpty || maxPicks != nil && maxPicks! < selectedTags.count {
+            continueButton.isUserInteractionEnabled = false
+            UIView.animate(withDuration: 0.15) {
+                self.continueButton.backgroundColor = MAIN_DISABLED
+            }
+        } else {
+            continueButton.isUserInteractionEnabled = true
+            UIView.animate(withDuration: 0.15) {
+                self.continueButton.backgroundColor = MAIN_TINT
             }
         }
     }
@@ -42,7 +53,7 @@ class TagPickerView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .init(white: 0.95, alpha: 1)
         
         topBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -52,18 +63,25 @@ class TagPickerView: UIViewController {
             banner.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             banner.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             banner.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            banner.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 130).isActive = true
             
             // Banner content
             
             titleLabel = {
                 let label = UILabel()
-                label.text = "What Interests You?"
-                label.font = .systemFont(ofSize: 26, weight: .semibold)
+                label.text = customTitle ?? "What Interests You?"
+                label.textAlignment = .center
+                label.lineBreakMode = .byWordWrapping
+                label.numberOfLines = 0
+                if customSubtitle == "" {
+                    label.font = .systemFont(ofSize: 23, weight: .medium)
+                } else {
+                    label.font = .systemFont(ofSize: 26, weight: .semibold)
+                }
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
                 
-                label.centerXAnchor.constraint(equalTo: banner.centerXAnchor).isActive = true
+                label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+                label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
                 label.topAnchor.constraint(equalTo: banner.safeAreaLayoutGuide.topAnchor,
                                            constant: 30).isActive = true
                 
@@ -72,7 +90,8 @@ class TagPickerView: UIViewController {
             
             subtitleLabel = {
                 let label = UILabel()
-                label.text = "Pick at least one. The more the better!"
+                label.text = customSubtitle ?? "Pick at least one. The more the better!"
+                label.numberOfLines = 0
                 label.font = .systemFont(ofSize: 16)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
@@ -80,8 +99,16 @@ class TagPickerView: UIViewController {
                 label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
                 label.centerXAnchor.constraint(equalTo: banner.centerXAnchor).isActive = true
                 
+                if label.text!.isEmpty {
+                    label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -20).isActive = true
+                } else {
+                    label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -30).isActive = true
+                }
+                
                 return label
             }()
+            
+            banner.layoutIfNeeded()
             
             return banner
         }()
@@ -89,11 +116,11 @@ class TagPickerView: UIViewController {
 
         tagPicker = {
             let picker = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-            picker.backgroundColor = .init(white: 0.95, alpha: 1)
+            picker.backgroundColor = .clear
             picker.register(TagCell.classForCoder(), forCellWithReuseIdentifier: "tag")
             picker.allowsMultipleSelection = true
-            picker.contentInset.top = 130 // Arbitrary height of top banner
-            picker.scrollIndicatorInsets.top = 130
+            picker.contentInset.top = topBanner.frame.height
+            picker.scrollIndicatorInsets.top = topBanner.frame.height
             picker.contentInset.bottom = 75 // The arbitrary height of bottom banner
             picker.scrollIndicatorInsets.bottom = 75
             picker.contentInsetAdjustmentBehavior = .always
@@ -102,8 +129,8 @@ class TagPickerView: UIViewController {
             picker.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(picker, belowSubview: topBanner)
             
-            picker.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-            picker.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            picker.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
+            picker.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
             picker.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             picker.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
@@ -152,7 +179,7 @@ class TagPickerView: UIViewController {
         
         continueButton = {
             let button = UIButton()
-            button.setTitle("Continue", for: .normal)
+            button.setTitle(customButtonTitle ?? "Continue", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
             button.backgroundColor = MAIN_DISABLED
             button.isUserInteractionEnabled = false
@@ -178,6 +205,9 @@ class TagPickerView: UIViewController {
     }
 
     private func loadTags() {
+        
+        self.continueButton.backgroundColor = MAIN_DISABLED
+        self.continueButton.isUserInteractionEnabled = false
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/Tags",
@@ -206,6 +236,7 @@ class TagPickerView: UIViewController {
                         self.spinner.stopAnimating()
                         self.spinnerLabel.isHidden = true
                         self.tagPicker.reloadSections(IndexSet(arrayLiteral: 0))
+                        self.updateUI()
                     }
                 }
             }
@@ -235,6 +266,11 @@ class TagPickerView: UIViewController {
     }
     
     @objc private func completePickingTags() {
+        if customContinueMethod != nil {
+            customContinueMethod?(self)
+            return
+        }
+        
         let url = URL(string: API_BASE_URL + "account/UpdateTags")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -286,6 +322,9 @@ extension TagPickerView: UICollectionViewDataSource {
         let tagCell = collectionView.dequeueReusableCell(withReuseIdentifier: "tag", for: indexPath) as! TagCell
         tagCell.tagLabel.text = tags[indexPath.row]
         tagCell.isSelected = selectedTags.contains(tags[indexPath.row])
+        if tagCell.isSelected {
+            collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .init())
+        }
         return tagCell
     }
     
@@ -301,6 +340,7 @@ extension TagPickerView: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedTags.insert(tags[indexPath.row])
     }
+
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         selectedTags.remove(tags[indexPath.row])
@@ -342,7 +382,9 @@ extension TagPickerView: UICollectionViewDelegateFlowLayout {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { context in
-            self.tagPicker.contentInset.top = self.topBanner.frame.height - self.view.safeAreaLayoutGuide.layoutFrame.minX
+            self.topBanner.layoutIfNeeded()
+            self.tagPicker.contentInset.top = self.topBanner.frame.height
+            self.tagPicker.scrollIndicatorInsets.top = self.topBanner.frame.height
             self.tagPicker.collectionViewLayout.invalidateLayout()
         }, completion: nil)
     }

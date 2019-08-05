@@ -194,7 +194,7 @@ extension URLRequest {
         data.append(string: "--" + boundary + "--")
         
         // Begin mutating the request
-        self.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        self.addValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         self.httpBody = data
     }
 }

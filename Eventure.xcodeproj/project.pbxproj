@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		C9F6A18CE8AC4FF475E40681 /* Pods_EventureAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18C8D1BD2B7BB54420FBBFA9 /* Pods_EventureAPITests.framework */; };
+		CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC101FF922F5473B0025217A /* RegisterOrganization.swift */; };
+		CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC101FFC22F558890025217A /* ChooseImageCell.swift */; };
+		CC10200322F695770025217A /* ChooseTagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC10200222F695770025217A /* ChooseTagCell.swift */; };
 		CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F54E229AD4EB008FABEA /* AppDelegate.swift */; };
 		CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC18F552229AD4EB008FABEA /* Main.storyboard */; };
 		CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CC18F555229AD4EB008FABEA /* Eventure.xcdatamodeld */; };
@@ -19,27 +22,25 @@
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC2538AC22F4E47700690503 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2538AB22F4E47700690503 /* AccountViewController.swift */; };
 		CC2538AD22F4E47700690503 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2538AB22F4E47700690503 /* AccountViewController.swift */; };
+		CC3F000122F7EFEC00996440 /* OrgFinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3F000022F7EFEB00996440 /* OrgFinishRegistration.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
+		CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69A08D22F699F500C9920E /* SeparatorView.swift */; };
 		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
-		CC6D277022F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
-		CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED022B98AC700248AB7 /* RegisterController.swift */; };
-		CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */; };
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
+		CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */; };
 		CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
-		CCC4A0B022F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
 		CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */; };
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
 		CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */; };
 		CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F922BC5F9900FFD251 /* ButtonCell.swift */; };
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
 		CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A822BD773A003E3315 /* ForgotPassword.swift */; };
+		CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */; };
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
-		D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */; };
-		D5632A8522E51FB5006D7594 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5632A8422E51FB5006D7594 /* PreferenceViewController.swift */; };
 		DAA8704C960D87AABD9E6D36 /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BEF396366CC2E8423941BB3 /* Pods_Eventure.framework */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,9 @@
 		63D1A1BD399D7A73CB427818 /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
 		7034A10C22D3F37E07A2F892 /* Pods-EventureAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.release.xcconfig"; sourceTree = "<group>"; };
 		CBAE5CDD93116CEE3D41AC0E /* Pods-Eventure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.release.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.release.xcconfig"; sourceTree = "<group>"; };
+		CC101FF922F5473B0025217A /* RegisterOrganization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterOrganization.swift; sourceTree = "<group>"; };
+		CC101FFC22F558890025217A /* ChooseImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseImageCell.swift; sourceTree = "<group>"; };
+		CC10200222F695770025217A /* ChooseTagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseTagCell.swift; sourceTree = "<group>"; };
 		CC18F54B229AD4EB008FABEA /* Eventure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eventure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC18F54E229AD4EB008FABEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC18F553229AD4EB008FABEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -72,12 +76,13 @@
 		CC18F569229AD570008FABEA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
 		CC2538AB22F4E47700690503 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		CC3F000022F7EFEB00996440 /* OrgFinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgFinishRegistration.swift; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
+		CC69A08D22F699F500C9920E /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
 		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
-		CC6DEED022B98AC700248AB7 /* RegisterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterController.swift; sourceTree = "<group>"; };
-		CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableTextCell.swift; sourceTree = "<group>"; };
 		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
+		CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationRegistrationData.swift; sourceTree = "<group>"; };
 		CCC4A0AE22F24EA000AB9557 /* TagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCell.swift; sourceTree = "<group>"; };
 		CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalTextCell.swift; sourceTree = "<group>"; };
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
@@ -85,13 +90,12 @@
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		CCE176A622BD742F003E3315 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		CCE176A822BD773A003E3315 /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
+		CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRegistrationData.swift; sourceTree = "<group>"; };
 		CCF5896B22A22E0300F509C4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginViewController.swift; path = Eventure/Login/LoginViewController.swift; sourceTree = SOURCE_ROOT; };
 		CCF8CF16229E398300F3C6B8 /* Example file.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "Example file.pdf"; path = "../Eventure/Example file.pdf"; sourceTree = "<group>"; };
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPSWDViewController.swift; sourceTree = "<group>"; };
-		D5632A8422E51FB5006D7594 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		F857A70E71D2037A6A5B29E1 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -122,6 +126,27 @@
 				18C8D1BD2B7BB54420FBBFA9 /* Pods_EventureAPITests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CC101FF722F546140025217A /* User Accounts */ = {
+			isa = PBXGroup;
+			children = (
+				CCC824F522BC181100FFD251 /* RegisterTableController.swift */,
+				CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */,
+				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
+				CCE176A822BD773A003E3315 /* ForgotPassword.swift */,
+			);
+			path = "User Accounts";
+			sourceTree = "<group>";
+		};
+		CC101FF822F5462D0025217A /* Organization Accounts */ = {
+			isa = PBXGroup;
+			children = (
+				CC101FF922F5473B0025217A /* RegisterOrganization.swift */,
+				CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */,
+				CC3F000022F7EFEB00996440 /* OrgFinishRegistration.swift */,
+			);
+			path = "Organization Accounts";
 			sourceTree = "<group>";
 		};
 		CC18F542229AD4EB008FABEA = {
@@ -211,10 +236,8 @@
 			children = (
 				CCF5896B22A22E0300F509C4 /* LoginViewController.swift */,
 				CC6D277122F24484007E2C5A /* Tag Picker */,
-				CCC824F522BC181100FFD251 /* RegisterTableController.swift */,
-				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
-				CCE176A822BD773A003E3315 /* ForgotPassword.swift */,
-				CCE176A522BD7364003E3315 /* Deprecated */,
+				CC101FF822F5462D0025217A /* Organization Accounts */,
+				CC101FF722F546140025217A /* User Accounts */,
 				CCE176A422BD7335003E3315 /* Primitives */,
 			);
 			path = Login;
@@ -224,23 +247,15 @@
 			isa = PBXGroup;
 			children = (
 				CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */,
+				CC69A08D22F699F500C9920E /* SeparatorView.swift */,
 				CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */,
 				CCC824F922BC5F9900FFD251 /* ButtonCell.swift */,
 				CCE176A622BD742F003E3315 /* MessageCell.swift */,
 				CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */,
+				CC10200222F695770025217A /* ChooseTagCell.swift */,
+				CC101FFC22F558890025217A /* ChooseImageCell.swift */,
 			);
 			path = Primitives;
-			sourceTree = "<group>";
-		};
-		CCE176A522BD7364003E3315 /* Deprecated */ = {
-			isa = PBXGroup;
-			children = (
-				D5632A8422E51FB5006D7594 /* PreferenceViewController.swift */,
-				CC6DEED022B98AC700248AB7 /* RegisterController.swift */,
-				CC6DEED222B98AD300248AB7 /* EditableTextCell.swift */,
-				D5191E1D22B97CD100FE570C /* ForgotPSWDViewController.swift */,
-			);
-			path = Deprecated;
 			sourceTree = "<group>";
 		};
 		CCFB7A1E229FA6810082FEC6 /* EventureAPITests */ = {
@@ -318,6 +333,11 @@
 				TargetAttributes = {
 					CC18F54A229AD4EB008FABEA = {
 						CreatedOnToolsVersion = 10.2.1;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+						};
 					};
 					CCFB7A1C229FA6810082FEC6 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -447,27 +467,30 @@
 			files = (
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */,
-				D5632A8522E51FB5006D7594 /* PreferenceViewController.swift in Sources */,
+				CC3F000122F7EFEC00996440 /* OrgFinishRegistration.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
 				CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */,
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
-				CC6DEED122B98AC700248AB7 /* RegisterController.swift in Sources */,
 				CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */,
+				CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
-				D5191E1E22B97CD100FE570C /* ForgotPSWDViewController.swift in Sources */,
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
+				CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */,
 				CC18F566229AD523008FABEA /* EventsViewController.swift in Sources */,
+				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
+				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
+				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
 				CC2538AC22F4E47700690503 /* AccountViewController.swift in Sources */,
-				CC6DEED322B98AD300248AB7 /* EditableTextCell.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
+				CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,11 +498,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCC4A0B022F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC2538AD22F4E47700690503 /* AccountViewController.swift in Sources */,
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,
 				CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */,
-				CC6D277022F23685007E2C5A /* TagPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,7 +656,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GR353CPP2V;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -655,7 +676,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GR353CPP2V;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
