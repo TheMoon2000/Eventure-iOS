@@ -11,9 +11,7 @@ import UIKit
 class ButtonCell: UITableViewCell {
 
     var button: UIButton!
-    var altButton: UIButton!
     var primaryAction: (() -> ())?
-    var secondaryAction: (() -> ())?
     var spinner: UIActivityIndicatorView!
     let width: CGFloat
     
@@ -27,7 +25,6 @@ class ButtonCell: UITableViewCell {
         
         selectionStyle = .none
         button = makeButton()
-        altButton = makeAltButton()
         spinner = makeSpinner()
     }
 
@@ -45,34 +42,14 @@ class ButtonCell: UITableViewCell {
         button.heightAnchor.constraint(equalToConstant: 52).isActive = true
         button.widthAnchor.constraint(equalToConstant: width).isActive = true
         button.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
-        button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
+        button.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        button.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
         
         button.addTarget(self, action: #selector(primaryButtonTriggered), for: .touchUpInside)
         button.addTarget(self, action: #selector(primaryButtonPressed(_:)), for: .touchDown)
         button.addTarget(self, action: #selector(primaryButtonLifted(_:)), for: [.touchUpInside, .touchUpOutside, .touchCancel, .touchDragExit])
         
         return button
-    }
-    
-    private func makeAltButton() -> UIButton {
-        let altButton = UIButton(type: .system)
-        altButton.setTitle("I Have an Account", for: .normal)
-        altButton.tintColor = .init(white: 0.7, alpha: 1)
-        altButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-        altButton.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(altButton)
-        
-        altButton.centerXAnchor.constraint(equalTo: self.button.centerXAnchor).isActive = true
-        altButton.topAnchor.constraint(equalTo: self.button.bottomAnchor,
-                                       constant: 16).isActive = true
-        altButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
-                                          constant: -30).isActive = true
-        
-        altButton.addTarget(self,
-                            action: #selector(altButtonTriggered),
-                            for: .touchUpInside)
-        
-        return altButton
     }
     
     private func makeSpinner() -> UIActivityIndicatorView {
@@ -113,14 +90,6 @@ class ButtonCell: UITableViewCell {
             action()
         } else {
             print("primary action triggered")
-        }
-    }
-    
-    @objc private func altButtonTriggered() {
-        if let action = secondaryAction {
-            action()
-        } else {
-            print("secondary action triggered")
         }
     }
 
