@@ -111,17 +111,21 @@ class User: CustomStringConvertible {
 class Organization: CustomStringConvertible {
     static var current: Organization?
     
-    var id: String
-    var title: String
-    var orgDescription: String
-    var website: String
-    var members = [String]()
-    var password_MD5: String
-    var tags = [String]()
-    var contactName: String
-    var contactEmail: String
-    var active: Bool
-    var dateRegistered: String
+    var id: String?
+    var title: String?
+    var orgDescription: String?
+    var website: String?
+    var members = [String?]()
+    var password_MD5: String?
+    var tags = [String?]()
+    var contactName: String?
+    var contactEmail: String?
+    var active: Bool?
+    var dateRegistered: String?
+    
+    init(title: String) {
+        self.title = title
+    }
     
     init(orgInfo: JSON) {
         let dictionary = orgInfo.dictionary!
@@ -149,11 +153,83 @@ class Organization: CustomStringConvertible {
     }
     
     var description: String {
-        var str = "Organization \"\(title)\":\n"
-        str += "  id = \(id)\n"
-        str += "  website = \(website)\n"
+        var str = "Organization \"\(String(describing: title))\":\n"
+        str += "  id = \(String(describing: id))\n"
+        str += "  website = \(String(describing: website))\n"
         str += "  tags = \(tags.description)\n"
-        str += "  date registered = \(dateRegistered)"
+        str += "  date registered = \(String(describing: dateRegistered))"
+        
+        return str
+    }
+    
+}
+
+class Event: CustomStringConvertible {
+    static var current: Event?
+    
+    var id: String
+    var title: String
+    var location: String
+    var time: String
+    //var eventDescription: String
+    //var eventVisual: UIImage?
+    var host: Organization
+    //var attendees = [User]()
+    var tags = [String]()
+
+    var active: Bool
+    
+    init(id: String, title: String, time: String, location: String, tags: [String], hostTitle: String) {
+        self.id = id
+        self.title = title
+        self.time = time
+        self.location = location
+        self.tags = tags
+        self.host = Organization(title: hostTitle)
+        self.active = true
+        //eventVisual = nil
+        //eventDescription = "test"
+    }
+    
+    init(eventInfo: JSON) {
+        let dictionary = eventInfo.dictionary!
+        
+        id = dictionary["ID"]?.string ?? ""
+        title = dictionary["Title"]?.string ?? ""
+        location = dictionary["Location"]?.string ?? ""
+        time = dictionary["Time"]?.string ?? ""
+        //eventDescription = dictionary["Description"]?.string ?? ""
+        let hostTitle = dictionary["Host"]?.string ?? ""
+        host = Organization(title: hostTitle)
+        
+        /*let attendees_raw = { () -> [String] in
+            var attendees_arr = [String]()
+            for a in attendees {
+                attendees_arr.append(a.email)
+            }
+            return attendees_arr
+        }()
+        
+        if let attendees_raw = dictionary["Attendees"]?.string {
+            let attendees_Email = (JSON(parseJSON: attendees_raw).arrayObject as? [String]) ?? [String]()
+        }*/
+        
+        if let tags_raw = dictionary["Tags"]?.string {
+            tags = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+        } else {
+            tags = [String]()
+        }
+        
+        
+        active = (dictionary["Active"]?.int ?? 1) == 1
+    }
+    
+    var description: String {
+        var str = "Event \"\(title)\":\n"
+        str += "  id = \(id)\n"
+        str += "  time = \(time)\n"
+        str += "  @ = \(location)\n"
+        str += "  tags = \(tags.description)"
         
         return str
     }
