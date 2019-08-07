@@ -53,7 +53,7 @@ class MainTabBarController: UITabBarController{
         if isUserAccount {
             print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
         } else {
-            print("Logged in as organization '\(Organization.current!.title)'")
+            print("Logged in as organization '\(String(describing: Organization.current!.title))'")
         }
     }
     

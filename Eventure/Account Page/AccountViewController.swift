@@ -51,7 +51,10 @@ class AccountViewController: UIViewController {
         UserDefaults.standard.set(false, forKey: USER_DEFAULT_CRED)
         UserDefaults.standard.synchronize()
         
-        present(LoginViewController(), animated: false, completion: nil)
+        let login = LoginViewController()
+        let nvc = InteractivePopNavigationController(rootViewController: login)
+        login.navBar = nvc
+        present(nvc, animated: false, completion: nil)
         //should I present to navBar? What's the consequence of mixing modal and navigation?
     }
     
