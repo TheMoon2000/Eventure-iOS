@@ -8,18 +8,18 @@
 
 import UIKit
 
-class EventsViewController: UIViewController {
-    var events: [Event] = []
-    var canvas: UITableView!
-    
+class EventsViewController: UITableViewController {
+    var events = [Event]()
+    var cells = [EventCell]()
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         title = "Events"
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         getEvents()
-        populateCanvas()
+        
         
     }
     private func randString(length: Int) -> String {
@@ -28,18 +28,49 @@ class EventsViewController: UIViewController {
     }
     private func getEvents() {
         //TODO: add Server Retrieval, now only manually creating events
-        self.events = {
-            let result = [Event]()
-            for _ in 1...5 {
-                let e = Event(id: String(Int.random(in: 1...1000)), title: randString(length: 10), time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)), location: randString(length: 10), tags: [randString(length: 4),randString(length: 4)], hostTitle: randString(length: 15))
-                events.append(e)
-            }
-            return result
-        }()
+        var result = [Event]()
+        for _ in 1...20 {
+            let e = Event(id: String(Int.random(in: 1...1000)), title: randString(length: 10), time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)), location: randString(length: 10), tags: [randString(length: 4),randString(length: 4)], hostTitle: randString(length: 15))
+            result.append(e)
+        events.append(contentsOf: result)
+        }
     }
-    private func populateCanvas() {
-        canvas = UITableView(frame: view.bounds, style: .plain)
-        
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        // #warning Incomplete implementation, return the number of sections
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return super.tableView(tableView, heightForRowAt: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // #warning Incomplete implementation, return the number of rows
+        //return [1, 4, 3, 1][section]
+        return events.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.textLabel?.text = " \(events[indexPath.row].title)"
+        return cell
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let down = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let frameHeight = scrollView.frame.height
+        print("\(down)|\(contentHeight)|\(frameHeight)")
+        if (down >= contentHeight - frameHeight) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                self.getEvents()
+                self.tableView.reloadData()
+            })
+        }
     }
     
     /*
