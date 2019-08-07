@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MainTabBarController: UITabBarController {
+class MainTabBarController: UITabBarController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,7 +17,6 @@ class MainTabBarController: UITabBarController {
         self.view.backgroundColor = .white
         self.setupTabs()
     }
-    
     
     private func setupTabs() {
         
@@ -42,6 +41,11 @@ class MainTabBarController: UITabBarController {
             return nav
         }
     }
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        let index : Int = (tabBar.items?.firstIndex(of: item))!
+        UserDefaults.standard.set(index, forKey: USER_DEFAULT_TAB)
+        UserDefaults.standard.synchronize()
+    }
     
     /// Should be called when user finished login.
     func openScreen(isUserAccount: Bool = true) {
@@ -54,10 +58,11 @@ class MainTabBarController: UITabBarController {
     }
     
     func isLoggedIn(loginNavBar: InteractivePopNavigationController) {
-        print(UserDefaults.standard.bool(forKey: "m"))
-        if (!UserDefaults.standard.bool(forKey: "m")) {
-            print(UserDefaults.standard.bool(forKey: "m"))
+        if (!UserDefaults.standard.bool(forKey: USER_DEFAULT_CRED)) {
+            print(UserDefaults.standard.bool(forKey: USER_DEFAULT_CRED))
             self.present(loginNavBar, animated: false, completion: nil)
+        } else {
+            self.selectedIndex = UserDefaults.standard.integer(forKey: USER_DEFAULT_TAB)
         }
     }
     /*

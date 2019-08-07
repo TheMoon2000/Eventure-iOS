@@ -418,7 +418,7 @@ class LoginViewController: UIViewController {
                 mainTabsVC.openScreen()
             }
             
-            UserDefaults.standard.setValue(true, forKey: "m")
+            UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)
             UserDefaults.standard.synchronize()
         }
         
