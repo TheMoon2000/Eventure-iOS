@@ -48,10 +48,11 @@ class AccountViewController: UIViewController {
     @objc private func signOutNow(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
         sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
-        UserDefaults.standard.set(false, forKey: "m")
+        UserDefaults.standard.set(false, forKey: USER_DEFAULT_CRED)
         UserDefaults.standard.synchronize()
         
-        //present(, animated: <#T##Bool#>, completion: <#T##(() -> Void)?##(() -> Void)?##() -> Void#>)
+        present(LoginViewController(), animated: false, completion: nil)
+        //should I present to navBar? What's the consequence of mixing modal and navigation?
     }
     
 

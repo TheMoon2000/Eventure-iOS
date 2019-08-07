@@ -20,6 +20,9 @@ let USERNAME = "__replace__"
 let PASSWORD = "__replace__"
 let INTERNAL_ERROR = "internal error"
 
+let USER_DEFAULT_CRED = "CREDENTIAL"
+let USER_DEFAULT_TAB = "TAB"
+
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
