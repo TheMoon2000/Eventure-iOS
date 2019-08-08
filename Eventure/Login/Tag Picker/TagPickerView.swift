@@ -229,12 +229,12 @@ class TagPickerView: UIViewController {
             }
             
             if let json = try? JSON(data: data!).dictionary {
-                if json["status"]!.stringValue == INTERNAL_ERROR {
+                if json?["status"]!.stringValue == INTERNAL_ERROR {
                     serverMaintenanceError(vc: self) {
                         self.dismiss(animated: true, completion: nil)
                     }
                 } else {
-                    self.tags = json["tags"]!.arrayObject as! [String]
+                    self.tags = json?["tags"]!.arrayObject as! [String]
                     DispatchQueue.main.async {
                         self.spinner.stopAnimating()
                         self.spinnerLabel.isHidden = true
