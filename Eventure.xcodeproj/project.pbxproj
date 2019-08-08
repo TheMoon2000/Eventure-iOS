@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -412,17 +412,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DF7D1F978FEF486AB4DD7107 /* [CP] Check Pods Manifest.lock */ = {
@@ -448,17 +447,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS12.2/SwiftyJSON.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -669,7 +667,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.themoon2000.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -689,7 +687,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.themoon2000.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
