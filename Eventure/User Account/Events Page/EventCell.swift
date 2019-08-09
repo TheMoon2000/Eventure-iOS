@@ -13,7 +13,6 @@ class EventCell: UITableViewCell {
     static let height = 200
     private var bgTint: UIView!
     private var eventView: UIView!
-    //var e: Event!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -92,7 +91,7 @@ class EventCell: UITableViewCell {
             v.value.allowsEditingTextAttributes = false
             v.value.isEditable = false
             v.value.translatesAutoresizingMaskIntoConstraints = false
-            v.value.text = v.key + ": " + vals[v.key]!!
+            v.value.text = v.key + ": " + vals[v.key]!
             v.value.font = UIFont.preferredFont(forTextStyle: .subheadline)
             v.value.doInset()
             v.value.textColor = .black
