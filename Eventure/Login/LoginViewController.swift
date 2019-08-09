@@ -418,7 +418,7 @@ class LoginViewController: UIViewController {
                 mainTabsVC.openScreen()
             }
             
-            UserDefaults.standard.setValue(true, forKey: "m")
+            UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)
             UserDefaults.standard.synchronize()
         }
         
@@ -442,7 +442,7 @@ class LoginViewController: UIViewController {
                 }
             }))
             
-            alert.addAction(.init(title: "As '\(org!.title)'", style: .default, handler: { action in
+            alert.addAction(.init(title: "As '\(String(describing: org!.title))'", style: .default, handler: { action in
                 
                 DispatchQueue.main.async {
                     handleOrgLogin(org: org!)
