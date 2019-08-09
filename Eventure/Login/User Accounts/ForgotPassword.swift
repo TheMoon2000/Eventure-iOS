@@ -183,8 +183,8 @@ class ForgotPassword: UITableViewController {
                         serverMaintenanceError(vc: self!)
                     }
                 }
-            case "invalid login":
-                let alert = UIAlertController(title: "No Matches Found", message: "Your provided email address does not match an Eventure account. Please check that you have entered it correctly.", preferredStyle: .alert)
+            case "not found":
+                let alert = UIAlertController(title: "No Matches Found", message: "Your provided email address / organization ID does not match an Eventure account. Please check that you have entered it correctly.", preferredStyle: .alert)
                 alert.addAction(.init(title: "OK", style: .default, handler: nil))
                 
                 DispatchQueue.main.async { [weak self] in
