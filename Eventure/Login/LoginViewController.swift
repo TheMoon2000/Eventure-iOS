@@ -282,7 +282,7 @@ class LoginViewController: UIViewController {
             button.translatesAutoresizingMaskIntoConstraints = false
             bottomStack.addArrangedSubview(button)
             
-            button.addTarget(self, action: #selector(forgotPSWD), for: .touchDown)
+            button.addTarget(self, action: #selector(forgotPSWD), for: .touchUpInside)
             
             return button
         }()

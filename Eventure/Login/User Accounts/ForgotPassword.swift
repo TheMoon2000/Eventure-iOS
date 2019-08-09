@@ -7,13 +7,14 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class ForgotPassword: UITableViewController {
     
     private let buttonTitle = "Send Reset Email"
+    private var contentCells = [UITableViewCell]()
     
     var loginView: LoginViewController?
-    var email = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +24,67 @@ class ForgotPassword: UITableViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.showsHorizontalScrollIndicator = false
         tableView.tintColor = MAIN_TINT
+        
+        let navCell: UITableViewCell = {
+            let cell = NavBackCell()
+            cell.action = closeVC
+            return cell
+        }()
+        contentCells.append(navCell)
+        
+        let messageCell: UITableViewCell = {
+            let cell = MessageCell()
+            cell.title = "Forgot Password"
+            cell.caption = "If the provided email is associated with an account, we will send you a link for you to reset your password."
+            
+            return cell
+        }()
+        contentCells.append(messageCell)
+        
+        let emailCell: UITableViewCell = {
+            let cell = MinimalTextCell()
+            cell.textField.placeholder = "Email / Org. Account ID"
+            cell.textField.autocorrectionType = .no
+            cell.textField.enablesReturnKeyAutomatically = true
+            cell.textField.keyboardType = .emailAddress
+            cell.textField.textContentType = .username
+            cell.textField.returnKeyType = .send
+            
+            cell.changeHandler = { cell in
+                let buttonCell = self.contentCells[3] as! ButtonCell
+                
+                if !cell.textField.text!.isEmpty {
+                    buttonCell.button.isEnabled = true
+                    buttonCell.button.alpha = 1.0
+                } else {
+                    buttonCell.button.isEnabled = false
+                    buttonCell.button.alpha = DISABLED_ALPHA
+                }
+            }
+            
+            cell.returnHandler = {
+                self.submitRequest()
+            }
+            
+            return cell
+        }()
+        contentCells.append(emailCell)
+        
+        // 3
+        let buttonCell: UITableViewCell = {
+            let cell = ButtonCell(width: 270)
+            cell.button.setTitle(buttonTitle, for: .normal)
+            
+            cell.primaryAction = {
+                self.submitRequest()
+            }
+            
+            cell.button.isEnabled = false
+            cell.button.alpha = DISABLED_ALPHA
+            
+            return cell
+        }()
+        contentCells.append(buttonCell)
     }
     
     @objc private func closeVC() {
@@ -40,107 +102,48 @@ class ForgotPassword: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView(frame: CGRect(x: 0,
-                                    y: 0,
-                                    width: 0,
-                                    height: [10, 40, 0][section]))
+        return UIView()
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
-            let cell = NavBackCell()
-            cell.action = closeVC
-            return cell
+            return contentCells[0] // Navigation cell
         case (1, 0):
-            let cell = MessageCell()
-            cell.title = "Forgot Password"
-            cell.caption = "If the provided email is associated with an account, we will send you a link for you to reset your password."
-            
-            return cell
+            return contentCells[1] // Message cell
         case (1, 1):
-            let cell = MinimalTextCell()
-            cell.textField.placeholder = "Email Address"
-            cell.textField.autocorrectionType = .no
-            cell.textField.enablesReturnKeyAutomatically = true
-            cell.textField.keyboardType = .emailAddress
-            cell.textField.returnKeyType = .send
-            cell.textField.text = email
-            
-            cell.changeHandler = { cell in
-                self.verifyEmail(cell: cell)
-            }
-            
-            cell.returnHandler = {
-                self.submitRequest()
-            }
-            
-            return cell
+            return contentCells[2] // Email / ID cell
         case (2, 0):
-            let cell = ButtonCell(width: 270)
-            cell.button.setTitle(buttonTitle, for: .normal)
-            
-            cell.primaryAction = {
-                self.submitRequest()
-            }
-            
-            if !email.isValidEmail() {
-                cell.button.isEnabled = false
-                cell.button.alpha = DISABLED_ALPHA
-            }
-            
-            return cell
+            return contentCells[3] // Button cell
         default:
             return UITableViewCell()
         }
 
     }
-    
-    /**
-     Initiates email verification process on the given cell.
-     
-     - Parameters:
-     - cell: The cell that contains the email address.
-     - editing: Whether the verification is triggered by text change instead of end editing. Default is `false`.
-     */
-    
-    private func verifyEmail(cell: MinimalTextCell) {
-        
-        email = cell.textField.text!
-        
-        guard let buttonCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? ButtonCell else {
-            preconditionFailure("The cell at section 2 row 0 shouldn't be empty")
-        }
-        
-        if email.isValidEmail() {
-            buttonCell.button.isEnabled = true
-            buttonCell.button.alpha = 1.0
-        } else {
-            buttonCell.button.isEnabled = false
-            buttonCell.button.alpha = DISABLED_ALPHA
-        }
-    
-    }
  
-    private func submitRequest() {
+    private func submitRequest(type: String? = nil) {
         
-        guard email.isValidEmail() else {
-            tableView.cellForRow(at: IndexPath(row: 1, section: 1))?.shake()
+        let id = (contentCells[2] as! MinimalTextCell).textField.text!
+        
+        guard !CharacterSet(charactersIn: id).isSubset(of: .whitespaces) else {
+            contentCells[2].shake()
             return
         }
         
         tableView.endEditing(true)
-        guard let buttonCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2)) as? ButtonCell else {
-            preconditionFailure("The cell at section 1 row 0 shouldn't be empty")
-        }
+        let buttonCell = contentCells[3] as! ButtonCell
         
         buttonCell.spinner.startAnimating()
         buttonCell.button.setTitle(nil, for: .normal)
         buttonCell.button.isEnabled = false
         buttonCell.button.alpha = DISABLED_ALPHA
         
-        let parameters = ["email": email]
+        var parameters = ["login": id]
+        
+        if type != nil {
+            parameters["type"] = type
+        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/ForgotPassword",
@@ -151,8 +154,6 @@ class ForgotPassword: UITableViewController {
         // Authentication
         let token = "\(USERNAME):\(PASSWORD)".data(using: .ascii)!.base64EncodedString()
         request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
-        
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
@@ -165,41 +166,89 @@ class ForgotPassword: UITableViewController {
             }
             
             guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self)
+                DispatchQueue.main.async { [weak self] in
+                    if self != nil {
+                        internetUnavailableError(vc: self!)
+                    }
                 }
                 return
             }
             
-            let msg = String(data: data!, encoding: .ascii) ?? ""
+            let msg = String(data: data!, encoding: .utf8) ?? ""
+            print(msg)
             switch msg {
             case "internal error":
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
+                DispatchQueue.main.async { [weak self] in
+                    if self != nil {
+                        serverMaintenanceError(vc: self!)
+                    }
                 }
-            case "not found":
-                alert.title = "No Matches Found"
-                alert.message = "Your provided email address does not match an Eventure account. Please check that you have entered it correctly."
+            case "invalid login":
+                let alert = UIAlertController(title: "No Matches Found", message: "Your provided email address does not match an Eventure account. Please check that you have entered it correctly.", preferredStyle: .alert)
                 alert.addAction(.init(title: "OK", style: .default, handler: nil))
-            case "success":
-                alert.title = "Reset Email Sent!"
-                alert.message = "Please check your inbox for instructions on how to reset your password."
-                alert.addAction(.init(title: "Cool", style: .default, handler: { action in
-                    self.dismiss(animated: true, completion: nil)
-                }))
+                
+                DispatchQueue.main.async { [weak self] in
+                    self?.present(alert, animated: true, completion: nil)
+                }
             default:
-                alert.title = "Error"
-                alert.message = "An unknown error has occurred."
-                alert.addAction(.init(title: "Dismiss", style: .default, handler: nil))
-            }
-            
-            DispatchQueue.main.async {
-                self.present(alert, animated: true, completion: nil)
+                DispatchQueue.main.async { [weak self] in
+                    self?.handleAccounts(returnString: msg)
+                }
             }
         }
         
         task.resume()
     }
    
+    private func handleAccounts(returnString: String) {
+        
+        func handleUser() {
+            let alert = UIAlertController(title: "Reset Email Sent!", message: "Please check your inbox for instructions on how to reset your password.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Great", style: .default, handler: { action in
+                DispatchQueue.main.async {
+                    self.closeVC()
+                }
+            }))
+            present(alert, animated: true, completion: nil)
+        }
+        
+        func handleOrg() {
+            let alert = UIAlertController(title: "Reset Email Sent!", message: "An email with instructions on how to reset your account's password has been sent to the contact email address that's associated with your organization.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Great", style: .default, handler: { action in
+                DispatchQueue.main.async {
+                    self.closeVC()
+                }
+            }))
+            present(alert, animated: true, completion: nil)
+        }
+        
+        if returnString == "success: user" {
+            handleUser()
+        } else if returnString == "success: organization" {
+            handleOrg()
+        } else if let name = JSON(parseJSON: returnString).dictionary?["username"]?.string {
+            let alert = UIAlertController(
+                title: "Multiple Accounts Found",
+                message: "We've found both a user account and an organization account associated with this login ID. Which account did you mean?", preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "The User Account (\(name))", style: .default, handler: { action in
+                DispatchQueue.main.async {
+                    self.submitRequest(type: "user")
+                }
+            }))
+            alert.addAction(.init(title: "The Organization Account", style: .default, handler: { action in
+                DispatchQueue.main.async {
+                    self.submitRequest(type: "org")
+                }
+            }))
+            alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
+        } else {
+            print("Unidentified string: \(returnString)")
+            let alert = UIAlertController(title: "Error", message: "An unknown error has occurred.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Dismiss", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
 
 }
