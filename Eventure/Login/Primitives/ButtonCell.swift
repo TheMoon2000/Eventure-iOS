@@ -32,6 +32,7 @@ class ButtonCell: UITableViewCell {
         let button = UIButton(type: .system)
         button.setTitle("Sign Up", for: .normal)
         button.tintColor = .white
+        button.backgroundColor = MAIN_TINT
         button.titleLabel?.font = .systemFont(ofSize: 18.5, weight: .semibold)
         button.layer.cornerRadius = 26
         button.clipsToBounds = true
