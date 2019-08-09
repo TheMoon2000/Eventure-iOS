@@ -55,7 +55,7 @@ let CUSTOM_SESSION: URLSession = {
 let DATE_FORMATTER: DateFormatter = {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US")
-    formatter.dateFormat = "y/MM/dd hh:mm:ss"
+    formatter.dateFormat = "y/MM/dd hh:mm:ss z"
     return formatter
 }()
 
