@@ -32,7 +32,7 @@ class EventsViewController: UITableViewController {
         //TODO: add Server Retrieval, now only manually creating events
         var result = [Event]()
         for _ in 1...20 {
-            let e = Event(id: String(Int.random(in: 1...1000)), title: randString(length: 10), time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)), location: randString(length: 10), tags: [randString(length: 4),randString(length: 4)], hostTitle: randString(length: 15))
+            let e = Event(uuid: String(Int.random(in: 1...1000)), title: randString(length: 10), time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)), location: randString(length: 10), tags: [randString(length: 4),randString(length: 4)], hostTitle: randString(length: 15))
             result.append(e)
         }
         events.append(contentsOf: result)
