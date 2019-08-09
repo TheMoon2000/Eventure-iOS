@@ -9,7 +9,12 @@
 import UIKit
 
 class EventCell: UITableViewCell {
-
+    
+    static let height = 300
+    private var bgTint: UIView!
+    private var eventView: UIView!
+    var e: Event!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -19,6 +24,89 @@ class EventCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .default, reuseIdentifier: "cell")
+        
+        makeCell()
+    }
+    
+    
+    override var isSelected: Bool {
+        didSet {
+            UIView.animate(
+                withDuration: 0.1,
+                delay: 0,
+                options: .curveEaseOut,
+                animations: {
+                    if self.isSelected {
+                        self.bgTint.backgroundColor = MAIN_TINT_DARK
+                    } else {
+                        self.bgTint.backgroundColor = MAIN_TINT
+                    }
+            },
+                completion: nil)
+        }
+    }
+    
+    private func makeCell() {
+        bgTint = {
+            let bg = UIView()
+            bg.backgroundColor = MAIN_TINT
+            bg.layer.cornerRadius = 0
+            bg.layer.borderWidth = 1.5
+            bg.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
+            bg.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(bg)
+            
+            bg.heightAnchor.constraint(equalToConstant: 300).isActive = true
+            bg.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+            bg.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            bg.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            
+            return bg
+        }()
+        
+        eventView = {
+            let ev = UIView()
+            ev.backgroundColor = .white
+            ev.tintColor = MAIN_TINT
+            ev.translatesAutoresizingMaskIntoConstraints = false
+            bgTint.addSubview(ev)
+            
+            ev.heightAnchor.constraint(equalTo: bgTint.heightAnchor, constant: -60).isActive = true
+            ev.bottomAnchor.constraint(equalTo: bgTint.bottomAnchor).isActive = true
+            ev.centerXAnchor.constraint(equalTo: bgTint.centerXAnchor).isActive = true
+            ev.widthAnchor.constraint(equalTo: bgTint.widthAnchor).isActive = true
+            
+            print(e)
+            return ev
+        }()
+        
+    }
+    
+    private func makeEvent() {
+        var vals = ["title": e.title, "time": e.time, "location": e.location, "hostTitle": e.host.title]
+        let textViews = ["title":UITextView(), "time": UITextView(), "location": UITextView(), "hostTitle": UITextView()]
+        for v in textViews {
+            v.value.translatesAutoresizingMaskIntoConstraints = false
+            v.value.text = vals[v.key] as? String
+            v.value.font = UIFont.preferredFont(forTextStyle: .subheadline)
+            v.value.textColor = .black
+            v.value.widthAnchor.constraint(equalTo: eventView.widthAnchor).isActive = true
+            v.value.leftAnchor.constraint(equalTo: eventView.leftAnchor, constant: 20).isActive = true
+            v.value.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            eventView.addSubview(v.value)
+        }
+        textViews["title"]!.centerYAnchor.constraint(equalTo: eventView.topAnchor, constant: 20).isActive = true
+        textViews["time"]!.topAnchor.constraint(equalTo: textViews["title"]!.bottomAnchor).isActive = true
+        textViews["location"]!.topAnchor.constraint(equalTo: textViews["time"]!.bottomAnchor).isActive = true
+        textViews["hostTitle"]!.topAnchor.constraint(equalTo: textViews["location"]!.bottomAnchor).isActive = true
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 
 }

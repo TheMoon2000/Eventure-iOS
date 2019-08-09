@@ -415,7 +415,7 @@ class LoginViewController: UIViewController {
                 nextVC.loginVC = self
                 present(nextVC, animated: true, completion: nil)
             } else {
-                mainTabsVC.openScreen()
+                present(MainTabBarController(), animated: true, completion: nil)
             }
             
             UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)
