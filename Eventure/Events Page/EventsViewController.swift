@@ -63,10 +63,10 @@ class EventsViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! EventCell
-        cell.textLabel?.text = " \(events[indexPath.row].title)"
-        cell.e = events[indexPath.row]
+        //cell.textLabel?.text = " \(events[indexPath.row].title)"
+        cell.makeEvent(e: events[indexPath.row])
         
-        return cell 
+        return cell
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
