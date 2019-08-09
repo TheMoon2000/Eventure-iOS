@@ -19,7 +19,9 @@ class EventsViewController: UITableViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         title = "Events"
-        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.register(EventCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.estimatedRowHeight = CGFloat(EventCell.height)
         getEvents()
         
         
@@ -32,7 +34,7 @@ class EventsViewController: UITableViewController {
         //TODO: add Server Retrieval, now only manually creating events
         var result = [Event]()
         for _ in 1...20 {
-            let e = Event(uuid: String(Int.random(in: 1...1000)), title: randString(length: 10), time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)), location: randString(length: 10), tags: [randString(length: 4),randString(length: 4)], hostTitle: randString(length: 15))
+            let e = Event(uuid: UUID().uuidString, title: randString(length: 10), time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)), location: randString(length: 10), tags: [randString(length: 4),randString(length: 4)], hostTitle: randString(length: 15))
             result.append(e)
         }
         events.append(contentsOf: result)
@@ -42,12 +44,9 @@ class EventsViewController: UITableViewController {
         return 1
     }
     
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView()
-    }
-    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return super.tableView(tableView, heightForRowAt: indexPath)
+        return CGFloat(EventCell.height)
+        //return super.tableView(tableView, heightForRowAt: indexPath)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -58,9 +57,11 @@ class EventsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! EventCell
         cell.textLabel?.text = " \(events[indexPath.row].title)"
-        return cell
+        cell.e = events[indexPath.row]
+        
+        return cell 
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
