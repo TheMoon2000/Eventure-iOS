@@ -13,6 +13,7 @@ class EventCell: UITableViewCell {
     static let height = 200
     private var bgTint: UIView!
     private var eventView: UIView!
+    //var e: Event!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -88,15 +89,17 @@ class EventCell: UITableViewCell {
         var vals = ["title": e.title, "time": e.time, "location": e.location, "hostTitle": e.host.title]
         let textViews = ["title":UITextView(), "time": UITextView(), "location": UITextView(), "hostTitle": UITextView()]
         for v in textViews {
+            v.value.allowsEditingTextAttributes = false
+            v.value.isEditable = false
             v.value.translatesAutoresizingMaskIntoConstraints = false
-            v.value.text = v.key + ": " + vals[v.key]!
+            v.value.text = v.key + ": " + vals[v.key]!!
             v.value.font = UIFont.preferredFont(forTextStyle: .subheadline)
-            v.value.textColor = .black
             v.value.doInset()
+            v.value.textColor = .black
             eventView.addSubview(v.value)
             v.value.widthAnchor.constraint(equalTo: eventView.widthAnchor).isActive = true
-            v.value.leftAnchor.constraint(equalTo: eventView.leftAnchor, constant: 20).isActive = true
-            v.value.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            v.value.leftAnchor.constraint(equalTo: eventView.leftAnchor).isActive = true
+            v.value.heightAnchor.constraint(equalToConstant: 30).isActive = true
         }
         textViews["title"]!.centerYAnchor.constraint(equalTo: eventView.topAnchor, constant: 20).isActive = true
         textViews["time"]!.topAnchor.constraint(equalTo: textViews["title"]!.bottomAnchor).isActive = true
