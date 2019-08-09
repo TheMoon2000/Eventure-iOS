@@ -51,6 +51,14 @@ let CUSTOM_SESSION: URLSession = {
     return URLSession(configuration: config)
 }()
 
+/// Use this formatter to convert dates into strings and vice versa.
+let DATE_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US")
+    formatter.dateFormat = "y/MM/dd hh:mm:ss"
+    return formatter
+}()
+
 // MARK: - Classes and Extensions
 
 extension String {
