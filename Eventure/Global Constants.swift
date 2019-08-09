@@ -152,6 +152,11 @@ extension UITextField {
     }
 }
 
+extension UITextView {
+    func doInset() {
+        self.textContainerInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+    }
+}
 extension Data {
     mutating func append(string: String) {
         let data = string.data(using: .utf8)!
