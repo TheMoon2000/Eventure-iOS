@@ -15,12 +15,14 @@ class Event: CustomStringConvertible {
     var uuid: String
     var title: String
     var location: String
-    var time: String
+    var time: String // Date
     //var eventDescription: String
     //var eventVisual: UIImage?
     var host: Organization
     //var attendees = [User]()
     var tags = [String]()
+    // # of interested, # of going
+    // API: array of user id
     
     var active: Bool
     

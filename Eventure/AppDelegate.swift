@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //entry point is the root view of the entire window
         window?.rootViewController = entrypoint
         
+        // TODO: Default screen is events
+        
         let login = LoginViewController()
         login.mainTabsVC = entrypoint
         //nvc is a nav controller that is rooted at loginviewcontroller
