@@ -145,6 +145,20 @@ extension URLRequest {
     }
 }
 
+extension UIView {
+    
+    /// Extension method that finds the optimal height for the view, given its current width.
+    func preferredHeight(width: CGFloat) -> CGFloat {
+        let widthConstraint = self.widthAnchor.constraint(equalToConstant: width)
+        widthConstraint.priority = .init(999)
+        self.addConstraint(widthConstraint)
+        let height = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        self.removeConstraint(widthConstraint)
+        return height
+    }
+}
+
+
 extension UITextField {
     func doInset() {
         let inset = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: self.frame.height))

@@ -12,14 +12,32 @@ import SwiftyJSON
 class Event: CustomStringConvertible {
     static var current: Event?
     
+    let readableFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM yyyy H:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
     var uuid: String
     var title: String
     var location: String
-    var time: String // Date
-    //var eventDescription: String
-    //var eventVisual: UIImage?
-    var host: Organization
-    //var attendees = [User]()
+    var time: Date?
+    var timeDescription: String {
+        if time != nil {
+            return readableFormatter.string(from: time!)
+        } else {
+            return "Unspecified"
+        }
+    }
+    var eventDescription: String
+    var eventVisual: UIImage?
+    var host: Organization?
+    var hostName: String {
+        return host?.title ?? hostDescription
+    }
+    private var hostDescription = ""
+    var attendees = [User]()
     var tags = [String]()
     // # of interested, # of going
     // API: array of user id
@@ -29,13 +47,13 @@ class Event: CustomStringConvertible {
     init(uuid: String, title: String, time: String, location: String, tags: [String], hostTitle: String) {
         self.uuid = uuid
         self.title = title
-        self.time = time
+        self.time = DATE_FORMATTER.date(from: time)
         self.location = location
         self.tags = tags
-        self.host = Organization(title: hostTitle)
+        self.hostDescription = hostTitle
         self.active = true
         //eventVisual = nil
-        //eventDescription = "test"
+        eventDescription = "test"
     }
     
     init(eventInfo: JSON) {
@@ -44,10 +62,16 @@ class Event: CustomStringConvertible {
         uuid = dictionary["ID"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
         location = dictionary["Location"]?.string ?? ""
-        time = dictionary["Time"]?.string ?? ""
+        if let timeString = dictionary["Time"]?.string {
+            self.time = DATE_FORMATTER.date(from: timeString)
+        }
+        eventDescription = dictionary["Description"]?.string ?? ""
         //eventDescription = dictionary["Description"]?.string ?? ""
-        let hostTitle = dictionary["Host"]?.string ?? ""
-        host = Organization(title: hostTitle)
+        if let hostInfo = dictionary["Organization"] {
+            host = Organization(orgInfo: hostInfo)
+        } else {
+            hostDescription = "Unknown"
+        }
         
         /*let attendees_raw = { () -> [String] in
          var attendees_arr = [String]()
@@ -74,7 +98,7 @@ class Event: CustomStringConvertible {
     var description: String {
         var str = "Event \"\(title)\":\n"
         str += "  uuid = \(uuid)\n"
-        str += "  time = \(time)\n"
+        str += "  time = \(timeDescription)\n"
         str += "  @ = \(location)\n"
         str += "  tags = \(tags.description)"
         

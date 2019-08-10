@@ -24,7 +24,7 @@ class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = MAIN_TINT
         
-        let tab1 = EventsViewController()
+        let tab1 = EventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
 
         let tab2 = OrganizationsViewController()
@@ -48,7 +48,7 @@ class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = MAIN_TINT
         
-        let tab1 = EventsViewController()
+        let tab1 = EventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
         
         let tab2 = AccountViewController()

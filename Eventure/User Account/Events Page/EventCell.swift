@@ -2,112 +2,180 @@
 //  EventCell.swift
 //  Eventure
 //
-//  Created by Xiang Li on 8/7/19.
+//  Created by Jia Rui Shan on 2019/8/10.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 
-class EventCell: UITableViewCell {
+class EventCell: UICollectionViewCell {
     
-    static let height = 200
-    private var bgTint: UIView!
-    private var eventView: UIView!
+    private var card: UIView!
+    private var cover: UIImageView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
+    private var titleLabel: UILabel!
+    private var timeLabel: UILabel!
+    private var locationLabel: UILabel!
+    private var eventHostLabel: UILabel!
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: "cell")
+    var titleText: UILabel!
+    var timeText: UILabel!
+    var locationText: UILabel!
+    var eventHostText: UILabel!
+    
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
         
-        makeCell()
-    }
-    
-    
-    override var isSelected: Bool {
-        didSet {
-            UIView.animate(
-                withDuration: 0.1,
-                delay: 0,
-                options: .curveEaseOut,
-                animations: {
-                    if self.isSelected {
-                        self.bgTint.backgroundColor = MAIN_TINT_DARK
-                    } else {
-                        self.bgTint.backgroundColor = MAIN_TINT
-                    }
-            },
-                completion: nil)
-        }
-    }
-    
-    private func makeCell() {
-        bgTint = {
-            let bg = UIView()
-            bg.backgroundColor = MAIN_TINT
-            bg.layer.cornerRadius = 0
-            bg.layer.borderWidth = 1.5
-            bg.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
-            bg.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(bg)
+        card = {
+            let view = UIView()
+            view.backgroundColor = .white
+            view.layer.borderWidth = 1
+            view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
+            view.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(view)
             
-            bg.heightAnchor.constraint(equalToConstant: CGFloat(EventCell.height)).isActive = true
-            bg.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-            bg.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-            bg.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
+            view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
+            view.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+            view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive = true
             
-            return bg
+            return view
         }()
         
-        eventView = {
-            let ev = UIView()
-            ev.backgroundColor = .white
-            ev.tintColor = MAIN_TINT
-            ev.translatesAutoresizingMaskIntoConstraints = false
-            bgTint.addSubview(ev)
+        cover = {
+            let iv = UIImageView()
+            iv.contentMode = .scaleAspectFit
+            iv.backgroundColor = MAIN_TINT
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(iv)
             
-            ev.heightAnchor.constraint(equalTo: bgTint.heightAnchor, constant: -60).isActive = true
-            ev.bottomAnchor.constraint(equalTo: bgTint.bottomAnchor).isActive = true
-            ev.centerXAnchor.constraint(equalTo: bgTint.centerXAnchor).isActive = true
-            ev.widthAnchor.constraint(equalTo: bgTint.widthAnchor).isActive = true
+            iv.leftAnchor.constraint(equalTo: card.leftAnchor).isActive = true
+            iv.rightAnchor.constraint(equalTo: card.rightAnchor).isActive = true
+            iv.topAnchor.constraint(equalTo: card.topAnchor).isActive = true
+            iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
             
-            return ev
+            return iv
+        }()
+        
+        titleLabel = {
+            let label = UILabel()
+            label.text = "Title:"
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: cover.bottomAnchor, constant: 20).isActive = true
+            
+            return label
+        }()
+        
+        titleText = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .right
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: titleLabel.rightAnchor, constant: 10).isActive = true
+            label.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
+            
+            return label
+        }()
+        
+        timeLabel = {
+            let label = UILabel()
+            label.text = "When:"
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        timeText = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .right
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: timeLabel.rightAnchor, constant: 10).isActive = true
+            label.centerYAnchor.constraint(equalTo: timeLabel.centerYAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
+            
+            return label
+        }()
+        
+        locationLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.text = "Where:"
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        locationText = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .right
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
+            label.centerYAnchor.constraint(equalTo: locationLabel.centerYAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
+            
+            return label
+        }()
+        
+        eventHostLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.text = "Hosted by:"
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        eventHostText = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .right
+            label.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: eventHostLabel.rightAnchor, constant: 10).isActive = true
+            label.centerYAnchor.constraint(equalTo: eventHostLabel.centerYAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
+            
+            return label
         }()
         
     }
     
-    func makeEvent(e: Event) {
-        var vals = ["title": e.title, "time": e.time, "location": e.location, "hostTitle": e.host.title]
-        let textViews = ["title":UITextView(), "time": UITextView(), "location": UITextView(), "hostTitle": UITextView()]
-        for v in textViews {
-            v.value.allowsEditingTextAttributes = false
-            v.value.isEditable = false
-            v.value.translatesAutoresizingMaskIntoConstraints = false
-            v.value.text = v.key + ": " + vals[v.key]!
-            v.value.font = UIFont.preferredFont(forTextStyle: .subheadline)
-            v.value.doInset()
-            v.value.textColor = .black
-            eventView.addSubview(v.value)
-            v.value.widthAnchor.constraint(equalTo: eventView.widthAnchor).isActive = true
-            v.value.leftAnchor.constraint(equalTo: eventView.leftAnchor).isActive = true
-            v.value.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        }
-        textViews["title"]!.centerYAnchor.constraint(equalTo: eventView.topAnchor, constant: 20).isActive = true
-        textViews["time"]!.topAnchor.constraint(equalTo: textViews["title"]!.bottomAnchor).isActive = true
-        textViews["location"]!.topAnchor.constraint(equalTo: textViews["time"]!.bottomAnchor).isActive = true
-        textViews["hostTitle"]!.topAnchor.constraint(equalTo: textViews["location"]!.bottomAnchor).isActive = true
+    
+    func setupCellWithEvent(event: Event) {
+        titleText.text = event.title
+        timeText.text = event.timeDescription
+        locationText.text = event.location
+        eventHostText.text = event.hostName
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-
 }

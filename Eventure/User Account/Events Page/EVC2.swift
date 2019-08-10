@@ -8,7 +8,7 @@
 
 import UIKit
 
-class EventsViewController: UITableViewController {
+class EventsViewController2: UITableViewController {
     var events = [Event]()
     var cells = [EventCell]()
     var fetchingmore = false
@@ -23,6 +23,8 @@ class EventsViewController: UITableViewController {
         self.tableView.register(EventCell.self, forCellReuseIdentifier: "cell")
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = CGFloat(EventCell.height)
+        self.tableView.separatorStyle = .none
+        self.tableView.backgroundColor = .init(white: 0.95, alpha: 1)
         
         getEvents()
         
