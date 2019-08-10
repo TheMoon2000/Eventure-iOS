@@ -51,11 +51,12 @@ let CUSTOM_SESSION: URLSession = {
     return URLSession(configuration: config)
 }()
 
-/// Use this formatter to convert dates into strings and vice versa.
+/// Use this formatter to convert strings from API calls into dates and vice versa.
 let DATE_FORMATTER: DateFormatter = {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US")
-    formatter.dateFormat = "y/MM/dd HH:mm:ss z"
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    formatter.timeZone = TimeZone(abbreviation: "UTC")!
     return formatter
 }()
 

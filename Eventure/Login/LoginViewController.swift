@@ -11,8 +11,6 @@ import SwiftyJSON
 
 class LoginViewController: UIViewController {
     
-    var mainTabsVC: MainTabBarController!
-    
     var canvas: UIScrollView!
     var usr: UITextField!
     var pswd: UITextField!
@@ -415,7 +413,7 @@ class LoginViewController: UIViewController {
                 nextVC.loginVC = self
                 present(nextVC, animated: true, completion: nil)
             } else {
-                present(MainTabBarController(), animated: true, completion: nil)
+                present(MainTabBarController.current, animated: true, completion: nil)
             }
             
             UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)
@@ -424,7 +422,7 @@ class LoginViewController: UIViewController {
         
         func handleOrgLogin(org: Organization) {
             Organization.current = org
-            mainTabsVC.openScreen(isUserAccount: false)
+            MainTabBarController.current.openScreen(isUserAccount: false)
         }
         
         if user == nil {

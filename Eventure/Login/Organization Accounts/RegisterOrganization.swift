@@ -260,7 +260,7 @@ class RegisterOrganization: UITableViewController {
             let cell = ButtonCell(width: 220)
             cell.button.setTitle("Register", for: .normal)
             cell.button.isEnabled = false
-            cell.button.backgroundColor = MAIN_DISABLED
+            cell.button.backgroundColor = MAIN_TINT
             cell.alpha = DISABLED_ALPHA
             cell.primaryAction = {
                 self.registerOrg()

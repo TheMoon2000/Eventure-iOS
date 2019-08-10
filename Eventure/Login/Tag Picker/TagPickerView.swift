@@ -301,7 +301,7 @@ class TagPickerView: UIViewController {
                 print("successfully updated tags")
                 User.current!.tags = tagsArray
                 DispatchQueue.main.async {
-                    self.loginVC.mainTabsVC.openScreen()
+                    MainTabBarController.current.openScreen()
                 }
             default:
                 break
