@@ -166,7 +166,7 @@ class LoginViewController: UIViewController {
             usr.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(usr)
             
-            usr.widthAnchor.constraint(equalToConstant: 230).isActive = true
+            usr.widthAnchor.constraint(equalToConstant: 240).isActive = true
             usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
             usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             usr.topAnchor.constraint(equalTo: logo.bottomAnchor,
@@ -413,7 +413,7 @@ class LoginViewController: UIViewController {
                 nextVC.loginVC = self
                 present(nextVC, animated: true, completion: nil)
             } else {
-                present(MainTabBarController.current, animated: true, completion: nil)
+                MainTabBarController.current.openScreen()
             }
             
             UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)

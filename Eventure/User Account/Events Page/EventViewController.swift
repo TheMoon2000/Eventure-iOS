@@ -11,6 +11,12 @@ import SwiftyJSON
 
 class EventViewController: UIViewController {
     
+    private let refreshControl = UIRefreshControl()
+    private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
+        NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
+        .font: UIFont.systemFont(ofSize: 17, weight: .medium)
+    ]
+    
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
     private var eventCatalog: UICollectionView!
@@ -24,11 +30,6 @@ class EventViewController: UIViewController {
 
         view.backgroundColor = .white
         title = "Events"
-        
-        func randString(length: Int) -> String {
-            let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-            return String((0..<length).map{ _ in letters.randomElement()! })
-        }
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .light))
@@ -61,7 +62,9 @@ class EventViewController: UIViewController {
            let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
-            ec.contentInset.top = topTabBg.frame.height
+            ec.refreshControl = self.refreshControl
+            ec.contentInset.top = topTabBg.frame.height + 10
+            ec.contentInset.bottom = 10
             ec.scrollIndicatorInsets.top = topTabBg.frame.height
             ec.backgroundColor = .init(white: 0.96, alpha: 1)
             ec.register(EventCell.classForCoder(), forCellWithReuseIdentifier: "event")
@@ -104,14 +107,27 @@ class EventViewController: UIViewController {
             return label
         }()
         
+        refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to Reload", attributes: refreshControlAttributes)
+        refreshControl.tintColor = MAIN_TINT
+        
         updateEvents()
     }
     
-    private func updateEvents() {
+    @objc private func pullDownRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Reloading", attributes: refreshControlAttributes)
+        refreshControl.tintColor = MAIN_TINT
+        updateEvents(pulled: true)
+    }
+    
+    private func updateEvents(pulled: Bool = false) {
         
-        allEvents.removeAll()
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
+        if !pulled {
+            spinner.startAnimating()
+            spinnerLabel.isHidden = false
+            allEvents.removeAll()
+            eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/List", parameters: [:])!
@@ -122,8 +138,15 @@ class EventViewController: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
+                if !pulled {
+                    self.spinner.stopAnimating()
+                    self.spinnerLabel.isHidden = true
+                } else {
+                    self.refreshControl.endRefreshing()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        self.refreshControl.attributedTitle = NSAttributedString(string: "Pull to Reload", attributes: self.refreshControlAttributes)
+                    }
+                }
             }
             
             guard error == nil else {
