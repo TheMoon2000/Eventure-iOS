@@ -12,6 +12,7 @@ class EventsViewController: UITableViewController {
     var events = [Event]()
     var cells = [EventCell]()
     var fetchingmore = false
+    var event: Event?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,10 +23,13 @@ class EventsViewController: UITableViewController {
         self.tableView.register(EventCell.self, forCellReuseIdentifier: "cell")
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = CGFloat(EventCell.height)
+        
         getEvents()
         
         
     }
+    
+    
     private func randString(length: Int) -> String {
         let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         return String((0..<length).map{ _ in letters.randomElement()! })
@@ -82,6 +86,16 @@ class EventsViewController: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        event = events[indexPath.row]
+        tableView.deselectRow(at: indexPath, animated: true)
+        let nextVC = DetailViewController()
+        nextVC.event = event
+        present(nextVC, animated: true, completion: nil)
+    }
+    
+    
+   
     /*
      // MARK: - Navigation
      
