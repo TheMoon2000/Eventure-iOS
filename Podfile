@@ -4,6 +4,7 @@
 target 'Eventure' do
   use_frameworks!
   pod 'SwiftyJSON'
+  pod 'Down'
 end
 
 target 'EventureAPITests' do

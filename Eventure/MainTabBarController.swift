@@ -18,12 +18,12 @@ class MainTabBarController: UITabBarController {
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .white
         self.setupUserTabs() // Guest login assumes user identity
+        
+        view.tintColor = MAIN_TINT
     }
     
     private func setupUserTabs() {
-        
-        tabBar.tintColor = MAIN_TINT
-        
+                
         let tab1 = EventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
 
@@ -48,27 +48,19 @@ class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = MAIN_TINT
         
-        let tab1 = EventViewController()
-        tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
+        let tab1 = OrgEventViewController()
+        tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
         
         let tab2 = AccountViewController()
         tab2.tabBarItem = UITabBarItem(title: "Account Settings", image: #imageLiteral(resourceName: "settings"), tag: 1)
     
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            
             /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
             
             return nav
         }
-    }
-    
-    
-    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        let index : Int = (tabBar.items?.firstIndex(of: item))!
-        UserDefaults.standard.set(index, forKey: USER_DEFAULT_TAB)
-        UserDefaults.standard.synchronize()
     }
     
     /// Should be called when user finished login.
@@ -77,18 +69,19 @@ class MainTabBarController: UITabBarController {
             print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
             setupUserTabs()
         } else {
-            print("Logged in as organization '\(String(describing: Organization.current!.title))'")
+            print("Logged in as organization '\(Organization.current?.title ?? "unknown")'")
             setupOrganizationTabs()
         }
         dismiss(animated: true, completion: nil)
     }
     
-    func isLoggedIn(loginNavBar: InteractivePopNavigationController) {
-        if (!UserDefaults.standard.bool(forKey: USER_DEFAULT_CRED)) {
-            print(UserDefaults.standard.bool(forKey: USER_DEFAULT_CRED))
-            self.present(loginNavBar, animated: false, completion: nil)
-        } else {
-            self.selectedIndex = UserDefaults.standard.integer(forKey: USER_DEFAULT_TAB)
+    func loginSetup() {
+        if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
+            if type == ACCOUNT_TYPE_ORG {
+                openScreen(isUserAccount: false)
+            } else {
+                setupUserTabs()
+            }
         }
     }
     /*

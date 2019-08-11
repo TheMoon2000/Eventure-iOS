@@ -1,16 +1,16 @@
 //
-//  EventViewController.swift
+//  OrgEventViewController.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/8/10.
+//  Created by Jia Rui Shan on 2019/8/11.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 import SwiftyJSON
 
-class EventViewController: UIViewController {
-    
+class OrgEventViewController: UIViewController {
+
     private let refreshControl = UIRefreshControl()
     private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
         NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
@@ -24,12 +24,12 @@ class EventViewController: UIViewController {
     private var spinnerLabel: UILabel!
     
     private(set) var allEvents = [Event]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = .white
-        title = "Events"
+        title = "Event Posts"
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -45,7 +45,7 @@ class EventViewController: UIViewController {
         }()
         
         topTab = {
-            let tab = UISegmentedControl(items: ["Recommended", "Trending", "All Events"])
+            let tab = UISegmentedControl(items: ["Published", "Drafts"])
             tab.tintColor = MAIN_TINT
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +61,7 @@ class EventViewController: UIViewController {
         topTabBg.layoutIfNeeded()
         
         eventCatalog = {
-           let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+            let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
             ec.refreshControl = self.refreshControl
@@ -69,7 +69,7 @@ class EventViewController: UIViewController {
             ec.contentInset.bottom = 8
             ec.scrollIndicatorInsets.top = topTabBg.frame.height
             ec.backgroundColor = .init(white: 0.92, alpha: 1)
-            ec.register(EventCell.classForCoder(), forCellWithReuseIdentifier: "event")
+            ec.register(OrgEventCell.classForCoder(), forCellWithReuseIdentifier: "org event")
             ec.contentInsetAdjustmentBehavior = .always
             ec.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(ec, belowSubview: topTabBg)
@@ -114,7 +114,7 @@ class EventViewController: UIViewController {
         refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
         refreshControl.tintColor = MAIN_TINT
         
-//        updateEvents()
+        //        updateEvents()
         generateRandomEvents()
     }
     
@@ -194,11 +194,11 @@ class EventViewController: UIViewController {
         task.resume()
     }
     
-
+    
 }
 
-
-extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+// MARK: - Extension on datasource and delegate
+extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -210,7 +210,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: indexPath) as! EventCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "org event", for: indexPath) as! OrgEventCell
         cell.setupCellWithEvent(event: allEvents[indexPath.row])
         
         return cell
@@ -224,7 +224,8 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
 }
 
-extension EventViewController: UICollectionViewDelegateFlowLayout {
+// MARK: - Extension on flow layout
+extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     var cardWidth: CGFloat {
         if usableWidth < 500 {
             return usableWidth - 16
@@ -241,12 +242,12 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
     var equalSpacing: CGFloat {
         let rowCount = floor(usableWidth / cardWidth)
         let extraSpace = usableWidth - rowCount * cardWidth
-
+        
         return extraSpace / (rowCount + 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let cell = EventCell()
+        let cell = OrgEventCell()
         cell.setupCellWithEvent(event: allEvents[indexPath.row])
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
@@ -266,4 +267,5 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
                             bottom: equalSpacing,
                             right: equalSpacing)
     }
+
 }

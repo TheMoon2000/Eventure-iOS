@@ -9,7 +9,9 @@
 import UIKit
 
 class AccountViewController: UIViewController {
-    var signOut:UIButton!
+    
+    var signOut: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -23,7 +25,7 @@ class AccountViewController: UIViewController {
         
         signOut = {
             let button = UIButton(type: .system)
-            button.setTitle("Sign Out", for: .normal)
+            button.setTitle("Sign In", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 17.2, weight: .semibold)
             button.tintColor = .black
             button.backgroundColor = .init(white: 1, alpha: 0.05)
@@ -46,18 +48,33 @@ class AccountViewController: UIViewController {
         }()
     }
     @objc private func signOutNow(_ sender: UIButton) {
-        sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
-        sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
-        UserDefaults.standard.set(false, forKey: USER_DEFAULT_CRED)
-        UserDefaults.standard.synchronize()
         
-        let login = LoginViewController()
-        let nvc = InteractivePopNavigationController(rootViewController: login)
-        login.navBar = nvc
-        present(nvc, animated: false, completion: nil)
         //should I present to navBar? What's the consequence of mixing modal and navigation?
+        
+        if sender.title(for: .normal) == "Sign In" {
+            let login = LoginViewController()
+            let nvc = InteractivePopNavigationController(rootViewController: login)
+            nvc.isNavigationBarHidden = true
+            login.navBar = nvc
+            present(nvc, animated: true, completion: nil)
+        } else {
+            sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
+            sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
+            UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
+            
+            MainTabBarController.current.openScreen()
+        }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) == nil {
+            signOut.setTitle("Sign In", for: .normal)
+        } else {
+            signOut.setTitle("Sign Out", for: .normal)
+        }
+    }
 
     /*
     // MARK: - Navigation

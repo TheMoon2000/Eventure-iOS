@@ -1,14 +1,14 @@
 //
-//  EventCell.swift
+//  OrgEventCell.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/8/10.
+//  Created by Jia Rui Shan on 2019/8/11.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 
-class EventCell: UICollectionViewCell {
+class OrgEventCell: UICollectionViewCell {
     
     private var verticalSpacing: CGFloat = 14
     
@@ -18,12 +18,11 @@ class EventCell: UICollectionViewCell {
     private var titleLabel: UILabel!
     private var timeLabel: UILabel!
     private var locationLabel: UILabel!
-    private var eventHostLabel: UILabel!
+    private var descriptionText: UILabel!
     
     var titleText: UILabel!
     var timeText: UILabel!
     var locationText: UILabel!
-    var eventHostText: UILabel!
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -149,32 +148,38 @@ class EventCell: UICollectionViewCell {
             return label
         }()
         
-        eventHostLabel = {
+        func dot() -> UIView {
+            let dot = UIView()
+            dot.backgroundColor = .init(white: 0.85, alpha: 1)
+            dot.layer.cornerRadius = 1.9
+            dot.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(dot)
+            dot.widthAnchor.constraint(equalToConstant: 3.8).isActive = true
+            dot.heightAnchor.constraint(equalToConstant: 3.8).isActive = true
+            dot.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: verticalSpacing).isActive = true
+            return dot
+        }
+        
+        let dot1 = dot()
+        dot1.centerXAnchor.constraint(equalTo: card.centerXAnchor, constant: -10).isActive = true
+        
+        dot().centerXAnchor.constraint(equalTo: card.centerXAnchor).isActive = true
+        
+        dot().centerXAnchor.constraint(equalTo: card.centerXAnchor, constant: 10).isActive = true
+        
+        
+        descriptionText = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
-            label.text = "Hosted by:"
+            label.numberOfLines = 3
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = .darkGray
+            label.lineBreakMode = .byTruncatingTail
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
-            label.widthAnchor.constraint(equalToConstant: 87).isActive = true
-
-            return label
-        }()
-        
-        eventHostText = {
-            let label = UILabel()
-            label.numberOfLines = 5
-            label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 17)
-            label.textAlignment = .right
-            label.translatesAutoresizingMaskIntoConstraints = false
-            card.addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: eventHostLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: verticalSpacing).isActive = true
-            label.topAnchor.constraint(equalTo: eventHostLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
+            label.topAnchor.constraint(equalTo: dot1.bottomAnchor, constant: verticalSpacing).isActive = true
             label.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20).isActive = true
             
             return label
@@ -187,7 +192,7 @@ class EventCell: UICollectionViewCell {
         titleText.text = event.title
         timeText.text = event.timeDescription
         locationText.text = event.location
-        eventHostText.text = event.hostName
+        descriptionText.text = event.eventDescription
     }
     
     required init?(coder aDecoder: NSCoder) {

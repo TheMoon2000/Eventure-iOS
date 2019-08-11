@@ -15,6 +15,7 @@ class LoginViewController: UIViewController {
     var usr: UITextField!
     var pswd: UITextField!
     var loginButton: UIButton!
+    var loginAsGuest: UIButton!
     var registerButton: UIButton!
     var forgotButton: UIButton!
     var activeField: UITextField?
@@ -87,6 +88,9 @@ class LoginViewController: UIViewController {
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         rotated(frame: CGRect(origin: .zero, size: size))
+        coordinator.animate(alongsideTransition: { context in
+            self.loginAsGuest.isHidden = size.height < 500
+        }, completion: nil)
     }
     
     
@@ -230,6 +234,23 @@ class LoginViewController: UIViewController {
             return button
         }()
         
+        loginAsGuest = {
+            let button = UIButton(type: .system)
+            button.setTitle("Continue as Guest", for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            button.tintColor = .init(white: 1, alpha: 0.95)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            
+            canvas.addSubview(button)
+            
+            button.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+            button.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 15).isActive = true
+            
+            button.addTarget(self, action: #selector(continueAsGuest), for: .touchUpInside)
+            
+            return button
+        }()
+        
         
         let bottomStack: UIStackView = {
             let stack = UIStackView()
@@ -288,6 +309,10 @@ class LoginViewController: UIViewController {
     }
     
     // MARK: - Button actions
+    
+    @objc private func continueAsGuest() {
+        self.dismiss(animated: true, completion: nil)
+    }
     
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
@@ -376,9 +401,11 @@ class LoginViewController: UIViewController {
                     var orgObject: Organization?
                     if let userInfo = result!["user info"] {
                         userObject = User(userInfo: userInfo)
+                        UserDefaults.standard.setValue(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
                     }
                     if let orgInfo = result!["org info"] {
                         orgObject = Organization(orgInfo: orgInfo)
+                        UserDefaults.standard.setValue(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
                     }
                     DispatchQueue.main.async {
                         self.handleLoginResults(user: userObject, org: orgObject)

@@ -53,7 +53,7 @@ class Event: CustomStringConvertible {
         self.hostDescription = hostTitle
         self.active = true
         //eventVisual = nil
-        eventDescription = "test"
+        eventDescription = SAMPLE_TEXT
     }
     
     init(eventInfo: JSON) {
