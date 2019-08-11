@@ -164,7 +164,7 @@ class EventDetailPage: UIViewController {
     }
     
     func attributeText(text: String) -> NSAttributedString {
-        if let d = try? Down(markdownString: text).toAttributedString(.default, stylesheet: PLAIN_STYLE) {
+        if let d = try? Down(markdownString: text).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
             return d
         } else {
             print("WARNING: markdown failed")
