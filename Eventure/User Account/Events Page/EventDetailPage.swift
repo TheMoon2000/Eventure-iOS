@@ -7,11 +7,9 @@
 //
 
 import UIKit
-import Down
 
 class EventDetailPage: UIViewController {
     
-    static let linkColor = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
     static let standardAttributes: [NSAttributedString.Key : Any] = {
         
         let pStyle = NSMutableParagraphStyle()
@@ -136,11 +134,11 @@ class EventDetailPage: UIViewController {
         
         eventDescription = {
             let tv = UITextView()
-            tv.attributedText = attributeText(text: event.eventDescription)
+            tv.attributedText = event.eventDescription.attributedText()
             tv.textContainerInset = .zero
             tv.textContainer.lineFragmentPadding = 0
             tv.dataDetectorTypes = .link
-            tv.linkTextAttributes[.foregroundColor] = EventDetailPage.linkColor
+            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
             tv.isEditable = false
             tv.isScrollEnabled = false
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -149,7 +147,7 @@ class EventDetailPage: UIViewController {
             tv.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             tv.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             tv.topAnchor.constraint(equalTo: line.bottomAnchor, constant: 15).isActive = true
-            tv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -30).isActive = true
+            tv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -40).isActive = true
             
             return tv
         }()
@@ -160,15 +158,6 @@ class EventDetailPage: UIViewController {
             favoriteButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
         } else {
             favoriteButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
-        }
-    }
-    
-    func attributeText(text: String) -> NSAttributedString {
-        if let d = try? Down(markdownString: text).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
-            return d
-        } else {
-            print("WARNING: markdown failed")
-            return NSAttributedString(string: text, attributes: EventDetailPage.standardAttributes)
         }
     }
     

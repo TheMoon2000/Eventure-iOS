@@ -75,6 +75,13 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         return true
     }
     
+    override func resignFirstResponder() -> Bool {
+        super.resignFirstResponder()
+        
+        textField.resignFirstResponder()
+        return true
+    }
+    
     init() {
         super.init(style: .default, reuseIdentifier: nil)
         

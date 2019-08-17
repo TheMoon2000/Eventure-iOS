@@ -219,6 +219,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailPage = EventDetailPage()
+        detailPage.hidesBottomBarWhenPushed = true
         detailPage.event = allEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
     }

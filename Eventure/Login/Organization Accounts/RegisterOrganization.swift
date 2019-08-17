@@ -248,7 +248,7 @@ class RegisterOrganization: UITableViewController {
             }
             
             cell.returnHandler = {
-                cell.resignFirstResponder()
+                cell.textField.resignFirstResponder()
             }
             
             return cell

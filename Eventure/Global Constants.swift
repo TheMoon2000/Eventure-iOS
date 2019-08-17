@@ -9,6 +9,7 @@
 
 import UIKit
 import SwiftyJSON
+import Down
 
 // MARK: - Global constants
 
@@ -30,6 +31,7 @@ let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
 let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
+let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 
 let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
 
@@ -64,8 +66,8 @@ let PLAIN_STYLE =  """
     }
 """
 
-/// Todo: REPLACE THIS WITH THE NAVIGATION BAR COLOR
-let NAVBAR_TINT = UIColor(white: 0.93, alpha: 1)
+/// Navigation bar background color
+let NAVBAR_TINT = UIColor.white
 
 /// Alpha value for disabled UI elements.
 let DISABLED_ALPHA: CGFloat = 0.5
@@ -106,6 +108,16 @@ extension String {
     func isValidEmail() -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self)
+    }
+    
+    /// Markdown-formatted text.
+    func attributedText() -> NSAttributedString {
+        if let d = try? Down(markdownString: self).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
+            return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
+        } else {
+            print("WARNING: markdown failed")
+            return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
+        }
     }
 }
 
@@ -160,7 +172,7 @@ extension URLRequest {
         for file in files {
             data.append(string: prefix)
             data.append(string: "Content-Disposition: form-data; name=\"\(file.key)\"\r\n")
-            data.append(string: "Content-Type: image/png\r\n\r\n")
+            data.append(string: "Content-Type: application/octet-stream\r\n\r\n")
             data.append(file.value)
             data.append(string: "\r\n")
         }

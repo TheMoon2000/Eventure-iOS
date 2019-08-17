@@ -5,6 +5,7 @@ target 'Eventure' do
   use_frameworks!
   pod 'SwiftyJSON'
   pod 'Down'
+  pod 'XLPagerTabStrip'
 end
 
 target 'EventureAPITests' do

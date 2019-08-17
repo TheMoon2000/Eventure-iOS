@@ -154,6 +154,7 @@ class OrgFinishRegistration: UIViewController {
             data, response, error in
             
             guard error == nil else {
+                print("Account registration error: " + error!.localizedDescription)
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self, handler: {
                         self.dismiss(animated: true, completion: nil)

@@ -16,27 +16,29 @@ class Organization: CustomStringConvertible {
     var title: String
     var orgDescription: String
     var website: String
-    var members = [String]()
+    var members = [Int: MemberRole]()
     var password_MD5: String
     var tags = [String]()
     var contactName: String
     var contactEmail: String
     var active: Bool
     var dateRegistered: String
-    
+    var logoImage: UIImage?
+    var hasLogo: Bool
     
     init(title: String) {
         id = ""
         self.title = title
         orgDescription = ""
         website = ""
-        members = []
+        members = [:]
         password_MD5 = ""
         tags = []
         contactName = ""
         contactEmail = ""
         active = true
         dateRegistered = ""
+        hasLogo = false
     }
     
     static var empty: Organization {
@@ -52,7 +54,9 @@ class Organization: CustomStringConvertible {
         website = dictionary["Website"]?.string ?? ""
         
         if let members_raw = dictionary["Members"]?.string {
-            members = (JSON(parseJSON: members_raw).arrayObject as? [String]) ?? [String]()
+            for pair in JSON(parseJSON: members_raw).dictionaryValue {
+                members[Int(pair.key)!] = MemberRole(rawValue: pair.value.stringValue)
+            }
         }
         
         if let tags_raw = dictionary["Tags"]?.string {
@@ -62,10 +66,11 @@ class Organization: CustomStringConvertible {
         }
         
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
-        contactName = dictionary["Name"]?.string ?? ""
+        contactName = dictionary["Contact name"]?.string ?? ""
         contactEmail = dictionary["Email"]?.string ?? ""
         active = (dictionary["Active"]?.int ?? 1) == 1
         dateRegistered = dictionary["Date registered"]?.string ?? ""
+        hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
     }
     
     var description: String {
@@ -78,4 +83,12 @@ class Organization: CustomStringConvertible {
         return str
     }
     
+}
+
+
+extension Organization {
+    enum MemberRole: String {
+        case member = "Member"
+        case president = "President"
+    }
 }

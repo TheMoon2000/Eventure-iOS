@@ -10,7 +10,7 @@ import UIKit
 
 class EventCell: UICollectionViewCell {
     
-    private var verticalSpacing: CGFloat = 14
+    private let verticalSpacing: CGFloat = 14
     
     private var card: UIView!
     private var cover: UIImageView!
