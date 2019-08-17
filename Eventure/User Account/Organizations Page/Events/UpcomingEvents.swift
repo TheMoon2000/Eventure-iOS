@@ -11,12 +11,28 @@ import XLPagerTabStrip
 
 class UpcomingEvents: UIViewController, IndicatorInfoProvider {
 
+    private var emptyLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         title = "Upcoming Events"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
+        
+        emptyLabel = {
+            let label = UILabel()
+            label.text = "No Events"
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            
+            return label
+        }()
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {

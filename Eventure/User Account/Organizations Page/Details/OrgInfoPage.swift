@@ -23,7 +23,6 @@ class OrgInfoPage: UIViewController {
     private var lineTopConstraint: NSLayoutConstraint!
     
     private var currentImageView: UIImageView?
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -190,12 +189,10 @@ extension OrgInfoPage: UIScrollViewDelegate {
         
         self.view.addSubview(sv)
         self.navigationController?.isNavigationBarHidden = true
-        self.tabBarController?.tabBar.isHidden = true
     }
     
     @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
         self.navigationController?.isNavigationBarHidden = false
-        self.tabBarController?.tabBar.isHidden = false
         sender.view?.removeFromSuperview()
         currentImageView = nil
     }

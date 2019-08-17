@@ -54,7 +54,6 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         websiteLabel = {
             let label = UILabel()
             label.text = "Website: "
-            label.textColor = .darkGray
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -92,7 +91,6 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactNameLabel = {
             let label = UILabel()
             label.text = "Primary Contact:"
-            label.textColor = .darkGray
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -124,7 +122,6 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactEmailLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
-            label.textColor = .darkGray
             label.text = "Email: "
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
