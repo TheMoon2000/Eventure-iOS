@@ -77,7 +77,7 @@ let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
     config.urlCache = nil
-    config.timeoutIntervalForRequest = 5.0
+    config.timeoutIntervalForRequest = 6.0
     return URLSession(configuration: config)
 }()
 
@@ -112,6 +112,7 @@ extension String {
     
     /// Markdown-formatted text.
     func attributedText() -> NSAttributedString {
+        if isEmpty { return NSAttributedString() }
         if let d = try? Down(markdownString: self).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
             return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
         } else {

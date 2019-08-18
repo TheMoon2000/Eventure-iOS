@@ -39,20 +39,10 @@ class OrgEventsTabStrip: ButtonBarPagerTabStripViewController {
     
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
     
-        let pastEvents = PastEvents()
-        let upcomingEvents = UpcomingEvents()
+        let pastEvents = PastEvents(detailPage: detailPage)
+        let upcomingEvents = UpcomingEvents(detailPage: detailPage)
         
         return [pastEvents, upcomingEvents]
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

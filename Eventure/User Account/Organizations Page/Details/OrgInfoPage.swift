@@ -11,6 +11,7 @@ import XLPagerTabStrip
 
 class OrgInfoPage: UIViewController {
     
+    var detailPage: OrgDetailPage!
     var organization: Organization!
     
     private var altLogoStack: UIStackView!
@@ -28,6 +29,7 @@ class OrgInfoPage: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
+        view.layoutIfNeeded()
         
         canvas = {
             let sv = UIScrollView()
@@ -82,7 +84,7 @@ class OrgInfoPage: UIViewController {
         altLogoStack = {
             let iv = UIImageView(image: organization.logoImage)
             iv.translatesAutoresizingMaskIntoConstraints = false
-            iv.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 75).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             
             let label = UILabel()
@@ -92,7 +94,7 @@ class OrgInfoPage: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             
             let stack = UIStackView(arrangedSubviews: [iv, label])
-            stack.isHidden = UIScreen.main.bounds.width < UIScreen.main.bounds.height
+            stack.isHidden = view.frame.height >= 500
             stack.spacing = 20
             stack.alignment = .center
             stack.translatesAutoresizingMaskIntoConstraints = false
@@ -143,18 +145,17 @@ class OrgInfoPage: UIViewController {
             return tabStrip
         }()
     }
-    
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
         coordinator.animate(alongsideTransition: { context in
             self.view.removeConstraint(self.lineTopConstraint)
-            if size.width > size.height {
+            if size.height < 500 {
                 self.altLogoStack.isHidden = false
                 self.logoImage.isHidden = true
                 self.titleLabel.isHidden = true
-                self.lineTopConstraint = self.line.topAnchor.constraint(equalTo: self.altLogoStack.bottomAnchor, constant: 30)
+                self.lineTopConstraint = self.line.topAnchor.constraint(equalTo: self.altLogoStack.bottomAnchor, constant: 20)
             } else {
                 self.altLogoStack.isHidden = true
                 self.logoImage.isHidden = false

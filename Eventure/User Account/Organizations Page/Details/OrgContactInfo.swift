@@ -33,7 +33,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.94, alpha: 1)
+        view.backgroundColor = .init(white: 0.92, alpha: 1)
         hidesBottomBarWhenPushed = true
         
         canvas = {

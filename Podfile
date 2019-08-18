@@ -6,6 +6,7 @@ target 'Eventure' do
   pod 'SwiftyJSON'
   pod 'Down'
   pod 'XLPagerTabStrip'
+  pod 'TTTAttributedLabel'
 end
 
 target 'EventureAPITests' do

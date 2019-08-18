@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import TTTAttributedLabel
 
 class OrgEventCell: UICollectionViewCell {
     
     private var verticalSpacing: CGFloat = 14
+    
+    var parentVC: UIViewController?
     
     private var card: UIView!
     private var cover: UIImageView!
@@ -18,7 +21,7 @@ class OrgEventCell: UICollectionViewCell {
     private var titleLabel: UILabel!
     private var timeLabel: UILabel!
     private var locationLabel: UILabel!
-    private var descriptionText: UILabel!
+    private var descriptionText: TTTAttributedLabel!
     
     var titleText: UILabel!
     var timeText: UILabel!
@@ -169,11 +172,13 @@ class OrgEventCell: UICollectionViewCell {
         
         
         descriptionText = {
-            let label = UILabel()
+            let label = TTTAttributedLabel(frame: .zero)
+            label.delegate = self
             label.numberOfLines = 3
-            label.font = .systemFont(ofSize: 16)
             label.textColor = .darkGray
-            label.lineBreakMode = .byTruncatingTail
+            label.enabledTextCheckingTypes =  NSTextCheckingResult.CheckingType.link.rawValue
+            label.linkAttributes[NSAttributedString.Key.foregroundColor] = LINK_COLOR
+            label.activeLinkAttributes[NSAttributedString.Key.foregroundColor] = LINK_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -192,10 +197,23 @@ class OrgEventCell: UICollectionViewCell {
         titleText.text = event.title
         timeText.text = event.timeDescription
         locationText.text = event.location
-        descriptionText.text = event.eventDescription
+        descriptionText.setText(event.eventDescription.attributedText())
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+}
+
+
+extension OrgEventCell: TTTAttributedLabelDelegate {
+    func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWith url: URL!) {
+        let alert = UIAlertController(title: "Open Link?", message: "You will be redirected to " + url.absoluteString, preferredStyle: .alert)
+        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(.init(title: "Go", style: .default, handler: { action in
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }))
+        parentVC?.present(alert, animated: true, completion: nil)
+    }
+    
 }

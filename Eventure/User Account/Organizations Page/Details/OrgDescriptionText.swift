@@ -16,7 +16,7 @@ class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
     required init(text: String) {
         super.init(nibName: nil, bundle: nil)
         
-        view.backgroundColor = .init(white: 0.94, alpha: 1)
+        view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         textView = {
             let tv = UITextView()

@@ -32,6 +32,7 @@ class OrgDetailPage: UIViewController {
     private var disclosureIndicator: UIImageView!
     
     private var tabStrip: ButtonBarPagerTabStripViewController!
+    private var tabTopConstraint: NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +40,10 @@ class OrgDetailPage: UIViewController {
         view.backgroundColor = .white
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "star_empty"), style: .plain, target: self, action: #selector(favorite(_:)))
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
+        
+        view.layoutIfNeeded()
         
         previewContainer = {
             let v = UIView()
@@ -148,7 +153,14 @@ class OrgDetailPage: UIViewController {
             
             tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            tabStrip.view.topAnchor.constraint(equalTo: previewContainer.bottomAnchor, constant: 10).isActive = true
+            
+            if view.frame.height > 450 {
+                tabTopConstraint = tabStrip.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100)
+            } else {
+                tabTopConstraint = tabStrip.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor)
+            }
+            tabTopConstraint.isActive = true
+
             tabStrip.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
             addChild(tabStrip)
@@ -163,6 +175,22 @@ class OrgDetailPage: UIViewController {
     
     @objc private func favorite(_ sender: UIBarButtonItem) {
         
+        guard User.current != nil else {
+            let alert = UIAlertController(title: "You are not logged in", message: "Add to favorites is only available to registered users.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Dismiss", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
+            
+            return
+        }
+        
+        var parameters = ["id": String(User.current!.uuid)]
+        if sender.image == #imageLiteral(resourceName: "star_empty") {
+            sender.image = #imageLiteral(resourceName: "star_filled")
+            parameters["isFavorited"] = "1"
+        } else {
+            sender.image = #imageLiteral(resourceName: "star_empty")
+            parameters["isFavorited"] = "0"
+        }
     }
     
     private func loadOrganizationInfo() {
@@ -232,6 +260,23 @@ class OrgDetailPage: UIViewController {
         
         task.resume()
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            if size.height >= 500 {
+                self.tabTopConstraint.constant = 100
+                self.title = nil
+                self.previewContainer.isHidden = false
+            } else {
+                self.tabTopConstraint.constant = 0
+                self.title = self.orgOverview.title
+                self.previewContainer.isHidden = true
+            }
+            self.navigationController?.navigationBar.setNeedsDisplay()
+        }, completion: nil)
+    }
 }
 
 // MARK: - Extension for button event handlers
@@ -249,6 +294,7 @@ extension OrgDetailPage {
     
     @objc private func buttonTriggered() {
         let infoPage = OrgInfoPage()
+        infoPage.detailPage = self
         infoPage.organization = organization!
         navigationController?.pushViewController(infoPage, animated: true)
     }

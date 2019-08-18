@@ -54,7 +54,6 @@
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
 		CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */; };
 		CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */; };
-		CC8E75DF22FFD96100AEB00C /* OrgEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */; };
 		CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */; };
 		CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
 		CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */; };
@@ -195,9 +194,9 @@
 			isa = PBXGroup;
 			children = (
 				CCC824F522BC181100FFD251 /* RegisterTableController.swift */,
-				CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */,
 				CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */,
 				CCE176A822BD773A003E3315 /* ForgotPassword.swift */,
+				CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */,
 			);
 			path = "User Accounts";
 			sourceTree = "<group>";
@@ -518,6 +517,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
 				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
 				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -526,6 +526,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -635,7 +636,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC4EC93822FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
-				CC8E75DF22FFD96100AEB00C /* OrgEventCell.swift in Sources */,
 				CC4CB5C7230525BB00DC30AD /* OrganizationCell.swift in Sources */,
 				CC4E560522FFE0AC000C2BAC /* MainTabBarController.swift in Sources */,
 				CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */,

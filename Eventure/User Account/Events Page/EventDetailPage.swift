@@ -67,7 +67,7 @@ class EventDetailPage: UIViewController {
             iv.topAnchor.constraint(lessThanOrEqualTo: canvas.topAnchor).isActive = true
             iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
             iv.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-            iv.widthAnchor.constraint(lessThanOrEqualToConstant: 500).isActive = true
+            iv.widthAnchor.constraint(lessThanOrEqualToConstant: 400).isActive = true
             let left = iv.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor)
             left.priority = .defaultHigh
             left.isActive = true

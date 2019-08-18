@@ -11,25 +11,43 @@ import SwiftyJSON
 
 class EventViewController: UIViewController {
     
-    private let refreshControl = UIRefreshControl()
-    private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
-        NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
-        .font: UIFont.systemFont(ofSize: 17, weight: .medium)
-    ]
+    private var isFiltering: Bool {
+        return searchController.isActive && !searchController.searchBar.text!.isEmpty
+    }
     
+    // The search bar
+    private let searchController = UISearchController(searchResultsController: nil)
+
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
     private var eventCatalog: UICollectionView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     
-    private(set) var allEvents = [Event]()
+    private(set) var allEvents = [Event]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.updateFiltered()
+            }
+        }
+    }
+    private var filteredEvents = [Event]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .white
         title = "Events"
+        
+        // Search bar setup
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.placeholder = "Search Events"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(updateEvents))
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -45,7 +63,11 @@ class EventViewController: UIViewController {
         }()
         
         topTab = {
-            let tab = UISegmentedControl(items: ["Recommended", "Trending", "All Events"])
+            let tab = UISegmentedControl(items: ["All Events", "Trending", "Recommended"])
+            if User.current == nil {
+                tab.setEnabled(false, forSegmentAt: 1)
+                tab.setEnabled(false, forSegmentAt: 2)
+            }
             tab.tintColor = MAIN_TINT
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +86,6 @@ class EventViewController: UIViewController {
            let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
-            ec.refreshControl = self.refreshControl
             ec.contentInset.top = topTabBg.frame.height + 8
             ec.contentInset.bottom = 8
             ec.scrollIndicatorInsets.top = topTabBg.frame.height
@@ -110,10 +131,6 @@ class EventViewController: UIViewController {
             return label
         }()
         
-        refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
-        refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
-        refreshControl.tintColor = MAIN_TINT
-        
 //        updateEvents()
         generateRandomEvents()
     }
@@ -126,6 +143,7 @@ class EventViewController: UIViewController {
             return String((0..<length).map{ _ in letters.randomElement()! })
         }
         
+        var tmp = [Event]()
         for _ in 1...20 {
             let e = Event(uuid: UUID().uuidString,
                           title: randString(length: 25),
@@ -133,24 +151,22 @@ class EventViewController: UIViewController {
                           location: randString(length: 30),
                           tags: [randString(length: 4),randString(length: 4)],
                           hostTitle: randString(length: 30))
-            allEvents.append(e)
+            tmp.append(e)
+        }
+        allEvents = tmp
+        DispatchQueue.main.async {
+            self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
         }
     }
     
-    @objc private func pullDownRefresh() {
-        updateEvents(pulled: true)
-    }
-    
-    private func updateEvents(pulled: Bool = false) {
+    @objc private func updateEvents() {
         
-        if !pulled {
-            spinner.startAnimating()
-            spinnerLabel.isHidden = false
-            allEvents.removeAll()
-            eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
-            refreshControl.isEnabled = false
-            refreshControl.isHidden = true
-        }
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        
+        spinner.startAnimating()
+        spinnerLabel.isHidden = false
+        allEvents.removeAll()
+        eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/List", parameters: [:])!
@@ -161,14 +177,9 @@ class EventViewController: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                if !pulled {
-                    self.spinner.stopAnimating()
-                    self.spinnerLabel.isHidden = true
-                    self.refreshControl.isEnabled = true
-                    self.refreshControl.isHidden = false
-                } else {
-                    self.refreshControl.endRefreshing()
-                }
+                self.spinner.stopAnimating()
+                self.spinnerLabel.isHidden = true
+                self.navigationItem.rightBarButtonItem?.isEnabled = true
             }
             
             guard error == nil else {
@@ -179,15 +190,17 @@ class EventViewController: UIViewController {
             }
             
             if let eventsList = try? JSON(data: data!).arrayValue {
-                self.allEvents.removeAll()
+                var tmp = [Event]()
                 for event in eventsList {
-                    self.allEvents.append(Event(eventInfo: event))
+                    tmp.append(Event(eventInfo: event))
                 }
-                DispatchQueue.main.async {
+                self.allEvents = tmp
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    print(self.filteredEvents.count)
                     self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
                 }
             } else {
-                print(String(data: data!, encoding: .utf8)!)
+                print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
             }
         }
         
@@ -202,7 +215,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return allEvents.count
+        return filteredEvents.count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -211,7 +224,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: indexPath) as! EventCell
-        cell.setupCellWithEvent(event: allEvents[indexPath.row])
+        cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
         
         return cell
     }
@@ -220,10 +233,11 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
         
         let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
-        detailPage.event = allEvents[indexPath.row]
+        detailPage.event = filteredEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
     }
 }
+
 
 extension EventViewController: UICollectionViewDelegateFlowLayout {
     var cardWidth: CGFloat {
@@ -248,7 +262,7 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cell = EventCell()
-        cell.setupCellWithEvent(event: allEvents[indexPath.row])
+        cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
     }
@@ -266,5 +280,34 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
                             left: equalSpacing,
                             bottom: equalSpacing,
                             right: equalSpacing)
+    }
+}
+
+
+extension EventViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        DispatchQueue.main.async {
+            self.updateFiltered()
+            self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+        }
+    }
+    
+    private func updateFiltered() {
+        let searchText = searchController.searchBar.text!.lowercased()
+        filteredEvents = allEvents.filter { (event: Event) -> Bool in
+            let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
+            var condition = true
+            if tabName == "Recommended" {
+                // If the current tab is 'Recommended', the current user must be logged in
+                condition = !event.tags.intersection(User.current!.tags).isEmpty
+            } else if tabName == "Trending" {
+                // TODO: Replace with code to filter out non-trending events
+            }
+            
+            return condition && (searchText.isEmpty || event.title.lowercased().contains(searchText) || event.eventDescription.lowercased().contains(searchText))
+        }
+                
+        // TODO: Apply sorting algorithm depending on user settings
+        filteredEvents.sort(by: { $0.title < $1.title })
     }
 }

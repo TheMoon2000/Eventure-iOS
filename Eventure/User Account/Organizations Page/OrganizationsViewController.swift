@@ -11,7 +11,6 @@ import SwiftyJSON
 
 class OrganizationsViewController: UIViewController {
 
-    private let searchController = UISearchController(searchResultsController: nil)
     
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
@@ -26,11 +25,16 @@ class OrganizationsViewController: UIViewController {
             }
         }
     }
+    
     private var filteredOrgs = [OrgOverview]()
     
     private var isFiltering: Bool {
         return searchController.isActive && !searchController.searchBar.text!.isEmpty
     }
+    
+    // The search bar
+    private let searchController = UISearchController(searchResultsController: nil)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +68,7 @@ class OrganizationsViewController: UIViewController {
         }()
         
         topTab = {
-            let tab = UISegmentedControl(items: ["All", "Recommended",  "Membership"])
+            let tab = UISegmentedControl(items: ["All", "Recommended",  "Subscribed"])
             if User.current == nil {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
@@ -191,9 +195,7 @@ class OrganizationsViewController: UIViewController {
     /// Load the logo image for an organization.
     private func getLogoImage(for org: OrgOverview) {
         if !org.hasLogo { return }
-        
-        print("Getting logo image for \(org.title)...")
-        
+                
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetLogo",
                            parameters: ["id": org.id])!
@@ -311,8 +313,8 @@ extension OrganizationsViewController: UISearchResultsUpdating {
             var condition = true
             if tabName == "Recommended" {
                 condition = !org.tags.intersection(User.current!.tags).isEmpty
-            } else if tabName == "Membership" {
-                condition = org.members.keys.contains(User.current!.uuid)
+            } else if tabName == "Subscribed" {
+                // TODO: detect subscription
             }
             
             return condition && (searchText.isEmpty || org.title.lowercased().contains(searchText))

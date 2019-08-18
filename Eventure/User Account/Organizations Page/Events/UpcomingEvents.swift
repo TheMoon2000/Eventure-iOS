@@ -9,45 +9,46 @@
 import UIKit
 import XLPagerTabStrip
 
-class UpcomingEvents: UIViewController, IndicatorInfoProvider {
+class UpcomingEvents: OrgEventViewController, IndicatorInfoProvider {
 
-    private var emptyLabel: UILabel!
+    private var detailPage: OrgDetailPage!
+    
+    override var showTopTab: Bool { return false }
+    
+    /// By providing the current organization's ID, the API only returns events that the current organization hosts.
+    override var orgID: String? {
+        return detailPage.orgOverview.id
+    }
+    
+    required init(detailPage: OrgDetailPage) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.detailPage = detailPage
+        lowerBound = Date()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        title = "Upcoming Events"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
-        
-        emptyLabel = {
-            let label = UILabel()
-            label.text = "No Events"
-            label.textColor = .darkGray
-            label.font = .systemFont(ofSize: 17)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-            
-            return label
-        }()
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: "Upcoming Events")
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            self.eventCatalog.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
     }
-    */
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 
 }

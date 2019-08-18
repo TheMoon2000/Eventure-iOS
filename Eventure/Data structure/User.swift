@@ -20,6 +20,7 @@ class User: CustomStringConvertible {
     var password_MD5: String
     var displayedName: String
     var gender: Gender
+    var numberOfFavoriteEvents: Int = 0
     var subscriptions = [String]()
     var tags = [String]()
     var dateRegistered: String // Only for debugging purpose

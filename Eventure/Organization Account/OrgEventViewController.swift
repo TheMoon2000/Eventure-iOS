@@ -10,7 +10,19 @@ import UIKit
 import SwiftyJSON
 
 class OrgEventViewController: UIViewController {
-
+    
+    var showTopTab: Bool {
+        return true
+    }
+    
+    var orgID: String? {
+        return Organization.current?.id
+    }
+    
+    // Date bounds
+    var lowerBound: Date?
+    var upperBound: Date?
+    
     private let refreshControl = UIRefreshControl()
     private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
         NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
@@ -19,11 +31,12 @@ class OrgEventViewController: UIViewController {
     
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
-    private var eventCatalog: UICollectionView!
+    var eventCatalog: UICollectionView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
+    private var emptyLabel: UILabel!
     
-    private(set) var allEvents = [Event]()
+    var allEvents = [Event]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,14 +73,19 @@ class OrgEventViewController: UIViewController {
         
         topTabBg.layoutIfNeeded()
         
+        topTabBg.isHidden = !showTopTab
+        
         eventCatalog = {
             let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
             ec.refreshControl = self.refreshControl
-            ec.contentInset.top = topTabBg.frame.height + 8
+            ec.contentInset.top = 8
             ec.contentInset.bottom = 8
-            ec.scrollIndicatorInsets.top = topTabBg.frame.height
+            if !topTabBg.isHidden {
+                ec.scrollIndicatorInsets.top = topTabBg.frame.height
+                ec.contentInset.top += topTabBg.frame.height
+            }
             ec.backgroundColor = .init(white: 0.92, alpha: 1)
             ec.register(OrgEventCell.classForCoder(), forCellWithReuseIdentifier: "org event")
             ec.contentInsetAdjustmentBehavior = .always
@@ -76,7 +94,11 @@ class OrgEventViewController: UIViewController {
             
             ec.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             ec.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            ec.topAnchor.constraint(equalTo: topTabBg.topAnchor).isActive = true
+            if topTabBg.isHidden {
+                ec.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            } else {
+                ec.topAnchor.constraint(equalTo: topTabBg.topAnchor).isActive = true
+            }
             ec.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
             return ec
@@ -110,12 +132,29 @@ class OrgEventViewController: UIViewController {
             return label
         }()
         
+        emptyLabel = {
+            let label = UILabel()
+            label.text = "No Events"
+            label.isHidden = true
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: eventCatalog.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: eventCatalog.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
         refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
         refreshControl.tintColor = MAIN_TINT
         
-        //        updateEvents()
-        generateRandomEvents()
+        updateEvents()
+        
+        // Debugging only
+//         generateRandomEvents()
     }
     
     /// Debugging only
@@ -143,6 +182,8 @@ class OrgEventViewController: UIViewController {
     
     private func updateEvents(pulled: Bool = false) {
         
+        emptyLabel.isHidden = true
+
         if !pulled {
             spinner.startAnimating()
             spinnerLabel.isHidden = false
@@ -152,8 +193,11 @@ class OrgEventViewController: UIViewController {
             refreshControl.isHidden = true
         }
         
+        var parameters = [String : String]()
+        parameters["id"] = orgID
+        
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: [:])!
+                           API_Name: "events/List", parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -180,14 +224,20 @@ class OrgEventViewController: UIViewController {
             
             if let eventsList = try? JSON(data: data!).arrayValue {
                 self.allEvents.removeAll()
-                for event in eventsList {
-                    self.allEvents.append(Event(eventInfo: event))
+                for eventData in eventsList {
+                    let event = Event(eventInfo: eventData)
+                    if self.filterFunction(event) {
+                        self.allEvents.append(event)
+                    }
                 }
+                self.allEvents.sort { self.sortFunction(event1: $0, event2: $1) }
+                
                 DispatchQueue.main.async {
-                    self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+                    self.eventCatalog.reloadData()
+                    self.emptyLabel.isHidden = !self.allEvents.isEmpty
                 }
             } else {
-                print(String(data: data!, encoding: .utf8)!)
+                print("Unable to parse '" + String(data: data!, encoding: .utf8)! + "'")
             }
         }
         
@@ -211,6 +261,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "org event", for: indexPath) as! OrgEventCell
+        cell.parentVC = self
         cell.setupCellWithEvent(event: allEvents[indexPath.row])
         
         return cell
@@ -268,4 +319,31 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
                             right: equalSpacing)
     }
 
+}
+
+// MARK: - Sorting and filtering events
+extension OrgEventViewController {
+    
+    /// The sort function to use for the list of events. By default, descending order is used (latest events appear first).
+    func sortFunction(event1: Event, event2: Event) -> Bool {
+        if event2.startTime == nil {
+            return true
+        } else if event1.startTime == nil {
+            return false
+        } else {
+            return event1.startTime!.timeIntervalSince(event2.startTime!) >= 0
+        }
+    }
+    
+    /// The filter that is applied to all events.
+    func filterFunction(_ event: Event) -> Bool {
+        if event.startTime == nil {
+            return false
+        }
+        
+        let lowCond = lowerBound == nil || event.startTime!.timeIntervalSince(lowerBound!) >= 0
+        let highCond = upperBound == nil || event.endTime == nil || event.endTime!.timeIntervalSince(upperBound!) <= 0
+        
+        return lowCond && highCond
+    }
 }
