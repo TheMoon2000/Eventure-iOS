@@ -235,9 +235,9 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
         
         filteredOrgs[indexPath.row].logoUpdater = { [weak cell] image in
             DispatchQueue.main.async {
+                cell?.logoImage.image = image
                 if image != nil {
-                    cell?.logoImage.image = image
-                    cell?.logoImage.backgroundColor = nil
+                    cell?.logoImage.backgroundColor = .clear
                 } else {
                     cell?.logoImage.backgroundColor = LINE_TINT
                 }

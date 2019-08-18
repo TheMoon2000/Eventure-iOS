@@ -20,7 +20,6 @@ class OrganizationCell: UITableViewCell {
         
         logoImage = {
             let iv = UIImageView()
-            iv.backgroundColor = LINE_TINT
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -50,8 +49,13 @@ class OrganizationCell: UITableViewCell {
 
     func setup(with org: OrganizationsViewController.OrgOverview) {
         orgTitle.text = org.title
+        
         logoImage.image = org.logoImage
-        logoImage.backgroundColor = org.logoImage == nil ? LINE_TINT : nil
+        if logoImage.image != nil {
+            logoImage.backgroundColor = .clear
+        } else {
+            logoImage.backgroundColor = LINE_TINT
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

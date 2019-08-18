@@ -45,6 +45,11 @@ class OrgDetailPage: UIViewController {
         
         view.layoutIfNeeded()
         
+        if view.frame.height < 450 {
+            self.title = orgOverview.title
+            self.navigationController?.navigationBar.setNeedsDisplay()
+        }
+        
         previewContainer = {
             let v = UIView()
             v.translatesAutoresizingMaskIntoConstraints = false
@@ -265,7 +270,7 @@ class OrgDetailPage: UIViewController {
         super.viewWillTransition(to: size, with: coordinator)
         
         coordinator.animate(alongsideTransition: { context in
-            if size.height >= 500 {
+            if size.height >= 450 {
                 self.tabTopConstraint.constant = 100
                 self.title = nil
                 self.previewContainer.isHidden = false

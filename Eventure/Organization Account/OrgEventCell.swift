@@ -175,7 +175,6 @@ class OrgEventCell: UICollectionViewCell {
             let label = TTTAttributedLabel(frame: .zero)
             label.delegate = self
             label.numberOfLines = 3
-            label.textColor = .darkGray
             label.enabledTextCheckingTypes =  NSTextCheckingResult.CheckingType.link.rawValue
             label.linkAttributes[NSAttributedString.Key.foregroundColor] = LINK_COLOR
             label.activeLinkAttributes[NSAttributedString.Key.foregroundColor] = LINK_COLOR
