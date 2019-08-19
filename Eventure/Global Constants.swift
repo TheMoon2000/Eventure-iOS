@@ -21,6 +21,9 @@ let USERNAME = "__replace__"
 let PASSWORD = "__replace__"
 let INTERNAL_ERROR = "internal error"
 
+let CONNECTION_ERROR = "Connection Error"
+let SERVER_ERROR = "Server Error"
+
 let USER_DEFAULT_CRED = "CREDENTIAL"
 let KEY_ACCOUNT_TYPE = "Account Type"
 let ACCOUNT_TYPE_USER = "User"

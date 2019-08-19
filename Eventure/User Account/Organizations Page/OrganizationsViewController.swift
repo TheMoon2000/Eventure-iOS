@@ -17,6 +17,7 @@ class OrganizationsViewController: UIViewController {
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     private var orgTable: UITableView!
+    private var emptyLabel: UILabel!
     
     private var organizations = [OrgOverview]() {
         didSet {
@@ -135,6 +136,19 @@ class OrganizationsViewController: UIViewController {
             return label
         }()
         
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: eventCatalog.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: eventCatalog.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
         loadOrganizations()
     }
     
@@ -143,6 +157,7 @@ class OrganizationsViewController: UIViewController {
         
         spinner.startAnimating()
         spinnerLabel.isHidden = false
+        emptyLabel.text = ""
         organizations.removeAll()
         DispatchQueue.main.async {
             self.orgTable.reloadData()
@@ -165,6 +180,7 @@ class OrganizationsViewController: UIViewController {
             
             guard error == nil else {
                 DispatchQueue.main.async {
+                    self.emptyLabel.text = CONNECTION_ERROR
                     internetUnavailableError(vc: self, handler: nil)
                 }
                 return
@@ -180,10 +196,12 @@ class OrganizationsViewController: UIViewController {
                 }
                 self.organizations = tmp
                 DispatchQueue.main.async {
+                    self.emptyLabel.text = tmp.isEmpty ? "No Organizations" : ""
                     self.orgTable.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
                 }
             } else {
                 DispatchQueue.main.async {
+                    self.emptyLabel.text = SERVER_ERROR
                     serverMaintenanceError(vc: self)
                 }
             }

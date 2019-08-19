@@ -215,7 +215,7 @@ class OrgEventViewController: UIViewController {
             
             guard error == nil else {
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = "Connection Error"
+                    self.emptyLabel.text = CONNECTION_ERROR
                     internetUnavailableError(vc: self)
                 }
                 return
@@ -239,7 +239,7 @@ class OrgEventViewController: UIViewController {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
                 
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = "Server Error"
+                    self.emptyLabel.text = SERVER_ERROR
                 }
                 
                 if String(data: data!, encoding: .utf8) == INTERNAL_ERROR {
