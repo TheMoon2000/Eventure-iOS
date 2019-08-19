@@ -23,6 +23,7 @@ class EventViewController: UIViewController {
     private var eventCatalog: UICollectionView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
+    private var emptyLabel: UILabel!
     
     private(set) var allEvents = [Event]() {
         didSet {
@@ -47,6 +48,7 @@ class EventViewController: UIViewController {
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
+        navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(updateEvents))
         
         topTabBg = {
@@ -131,8 +133,21 @@ class EventViewController: UIViewController {
             return label
         }()
         
-//        updateEvents()
-        generateRandomEvents()
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: eventCatalog.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: eventCatalog.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
+        updateEvents()
+//        generateRandomEvents()
     }
     
     /// Debugging only
@@ -165,8 +180,11 @@ class EventViewController: UIViewController {
         
         spinner.startAnimating()
         spinnerLabel.isHidden = false
+        emptyLabel.text = ""
         allEvents.removeAll()
-        eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+        DispatchQueue.main.async {
+            self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/List", parameters: [:])!
@@ -184,6 +202,7 @@ class EventViewController: UIViewController {
             
             guard error == nil else {
                 DispatchQueue.main.async {
+                    self.emptyLabel.text = "Connection Error"
                     internetUnavailableError(vc: self)
                 }
                 return
@@ -196,15 +215,29 @@ class EventViewController: UIViewController {
                 }
                 self.allEvents = tmp
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    print(self.filteredEvents.count)
+                    self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
                     self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
+
+                DispatchQueue.main.async {
+                    self.emptyLabel.text = "Server Error"
+                }
+                
+                if String(data: data!, encoding: .utf8) == INTERNAL_ERROR {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                    }
+                }
             }
         }
         
         task.resume()
+    }
+    
+    @objc private func openOptions() {
+        // TODO: filtering options here
     }
     
 

@@ -412,7 +412,7 @@ class LoginViewController: UIViewController {
                     }
                 } else {
                     DispatchQueue.main.async {
-                        if servermsg == "internal error" {
+                        if servermsg == INTERNAL_ERROR {
                             serverMaintenanceError(vc: self)
                             return
                         }

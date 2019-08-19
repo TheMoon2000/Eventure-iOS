@@ -134,8 +134,6 @@ class OrgEventViewController: UIViewController {
         
         emptyLabel = {
             let label = UILabel()
-            label.text = "No Events"
-            label.isHidden = true
             label.textColor = .darkGray
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -182,7 +180,7 @@ class OrgEventViewController: UIViewController {
     
     private func updateEvents(pulled: Bool = false) {
         
-        emptyLabel.isHidden = true
+        emptyLabel.text = ""
 
         if !pulled {
             spinner.startAnimating()
@@ -217,6 +215,7 @@ class OrgEventViewController: UIViewController {
             
             guard error == nil else {
                 DispatchQueue.main.async {
+                    self.emptyLabel.text = "Connection Error"
                     internetUnavailableError(vc: self)
                 }
                 return
@@ -234,10 +233,20 @@ class OrgEventViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     self.eventCatalog.reloadData()
-                    self.emptyLabel.isHidden = !self.allEvents.isEmpty
+                    self.emptyLabel.text = self.allEvents.isEmpty ? "No Events" : ""
                 }
             } else {
-                print("Unable to parse '" + String(data: data!, encoding: .utf8)! + "'")
+                print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
+                
+                DispatchQueue.main.async {
+                    self.emptyLabel.text = "Server Error"
+                }
+                
+                if String(data: data!, encoding: .utf8) == INTERNAL_ERROR {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                    }
+                }
             }
         }
         

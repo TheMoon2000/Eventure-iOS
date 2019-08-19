@@ -24,21 +24,26 @@ class EventDetailPage: UIViewController {
         ]
     }()
     
-    
+    /// The event which the current view controller displays.
     var event: Event!
-    private var hideBlankImages = false
+    
+    private var hideBlankImages = true
     
     private var canvas: UIScrollView!
     private var coverImage: UIImageView!
     private var eventTitle: UILabel!
-    private var favoriteButton: UIButton!
+    private var favoriteButton: UIBarButtonItem!
     private var eventDescription: UITextView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = event.title
+        self.title = "Event Details"
         view.backgroundColor = .white
+        
+        favoriteButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
+        favoriteButton.isEnabled = User.current != nil
+        navigationItem.rightBarButtonItem = favoriteButton
 
         canvas = {
             let canvas = UIScrollView()
@@ -99,6 +104,7 @@ class EventDetailPage: UIViewController {
             return label
         }()
         
+        /*
         favoriteButton = {
             let button = UIButton(type: .system)
             button.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
@@ -115,7 +121,7 @@ class EventDetailPage: UIViewController {
             button.addTarget(self, action: #selector(changedFavoriteStatus), for: .touchUpInside)
             
             return button
-        }()
+        }()*/
         
         
         let line: UIView = {
@@ -154,11 +160,53 @@ class EventDetailPage: UIViewController {
     }
     
     @objc private func changedFavoriteStatus() {
-        if favoriteButton.image(for: .normal) == #imageLiteral(resourceName: "star_empty") {
-            favoriteButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
-        } else {
-            favoriteButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        
+        guard let currentUser = User.current else {
+            return
         }
+        
+        func toggle() {
+            if favoriteButton.image == #imageLiteral(resourceName: "heart_empty") {
+                favoriteButton.image = #imageLiteral(resourceName: "heart")
+            } else {
+                favoriteButton.image = #imageLiteral(resourceName: "heart_empty")
+            }
+        }
+        
+        toggle()
+        
+        var parameters = [
+            "userId": String(currentUser.uuid),
+            "eventId": event.uuid,
+            "favorited": favoriteButton.image == #imageLiteral(resourceName: "heart") ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/MarkEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) { toggle() }
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
+            
+            if msg == INTERNAL_ERROR {
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self) { toggle() }
+                }
+            }
+        }
+        
+        task.resume()
     }
     
 

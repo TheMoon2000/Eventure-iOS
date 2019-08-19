@@ -39,8 +39,8 @@ class OrgDetailPage: UIViewController {
 
         view.backgroundColor = .white
         navigationController?.navigationBar.shadowImage = UIImage()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "star_empty"), style: .plain, target: self, action: #selector(favorite(_:)))
-        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(favorite(_:)))
+        navigationItem.rightBarButtonItem?.isEnabled = User.current != nil
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
         
         view.layoutIfNeeded()
@@ -189,11 +189,11 @@ class OrgDetailPage: UIViewController {
         }
         
         var parameters = ["id": String(User.current!.uuid)]
-        if sender.image == #imageLiteral(resourceName: "star_empty") {
-            sender.image = #imageLiteral(resourceName: "star_filled")
+        if sender.image == #imageLiteral(resourceName: "heart_empty") {
+            sender.image = #imageLiteral(resourceName: "heart")
             parameters["isFavorited"] = "1"
         } else {
-            sender.image = #imageLiteral(resourceName: "star_empty")
+            sender.image = #imageLiteral(resourceName: "heart_empty")
             parameters["isFavorited"] = "0"
         }
     }

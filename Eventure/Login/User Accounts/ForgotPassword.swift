@@ -177,7 +177,7 @@ class ForgotPassword: UITableViewController {
             let msg = String(data: data!, encoding: .utf8) ?? ""
             print(msg)
             switch msg {
-            case "internal error":
+            case INTERNAL_ERROR:
                 DispatchQueue.main.async { [weak self] in
                     if self != nil {
                         serverMaintenanceError(vc: self!)
