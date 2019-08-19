@@ -20,8 +20,9 @@ class User: CustomStringConvertible {
     var password_MD5: String
     var displayedName: String
     var gender: Gender
-    var numberOfFavoriteEvents = 0
-    var numberOfFavoritedOrgs = 0
+    var favoritedEventsList = [String]()
+    var favoritedOrgsList = [String]()
+    var goingList = [String: Int]()
     var subscriptions = [String]()
     var tags = [String]()
     var dateRegistered: String // Only for debugging purpose
@@ -60,6 +61,7 @@ class User: CustomStringConvertible {
         str += "  gender = \(gender.rawValue)\n"
         str += "  subscriptions = \(subscriptions)\n"
         str += "  tags = \(tags)\n"
+        str += "  # of favorite events = \(favoritedEventsList.count)"
         str += "  dateRegistered = \(dateRegistered)"
         
         return str

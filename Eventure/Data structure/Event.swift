@@ -51,7 +51,6 @@ class Event: CustomStringConvertible {
         return host?.title ?? hostDescription
     }
     private var hostDescription = ""
-    var attendees = [User]()
     var tags = Set<String>()
     // # of interested, # of going
     // API: array of user id
