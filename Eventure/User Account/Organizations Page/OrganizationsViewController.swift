@@ -143,8 +143,8 @@ class OrganizationsViewController: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
-            label.centerXAnchor.constraint(equalTo: eventCatalog.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: eventCatalog.centerYAnchor).isActive = true
+            label.centerXAnchor.constraint(equalTo: orgTable.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: orgTable.centerYAnchor).isActive = true
             
             return label
         }()
