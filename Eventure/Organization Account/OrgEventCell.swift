@@ -175,7 +175,9 @@ class OrgEventCell: UICollectionViewCell {
             let label = TTTAttributedLabel(frame: .zero)
             label.delegate = self
             label.numberOfLines = 3
-            label.enabledTextCheckingTypes =  NSTextCheckingResult.CheckingType.link.rawValue
+            label.enabledTextCheckingTypes = NSTextCheckingResult.CheckingType.link.rawValue +
+                NSTextCheckingResult.CheckingType.phoneNumber.rawValue
+            
             
             let attributes: [NSAttributedString.Key : Any] = [
                 .foregroundColor: LINK_COLOR,
@@ -217,6 +219,26 @@ extension OrgEventCell: TTTAttributedLabelDelegate {
         alert.addAction(.init(title: "Go", style: .default, handler: { action in
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }))
+        parentVC?.present(alert, animated: true, completion: nil)
+    }
+    
+    func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWith result: NSTextCheckingResult!) {
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+        
+        switch result.resultType {
+        case NSTextCheckingResult.CheckingType.phoneNumber:
+            alert.title = "Make a call?"
+            alert.message = result.phoneNumber
+            let url = URL(string: "tel://" + result.phoneNumber!)!
+            alert.addAction(.init(title: "Call", style: .default, handler: {
+                action in
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }))
+        default:
+            break
+        }
         parentVC?.present(alert, animated: true, completion: nil)
     }
     

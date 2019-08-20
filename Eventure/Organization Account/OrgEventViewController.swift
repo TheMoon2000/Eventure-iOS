@@ -355,7 +355,8 @@ extension OrgEventViewController {
         
         let lowCond = lowerBound == nil || event.startTime!.timeIntervalSince(lowerBound!) >= 0
         let highCond = upperBound == nil || event.endTime == nil || event.endTime!.timeIntervalSince(upperBound!) <= 0
+        let hostCond = orgID == nil || event.host?.id == orgID
         
-        return lowCond && highCond
+        return lowCond && highCond && hostCond
     }
 }
