@@ -57,15 +57,37 @@ let PLAIN_STYLE =  """
         line-height: 1.5;
         letter-spacing: 1%;
         color: #5A5A5A;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
     h1, h2, h3, h4, h5, h6 {
         font-family: -apple-system;
-        font-size: 20px;
         font-weight: 600;
         letter-spacing: 1%;
         color: rgb(255, 120, 104);
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 21px;
+    }
+
+    h4 {
+        font-size: 20px;
+    }
+
+    h5 {
+        font-size: 19px;
+    }
+    h6 {
+        font-size: 18px;
     }
 """
 
