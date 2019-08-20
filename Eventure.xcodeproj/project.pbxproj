@@ -267,8 +267,8 @@
 				CC18F567229AD535008FABEA /* OrganizationsViewController.swift */,
 				CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */,
 				CC2EE6EA2306F9750044C6ED /* OrgDetailPage.swift */,
-				CC405DC82307F0BC00B85BEC /* Details */,
 				CCB064762307F09900BB22E1 /* Events */,
+				CC405DC82307F0BC00B85BEC /* Details */,
 			);
 			path = "Organizations Page";
 			sourceTree = "<group>";
