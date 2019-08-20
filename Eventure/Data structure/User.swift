@@ -20,10 +20,9 @@ class User: CustomStringConvertible {
     var password_MD5: String
     var displayedName: String
     var gender: Gender
-    var favoritedEventsList = [String]()
-    var favoritedOrgsList = [String]()
+    var favoritedEvents = Set<String>()
     var goingList = [String: Int]()
-    var subscriptions = [String]()
+    var subscriptions = Set<String>()
     var tags = [String]()
     var dateRegistered: String // Only for debugging purpose
     
@@ -44,7 +43,8 @@ class User: CustomStringConvertible {
         gender = Gender(rawValue: (dictionary["Gender"]?.int ?? -1)) ?? .unspecified
         
         if let subscription_raw = dictionary["Subscriptions"]?.string {
-            subscriptions = (JSON(parseJSON: subscription_raw).arrayObject as? [String]) ?? [String]()
+            let subsArray = (JSON(parseJSON: subscription_raw).arrayObject as? [String]) ?? [String]()
+            subscriptions = Set(subsArray)
         }
         
         if let tags_raw = dictionary["Tags"]?.string {
@@ -61,7 +61,7 @@ class User: CustomStringConvertible {
         str += "  gender = \(gender.rawValue)\n"
         str += "  subscriptions = \(subscriptions)\n"
         str += "  tags = \(tags)\n"
-        str += "  # of favorite events = \(favoritedEventsList.count)"
+        str += "  # of favorite events = \(favoritedEvents.count)"
         str += "  dateRegistered = \(dateRegistered)"
         
         return str

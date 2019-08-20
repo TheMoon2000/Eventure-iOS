@@ -41,7 +41,7 @@ class OrgDetailPage: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         
         let favImage = orgOverview.subscribed ? #imageLiteral(resourceName: "heart") : #imageLiteral(resourceName: "heart_empty")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(favorite(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(subscribe(_:)))
         navigationItem.rightBarButtonItem?.isEnabled = User.current != nil
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
         
@@ -180,7 +180,7 @@ class OrgDetailPage: UIViewController {
         getLogoImage(for: orgOverview)
     }
     
-    @objc private func favorite(_ sender: UIBarButtonItem) {
+    @objc private func subscribe(_ sender: UIBarButtonItem) {
         
         guard User.current != nil else {
             let alert = UIAlertController(title: "You are not logged in", message: "Add to favorites is only available to registered users.", preferredStyle: .alert)
@@ -190,16 +190,60 @@ class OrgDetailPage: UIViewController {
             return
         }
         
-        var parameters = ["userId": String(User.current!.uuid)]
+        let originalSubscription = orgOverview.subscribed
         
-        if sender.image == #imageLiteral(resourceName: "heart_empty") {
-            sender.image = #imageLiteral(resourceName: "heart")
-            parameters["isFavorited"] = "1"
-        } else {
-            sender.image = #imageLiteral(resourceName: "heart_empty")
-            parameters["isFavorited"] = "0"
+        func toggle(_ update: Bool = true) {
+            if update {
+                orgOverview.subscribed = !originalSubscription
+            } else {
+                orgOverview.subscribed = originalSubscription
+            }
+            sender.image = orgOverview.subscribed ? #imageLiteral(resourceName: "heart") : #imageLiteral(resourceName: "heart_empty")
         }
+        
+        toggle()
+        
+        let parameters = [
+            "userId": String(User.current!.uuid),
+            "orgId": orgOverview.id,
+            "subscribed": sender.image == #imageLiteral(resourceName: "heart") ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/MarkOrganization",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) {
+                        toggle(false) // Toggle back to the original state
+                    }
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
+            if msg == INTERNAL_ERROR {
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self) {
+                        toggle(false) // Toggle back to the original state
+                    }
+                }
+            } else if msg != "success" {
+                DispatchQueue.main.async {
+                    toggle(false)
+                }
+            }
+        }
+        
+        task.resume()
     }
+    
     
     private func loadOrganizationInfo() {
         

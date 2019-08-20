@@ -27,9 +27,7 @@ class EventViewController: UIViewController {
     
     private(set) var allEvents = [Event]() {
         didSet {
-            DispatchQueue.main.async {
-                self.updateFiltered()
-            }
+            self.updateFiltered()
         }
     }
     private var filteredEvents = [Event]()
@@ -183,9 +181,7 @@ class EventViewController: UIViewController {
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
         allEvents.removeAll()
-        DispatchQueue.main.async {
-            self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
-        }
+        self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/List", parameters: [:])!
@@ -214,8 +210,8 @@ class EventViewController: UIViewController {
                 for event in eventsList {
                     tmp.append(Event(eventInfo: event))
                 }
-                self.allEvents = tmp
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                DispatchQueue.main.async {
+                    self.allEvents = tmp
                     self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
                     self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
                 }

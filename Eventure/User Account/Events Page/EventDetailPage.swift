@@ -165,17 +165,32 @@ class EventDetailPage: UIViewController {
             return
         }
         
-        func toggle() {
+        let isFavoriteOriginally = currentUser.favoritedEvents.contains(event.uuid)
+        
+        func toggle(_ update: Bool = true) {
             if favoriteButton.image == #imageLiteral(resourceName: "heart_empty") {
                 favoriteButton.image = #imageLiteral(resourceName: "heart")
             } else {
                 favoriteButton.image = #imageLiteral(resourceName: "heart_empty")
             }
+            if update {
+                if isFavoriteOriginally {
+                    currentUser.favoritedEvents.remove(event.uuid)
+                } else {
+                    currentUser.favoritedEvents.insert(event.uuid)
+                }
+            } else {
+                if isFavoriteOriginally {
+                    currentUser.favoritedEvents.insert(event.uuid)
+                } else {
+                    currentUser.favoritedEvents.remove(event.uuid)
+                }
+            }
         }
         
         toggle()
         
-        var parameters = [
+        let parameters = [
             "userId": String(currentUser.uuid),
             "eventId": event.uuid,
             "favorited": favoriteButton.image == #imageLiteral(resourceName: "heart") ? "1" : "0"

@@ -51,6 +51,7 @@ class Event: CustomStringConvertible {
         return host?.title ?? hostDescription
     }
     private var hostDescription = ""
+    var currentUserGoingStatus: Going = .neutral
     var tags = Set<String>()
     // # of interested, # of going
     // API: array of user id
@@ -108,6 +109,9 @@ class Event: CustomStringConvertible {
             tags = []
         }
         
+        if let going_raw = dictionary["Going"]?.int {
+            currentUserGoingStatus = Going(rawValue: going_raw) ?? .neutral
+        }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
     }
@@ -122,5 +126,11 @@ class Event: CustomStringConvertible {
         return str
     }
     
+}
+
+extension Event {
+    enum Going: Int {
+        case neutral = 0, interested, going
+    }
 }
 
