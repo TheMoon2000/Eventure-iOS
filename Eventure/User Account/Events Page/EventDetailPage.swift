@@ -143,7 +143,7 @@ class EventDetailPage: UIViewController {
             tv.attributedText = event.eventDescription.attributedText()
             tv.textContainerInset = .zero
             tv.textContainer.lineFragmentPadding = 0
-            tv.dataDetectorTypes = .link
+            tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
             tv.isEditable = false
             tv.isScrollEnabled = false

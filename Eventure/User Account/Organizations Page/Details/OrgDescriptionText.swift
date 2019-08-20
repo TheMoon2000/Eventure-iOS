@@ -23,7 +23,7 @@ class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
             tv.attributedText = text.attributedText()
             tv.textContainerInset = .init(top: 30, left: 30, bottom: 40, right: 30)
             tv.backgroundColor = .clear
-            tv.dataDetectorTypes = .link
+            tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
             tv.isEditable = false
             tv.translatesAutoresizingMaskIntoConstraints = false
