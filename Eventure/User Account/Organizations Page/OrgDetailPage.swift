@@ -39,7 +39,9 @@ class OrgDetailPage: UIViewController {
 
         view.backgroundColor = .white
         navigationController?.navigationBar.shadowImage = UIImage()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(favorite(_:)))
+        
+        let favImage = orgOverview.subscribed ? #imageLiteral(resourceName: "heart") : #imageLiteral(resourceName: "heart_empty")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(favorite(_:)))
         navigationItem.rightBarButtonItem?.isEnabled = User.current != nil
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
         
@@ -188,7 +190,8 @@ class OrgDetailPage: UIViewController {
             return
         }
         
-        var parameters = ["id": String(User.current!.uuid)]
+        var parameters = ["userId": String(User.current!.uuid)]
+        
         if sender.image == #imageLiteral(resourceName: "heart_empty") {
             sender.image = #imageLiteral(resourceName: "heart")
             parameters["isFavorited"] = "1"
@@ -199,9 +202,13 @@ class OrgDetailPage: UIViewController {
     }
     
     private func loadOrganizationInfo() {
+        
+        var parameters = ["orgId": orgOverview.id]
+        parameters["userId"] = User.current?.uuid.description
+        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetOrgInfo",
-                           parameters: ["id": orgOverview.id])!
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -260,6 +267,7 @@ class OrgDetailPage: UIViewController {
             DispatchQueue.main.async {
                 self.thumbNail.image = UIImage(data: data!)
                 self.thumbNail.backgroundColor = self.thumbNail.image == nil ? LINE_TINT : nil
+                self.orgOverview.logoImage = self.thumbNail.image
             }
         }
         

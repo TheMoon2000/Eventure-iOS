@@ -21,9 +21,7 @@ class OrganizationsViewController: UIViewController {
     
     private var organizations = [OrgOverview]() {
         didSet {
-            DispatchQueue.main.async {
-                self.updateFiltered()
-            }
+            self.updateFiltered()
         }
     }
     
@@ -50,6 +48,7 @@ class OrganizationsViewController: UIViewController {
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Organizations"
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadOrganizations))
@@ -159,13 +158,18 @@ class OrganizationsViewController: UIViewController {
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
         organizations.removeAll()
-        DispatchQueue.main.async {
-            self.orgTable.reloadData()
-        }
+        self.orgTable.reloadData()
+        
         navigationItem.rightBarButtonItem?.isEnabled = false
         
+        var parameters = [String : String]()
+        if User.current != nil {
+            parameters["userId"] = String(User.current!.uuid)
+        }
+        
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/ListOrgs", parameters: [:])!
+                           API_Name: "account/ListOrgs",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -187,15 +191,14 @@ class OrganizationsViewController: UIViewController {
             }
             
             if let orgs = try? JSON(data: data!).arrayValue {
-                self.organizations.removeAll()
                 var tmp = [OrgOverview]()
                 for org in orgs {
                     let orgObj = OrgOverview(json: org)
                     self.getLogoImage(for: orgObj)
                     tmp.append(orgObj)
                 }
-                self.organizations = tmp
                 DispatchQueue.main.async {
+                    self.organizations = tmp
                     self.emptyLabel.text = tmp.isEmpty ? "No Organizations" : ""
                     self.orgTable.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
                 }
@@ -282,6 +285,7 @@ extension OrganizationsViewController {
         let tags: Set<String>
         let hasLogo: Bool
         let members: [Int: Organization.MemberRole]
+        var subscribed: Bool
         var logoImage: UIImage? {
             didSet {
                 logoUpdater?(logoImage)
@@ -296,6 +300,7 @@ extension OrganizationsViewController {
             self.id = dictionary["ID"]?.string ?? ""
             self.title = dictionary["Title"]?.string ?? "Untitled"
             self.hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
+            self.subscribed = dictionary["Subscribed"]?.bool ?? false
             
             if let tags_raw = dictionary["Tags"]?.string {
                 tags = Set(JSON(parseJSON: tags_raw).arrayObject as! [String])

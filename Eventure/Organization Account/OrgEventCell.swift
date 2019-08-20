@@ -176,11 +176,13 @@ class OrgEventCell: UICollectionViewCell {
             label.delegate = self
             label.numberOfLines = 3
             label.enabledTextCheckingTypes =  NSTextCheckingResult.CheckingType.link.rawValue
-            DispatchQueue.main.async {
-                label.linkAttributes[NSAttributedString.Key.foregroundColor] = LINK_COLOR
-                label.activeLinkAttributes[NSAttributedString.Key.foregroundColor] = LINK_COLOR
-                label.setNeedsDisplay()
-            }
+            
+            let attributes: [NSAttributedString.Key : Any] = [
+                .foregroundColor: LINK_COLOR,
+                .underlineStyle: true
+            ]
+            label.linkAttributes = attributes
+            label.activeLinkAttributes = attributes
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             

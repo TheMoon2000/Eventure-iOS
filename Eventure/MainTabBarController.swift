@@ -68,9 +68,15 @@ class MainTabBarController: UITabBarController {
         if isUserAccount {
             print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
             setupUserTabs()
+            if User.current != nil {
+                UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
+            } else {
+                UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
+            }
         } else {
             print("Logged in as organization '\(Organization.current?.title ?? "unknown")'")
             setupOrganizationTabs()
+            UserDefaults.standard.set(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
         }
         dismiss(animated: true, completion: nil)
     }

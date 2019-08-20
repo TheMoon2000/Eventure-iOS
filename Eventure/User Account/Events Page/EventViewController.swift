@@ -46,6 +46,7 @@ class EventViewController: UIViewController {
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Events"
         navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))

@@ -215,8 +215,11 @@ class OrgEventViewController: UIViewController {
             
             guard error == nil else {
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = CONNECTION_ERROR
-                    internetUnavailableError(vc: self)
+                    if self.allEvents.isEmpty {
+                        self.emptyLabel.text = CONNECTION_ERROR
+                    } else {
+                        internetUnavailableError(vc: self)
+                    }
                 }
                 return
             }
