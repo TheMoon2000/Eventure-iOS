@@ -19,8 +19,9 @@ let API_BASE_URL = "https://api.eventure-app.com/"
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
 let PASSWORD = "__replace__"
-let INTERNAL_ERROR = "internal error"
 
+let AES_KEY = "aes key"
+let INTERNAL_ERROR = "internal error"
 let CONNECTION_ERROR = "Connection Error"
 let SERVER_ERROR = "Server Error"
 
@@ -55,7 +56,7 @@ let PLAIN_STYLE =  """
         font-family: -apple-system;
         font-size: 17px;
         line-height: 1.5;
-        letter-spacing: 1%;
+        letter-spacing: 1.5%;
         color: #5A5A5A;
         margin-bottom: 10px;
     }
@@ -90,6 +91,8 @@ let PLAIN_STYLE =  """
         font-size: 18px;
     }
 """
+
+let DRAFT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Drafts", isDirectory: true)
 
 /// Navigation bar background color
 let NAVBAR_TINT = UIColor.white
@@ -236,6 +239,13 @@ extension UITextField {
 extension UITextView {
     func doInset() {
         self.textContainerInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+    }
+    
+    func preferredHeight() -> CGFloat {
+        let widthConstraint = self.widthAnchor.constraint(equalToConstant: frame.width)
+        widthConstraint.priority = .init(999)
+        self.addConstraint(widthConstraint)
+        return contentSize.height
     }
 }
 extension Data {

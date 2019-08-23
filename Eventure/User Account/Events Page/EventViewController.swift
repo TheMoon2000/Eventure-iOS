@@ -146,31 +146,6 @@ class EventViewController: UIViewController {
         }()
         
         updateEvents()
-//        generateRandomEvents()
-    }
-    
-    /// Debugging only
-    private func generateRandomEvents() {
-        
-        func randString(length: Int) -> String {
-            let letters = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-            return String((0..<length).map{ _ in letters.randomElement()! })
-        }
-        
-        var tmp = [Event]()
-        for _ in 1...20 {
-            let e = Event(uuid: UUID().uuidString,
-                          title: randString(length: 25),
-                          time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)),
-                          location: randString(length: 30),
-                          tags: [randString(length: 4),randString(length: 4)],
-                          hostTitle: randString(length: 30))
-            tmp.append(e)
-        }
-        allEvents = tmp
-        DispatchQueue.main.async {
-            self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
-        }
     }
     
     @objc private func updateEvents() {

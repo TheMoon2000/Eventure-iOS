@@ -93,7 +93,8 @@ class EventDetailPage: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             
             if coverImage.isHidden {
                 label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 25).isActive = true

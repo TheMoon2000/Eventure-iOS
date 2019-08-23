@@ -15,7 +15,7 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        var vals = ["title": event.title, "time": event.timeDescription, "location": event.location, "hostTitle": event.hostName]
+        var vals = ["title": event.title, "time": event.timeDescription, "location": event.location, "hostTitle": event.hostTitle]
         let textViews = ["title":UITextView(), "time": UITextView(), "location": UITextView(), "hostTitle": UITextView()]
         for v in textViews {
             v.value.allowsEditingTextAttributes = false

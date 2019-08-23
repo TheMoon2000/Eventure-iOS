@@ -51,6 +51,8 @@ class OrgEventViewController: UIViewController {
         view.backgroundColor = .white
         title = "Event Posts"
         
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createNewEvent))
+        
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
             ev.translatesAutoresizingMaskIntoConstraints = false
@@ -158,27 +160,8 @@ class OrgEventViewController: UIViewController {
         
         updateEvents()
         
-        // Debugging only
-//         generateRandomEvents()
-    }
-    
-    /// Debugging only
-    private func generateRandomEvents() {
         
-        func randString(length: Int) -> String {
-            let letters = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
-            return String((0..<length).map{ _ in letters.randomElement()! })
-        }
-        
-        for _ in 1...20 {
-            let e = Event(uuid: UUID().uuidString,
-                          title: randString(length: 25),
-                          time: String(Int.random(in: 1999...2019))+"-"+String(Int.random(in: 1...12))+"-"+String(Int.random(in: 1...31)),
-                          location: randString(length: 30),
-                          tags: [randString(length: 4),randString(length: 4)],
-                          hostTitle: randString(length: 30))
-            allEvents.append(e)
-        }
+        try? FileManager.default.createDirectory(at: DRAFT_DIR, withIntermediateDirectories: true, attributes: nil)
     }
     
     @objc private func pullDownRefresh() {
@@ -266,12 +249,22 @@ class OrgEventViewController: UIViewController {
     private func changedTab() {
         switch topTab.selectedSegmentIndex {
         case 0:
-            
+            print()
         default:
             break
         }
     }
     
+    
+    @objc private func createNewEvent() {
+        let draftEvent = Event.empty
+        let editor = EventDraft(event: draftEvent)
+        let nav = UINavigationController(rootViewController: editor)
+        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.shadowImage = UIImage()
+        present(nav, animated: true, completion: nil)
+    }
     
 }
 
@@ -371,7 +364,7 @@ extension OrgEventViewController {
         
         let lowCond = lowerBound == nil || event.startTime!.timeIntervalSince(lowerBound!) >= 0
         let highCond = upperBound == nil || event.endTime == nil || event.endTime!.timeIntervalSince(upperBound!) <= 0
-        let hostCond = orgID == nil || event.host?.id == orgID
+        let hostCond = orgID == nil || event.hostID == orgID
         
         return lowCond && highCond && hostCond
     }

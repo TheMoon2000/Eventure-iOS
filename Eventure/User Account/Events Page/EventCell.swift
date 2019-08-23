@@ -187,7 +187,7 @@ class EventCell: UICollectionViewCell {
         titleText.text = event.title
         timeText.text = event.timeDescription
         locationText.text = event.location
-        eventHostText.text = event.hostName
+        eventHostText.text = event.hostTitle
     }
     
     required init?(coder aDecoder: NSCoder) {
