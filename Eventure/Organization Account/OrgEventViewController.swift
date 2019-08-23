@@ -37,6 +37,13 @@ class OrgEventViewController: UIViewController {
     private var emptyLabel: UILabel!
     
     var allEvents = [Event]()
+    var displayedEvents: [Event] {
+        if topTab.selectedSegmentIndex == 0 {
+            return allEvents
+        } else {
+            return allEvents.filter { $0.published }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -254,6 +261,15 @@ class OrgEventViewController: UIViewController {
         }
         
         task.resume()
+    }
+    
+    private func changedTab() {
+        switch topTab.selectedSegmentIndex {
+        case 0:
+            
+        default:
+            break
+        }
     }
     
     
