@@ -19,7 +19,7 @@ class Event: CustomStringConvertible {
         return formatter
     }()
     
-    var uuid: String
+    let uuid: String
     var title: String
     var location: String
     var startTime: Date?
@@ -48,26 +48,30 @@ class Event: CustomStringConvertible {
     var eventVisual: UIImage?
     var host: Organization?
     var hostName: String {
-        return host?.title ?? hostDescription
+        return host?.title ?? "Unknown"
     }
-    private var hostDescription = ""
     var currentUserGoingStatus: Going = .neutral
     var tags = Set<String>()
     // # of interested, # of going
     // API: array of user id
     
+    var published: Bool
     var active: Bool
     
-    init(uuid: String, title: String, time: String, location: String, tags: [String], hostTitle: String) {
+    static var empty: Event {
+        return Event(uuid: UUID().uuidString, title: "", time: "", location: "", tags: [], host: Organization.current)
+    }
+    
+    init(uuid: String, title: String, description: String, time: String, location: String, tags: Set<String>, host: Organization? = nil) {
         self.uuid = uuid
         self.title = title
         self.startTime = DATE_FORMATTER.date(from: time)
         self.location = location
-        self.tags = Set(tags)
-        self.hostDescription = hostTitle
+        self.tags = tags
+        self.host = host
         self.active = true
-        //eventVisual = nil
-        eventDescription = SAMPLE_TEXT
+        self.published = false
+        self.eventDescription = description
     }
     
     init(eventInfo: JSON) {
@@ -89,6 +93,8 @@ class Event: CustomStringConvertible {
         } else {
             hostDescription = "Unknown"
         }
+        
+        published = (dictionary["Published"]?.int ?? 0) == 1
         
         /*let attendees_raw = { () -> [String] in
          var attendees_arr = [String]()
