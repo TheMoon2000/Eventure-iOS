@@ -180,7 +180,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             canvas.insertSubview(label, belowSubview: descriptionText)
             
             label.leftAnchor.constraint(equalTo: descriptionText.leftAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: descriptionText.topAnchor, constant: 1).isActive = true
+            label.topAnchor.constraint(equalTo: descriptionText.topAnchor).isActive = true
             
             return label
         }()
