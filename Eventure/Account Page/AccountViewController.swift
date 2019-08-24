@@ -56,7 +56,7 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
     //when table view is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 3 && indexPath.row == 0 {
+        if indexPath.section == 3 && indexPath.row == 0 { //if the log off/sign in button is clicked
             if (tableView.cellForRow(at: indexPath)! as! AccountCell).function!.text! == "Sign In" {
                 let login = LoginViewController()
                 let nvc = InteractivePopNavigationController(rootViewController: login)
@@ -64,9 +64,33 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
                 login.navBar = nvc
                 present(nvc, animated: true, completion: nil)
             } else {
-                UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
-                User.current = nil
-                MainTabBarController.current.openScreen()
+                //pop out an alert window
+                let alert = UIAlertController(title: "Do you want to log off?", message: "Changes you've made have been saved.", preferredStyle: .actionSheet)
+                alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
+                    UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
+                    User.current = nil
+                    MainTabBarController.current.openScreen()
+                }))
+                alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+                self.present(alert, animated: true)
+                
+            }
+        } else if indexPath.section == 1 && indexPath.row == 0 { //if the user tries to change the name
+            if User.current == nil {
+                let alert = UIAlertController(title: "Do you want to log in?", message: "Log in to make changes to your account.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
+                    let login = LoginViewController()
+                    let nvc = InteractivePopNavigationController(rootViewController: login)
+                    nvc.isNavigationBarHidden = true
+                    login.navBar = nvc
+                    self.present(nvc, animated: true, completion: nil)
+                }))
+                alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+                self.present(alert, animated: true)
+            } else {
+                let modifyAccount = ModifyAccountPage(name: User.current!.displayedName)
+                modifyAccount.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(modifyAccount, animated: true)
             }
         }
     }
@@ -80,7 +104,8 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         cell.setup(sectionNum: indexPath.section,rowNum: indexPath.row)
         if indexPath.section == 0 && indexPath.row == 0 {
             profilePicture = cell.functionImage.image
-            
+            cell.functionImage.isUserInteractionEnabled = true
+            cell.functionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
         }
         return cell
     }
@@ -131,5 +156,35 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         return section == 0 ? 1.0 : 32
     }
     
+    
+    //full screen profile picture when tapped
+    @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
+        let sv = UIScrollView(frame: UIScreen.main.bounds)
+        sv.backgroundColor = .white
+        sv.maximumZoomScale = 3.0
+        sv.minimumZoomScale = 1.0
+        sv.delegate = self
+        
+        let iv = UIImageView(image: profilePicture)
+        iv.contentMode = .center
+        currentImageView = iv
+        iv.frame = sv.frame
+        
+        sv.addSubview(iv)
+        
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
+        sv.addGestureRecognizer(tap)
+        
+        self.view.addSubview(sv)
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    //exit profile picture fullscreen
+    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
+        self.navigationController?.isNavigationBarHidden = false
+        sender.view?.removeFromSuperview()
+        currentImageView = nil
+    }
     
 }

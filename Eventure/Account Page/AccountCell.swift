@@ -14,7 +14,7 @@ class AccountCell: UITableViewCell {
     
     var functionImage: UIImageView!
     var function: UILabel!
-    var delegate: AccountViewController?
+    var sideLabel: UILabel!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -52,6 +52,24 @@ class AccountCell: UITableViewCell {
             
             return label
         }()
+        
+        sideLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.numberOfLines = 3
+            label.textColor = UIColor.gray
+            label.lineBreakMode = .byTruncatingTail
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.textAlignment = .right
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo:function.rightAnchor, constant: 100).isActive = true
+            label.rightAnchor.constraint(equalTo: rightAnchor, constant: -40).isActive = true
+            label.topAnchor.constraint(equalTo: topAnchor,constant: 15).isActive = true
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
+            
+            return label
+        } ()
     }
    
     
@@ -77,6 +95,11 @@ class AccountCell: UITableViewCell {
             function.text = ""
         } else if (sectionNum == 1 && rowNum == 0) {
             functionImage.image = UIImage(named: "name")
+            if (User.current != nil) {
+                sideLabel.text = User.current?.displayedName
+            } else {
+                sideLabel.text = "Guest"
+            }
             function.text = "Name"
         } else if (sectionNum == 1 && rowNum == 1) {
             functionImage.image = UIImage(named: "password")
