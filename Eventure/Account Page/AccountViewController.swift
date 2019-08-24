@@ -80,8 +80,7 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         cell.setup(sectionNum: indexPath.section,rowNum: indexPath.row)
         if indexPath.section == 0 && indexPath.row == 0 {
             profilePicture = cell.functionImage.image
-            cell.functionImage.isUserInteractionEnabled = true
-            cell.functionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
+            
         }
         return cell
     }
@@ -132,34 +131,5 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         return section == 0 ? 1.0 : 32
     }
     
-    //full screen profile picture when tapped
-    @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
-        let sv = UIScrollView(frame: UIScreen.main.bounds)
-        sv.backgroundColor = .white
-        sv.maximumZoomScale = 3.0
-        sv.minimumZoomScale = 1.0
-        sv.delegate = self
-        
-        let iv = UIImageView(image: profilePicture)
-        iv.contentMode = .center
-        currentImageView = iv
-        iv.frame = sv.frame
-        
-        sv.addSubview(iv)
-        
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
-        sv.addGestureRecognizer(tap)
-        
-        self.view.addSubview(sv)
-        self.navigationController?.isNavigationBarHidden = true
-    }
-    
-    //exit profile picture fullscreen
-    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
-        self.navigationController?.isNavigationBarHidden = false
-        sender.view?.removeFromSuperview()
-        currentImageView = nil
-    }
     
 }
