@@ -39,18 +39,6 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         
     }
    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("triggered")
-        if UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) == nil {
-            print("Not signed in")
-            myArray = ["First","Second","Sign In"]
-            
-        } else {
-            print("signed in")
-            myArray = ["First","Second","Sign Out"]
-        }
-    }
 
     /*
     // MARK: - Navigation
@@ -64,24 +52,19 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
     
     //when table view is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Num: \(indexPath.row)")
-        print("Value: \(myArray[indexPath.row])")
-        if indexPath.row == 2 {
-            if tableView.cellForRow(at: indexPath)!.textLabel!.text! == "Sign In" {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.section == 3 && indexPath.row == 0 {
+            if (tableView.cellForRow(at: indexPath)! as! AccountCell).function!.text! == "Sign In" {
                 let login = LoginViewController()
                 let nvc = InteractivePopNavigationController(rootViewController: login)
                 nvc.isNavigationBarHidden = true
                 login.navBar = nvc
                 present(nvc, animated: true, completion: nil)
             } else {
-                print("signing out")
                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                 User.current = nil
                 MainTabBarController.current.openScreen()
             }
-        }
-        if indexPath.row == 1{
-            myTableView.cellForRow(at: indexPath)?.textLabel!.text! = "change"
         }
     }
     
@@ -91,13 +74,13 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell") as! AccountCell
-        cell.setup(rowNum: indexPath.row)
+        cell.setup(sectionNum: indexPath.section,rowNum: indexPath.row)
         return cell
     }
     
     //make the size of first cell (profile picture) larger
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 || indexPath.section == 3 && indexPath.row == 0 {
+        if indexPath.section == 0 && indexPath.row == 0  {
             return 100.0
         }
         return 50.0

@@ -8,6 +8,7 @@
 
 
 import UIKit
+import QuartzCore
 
 class AccountCell: UITableViewCell {
     
@@ -48,16 +49,47 @@ class AccountCell: UITableViewCell {
         }()
     }
     
-    func setup(rowNum: Int) {
-        functionImage.image = UIImage(named: "done")
-        function.text = String(rowNum)
-        /*
-        logoImage.image = org.logoImage
-        if logoImage.image != nil {
-            logoImage.backgroundColor = .clear
+    func setup(sectionNum: Int, rowNum: Int) {
+        if (sectionNum == 0 && rowNum == 0) {
+            functionImage = {
+                let iv = UIImageView()
+                iv.translatesAutoresizingMaskIntoConstraints = false
+                iv.layer.cornerRadius = 20.0
+                iv.
+                clipsToBounds = true
+                addSubview(iv)
+                
+                iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+                iv.widthAnchor.constraint(equalToConstant: 80).isActive = true
+                iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
+                iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+                return iv
+            }()
+            functionImage.image = UIImage(named: "name")
+            function.text = ""
+        } else if (sectionNum == 1 && rowNum == 0) {
+            functionImage.image = UIImage(named: "name")
+            function.text = "Name"
+        } else if (sectionNum == 1 && rowNum == 1) {
+            functionImage.image = UIImage(named: "password")
+            function.text = "Password"
+        } else if (sectionNum == 1 && rowNum == 2) {
+            functionImage.image = UIImage(named: "email")
+            function.text = "Email"
+        } else if (sectionNum == 1 && rowNum == 3) {
+            functionImage.image = UIImage(named: "gender")
+            function.text = "Gender"
+        } else if (sectionNum == 3 && rowNum == 0) {
+            functionImage.image = UIImage(named: "settings")
+            if UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) == nil {
+                function.text = "Sign In"
+            } else {
+                function.text = "Log Off"
+            }
         } else {
-            logoImage.backgroundColor = LINE_TINT
-        }*/
+            functionImage.image = UIImage(named: "done")
+            function.text = String(rowNum)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
