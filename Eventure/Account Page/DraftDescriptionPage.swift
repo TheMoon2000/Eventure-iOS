@@ -57,7 +57,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             tv.textContainerInset = .zero
             tv.keyboardDismissMode = .onDrag
             tv.returnKeyType = .next
-            tv.textContainer.lineFragmentPadding = .zero
+            tv.textContainer.lineFragmentPadding = 0
             tv.font = .systemFont(ofSize: 24, weight: .semibold)
             tv.allowsEditingTextAttributes = false
             tv.insertText(draftPage.draft.title)
@@ -153,7 +153,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             tv.isScrollEnabled = false
             tv.keyboardDismissMode = .onDrag
             tv.textContainerInset = .zero
-            tv.textContainer.lineFragmentPadding = .zero
+            tv.textContainer.lineFragmentPadding = 0
             tv.font = .systemFont(ofSize: 18)
             tv.textColor = .darkGray
             tv.allowsEditingTextAttributes = false
