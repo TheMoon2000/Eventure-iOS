@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		63CBD8D800EEBB2AD4399D4E /* Pods_EventureAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C61D38E605D813463EC01077 /* Pods_EventureAPITests.framework */; };
-		86D779265BCCD45DFA23CEDD /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 51875C9B362149DA4F1648B4 /* Pods_Eventure.framework */; };
+		0D922978F88AA540F1FBE70D /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2446E41F2700045698ADEDAB /* Pods_Eventure.framework */; };
+		470D75024A526E9BCB68F95B /* Pods_EventureAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */; };
 		CC0646D922FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
 		CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
 		CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646DB22FDF1EA000BF3CD /* Organization.swift */; };
@@ -88,11 +88,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		51875C9B362149DA4F1648B4 /* Pods_Eventure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eventure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C69EEF77B9C408ACD386F3F /* Pods-EventureAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.release.xcconfig"; sourceTree = "<group>"; };
-		6B0773AC66EEBC9138FB35CC /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
-		7FFE2BDBCAFD8B4FFB66DD88 /* Pods-Eventure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.release.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.release.xcconfig"; sourceTree = "<group>"; };
-		C61D38E605D813463EC01077 /* Pods_EventureAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventureAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2446E41F2700045698ADEDAB /* Pods_Eventure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eventure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventureAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EBCBAB1E31272FAA462C515 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
+		314EE6D58DF621467DC05E60 /* Pods-EventureAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.release.xcconfig"; sourceTree = "<group>"; };
+		7A2B839141C769AA5684B8EC /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
 		CC0646D822FDF1CC000BF3CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		CC0646DB22FDF1EA000BF3CD /* Organization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organization.swift; sourceTree = "<group>"; };
 		CC0646DE22FDF201000BF3CD /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -155,10 +155,10 @@
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD8C43C5E3E63950507E5672 /* Pods-Eventure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.release.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.release.xcconfig"; sourceTree = "<group>"; };
 		DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventDetailTabStrip.swift; path = "Eventure/User Account/Events Page/Detail/EventDetailTabStrip.swift"; sourceTree = SOURCE_ROOT; };
 		DD1BB0D52310B2350082C4EE /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DD1BB0D72310B3560082C4EE /* OtherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewController.swift; sourceTree = "<group>"; };
-		DEAA68A423ED2C14DD44B3EF /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,7 +166,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86D779265BCCD45DFA23CEDD /* Pods_Eventure.framework in Frameworks */,
+				0D922978F88AA540F1FBE70D /* Pods_Eventure.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,31 +174,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				63CBD8D800EEBB2AD4399D4E /* Pods_EventureAPITests.framework in Frameworks */,
+				470D75024A526E9BCB68F95B /* Pods_EventureAPITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B7C44FBE8BB587690B0B799E /* Frameworks */ = {
+		29771B08B3BBF4E20F0109D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				51875C9B362149DA4F1648B4 /* Pods_Eventure.framework */,
-				C61D38E605D813463EC01077 /* Pods_EventureAPITests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		C09E6CEF7EA51C1568DF3C17 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				6B0773AC66EEBC9138FB35CC /* Pods-Eventure.debug.xcconfig */,
-				7FFE2BDBCAFD8B4FFB66DD88 /* Pods-Eventure.release.xcconfig */,
-				DEAA68A423ED2C14DD44B3EF /* Pods-EventureAPITests.debug.xcconfig */,
-				5C69EEF77B9C408ACD386F3F /* Pods-EventureAPITests.release.xcconfig */,
+				7A2B839141C769AA5684B8EC /* Pods-Eventure.debug.xcconfig */,
+				CD8C43C5E3E63950507E5672 /* Pods-Eventure.release.xcconfig */,
+				2EBCBAB1E31272FAA462C515 /* Pods-EventureAPITests.debug.xcconfig */,
+				314EE6D58DF621467DC05E60 /* Pods-EventureAPITests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		645D35C9C995A1479DB42817 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2446E41F2700045698ADEDAB /* Pods_Eventure.framework */,
+				2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CC0646E122FDF604000BF3CD /* Data structure */ = {
@@ -239,8 +239,8 @@
 				CC18F569229AD570008FABEA /* README.md */,
 				CCFB7A1E229FA6810082FEC6 /* EventureAPITests */,
 				CC18F54C229AD4EB008FABEA /* Products */,
-				C09E6CEF7EA51C1568DF3C17 /* Pods */,
-				B7C44FBE8BB587690B0B799E /* Frameworks */,
+				29771B08B3BBF4E20F0109D9 /* Pods */,
+				645D35C9C995A1479DB42817 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -433,11 +433,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CC18F560229AD4EC008FABEA /* Build configuration list for PBXNativeTarget "Eventure" */;
 			buildPhases = (
-				EFA38F357D5795A864DE0FD1 /* [CP] Check Pods Manifest.lock */,
+				2F6221728024BBFF1804F633 /* [CP] Check Pods Manifest.lock */,
 				CC18F547229AD4EB008FABEA /* Sources */,
 				CC18F548229AD4EB008FABEA /* Frameworks */,
 				CC18F549229AD4EB008FABEA /* Resources */,
-				85F66CDF654632EE1A6ADABC /* [CP] Embed Pods Frameworks */,
+				46EFEB5BD5364E4DC3E12435 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -452,11 +452,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCFB7A24229FA6810082FEC6 /* Build configuration list for PBXNativeTarget "EventureAPITests" */;
 			buildPhases = (
-				AE00E7E1AE4D3B56D832D225 /* [CP] Check Pods Manifest.lock */,
+				D218590EFDC7D3125452E53A /* [CP] Check Pods Manifest.lock */,
 				CCFB7A19229FA6810082FEC6 /* Sources */,
 				CCFB7A1A229FA6810082FEC6 /* Frameworks */,
 				CCFB7A1B229FA6810082FEC6 /* Resources */,
-				782DAB5DB68E5F511E019457 /* [CP] Embed Pods Frameworks */,
+				6F5EBFF09B0E344434C85222 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -535,63 +535,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		782DAB5DB68E5F511E019457 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		85F66CDF654632EE1A6ADABC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AE00E7E1AE4D3B56D832D225 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-EventureAPITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EFA38F357D5795A864DE0FD1 /* [CP] Check Pods Manifest.lock */ = {
+		2F6221728024BBFF1804F633 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -607,6 +551,78 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Eventure-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		46EFEB5BD5364E4DC3E12435 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
+				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6F5EBFF09B0E344434C85222 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS12.2/SwiftyJSON.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D218590EFDC7D3125452E53A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EventureAPITests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -840,7 +856,7 @@
 		};
 		CC18F561229AD4EC008FABEA /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6B0773AC66EEBC9138FB35CC /* Pods-Eventure.debug.xcconfig */;
+			baseConfigurationReference = 7A2B839141C769AA5684B8EC /* Pods-Eventure.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -863,7 +879,7 @@
 		};
 		CC18F562229AD4EC008FABEA /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7FFE2BDBCAFD8B4FFB66DD88 /* Pods-Eventure.release.xcconfig */;
+			baseConfigurationReference = CD8C43C5E3E63950507E5672 /* Pods-Eventure.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -885,7 +901,7 @@
 		};
 		CCFB7A25229FA6810082FEC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DEAA68A423ED2C14DD44B3EF /* Pods-EventureAPITests.debug.xcconfig */;
+			baseConfigurationReference = 2EBCBAB1E31272FAA462C515 /* Pods-EventureAPITests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
@@ -908,7 +924,7 @@
 		};
 		CCFB7A26229FA6810082FEC6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C69EEF77B9C408ACD386F3F /* Pods-EventureAPITests.release.xcconfig */;
+			baseConfigurationReference = 314EE6D58DF621467DC05E60 /* Pods-EventureAPITests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
