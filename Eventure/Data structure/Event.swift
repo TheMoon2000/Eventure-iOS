@@ -9,8 +9,9 @@
 import UIKit
 import SwiftyJSON
 
-class Event: CustomStringConvertible {
+class Event: Codable {
     static var current: Event?
+    static var drafts = [Event]()
     
     let readableFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -19,11 +20,26 @@ class Event: CustomStringConvertible {
         return formatter
     }()
     
-    var uuid: String
+    let uuid: String
     var title: String
     var location: String
     var startTime: Date?
     var endTime: Date?
+    var eventDescription: String
+    var eventVisual: UIImage?
+    var hostID: String
+    var hostTitle: String
+    var currentUserGoingStatus: Going = .neutral
+    var tags = Set<String>()
+    // # of interested, # of going
+    // API: array of user id
+    
+    var published: Bool
+    var active: Bool
+    
+    // MARK: Computed properties
+    
+    /// A description of the start time of the event.
     var timeDescription: String {
         if startTime != nil {
             return readableFormatter.string(from: startTime!)
@@ -31,6 +47,8 @@ class Event: CustomStringConvertible {
             return "Unspecified"
         }
     }
+    
+    /// A description of the duration of the event.
     var duration: String {
         let dc = DateComponentsFormatter()
         dc.allowedUnits = [.month, .weekOfMonth, .day, .hour, .minute]
@@ -44,30 +62,37 @@ class Event: CustomStringConvertible {
             return "TBD"
         }
     }
-    var eventDescription: String
-    var eventVisual: UIImage?
-    var host: Organization?
-    var hostName: String {
-        return host?.title ?? hostDescription
+    
+    /// Returns an empty `Event` object.
+    static var empty: Event {
+        return Event(uuid: UUID().uuidString,
+                     title: "",
+                     description: "",
+                     startTime: "",
+                     endTime: "",
+                     location: "",
+                     tags: Set<String>(),
+                     hostID: Organization.current?.id ?? "<org id>",
+                     hostTitle: Organization.current?.title ?? "<Title>")
     }
-    private var hostDescription = ""
-    var currentUserGoingStatus: Going = .neutral
-    var tags = Set<String>()
-    // # of interested, # of going
-    // API: array of user id
     
-    var active: Bool
+    /// Coding keys
+    enum CodingKeys: String, CodingKey {
+        case uuid, title, startTime, endTime, location, tags, hostID, hostTitle, description
+    }
     
-    init(uuid: String, title: String, time: String, location: String, tags: [String], hostTitle: String) {
+    init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
         self.uuid = uuid
         self.title = title
-        self.startTime = DATE_FORMATTER.date(from: time)
+        self.startTime = DATE_FORMATTER.date(from: startTime)
+        self.endTime = DATE_FORMATTER.date(from: endTime)
         self.location = location
-        self.tags = Set(tags)
-        self.hostDescription = hostTitle
+        self.tags = tags
+        self.hostID = hostID
+        self.hostTitle = hostTitle
         self.active = true
-        //eventVisual = nil
-        eventDescription = SAMPLE_TEXT
+        self.published = false
+        self.eventDescription = description
     }
     
     init(eventInfo: JSON) {
@@ -85,10 +110,15 @@ class Event: CustomStringConvertible {
         eventDescription = dictionary["Description"]?.string ?? ""
         //eventDescription = dictionary["Description"]?.string ?? ""
         if let hostInfo = dictionary["Organization"] {
-            host = Organization(orgInfo: hostInfo)
+            let org = Organization(orgInfo: hostInfo)
+            hostTitle = org.title
+            hostID = org.id
         } else {
-            hostDescription = "Unknown"
+            hostTitle = "<Title>"
+            hostID = "<org id>"
         }
+        
+        published = (dictionary["Published"]?.int ?? 0) == 1
         
         /*let attendees_raw = { () -> [String] in
          var attendees_arr = [String]()
@@ -116,6 +146,107 @@ class Event: CustomStringConvertible {
         active = (dictionary["Active"]?.int ?? 1) == 1
     }
     
+    func readFromFile(file: String) -> Event? {
+        if let data = NSKeyedUnarchiver.unarchiveObject(withFile: file) as? Data {
+            if let decrypted = NSData(data: data).aes256Decrypt(withKey: AES_KEY) {
+                return try? PropertyListDecoder().decode(Event.self, from: decrypted)
+            } else {
+                return nil
+            }
+        }
+        return nil
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        
+        uuid = try values.decode(String.self, forKey: .uuid)
+        title = try values.decode(String.self, forKey: .title)
+        eventDescription = try values.decode(String.self, forKey: .description)
+        location = try values.decode(String.self, forKey: .location)
+        startTime = DATE_FORMATTER.date(from: try values.decode(String.self, forKey: .startTime))
+        endTime = DATE_FORMATTER.date(from: try values.decode(String.self, forKey: .endTime))
+        hostID = try values.decode(String.self, forKey: .hostID)
+        hostTitle = try values.decode(String.self, forKey: .hostTitle)
+        
+        let tags_raw = try values.decode(String.self, forKey: .tags)
+        let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+        tags = Set(tagsArray)
+        
+        active = true
+        published = false
+        
+    }
+    
+    func writeToFile(path: String) -> Bool {
+        let data = try! PropertyListEncoder().encode(self)
+        let encrypted = NSData(data: data).aes256Encrypt(withKey: AES_KEY)!
+        return NSKeyedArchiver.archiveRootObject(encrypted, toFile: path)
+    }
+    
+    /// Verify whether an event contains all the required information for it to be published. If the event is missing some information, this function will return a non-empty string that describes the requirement.
+    func verify() -> String {
+        for item in [title, eventDescription, location] {
+            if item.isEmpty { return "false" }
+        }
+        
+        if title.isEmpty { return "Event title cannot be blank!" }
+        
+        if eventDescription.isEmpty {
+            return "Event description shouldn't be blank!"
+        }
+        
+        if location.isEmpty {
+            return "You did not specify a location for your event."
+        }
+        
+        if startTime == nil || endTime == nil {
+            return "You must specify a start time and an end time."
+        }
+        
+        if endTime!.timeIntervalSince(startTime!) <= 0 {
+            return "Event end time must come after event start time."
+        }
+        
+        if tags.isEmpty {
+            return "You must select 1 - 3 tags to label your event!"
+        }
+        
+        return ""
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(uuid, forKey: .uuid)
+        try container.encode(title, forKey: .title)
+        try container.encode(eventDescription, forKey: .description)
+        try container.encode(location, forKey: .location)
+        try container.encode(hostID, forKey: .hostID)
+        try container.encode(hostTitle, forKey: .hostTitle)
+        
+        if startTime != nil {
+            try container.encode(readableFormatter.string(from: startTime!), forKey: .startTime)
+        }
+        
+        if endTime != nil {
+            try container.encode(readableFormatter.string(from: endTime!), forKey: .endTime)
+        }
+        
+        try container.encode(tags.description, forKey: .tags)
+    }
+    
+}
+
+
+extension Event {
+    enum Going: Int {
+        case neutral = 0, interested, going
+    }
+}
+
+
+extension Event: CustomStringConvertible {
     var description: String {
         var str = "Event \"\(title)\":\n"
         str += "  uuid = \(uuid)\n"
@@ -125,12 +256,4 @@ class Event: CustomStringConvertible {
         
         return str
     }
-    
 }
-
-extension Event {
-    enum Going: Int {
-        case neutral = 0, interested, going
-    }
-}
-

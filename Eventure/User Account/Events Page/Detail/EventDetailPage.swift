@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import XLPagerTabStrip
 
 class EventDetailPage: UIViewController {
     
@@ -33,7 +34,8 @@ class EventDetailPage: UIViewController {
     private var coverImage: UIImageView!
     private var eventTitle: UILabel!
     private var favoriteButton: UIBarButtonItem!
-    private var eventDescription: UITextView!
+    //private var eventDescription: UITextView!
+    private var tabStrip: ButtonBarPagerTabStripViewController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,7 +95,8 @@ class EventDetailPage: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             
             if coverImage.isHidden {
                 label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 25).isActive = true
@@ -103,6 +106,8 @@ class EventDetailPage: UIViewController {
 
             return label
         }()
+        
+        
         
         /*
         favoriteButton = {
@@ -123,7 +128,6 @@ class EventDetailPage: UIViewController {
             return button
         }()*/
         
-        
         let line: UIView = {
             let line = UIView()
             line.backgroundColor = LINE_TINT
@@ -138,7 +142,7 @@ class EventDetailPage: UIViewController {
             return line
         }()
         
-        eventDescription = {
+        /*eventDescription = {
             let tv = UITextView()
             tv.attributedText = event.eventDescription.attributedText()
             tv.textContainerInset = .zero
@@ -156,7 +160,25 @@ class EventDetailPage: UIViewController {
             tv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -40).isActive = true
             
             return tv
+        }()*/
+        
+        
+        tabStrip = {
+            let tabStrip = EventDetailTabStrip(event : event)
+            tabStrip.view.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(tabStrip.view)
+            
+            tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            tabStrip.view.topAnchor.constraint(equalTo: line.bottomAnchor).isActive = true
+            tabStrip.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            addChild(tabStrip)
+            tabStrip.didMove(toParent: self)
+            
+            return tabStrip
         }()
+        
     }
     
     @objc private func changedFavoriteStatus() {

@@ -23,7 +23,7 @@ class User: CustomStringConvertible {
     var favoritedEvents = Set<String>()
     var goingList = [String: Int]()
     var subscriptions = Set<String>()
-    var tags = [String]()
+    var tags = Set<String>()
     var dateRegistered: String // Only for debugging purpose
     
     enum Gender: Int {
@@ -48,7 +48,8 @@ class User: CustomStringConvertible {
         }
         
         if let tags_raw = dictionary["Tags"]?.string {
-            tags = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+            tags = Set(tagsArray)
         }
         
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
@@ -66,4 +67,25 @@ class User: CustomStringConvertible {
         
         return str
     }
+    
+    // MARK: - Read & Write
+    
+    func writeToFile(path: String) -> Bool {
+        var json = JSON()
+        json.dictionaryObject?["uuid"] = self.uuid
+        json.dictionaryObject?["Email"] = self.email
+        json.dictionaryObject?["Password MD5"] = self.password_MD5
+        json.dictionaryObject?["Displayed name"] = self.displayedName
+        json.dictionaryObject?["Gender"] = self.gender.rawValue
+        json.dictionaryObject?["Subscriptions"] = self.subscriptions.description
+        json.dictionaryObject?["Tags"] = self.tags.description
+        json.dictionaryObject?["Date registered"] = self.dateRegistered
+        
+        let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)
+        return NSKeyedArchiver.archiveRootObject(
+            encrypted!,
+            toFile: ACCOUNT_DIR.path + "/" + "user"
+        )
+    }
 }
+
