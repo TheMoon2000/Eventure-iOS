@@ -315,4 +315,6 @@ extension EventViewController: UISearchResultsUpdating {
         // TODO: Apply sorting algorithm depending on user settings
         filteredEvents.sort(by: { $0.title < $1.title })
     }
+    
+   
 }

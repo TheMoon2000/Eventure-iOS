@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -71,7 +71,10 @@
 		CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */; };
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
-		DDEBD93722FE1F6D0021A98B /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDEBD93622FE1F6D0021A98B /* DetailViewController.swift */; };
+		DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */; };
+		DD1BB0D32310B1C40082C4EE /* EventDetailTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */; };
+		DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D52310B2350082C4EE /* AboutViewController.swift */; };
+		DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D72310B3560082C4EE /* OtherViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,7 +155,9 @@
 		CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventureAPITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DDEBD93622FE1F6D0021A98B /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventDetailTabStrip.swift; path = "Eventure/User Account/Events Page/Detail/EventDetailTabStrip.swift"; sourceTree = SOURCE_ROOT; };
+		DD1BB0D52310B2350082C4EE /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
+		DD1BB0D72310B3560082C4EE /* OtherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewController.swift; sourceTree = "<group>"; };
 		DEAA68A423ED2C14DD44B3EF /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -299,8 +304,7 @@
 			children = (
 				CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */,
 				CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */,
-				CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */,
-				DDEBD93622FE1F6D0021A98B /* DetailViewController.swift */,
+				DD1BB0D22310B1BC0082C4EE /* Detail */,
 			);
 			path = "Events Page";
 			sourceTree = "<group>";
@@ -409,6 +413,17 @@
 				CCFB7A21229FA6810082FEC6 /* Info.plist */,
 			);
 			path = EventureAPITests;
+			sourceTree = "<group>";
+		};
+		DD1BB0D22310B1BC0082C4EE /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				DD1BB0D52310B2350082C4EE /* AboutViewController.swift */,
+				DD1BB0D72310B3560082C4EE /* OtherViewController.swift */,
+				DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */,
+				CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */,
+			);
+			path = Detail;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -526,20 +541,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS12.2/SwiftyJSON.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		85F66CDF654632EE1A6ADABC /* [CP] Embed Pods Frameworks */ = {
@@ -548,26 +558,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
-				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AE00E7E1AE4D3B56D832D225 /* [CP] Check Pods Manifest.lock */ = {
@@ -630,6 +629,7 @@
 				CC39763F231025E3000CC35D /* NSData+AESCrypt.m in Sources */,
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
+				DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */,
 				CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */,
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */,
@@ -643,6 +643,7 @@
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
+				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
@@ -650,7 +651,6 @@
 				CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */,
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
-				DDEBD93722FE1F6D0021A98B /* DetailViewController.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
 				CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */,
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
@@ -664,6 +664,7 @@
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
+				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
 				CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */,
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
@@ -680,6 +681,7 @@
 				CC4EC93822FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
 				CC4CB5C7230525BB00DC30AD /* OrganizationCell.swift in Sources */,
 				CC4E560522FFE0AC000C2BAC /* MainTabBarController.swift in Sources */,
+				DD1BB0D32310B1C40082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */,
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,
 				CC4CB5C4230516E200DC30AD /* OrganizationsViewController.swift in Sources */,
