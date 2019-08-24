@@ -54,10 +54,11 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             tv.backgroundColor = nil
             tv.isScrollEnabled = false
             tv.autocapitalizationType = .words
-            tv.textContainerInset = .zero
             tv.keyboardDismissMode = .onDrag
             tv.returnKeyType = .next
-            tv.textContainer.lineFragmentPadding = .zero
+            tv.textContainerInset.top = 12
+            tv.textContainerInset.bottom = 12
+            tv.textContainer.lineFragmentPadding = 1
             tv.font = .systemFont(ofSize: 24, weight: .semibold)
             tv.allowsEditingTextAttributes = false
             tv.insertText(draftPage.draft.title)
@@ -67,7 +68,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             
             tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-            tv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 25).isActive = true
+            tv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 22).isActive = true
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 30).isActive = true
             
             
@@ -99,7 +100,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             line.heightAnchor.constraint(equalToConstant: 1).isActive = true
             line.widthAnchor.constraint(equalToConstant: 80).isActive = true
             line.leftAnchor.constraint(equalTo: titleText.leftAnchor).isActive = true
-            line.topAnchor.constraint(equalTo: titleText.bottomAnchor, constant: 12).isActive = true
+            line.topAnchor.constraint(equalTo: titleText.bottomAnchor, constant: 5).isActive = true
             
             return line
         }()
@@ -141,7 +142,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             canvas.addSubview(stack)
             
             stack.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
-            stack.topAnchor.constraint(equalTo: separatorLine.bottomAnchor, constant: 12).isActive = true
+            stack.topAnchor.constraint(equalTo: separatorLine.bottomAnchor, constant: 10).isActive = true
             stack.heightAnchor.constraint(equalToConstant: 40).isActive = true
             
             return stack
@@ -152,7 +153,6 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             tv.backgroundColor = nil
             tv.isScrollEnabled = false
             tv.keyboardDismissMode = .onDrag
-            tv.textContainerInset = .zero
             tv.textContainer.lineFragmentPadding = .zero
             tv.font = .systemFont(ofSize: 18)
             tv.textColor = .darkGray
@@ -180,7 +180,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             canvas.insertSubview(label, belowSubview: descriptionText)
             
             label.leftAnchor.constraint(equalTo: descriptionText.leftAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: descriptionText.topAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: descriptionText.topAnchor, constant: 8).isActive = true
             
             return label
         }()
