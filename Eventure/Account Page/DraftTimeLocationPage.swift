@@ -11,11 +11,13 @@ import UIKit
 class DraftTimeLocationPage: UITableViewController {
 
     var draftPage: EventDraft!
+    var contentCells = [UITableViewCell]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // self.clearsSelectionOnViewWillAppear = false
+        view.backgroundColor = .init(white: 0.95, alpha: 1)
+        tableView.tableFooterView = UIView()
 
     }
     
@@ -28,13 +30,15 @@ class DraftTimeLocationPage: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return contentCells.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return UITableViewCell()
     }
 
 }

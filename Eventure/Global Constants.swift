@@ -93,6 +93,7 @@ let PLAIN_STYLE =  """
 """
 
 let DRAFT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Drafts", isDirectory: true)
+let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Account", isDirectory: true)
 
 /// Navigation bar background color
 let NAVBAR_TINT = UIColor.white
