@@ -54,9 +54,8 @@ class AccountCell: UITableViewCell {
             functionImage = {
                 let iv = UIImageView()
                 iv.translatesAutoresizingMaskIntoConstraints = false
-                iv.layer.cornerRadius = 20.0
-                iv.
-                clipsToBounds = true
+                iv.layer.cornerRadius = 20
+                iv.clipsToBounds = true
                 addSubview(iv)
                 
                 iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
@@ -65,7 +64,7 @@ class AccountCell: UITableViewCell {
                 iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
                 return iv
             }()
-            functionImage.image = UIImage(named: "name")
+            functionImage.image = UIImage(named: "random")
             function.text = ""
         } else if (sectionNum == 1 && rowNum == 0) {
             functionImage.image = UIImage(named: "name")
@@ -79,6 +78,9 @@ class AccountCell: UITableViewCell {
         } else if (sectionNum == 1 && rowNum == 3) {
             functionImage.image = UIImage(named: "gender")
             function.text = "Gender"
+        } else if (sectionNum == 2 && rowNum == 0) {
+            functionImage.image = UIImage(named: "heart")
+            function.text = "Favorite Events"
         } else if (sectionNum == 3 && rowNum == 0) {
             functionImage.image = UIImage(named: "settings")
             if UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) == nil {
