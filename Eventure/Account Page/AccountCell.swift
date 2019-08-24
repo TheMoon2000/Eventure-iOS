@@ -14,9 +14,13 @@ class AccountCell: UITableViewCell {
     
     var functionImage: UIImageView!
     var function: UILabel!
+    var delegate: AccountViewController?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        //add arrow to each cell
+        accessoryType = .disclosureIndicator
         
         heightAnchor.constraint(greaterThanOrEqualToConstant: 55).isActive = true
         
@@ -29,9 +33,10 @@ class AccountCell: UITableViewCell {
             iv.widthAnchor.constraint(equalToConstant: 32).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            
+           
             return iv
         }()
+        
         
         function = {
             let label = UILabel()
@@ -48,6 +53,7 @@ class AccountCell: UITableViewCell {
             return label
         }()
     }
+   
     
     func setup(sectionNum: Int, rowNum: Int) {
         if (sectionNum == 0 && rowNum == 0) {
@@ -62,6 +68,9 @@ class AccountCell: UITableViewCell {
                 iv.widthAnchor.constraint(equalToConstant: 80).isActive = true
                 iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
                 iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+                
+        
+
                 return iv
             }()
             functionImage.image = UIImage(named: "random")
@@ -81,7 +90,16 @@ class AccountCell: UITableViewCell {
         } else if (sectionNum == 2 && rowNum == 0) {
             functionImage.image = UIImage(named: "heart")
             function.text = "Favorite Events"
-        } else if (sectionNum == 3 && rowNum == 0) {
+        } else if (sectionNum == 2 && rowNum == 1) {
+            functionImage.image = UIImage(named: "done")
+            function.text = "Going"
+        } else if (sectionNum == 2 && rowNum == 2) {
+            functionImage.image = UIImage(named: "subscribe")
+            function.text = "Subscriptions"
+        } else if (sectionNum == 2 && rowNum == 3) {
+            functionImage.image = UIImage(named: "tag")
+            function.text = "My Tags"
+        }else if (sectionNum == 3 && rowNum == 0) {
             functionImage.image = UIImage(named: "settings")
             if UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) == nil {
                 function.text = "Sign In"
