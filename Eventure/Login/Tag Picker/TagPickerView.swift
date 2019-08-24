@@ -299,7 +299,7 @@ class TagPickerView: UIViewController {
                 serverMaintenanceError(vc: self)
             case "success":
                 print("successfully updated tags")
-                User.current!.tags = tagsArray
+                User.current!.tags = Set(tagsArray)
                 DispatchQueue.main.async {
                     MainTabBarController.current.openScreen()
                 }
