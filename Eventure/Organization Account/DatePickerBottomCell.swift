@@ -9,19 +9,16 @@
 import UIKit
 
 class DatePickerBottomCell: UITableViewCell {
-
-    private(set) var topCell: DatePickerTopCell!
     
     private(set) var timeLocationPage: DraftTimeLocationPage!
     
     var bgView: UIView!
     var datePicker: UIDatePicker!
     
-    required init(timeLocationPage: DraftTimeLocationPage, topCell: DatePickerTopCell) {
-        super.init(style: .default, reuseIdentifier: nil)
-        
-        self.topCell = topCell
-        self.timeLocationPage = timeLocationPage
+    var dateChangedHandler: ((Date) -> ())?
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         backgroundColor = .clear
         selectionStyle = .none
@@ -64,12 +61,7 @@ class DatePickerBottomCell: UITableViewCell {
     }
     
     @objc private func valueChanged() {
-        topCell.displayedDate = datePicker.date
-        if timeLocationPage.contentCells[1] == self {
-            if let end = timeLocationPage.contentCells[3] as? DatePickerBottomCell {
-                end.datePicker.minimumDate = datePicker.date.addingTimeInterval(5 * 60)
-            }
-        }
+        dateChangedHandler?(datePicker.date)
     }
 
     required init?(coder aDecoder: NSCoder) {

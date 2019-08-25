@@ -52,8 +52,8 @@ class EventDraft: UIPageViewController {
         // Prepare for transition progress detection
         view.subviews.forEach { ($0 as? UIScrollView)?.delegate = self }
         
-        navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(exitEditor))
-        
+        navigationItem.leftBarButtonItem = .init(title: "Close", style: .plain, target: self, action: #selector(exitEditor))
+        navigationItem.rightBarButtonItem = .init(title: "Next", style: .done, target: self, action: #selector(flipPage))
         
         // Set up pages
 
@@ -130,6 +130,11 @@ class EventDraft: UIPageViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    @objc private func flipPage() {
+        if currentPage + 1 < pages.count {
+            setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
+        }
+    }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)

@@ -16,7 +16,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     private var placeholder: UILabel!
     private var baseline: UIView!
     
-    var textChangeHandler: (() -> ())?
+    var textChangeHandler: ((String) -> ())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -48,7 +48,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 20).isActive = true
+            label.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
             
             return label
@@ -59,14 +59,17 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.font = .systemFont(ofSize: 17)
             tv.isScrollEnabled = false
             tv.delegate = self
-            tv.keyboardDismissMode = .interactive
+            tv.backgroundColor = .clear
+            tv.keyboardDismissMode = .onDrag
+            tv.textContainer.lineFragmentPadding = 0
             
             let pStyle = NSMutableParagraphStyle()
             pStyle.lineSpacing = 5
             
             tv.typingAttributes = [
                 NSAttributedString.Key.paragraphStyle: pStyle,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.foregroundColor: MAIN_TINT_DARK
             ]
             tv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tv)
@@ -85,9 +88,9 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             label.textColor = .lightGray
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
+            insertSubview(label, belowSubview: locationText)
             
-            label.leftAnchor.constraint(equalTo: locationText.leftAnchor, constant: 5).isActive = true
+            label.leftAnchor.constraint(equalTo: locationText.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: locationText.topAnchor, constant: 8).isActive = true
             
             return label
@@ -100,8 +103,8 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             insertSubview(view, belowSubview: locationText)
             
             view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-            view.leftAnchor.constraint(equalTo: locationText.leftAnchor, constant: 2).isActive = true
-            view.rightAnchor.constraint(equalTo: locationText.rightAnchor, constant: -2).isActive = true
+            view.leftAnchor.constraint(equalTo: locationText.leftAnchor).isActive = true
+            view.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
             view.topAnchor.constraint(equalTo: locationText.bottomAnchor).isActive = true
             
             return view
@@ -111,7 +114,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        textChangeHandler?()
+        textChangeHandler?(textView.text)
         placeholder.isHidden = !textView.text.isEmpty
     }
     

@@ -30,7 +30,7 @@ class DraftTimeLocationPage: UITableViewController {
         
         
         let startBottomCell: DatePickerBottomCell = {
-            let cell = DatePickerBottomCell(timeLocationPage: self, topCell: startTopCell)
+            let cell = DatePickerBottomCell()
             
             let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
@@ -47,12 +47,17 @@ class DraftTimeLocationPage: UITableViewController {
         contentCells.append(endTopCell)
         
         let endBottomCell: DatePickerBottomCell = {
-            let cell = DatePickerBottomCell(timeLocationPage: self, topCell: startTopCell)
+            let cell = DatePickerBottomCell()
             
             let endDate = startBottomCell.datePicker.date.addingTimeInterval(3600)
             cell.datePicker.setDate(endDate, animated: false)
             
             endTopCell.displayedDate = endDate
+            
+            cell.dateChangedHandler = { [weak self] date in
+                endTopCell.displayedDate = date
+                self?.draftPage.draft.endTime = date
+            }
             
             return cell
         }()
@@ -60,12 +65,24 @@ class DraftTimeLocationPage: UITableViewController {
         contentCells.append(endBottomCell)
         
         
+        startBottomCell.dateChangedHandler = { [weak self] date in
+            startTopCell.displayedDate = date
+            self?.draftPage.draft.startTime = date
+            endBottomCell.datePicker.minimumDate = date.addingTimeInterval(5 * 60)
+            if date.timeIntervalSince(endTopCell.displayedDate) > 0 {
+                endBottomCell.datePicker.date = date
+                endBottomCell.dateChangedHandler?(date)
+            }
+        }
+        
+        
         let locationCell = DraftLocationCell()
-        locationCell.textChangeHandler = { [weak self] in
+        locationCell.textChangeHandler = { [weak self] text in
             UIView.performWithoutAnimation {
                 self?.tableView.beginUpdates()
                 self?.tableView.endUpdates()
             }
+            self?.draftPage.draft.location = text
         }
         contentCells.append(locationCell)
     }
@@ -74,6 +91,10 @@ class DraftTimeLocationPage: UITableViewController {
         super.viewDidAppear(animated)
         
         draftPage.currentPage = 1
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 
     // MARK: - Table view data source & delegate
@@ -103,11 +124,12 @@ class DraftTimeLocationPage: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        view.endEditing(true)
+
         switch indexPath.row {
         case 0:
             startTimeExpanded.toggle()
-            
-            view.endEditing(true)
             
             let topCell = contentCells[0] as! DatePickerTopCell
             startTimeExpanded ? topCell.expand() : topCell.collapse()
