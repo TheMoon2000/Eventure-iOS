@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -68,6 +68,8 @@
 		CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F922BC5F9900FFD251 /* ButtonCell.swift */; };
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
 		CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A822BD773A003E3315 /* ForgotPassword.swift */; };
+		CCE99AC323117EC800823A60 /* DatePickerTopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE99AC223117EC800823A60 /* DatePickerTopCell.swift */; };
+		CCE99AC52311830C00823A60 /* AccountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE99AC42311830C00823A60 /* AccountCell.swift */; };
 		CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */; };
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
@@ -149,6 +151,8 @@
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		CCE176A622BD742F003E3315 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		CCE176A822BD773A003E3315 /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
+		CCE99AC223117EC800823A60 /* DatePickerTopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTopCell.swift; sourceTree = "<group>"; };
+		CCE99AC42311830C00823A60 /* AccountCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCell.swift; sourceTree = "<group>"; };
 		CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRegistrationData.swift; sourceTree = "<group>"; };
 		CCF5896B22A22E0300F509C4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		CCF8CF16229E398300F3C6B8 /* Example file.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; name = "Example file.pdf"; path = "../Eventure/Example file.pdf"; sourceTree = "<group>"; };
@@ -279,10 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				CC2538AB22F4E47700690503 /* AccountViewController.swift */,
-				CC8469C6230FDB9B004E7B9D /* EventDraft.swift */,
-				CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */,
-				CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */,
-				CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */,
+				CCE99AC42311830C00823A60 /* AccountCell.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -337,6 +338,11 @@
 			children = (
 				CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */,
 				CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */,
+				CC8469C6230FDB9B004E7B9D /* EventDraft.swift */,
+				CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */,
+				CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */,
+				CCE99AC223117EC800823A60 /* DatePickerTopCell.swift */,
+				CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */,
 			);
 			path = "Organization Account";
 			sourceTree = "<group>";
@@ -657,6 +663,7 @@
 				CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
+				CCE99AC323117EC800823A60 /* DatePickerTopCell.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
@@ -681,6 +688,7 @@
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
+				CCE99AC52311830C00823A60 /* AccountCell.swift in Sources */,
 				CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */,
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,

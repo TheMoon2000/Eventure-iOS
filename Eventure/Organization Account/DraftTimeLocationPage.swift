@@ -16,9 +16,12 @@ class DraftTimeLocationPage: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .init(white: 0.95, alpha: 1)
+        view.backgroundColor = .init(white: 0.94, alpha: 1)
         tableView.tableFooterView = UIView()
+        tableView.separatorStyle = .none
+        tableView.contentInset.top = 2
 
+        contentCells.append(DatePickerTopCell())
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -38,7 +41,7 @@ class DraftTimeLocationPage: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        return contentCells[indexPath.row]
     }
 
 }
