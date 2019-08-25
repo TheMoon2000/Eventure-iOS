@@ -107,6 +107,8 @@ class DraftTimeLocationPage: UITableViewController {
         case 0:
             startTimeExpanded.toggle()
             
+            view.endEditing(true)
+            
             let topCell = contentCells[0] as! DatePickerTopCell
             startTimeExpanded ? topCell.expand() : topCell.collapse()
             
@@ -121,6 +123,8 @@ class DraftTimeLocationPage: UITableViewController {
             tableView.endUpdates()
         case 2:
             endTimeExpanded.toggle()
+            
+            view.endEditing(true)
             
             let topCell = contentCells[2] as! DatePickerTopCell
             startTimeExpanded ? topCell.expand() : topCell.collapse()

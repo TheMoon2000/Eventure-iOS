@@ -13,6 +13,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     private var bgView: UIView!
     private var locationLabel: UILabel!
     private var locationText: UITextView!
+    private var placeholder: UILabel!
     private var baseline: UIView!
     
     var textChangeHandler: (() -> ())?
@@ -73,9 +74,23 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             tv.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 5).isActive = true
             tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
-            tv.heightAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
+            tv.heightAnchor.constraint(lessThanOrEqualToConstant: 21 * 5).isActive = true
             
             return tv
+        }()
+        
+        placeholder = {
+            let label = UILabel()
+            label.text = "e.g. HP Auditorium, online"
+            label.textColor = .lightGray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: locationText.leftAnchor, constant: 5).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.topAnchor, constant: 8).isActive = true
+            
+            return label
         }()
         
         baseline = {
@@ -97,6 +112,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
 
     func textViewDidChange(_ textView: UITextView) {
         textChangeHandler?()
+        placeholder.isHidden = !textView.text.isEmpty
     }
     
     required init?(coder aDecoder: NSCoder) {
