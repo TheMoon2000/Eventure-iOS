@@ -86,9 +86,6 @@ class AccountCell: UITableViewCell {
                 iv.widthAnchor.constraint(equalToConstant: 80).isActive = true
                 iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
                 iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-                
-        
-
                 return iv
             }()
             functionImage.image = UIImage(named: "random")
@@ -124,7 +121,7 @@ class AccountCell: UITableViewCell {
             function.text = "My Tags"
         }else if (sectionNum == 3 && rowNum == 0) {
             functionImage.image = UIImage(named: "settings")
-            if UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) == nil {
+            if User.current == nil {
                 function.text = "Sign In"
             } else {
                 function.text = "Log Off"
