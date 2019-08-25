@@ -35,7 +35,7 @@ class DatePickerBottomCell: UITableViewCell {
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 2).isActive = true
             let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -15)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true

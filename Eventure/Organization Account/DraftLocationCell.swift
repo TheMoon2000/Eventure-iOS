@@ -59,6 +59,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.font = .systemFont(ofSize: 17)
             tv.isScrollEnabled = false
             tv.delegate = self
+            tv.keyboardDismissMode = .interactive
             
             let pStyle = NSMutableParagraphStyle()
             pStyle.lineSpacing = 5
@@ -74,7 +75,6 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             tv.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 5).isActive = true
             tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
-            tv.heightAnchor.constraint(lessThanOrEqualToConstant: 21 * 5).isActive = true
             
             return tv
         }()

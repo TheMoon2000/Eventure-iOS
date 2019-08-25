@@ -22,7 +22,7 @@ class DraftTimeLocationPage: UITableViewController {
         view.backgroundColor = .init(white: 0.94, alpha: 1)
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.contentInset.top = 6
+        tableView.contentInset.top = 8
         tableView.tintColor = MAIN_TINT
 
         let startTopCell = DatePickerTopCell(title: "Start time:")
@@ -127,7 +127,7 @@ class DraftTimeLocationPage: UITableViewController {
             view.endEditing(true)
             
             let topCell = contentCells[2] as! DatePickerTopCell
-            startTimeExpanded ? topCell.expand() : topCell.collapse()
+            endTimeExpanded ? topCell.expand() : topCell.collapse()
             
             let bottomCell = self.contentCells[3] as! DatePickerBottomCell
             bottomCell.datePicker.isUserInteractionEnabled = self.endTimeExpanded
