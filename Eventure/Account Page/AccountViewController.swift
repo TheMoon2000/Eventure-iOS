@@ -41,6 +41,11 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         self.myTableView.tableFooterView = UIView(frame: CGRect.zero)
         
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        myTableView.reloadData()
+    }
    
 
     /*
