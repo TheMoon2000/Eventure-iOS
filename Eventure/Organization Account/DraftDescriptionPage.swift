@@ -8,9 +8,11 @@
 
 import UIKit
 
-class DraftDescriptionPage: UIViewController, UITextViewDelegate {
+class DraftDescriptionPage: UIViewController {
     
     var draftPage: EventDraft!
+    
+    private var descriptionMaxLength = 3000
     
     private var canvas: UIScrollView!
     private var titleText: UITextView!
@@ -22,14 +24,28 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
     private var descriptionText: UITextView!
     private var descriptionPlaceholder: UILabel!
     private var previewText: UITextView!
+    private var charCount: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
+        view.tintColor = MAIN_TINT
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        
+        // Setup keyboard show/hide observers
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardDidShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardDidHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
         
         canvas = {
             let sv = UIScrollView()
@@ -165,22 +181,38 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             tv.leftAnchor.constraint(equalTo: titleText.leftAnchor).isActive = true
             tv.rightAnchor.constraint(equalTo: titleText.rightAnchor).isActive = true
             tv.topAnchor.constraint(equalTo: buttonStack.bottomAnchor, constant: 15).isActive = true
-            tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 80).isActive = true
+            tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
             
             return tv
         }()
         
+        charCount = {
+            let label = UILabel()
+            label.textColor = .gray
+            label.font = .systemFont(ofSize: 15)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: canvas.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: descriptionText.bottomAnchor, constant: 20).isActive = true
+            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -20).isActive = true
+            
+            return label
+        }()
+        
         descriptionPlaceholder = {
             let label = UILabel()
+            label.numberOfLines = 0
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.textColor = .init(white: 0.8, alpha: 1)
             label.isHidden = !draftPage.draft.eventDescription.isEmpty
-            label.text = "Describe your event here..."
+            label.text = "Describe your event within \(descriptionMaxLength) characters..."
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.insertSubview(label, belowSubview: descriptionText)
             
             label.leftAnchor.constraint(equalTo: descriptionText.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: descriptionText.topAnchor, constant: 8).isActive = true
+            label.rightAnchor.constraint(equalTo: descriptionText.rightAnchor).isActive = true
             
             return label
         }()
@@ -204,6 +236,7 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
             tv.rightAnchor.constraint(equalTo: descriptionText.rightAnchor).isActive = true
             tv.topAnchor.constraint(equalTo: descriptionText.topAnchor).isActive = true
             tv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -30).isActive = true
+            tv.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -30).isActive = true
             
             return tv
         }()
@@ -214,6 +247,10 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
         } else if descriptionText.text.isEmpty {
             descriptionText.becomeFirstResponder()
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     @objc private func dismissKeyboard() {
@@ -227,34 +264,19 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
         
     }
     
-    
-    func textViewDidChange(_ textView: UITextView) {
-        if textView == titleText {
-            titlePlaceholder.isHidden = !textView.text.isEmpty
-            draftPage.draft.title = textView.text
-        } else if textView == descriptionText {
-            descriptionPlaceholder.isHidden = !textView.text.isEmpty
-            draftPage.draft.eventDescription = textView.text
-        }
-    }
-    
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if (textView == titleText && text == "\n") {
-            descriptionText.becomeFirstResponder()
-            return false
-        }
-        return true
-    }
-    
     @objc private func editButtonPressed() {
         editButton.setTitleColor(MAIN_TINT, for: .normal)
         previewButton.setTitleColor(.darkGray, for: .normal)
         previewText.isHidden = true
         descriptionText.isHidden = false
         textViewDidChange(descriptionText)
+        charCount.isHidden = false
     }
     
     @objc private func previewButtonPressed() {
+        
+        view.endEditing(true)
+        charCount.isHidden = true
         
         if descriptionText.text.isEmpty {
             previewText.text = "No content."
@@ -269,4 +291,76 @@ class DraftDescriptionPage: UIViewController, UITextViewDelegate {
         descriptionPlaceholder.isHidden = true
     }
 
+}
+
+extension DraftDescriptionPage: UITextViewDelegate {
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if textView == titleText {
+            titlePlaceholder.isHidden = !textView.text.isEmpty
+            draftPage.draft.title = textView.text
+        } else if textView == descriptionText {
+            descriptionPlaceholder.isHidden = !textView.text.isEmpty
+            draftPage.draft.eventDescription = textView.text
+            
+            textView.textColor = textView.text.count <= descriptionMaxLength ? .darkGray : .red
+            
+            charCount.text = "\(textView.text.count) / \(descriptionMaxLength) characters"
+            
+            scrollToCursor()
+        }
+    }
+    
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        if textView == descriptionText {
+            scrollToCursor()
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView == descriptionText {
+            scrollToCursor()
+        }
+    }
+    
+    func scrollToCursor() {
+        var range = NSRange()
+        range.location = descriptionText.selectedRange.location
+        range.length = descriptionText.text.count - descriptionText.selectedRange.location
+        let front = NSString(string: descriptionText.text).replacingCharacters(in: range, with: "")
+        let imaginary = UITextView(frame: descriptionText.bounds)
+        imaginary.font = .systemFont(ofSize: 18)
+        imaginary.text = front
+        imaginary.textContainer.lineFragmentPadding = 0
+        
+        let required = descriptionText.frame.origin.y + imaginary.contentSize.height + 10
+        let displayHeight = canvas.contentOffset.y + canvas.frame.height - canvas.contentInset.bottom
+        if displayHeight < required {
+            canvas.setContentOffset(CGPoint(x: 0, y: required - displayHeight + canvas.contentOffset.y), animated: true)
+        }
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if (textView == titleText && text == "\n") {
+            descriptionText.becomeFirstResponder()
+            return false
+        }
+        return true
+    }
+}
+
+
+extension DraftDescriptionPage {
+    
+    @objc private func keyboardDidShow(_ notification: Notification) {
+        let kbSize = ((notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey]) as! CGRect).size
+        canvas.contentInset.bottom = kbSize.height
+        canvas.scrollIndicatorInsets.bottom = kbSize.height
+    }
+    
+    @objc private func keyboardDidHide(_ notification: Notification) {
+        canvas.contentInset = .zero
+        canvas.scrollIndicatorInsets = .zero
+    }
+    
 }
