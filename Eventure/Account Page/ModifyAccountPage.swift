@@ -16,6 +16,7 @@ class ModifyAccountPage: UIViewController {
     private var displayedName: String!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
+    private var titleLabel: UILabel!
     
     init(name: String) {
         super.init(nibName: nil, bundle: nil)
@@ -30,6 +31,7 @@ class ModifyAccountPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
@@ -78,6 +80,25 @@ class ModifyAccountPage: UIViewController {
             
             return myTextBox
         }()
+        
+        
+        titleLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.numberOfLines = 3
+            label.textColor = UIColor.gray
+            label.text = "Change your displayed name."
+            label.lineBreakMode = .byTruncatingTail
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.leftAnchor,constant:15).isActive = true
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant:100).isActive = true
+            //label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            //label.bottomAnchor.constraint(equalTo: myTextBox.topAnchor, constant: -15).isActive = true
+            
+            return label
+        } ()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(changeName))
         
