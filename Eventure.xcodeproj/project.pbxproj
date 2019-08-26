@@ -316,6 +316,20 @@
 			path = "Events Page";
 			sourceTree = "<group>";
 		};
+		CC37DB662313FD1D00B19C83 /* Event Editor */ = {
+			isa = PBXGroup;
+			children = (
+				CC8469C6230FDB9B004E7B9D /* EventDraft.swift */,
+				CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */,
+				CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */,
+				CCE99AC223117EC800823A60 /* DatePickerTopCell.swift */,
+				CCE99AC6231210D100823A60 /* DatePickerBottomCell.swift */,
+				CCAFC82623127899005FC231 /* DraftLocationCell.swift */,
+				CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */,
+			);
+			path = "Event Editor";
+			sourceTree = "<group>";
+		};
 		CC397638231025D8000CC35D /* Objective-C */ = {
 			isa = PBXGroup;
 			children = (
@@ -344,13 +358,7 @@
 			children = (
 				CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */,
 				CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */,
-				CC8469C6230FDB9B004E7B9D /* EventDraft.swift */,
-				CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */,
-				CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */,
-				CCE99AC223117EC800823A60 /* DatePickerTopCell.swift */,
-				CCE99AC6231210D100823A60 /* DatePickerBottomCell.swift */,
-				CCAFC82623127899005FC231 /* DraftLocationCell.swift */,
-				CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */,
+				CC37DB662313FD1D00B19C83 /* Event Editor */,
 			);
 			path = "Organization Account";
 			sourceTree = "<group>";

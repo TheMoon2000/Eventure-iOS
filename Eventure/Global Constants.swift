@@ -92,8 +92,12 @@ let PLAIN_STYLE =  """
     }
 """
 
-let DRAFT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Drafts", isDirectory: true)
+// MARK: - Cache files
+
+let DRAFTS_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("drafts")
 let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Account", isDirectory: true)
+
+let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
 
 /// Navigation bar background color
 let NAVBAR_TINT = UIColor.white

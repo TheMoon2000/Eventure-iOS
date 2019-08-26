@@ -9,10 +9,12 @@
 import UIKit
 import SwiftyJSON
 
-class Event: Codable {
+class Event {
     static var current: Event?
     static var drafts = [Event]()
     
+    private static var cachedEvents = [String: [[String: Data]]]()
+
     let readableFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "E, d MMM yyyy @ h:mm a"
@@ -65,7 +67,7 @@ class Event: Codable {
     
     /// Returns an empty `Event` object.
     static var empty: Event {
-        return Event(uuid: UUID().uuidString,
+        return Event(uuid: UUID().uuidString.lowercased(),
                      title: "",
                      description: "",
                      startTime: "",
@@ -74,11 +76,6 @@ class Event: Codable {
                      tags: Set<String>(),
                      hostID: Organization.current?.id ?? "<org id>",
                      hostTitle: Organization.current?.title ?? "<Title>")
-    }
-    
-    /// Coding keys
-    enum CodingKeys: String, CodingKey {
-        case uuid, title, startTime, endTime, location, tags, hostID, hostTitle, description
     }
     
     init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
@@ -146,43 +143,102 @@ class Event: Codable {
         active = (dictionary["Active"]?.int ?? 1) == 1
     }
     
-    func readFromFile(file: String) -> Event? {
-        if let data = NSKeyedUnarchiver.unarchiveObject(withFile: file) as? Data {
-            if let decrypted = NSData(data: data).aes256Decrypt(withKey: AES_KEY) {
-                return try? PropertyListDecoder().decode(Event.self, from: decrypted)
-            } else {
-                return nil
+    static func readFromFile(path: String) -> [String: [Event]] {
+        
+        var events = [String: [Event]]()
+        
+        guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: path) else {
+            return [:] // It's fine if no event collection cache exists.
+        }
+        
+        guard let collection = fileData as? [String: [[String: Data]]] else {
+            print("WARNING: Cannot read event collection at \(path)!")
+            return [:]
+        }
+        
+        cachedEvents = collection
+        
+        for (id, eventList) in collection {
+            for eventRawData in eventList {
+                guard let mainData = eventRawData["main"] else {
+                    print("WARNING: Key `main` not found in event collection cache!")
+                    continue
+                }
+                
+                guard let eventMain: Data = NSData(data: mainData).aes256Decrypt(withKey: AES_KEY) else {
+                    print("WARNING: Unable to decrypt event from collection cache!")
+                    continue
+                }
+                
+                if let json = try? JSON(data: eventMain) {
+                    let event: Event = Event(eventInfo: json)
+                    var orgSpecificEvents: [Event] = events[id] ?? []
+
+                    // These two attributes need to be manually extracted from the JSON
+                    event.hostID = json.dictionary?["Host ID"]?.string ?? event.hostID
+                    event.hostTitle = json.dictionary?["Host title"]?.string ?? event.hostTitle
+                    
+                    event.eventVisual = UIImage(data: eventRawData["cover"] ?? Data())
+                    orgSpecificEvents.append(event)
+                    
+                    events[id] = orgSpecificEvents
+                } else {
+                    print("WARNING: Unable to parse decrypted event main data as JSON!")
+                }
             }
         }
-        return nil
+        
+        return events
     }
     
-    required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
+    static func writeToFile(orgID: String, events: [Event], path: String) -> Bool {
         
-        uuid = try values.decode(String.self, forKey: .uuid)
-        title = try values.decode(String.self, forKey: .title)
-        eventDescription = try values.decode(String.self, forKey: .description)
-        location = try values.decode(String.self, forKey: .location)
-        startTime = DATE_FORMATTER.date(from: try values.decode(String.self, forKey: .startTime))
-        endTime = DATE_FORMATTER.date(from: try values.decode(String.self, forKey: .endTime))
-        hostID = try values.decode(String.self, forKey: .hostID)
-        hostTitle = try values.decode(String.self, forKey: .hostTitle)
+        var collection = [[String : Data]]()
         
-        let tags_raw = try values.decode(String.self, forKey: .tags)
-        let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
-        tags = Set(tagsArray)
+        for event in events {
+            var eventRaw = [String : Data]()
+            
+            var main = JSON()
+            main.dictionaryObject?["uuid"] = event.uuid
+            main.dictionaryObject?["Title"] = event.title
+            main.dictionaryObject?["Location"] = event.location
+            
+            if let startTime = event.startTime {
+                main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime)
+            }
+            
+            if let endTime = event.endTime {
+                main.dictionaryObject?["End time"] = DATE_FORMATTER.string(from: endTime)
+            }
+            
+            main.dictionaryObject?["Description"] = event.eventDescription
+            
+            // These two values are not part of the JSON used for initialization
+            main.dictionaryObject?["Host title"] = event.hostTitle
+            main.dictionaryObject?["Host ID"] = event.hostID
+            main.dictionaryObject?["Published"] = event.published ? 1 : 0
+            main.dictionaryObject?["Tags"] = event.tags.description
+            main.dictionaryObject?["Going"] = event.currentUserGoingStatus.rawValue
+            
+            let mainEncrypted: Data? = NSData(data: try! main.rawData()).aes256Encrypt(withKey: AES_KEY)
+            
+            eventRaw["main"] = mainEncrypted
+            eventRaw["cover"] = event.eventVisual?.pngData()
+            
+            collection.append(eventRaw)
+        }
         
-        active = true
-        published = false
+        Event.cachedEvents[orgID] = collection
         
+        print(Event.cachedEvents)
+        
+        if NSKeyedArchiver.archiveRootObject(Event.cachedEvents, toFile: path) {
+            return true
+        } else {
+            return false
+        }
     }
     
-    func writeToFile(path: String) -> Bool {
-        let data = try! PropertyListEncoder().encode(self)
-        let encrypted = NSData(data: data).aes256Encrypt(withKey: AES_KEY)!
-        return NSKeyedArchiver.archiveRootObject(encrypted, toFile: path)
-    }
     
     /// Verify whether an event contains all the required information for it to be published. If the event is missing some information, this function will return a non-empty string that describes the requirement.
     func verify() -> String {
@@ -213,27 +269,6 @@ class Event: Codable {
         }
         
         return ""
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(uuid, forKey: .uuid)
-        try container.encode(title, forKey: .title)
-        try container.encode(eventDescription, forKey: .description)
-        try container.encode(location, forKey: .location)
-        try container.encode(hostID, forKey: .hostID)
-        try container.encode(hostTitle, forKey: .hostTitle)
-        
-        if startTime != nil {
-            try container.encode(readableFormatter.string(from: startTime!), forKey: .startTime)
-        }
-        
-        if endTime != nil {
-            try container.encode(readableFormatter.string(from: endTime!), forKey: .endTime)
-        }
-        
-        try container.encode(tags.description, forKey: .tags)
     }
     
 }
