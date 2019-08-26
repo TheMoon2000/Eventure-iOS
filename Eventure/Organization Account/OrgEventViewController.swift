@@ -19,6 +19,10 @@ class OrgEventViewController: UIViewController {
         return Organization.current?.id
     }
     
+    var useRefreshControl: Bool {
+        return false
+    }
+    
     // Date bounds
     var lowerBound: Date?
     var upperBound: Date?
@@ -34,14 +38,16 @@ class OrgEventViewController: UIViewController {
     var eventCatalog: UICollectionView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
-    private var emptyLabel: UILabel!
+    private var publishedLabel: UILabel!
+    private var draftLabel: UILabel!
     
     var allEvents = [Event]()
+    var allDrafts = [Event]()
     var displayedEvents: [Event] {
         if topTab.selectedSegmentIndex == 0 {
             return allEvents
         } else {
-            return allEvents.filter { $0.published }
+            return allDrafts
         }
     }
     
@@ -77,6 +83,8 @@ class OrgEventViewController: UIViewController {
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
             
+            tab.addTarget(self, action: #selector(changedTab), for: .valueChanged)
+            
             return tab
         }()
         
@@ -88,7 +96,9 @@ class OrgEventViewController: UIViewController {
             let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
-            ec.refreshControl = self.refreshControl
+            if useRefreshControl {
+                ec.refreshControl = self.refreshControl
+            }
             ec.contentInset.top = 8
             ec.contentInset.bottom = 8
             if !topTabBg.isHidden {
@@ -141,7 +151,7 @@ class OrgEventViewController: UIViewController {
             return label
         }()
         
-        emptyLabel = {
+        publishedLabel = {
             let label = UILabel()
             label.textColor = .darkGray
             label.font = .systemFont(ofSize: 17)
@@ -154,23 +164,42 @@ class OrgEventViewController: UIViewController {
             return label
         }()
         
+        draftLabel = {
+            let label = UILabel()
+            label.isHidden = true
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: eventCatalog.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: eventCatalog.centerYAnchor).isActive = true
+            
+            return label
+            }()
+        
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
         refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
         refreshControl.tintColor = MAIN_TINT
         
+        // Fetch all events and draft events
         updateEvents()
-        
-        
-        try? FileManager.default.createDirectory(at: DRAFT_DIR, withIntermediateDirectories: true, attributes: nil)
+        updateDrafts()
     }
     
     @objc private func pullDownRefresh() {
         updateEvents(pulled: true)
     }
     
+    func updateDrafts() {
+        if let orgSpecificEvents = Event.readFromFile(path: DRAFTS_PATH.path)[Organization.current!.id] {
+            allDrafts = orgSpecificEvents
+        }
+    }
+    
     private func updateEvents(pulled: Bool = false) {
         
-        emptyLabel.text = ""
+        publishedLabel.text = ""
 
         if !pulled {
             spinner.startAnimating()
@@ -206,7 +235,7 @@ class OrgEventViewController: UIViewController {
             guard error == nil else {
                 DispatchQueue.main.async {
                     if self.allEvents.isEmpty {
-                        self.emptyLabel.text = CONNECTION_ERROR
+                        self.publishedLabel.text = CONNECTION_ERROR
                     } else {
                         internetUnavailableError(vc: self)
                     }
@@ -226,13 +255,13 @@ class OrgEventViewController: UIViewController {
                 
                 DispatchQueue.main.async {
                     self.eventCatalog.reloadData()
-                    self.emptyLabel.text = self.allEvents.isEmpty ? "No Events" : ""
+                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Events" : ""
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
                 
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = SERVER_ERROR
+                    self.publishedLabel.text = SERVER_ERROR
                 }
                 
                 if String(data: data!, encoding: .utf8) == INTERNAL_ERROR {
@@ -246,19 +275,19 @@ class OrgEventViewController: UIViewController {
         task.resume()
     }
     
-    private func changedTab() {
-        switch topTab.selectedSegmentIndex {
-        case 0:
-            print()
-        default:
-            break
-        }
+    @objc private func changedTab() {
+        eventCatalog.reloadData()
+        
+        let isDraftMode = topTab.selectedSegmentIndex == 1
+        publishedLabel.isHidden = isDraftMode
+        draftLabel.isHidden = !isDraftMode
     }
     
     
     @objc private func createNewEvent() {
         let draftEvent = Event.empty
         let editor = EventDraft(event: draftEvent)
+        editor.orgEventView = self
         let nav = UINavigationController(rootViewController: editor)
         nav.navigationBar.tintColor = MAIN_TINT
         nav.navigationBar.barTintColor = .white
@@ -273,7 +302,14 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return allEvents.count
+        
+        let count = displayedEvents.count
+        
+        if topTab.selectedSegmentIndex == 1 {
+            draftLabel.text = count == 0 ? "No Drafts" : ""
+        }
+        
+        return count
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -283,7 +319,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "org event", for: indexPath) as! OrgEventCell
         cell.parentVC = self
-        cell.setupCellWithEvent(event: allEvents[indexPath.row])
+        cell.setupCellWithEvent(event: displayedEvents[indexPath.row])
         
         return cell
     }
@@ -292,7 +328,8 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         
         let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
-        detailPage.event = allEvents[indexPath.row]
+        detailPage.orgEventView = self
+        detailPage.event = displayedEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
     }
 }
@@ -321,7 +358,7 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cell = OrgEventCell()
-        cell.setupCellWithEvent(event: allEvents[indexPath.row])
+        cell.setupCellWithEvent(event: displayedEvents[indexPath.row])
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
     }

@@ -43,8 +43,8 @@ class EventDetailTabStrip : ButtonBarPagerTabStripViewController {
     
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         
-        let about = AboutViewController(text: event.eventDescription)
-        let other = OtherViewController(text: "To be filled")
+        let about = AboutViewController(event: event)
+        let other = OtherViewController(event: event)
         
         return [about, other]
     }

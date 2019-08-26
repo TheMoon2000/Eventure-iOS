@@ -28,13 +28,14 @@ class EventDetailPage: UIViewController {
     /// The event which the current view controller displays.
     var event: Event!
     
+    var orgEventView: OrgEventViewController?
+    
     private var hideBlankImages = true
     
     private var canvas: UIScrollView!
     private var coverImage: UIImageView!
     private var eventTitle: UILabel!
-    private var favoriteButton: UIBarButtonItem!
-    //private var eventDescription: UITextView!
+    private var rightButton: UIBarButtonItem!
     private var tabStrip: ButtonBarPagerTabStripViewController!
 
     override func viewDidLoad() {
@@ -43,9 +44,14 @@ class EventDetailPage: UIViewController {
         self.title = "Event Details"
         view.backgroundColor = .white
         
-        favoriteButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
-        favoriteButton.isEnabled = User.current != nil
-        navigationItem.rightBarButtonItem = favoriteButton
+        if Organization.current == nil {
+            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
+            rightButton.isEnabled = User.current != nil
+            navigationItem.rightBarButtonItem = rightButton
+        } else if Organization.current?.id == event.hostID {
+            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "edit"), style: .plain, target: self, action: #selector(editEvent))
+            navigationItem.rightBarButtonItem = rightButton
+        }
 
         canvas = {
             let canvas = UIScrollView()
@@ -107,27 +113,6 @@ class EventDetailPage: UIViewController {
             return label
         }()
         
-        
-        
-        /*
-        favoriteButton = {
-            let button = UIButton(type: .system)
-            button.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
-            button.tintColor = MAIN_TINT
-            button.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(button)
-            
-            button.widthAnchor.constraint(equalToConstant: 30).isActive = true
-            button.heightAnchor.constraint(equalToConstant: 30).isActive = true
-            button.centerYAnchor.constraint(equalTo: eventTitle.centerYAnchor).isActive = true
-            button.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            button.leftAnchor.constraint(equalTo: eventTitle.rightAnchor, constant: 20).isActive = true
-            
-            button.addTarget(self, action: #selector(changedFavoriteStatus), for: .touchUpInside)
-            
-            return button
-        }()*/
-        
         let line: UIView = {
             let line = UIView()
             line.backgroundColor = LINE_TINT
@@ -187,13 +172,15 @@ class EventDetailPage: UIViewController {
             return
         }
         
+        // If the current user exists, then the right button is the favorite button
+        
         let isFavoriteOriginally = currentUser.favoritedEvents.contains(event.uuid)
         
         func toggle(_ update: Bool = true) {
-            if favoriteButton.image == #imageLiteral(resourceName: "heart_empty") {
-                favoriteButton.image = #imageLiteral(resourceName: "heart")
+            if rightButton.image == #imageLiteral(resourceName: "heart_empty") {
+                rightButton.image = #imageLiteral(resourceName: "heart")
             } else {
-                favoriteButton.image = #imageLiteral(resourceName: "heart_empty")
+                rightButton.image = #imageLiteral(resourceName: "heart_empty")
             }
             if update {
                 if isFavoriteOriginally {
@@ -215,7 +202,7 @@ class EventDetailPage: UIViewController {
         let parameters = [
             "userId": String(currentUser.uuid),
             "eventId": event.uuid,
-            "favorited": favoriteButton.image == #imageLiteral(resourceName: "heart") ? "1" : "0"
+            "favorited": rightButton.image == #imageLiteral(resourceName: "heart") ? "1" : "0"
         ]
         
         let url = URL.with(base: API_BASE_URL,
@@ -246,15 +233,22 @@ class EventDetailPage: UIViewController {
         task.resume()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.eventTitle.text = event.title
     }
-    */
+    
+
+    @objc private func editEvent() {
+        let editor = EventDraft(event: event)
+        editor.orgEventView = self.orgEventView
+        editor.isEditingExistingEvent = true
+        let nav = UINavigationController(rootViewController: editor)
+        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.shadowImage = UIImage()
+        present(nav, animated: true, completion: nil)
+    }
 
 }

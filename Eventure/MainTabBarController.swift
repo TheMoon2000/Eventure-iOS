@@ -17,7 +17,6 @@ class MainTabBarController: UITabBarController {
         
         // Do any additional setup after loading the view.
         self.view.backgroundColor = .white
-        self.setupUserTabs() // Guest login assumes user identity
         
         view.tintColor = MAIN_TINT
     }
@@ -86,11 +85,17 @@ class MainTabBarController: UITabBarController {
     func loginSetup() {
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG {
+                Organization.current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH)
                 openScreen(isUserAccount: false)
             } else {
-                setupUserTabs()
+                User.current = User.cachedUser(at: CURRENT_USER_PATH)
+                openScreen(isUserAccount: true)
             }
+        } else {
+            // Login as guest
+            openScreen()
         }
+        
     }
     /*
      // MARK: - Navigation

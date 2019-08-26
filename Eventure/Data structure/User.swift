@@ -12,14 +12,23 @@ import SwiftyJSON
 class User: CustomStringConvertible {
     
     /// The current user, if the app is logged in.
-    static var current: User?
-    
+    static var current: User? {
+        didSet {
+            if current?.writeToFile(path: CURRENT_USER_PATH) == false {
+                print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
+            } else {
+                print("successfully wrote user data to \(CURRENT_USER_PATH)")
+            }
+        }
+    }
+        
     /// The UUID of the user.
     var uuid: Int
     var email: String
     var password_MD5: String
     var displayedName: String
     var gender: Gender
+    var profilePicture: UIImage?
     var favoritedEvents = Set<String>()
     var goingList = [String: Int]()
     var subscriptions = Set<String>()
@@ -70,7 +79,41 @@ class User: CustomStringConvertible {
     
     // MARK: - Read & Write
     
+    static func cachedUser(at path: String) -> User? {
+        
+        var user: User?
+        
+        guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: path) else {
+            return nil
+        }
+        
+        guard let cache = fileData as? [String : Data] else {
+            print("WARNING: Cannot read cache as [String : Data]!")
+            return nil
+        }
+            
+        guard let userData = cache["main"] else {
+            print("WARNING: Key `main` not found in cache file \(path)!")
+            return nil
+        }
+        
+        guard let decrypted = NSData(data: userData).aes256Decrypt(withKey: AES_KEY) else {
+            print("WARNING: Unable to decrypt user data from \(path)!")
+            return nil
+        }
+        
+        if let json = try? JSON(data: decrypted) {
+            user = User(userInfo: json)
+            user?.profilePicture = UIImage(data: cache["profile"] ?? Data())
+        } else {
+            print("WARNING: Decrypted user data is not a valid JSON!")
+        }
+        
+        return user
+    }
+    
     func writeToFile(path: String) -> Bool {
+        
         var json = JSON()
         json.dictionaryObject?["uuid"] = self.uuid
         json.dictionaryObject?["Email"] = self.email
@@ -81,11 +124,19 @@ class User: CustomStringConvertible {
         json.dictionaryObject?["Tags"] = self.tags.description
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         
-        let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)
+        try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
+        
+        
+        let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
+        
+        // Handle profile picture
+        
+        var prepared: [String : Data] = ["main" : encrypted]
+        prepared["profile"] = profilePicture?.pngData()
+            
         return NSKeyedArchiver.archiveRootObject(
-            encrypted!,
-            toFile: ACCOUNT_DIR.path + "/" + "user"
-        )
+            prepared,
+            toFile: path)
     }
 }
 

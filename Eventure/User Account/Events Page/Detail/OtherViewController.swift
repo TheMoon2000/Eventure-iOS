@@ -11,16 +11,18 @@ import XLPagerTabStrip
 
 class OtherViewController: UIViewController, IndicatorInfoProvider  {
     
-    var textView : UITextView!
+    var event: Event!
+    private var textView: UITextView!
 
-    required init(text: String) {
+    required init(event: Event!) {
         super.init(nibName: nil, bundle: nil)
         
+        self.event = event!
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         textView = {
             let tv = UITextView()
-            tv.attributedText = text.attributedText()
+            tv.attributedText = "Event details".attributedText()
             tv.textContainerInset = .init(top: 30, left: 30, bottom: 40, right: 30)
             tv.backgroundColor = .clear
             tv.dataDetectorTypes = [.link, .phoneNumber]
@@ -43,6 +45,12 @@ class OtherViewController: UIViewController, IndicatorInfoProvider  {
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // Reload information here
     }
     
 

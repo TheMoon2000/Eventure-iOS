@@ -169,10 +169,13 @@ class DraftDescriptionPage: UIViewController {
             tv.backgroundColor = nil
             tv.isScrollEnabled = false
             tv.keyboardDismissMode = .onDrag
-            tv.textContainer.lineFragmentPadding = 5
             tv.font = .systemFont(ofSize: 18)
             tv.textColor = .darkGray
             tv.allowsEditingTextAttributes = false
+            
+            let pStyle = NSMutableParagraphStyle()
+            pStyle.lineSpacing = 2
+            tv.typingAttributes[NSAttributedString.Key.paragraphStyle] = pStyle
             tv.insertText(draftPage.draft.eventDescription)
             tv.delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +183,7 @@ class DraftDescriptionPage: UIViewController {
             
             tv.leftAnchor.constraint(equalTo: titleText.leftAnchor).isActive = true
             tv.rightAnchor.constraint(equalTo: titleText.rightAnchor).isActive = true
-            tv.topAnchor.constraint(equalTo: buttonStack.bottomAnchor, constant: 15).isActive = true
+            tv.topAnchor.constraint(equalTo: buttonStack.bottomAnchor, constant: 10).isActive = true
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
             
             return tv
@@ -223,8 +226,6 @@ class DraftDescriptionPage: UIViewController {
             tv.backgroundColor = nil
             tv.isEditable = false
             tv.isScrollEnabled = false
-            tv.textContainerInset = .zero
-            tv.textContainer.lineFragmentPadding = 0
             tv.textColor = .gray
             tv.font = .systemFont(ofSize: 17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
@@ -247,6 +248,8 @@ class DraftDescriptionPage: UIViewController {
         } else if descriptionText.text.isEmpty {
             descriptionText.becomeFirstResponder()
         }
+        
+        updateWordCount()
     }
     
     deinit {
@@ -295,6 +298,12 @@ class DraftDescriptionPage: UIViewController {
 
 extension DraftDescriptionPage: UITextViewDelegate {
     
+    private func updateWordCount() {
+        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? .darkGray : .red
+        
+        charCount.text = "\(descriptionText.text.count) / \(descriptionMaxLength) characters"
+    }
+    
     func textViewDidChange(_ textView: UITextView) {
         if textView == titleText {
             titlePlaceholder.isHidden = !textView.text.isEmpty
@@ -303,10 +312,7 @@ extension DraftDescriptionPage: UITextViewDelegate {
             descriptionPlaceholder.isHidden = !textView.text.isEmpty
             draftPage.draft.eventDescription = textView.text
             
-            textView.textColor = textView.text.count <= descriptionMaxLength ? .darkGray : .red
-            
-            charCount.text = "\(textView.text.count) / \(descriptionMaxLength) characters"
-            
+            updateWordCount()
             scrollToCursor()
         }
     }
