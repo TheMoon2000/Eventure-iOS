@@ -41,11 +41,6 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         self.myTableView.tableFooterView = UIView(frame: CGRect.zero)
         
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        myTableView.reloadData()
-    }
    
 
     /*
@@ -80,7 +75,7 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
                 self.present(alert, animated: true)
                 
             }
-        } else if indexPath.section == 1 && indexPath.row == 0 { //if the user tries to change the name
+        } else if indexPath.section == 1 && indexPath.row == 0 { //if the user tries to change account information
             if User.current == nil {
                 let alert = UIAlertController(title: "Do you want to log in?", message: "Log in to make changes to your account.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
@@ -93,9 +88,9 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
                 alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
                 self.present(alert, animated: true)
             } else {
-                let modifyAccount = ModifyAccountPage(name: User.current!.displayedName)
-                modifyAccount.hidesBottomBarWhenPushed = true
-                navigationController?.pushViewController(modifyAccount, animated: true)
+                let personalInfo = PersonalInfoPage()
+                personalInfo.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(personalInfo, animated: true)
             }
         }
     }
@@ -106,7 +101,7 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
         let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell") as! AccountCell
-        cell.setup(sectionNum: indexPath.section,rowNum: indexPath.row)
+        cell.setup(sectionNum: indexPath.section,rowNum: indexPath.row, type:"Account")
         if indexPath.section == 0 && indexPath.row == 0 {
             profilePicture = cell.functionImage.image
             cell.functionImage.isUserInteractionEnabled = true
@@ -148,7 +143,7 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         if(section == 0) {
             return 1
         } else if(section == 1) {
-            return 4
+            return 1
         } else if (section == 2){
             return 4
         } else {
@@ -190,6 +185,10 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
         self.navigationController?.isNavigationBarHidden = false
         sender.view?.removeFromSuperview()
         currentImageView = nil
+    }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return currentImageView
     }
     
 }

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D922978F88AA540F1FBE70D /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2446E41F2700045698ADEDAB /* Pods_Eventure.framework */; };
 		470D75024A526E9BCB68F95B /* Pods_EventureAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */; };
+		67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67705BD1231395900024FBBA /* PersonalInfoPage.swift */; };
 		67AFF77C23121ACE00329626 /* AccountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77923121ACE00329626 /* AccountCell.swift */; };
 		67AFF77D23121ACE00329626 /* ModifyAccountPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77A23121ACE00329626 /* ModifyAccountPage.swift */; };
 		67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77B23121ACE00329626 /* AccountViewController.swift */; };
@@ -96,6 +97,7 @@
 		2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventureAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EBCBAB1E31272FAA462C515 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 		314EE6D58DF621467DC05E60 /* Pods-EventureAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.release.xcconfig"; sourceTree = "<group>"; };
+		67705BD1231395900024FBBA /* PersonalInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalInfoPage.swift; sourceTree = "<group>"; };
 		67AFF77923121ACE00329626 /* AccountCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCell.swift; sourceTree = "<group>"; };
 		67AFF77A23121ACE00329626 /* ModifyAccountPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyAccountPage.swift; sourceTree = "<group>"; };
 		67AFF77B23121ACE00329626 /* AccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 		CC2538AE22F4E47F00690503 /* Account Page */ = {
 			isa = PBXGroup;
 			children = (
+				67705BD1231395900024FBBA /* PersonalInfoPage.swift */,
 				67AFF77923121ACE00329626 /* AccountCell.swift */,
 				67AFF77B23121ACE00329626 /* AccountViewController.swift */,
 				67AFF77A23121ACE00329626 /* ModifyAccountPage.swift */,
@@ -690,6 +693,7 @@
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
 				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
+				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
