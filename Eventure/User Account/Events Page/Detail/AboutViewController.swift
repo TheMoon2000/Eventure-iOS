@@ -11,17 +11,18 @@ import XLPagerTabStrip
 
 class AboutViewController: UIViewController, IndicatorInfoProvider {
 
+    private var event: Event!
     var textView: UITextView!
     
-    required init(text: String) {
+    required init(event: Event) {
         super.init(nibName: nil, bundle: nil)
         
+        self.event = event
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         textView = {
             let tv = UITextView()
-            tv.attributedText = text.attributedText()
-            tv.textContainerInset = .init(top: 30, left: 30, bottom: 40, right: 30)
+            tv.attributedText = event.eventDescription.attributedText()
             tv.backgroundColor = .clear
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
@@ -29,16 +30,22 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
             tv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(tv)
             
-            tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-            tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-            tv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            tv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
             
-            let bottomConstraint = tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            let bottomConstraint = tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
             return tv
         }()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        textView.attributedText = event.eventDescription.attributedText()
     }
     
     required init?(coder aDecoder: NSCoder) {

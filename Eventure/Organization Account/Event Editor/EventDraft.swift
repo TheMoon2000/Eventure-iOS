@@ -10,6 +10,7 @@ import UIKit
 
 class EventDraft: UIPageViewController {
     
+    var orgEventView: OrgEventViewController?
     
     var isEditingExistingEvent = false
     var currentPage = -1 {
@@ -96,10 +97,25 @@ class EventDraft: UIPageViewController {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         alert.title = "Save changes?"
         
+        let orgID = Organization.current!.id
+        
         let saveHandler: ((UIAlertAction) -> Void) = { action in
-            let path = DRAFT_DIR.path + "/" + self.draft.uuid
-            print(path)
-            if self.draft.writeToFile(path: path) {
+            // TODO: Correctly save the draft event to cache
+            var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
+            
+            print("existing drafts: \(drafts.map { $0.uuid })")
+            
+            if let index = drafts.firstIndex(where: { $0.uuid == self.draft.uuid }) {
+                drafts[index] = self.draft
+            } else {
+                drafts.append(self.draft)
+            }
+            
+            print("after add: \(drafts.map { $0.uuid })")
+            
+            if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
+                self.orgEventView?.updateDrafts()
+                self.orgEventView?.eventCatalog.reloadData()
                 self.dismiss(animated: true, completion: nil)
             } else {
                 let warning = UIAlertController(title: "Save Error", message: "No write permission.", preferredStyle: .alert)
@@ -111,7 +127,6 @@ class EventDraft: UIPageViewController {
         
         if !isEditingExistingEvent {
             alert.message = "You can save the event as a draft and come back later, or discard it."
-            alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
             alert.addAction(.init(title: "Save as Draft", style: .default, handler: saveHandler))
         } else if draft.published {
             alert.message = "You have made changes to a published event."
@@ -126,6 +141,8 @@ class EventDraft: UIPageViewController {
         alert.addAction(.init(title: "Discard Changes", style: .destructive, handler: { action in
             self.dismiss(animated: true, completion: nil)
         }))
+        
+        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
         
         present(alert, animated: true, completion: nil)
     }

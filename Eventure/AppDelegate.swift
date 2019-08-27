@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window?.makeKeyAndVisible()
         
+        
         //entry view first presents the nav controller rooted at loginviewcontroller, later it will be dismissed upon successful login
         //DO NOT move this before makeKeyAndVisible(), otheriwse entrypoint would not be recognized as rootview and unable to push
         entrypoint.loginSetup()
