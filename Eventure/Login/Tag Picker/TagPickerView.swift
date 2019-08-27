@@ -16,10 +16,11 @@ class TagPickerView: UIViewController {
     private var topBanner: UIVisualEffectView!
     private var titleLabel: UILabel!
     private var subtitleLabel: UILabel!
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
     private var bottomBanner: UIVisualEffectView!
     private var continueButton: UIButton!
+    
+    var spinner: UIActivityIndicatorView!
+    var spinnerLabel: UILabel!
     
     var customContinueMethod: ((TagPickerView) -> ())?
     var customTitle: String?

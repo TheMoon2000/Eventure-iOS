@@ -8,18 +8,36 @@
 
 import Foundation
 import SwiftyJSON
+
+import var CommonCrypto.CC_MD5_DIGEST_LENGTH
+import func CommonCrypto.CC_MD5
+import typealias CommonCrypto.CC_LONG
+
 import UIKit
 
 class ModifyAccountPage: UIViewController {
     
     private var myTextBox: UITextField!
-    private var displayedName: String!
+    private var type: String!
+    private var predisplay: String!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
+    private var spinnerLabelText: String!
+    private var titleLabel: UILabel!
+    private var titleLabelText: String!
     
-    init(name: String) {
+    init(type: String) {
         super.init(nibName: nil, bundle: nil)
-        displayedName = name
+        self.type = type
+        if (type == "Name"){
+            predisplay = User.current!.displayedName
+            spinnerLabelText = "Changing your name..."
+            titleLabelText = "Change your displayed name."
+        } else if type == "Password" {
+            predisplay = ""
+            spinnerLabelText = "Changing your password..."
+            titleLabelText = "Change your password"
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -30,6 +48,7 @@ class ModifyAccountPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
@@ -46,7 +65,7 @@ class ModifyAccountPage: UIViewController {
         
         spinnerLabel = {
             let label = UILabel()
-            label.text = "Changing your name..."
+            label.text = spinnerLabelText
             label.isHidden = true
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.textColor = .darkGray
@@ -61,13 +80,16 @@ class ModifyAccountPage: UIViewController {
         
         myTextBox = {
             let myTextBox = UITextField()
-            myTextBox.text = displayedName
+            myTextBox.text = predisplay
             myTextBox.keyboardType = .emailAddress
             myTextBox.adjustsFontSizeToFitWidth = true
             myTextBox.textContentType = .emailAddress
             myTextBox.returnKeyType = .next
             prepareField(textfield: myTextBox)
             myTextBox.translatesAutoresizingMaskIntoConstraints = false
+            if (type == "Password") {
+                myTextBox.isSecureTextEntry = true
+            }
             self.view.addSubview(myTextBox)
             
             myTextBox.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
@@ -79,7 +101,24 @@ class ModifyAccountPage: UIViewController {
             return myTextBox
         }()
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(changeName))
+        
+        titleLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 17)
+            label.numberOfLines = 3
+            label.textColor = UIColor.gray
+            label.text = titleLabelText
+            label.lineBreakMode = .byTruncatingTail
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.leftAnchor,constant:15).isActive = true
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant:100).isActive = true
+            
+            return label
+        } ()
+        
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(changeInfo))
         
     }
     
@@ -95,12 +134,12 @@ class ModifyAccountPage: UIViewController {
         textfield.doInset()
     }
 
-    @objc private func changeName() {
+    @objc private func changeInfo() {
         
         spinner.startAnimating()
         spinnerLabel.isHidden = false
         
-        let newName : String = myTextBox.text!
+        let newInfo : String = myTextBox.text!
         
         let urlParameter = [
             "uuid": String(User.current!.uuid)
@@ -116,7 +155,12 @@ class ModifyAccountPage: UIViewController {
         
         // Construct JSON
         var body = JSON()
-        body.dictionaryObject?["Displayed name"] = myTextBox.text!
+        if type == "Name" {
+            body.dictionaryObject?["Displayed name"] = myTextBox.text!
+        } else if type == "Password" {
+            print(MD5(string:myTextBox.text!))
+            body.dictionaryObject?["Password MD5"] = MD5(string:myTextBox.text!)
+        }
         request.httpBody = try? body.rawData()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
@@ -149,10 +193,29 @@ class ModifyAccountPage: UIViewController {
                         self.present(alert, animated: true, completion: nil)
                     }
                 } else {
-                    User.current!.displayedName = newName
+                    if self.type == "Name" {
+                        User.current!.displayedName = newInfo
+                    }
                 }
             }
         }
         task.resume()
+    }
+    
+    func MD5(string: String) -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = string.data(using:.utf8)!
+        var digestData = Data(count: length)
+        
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+            messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress, let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
 }
