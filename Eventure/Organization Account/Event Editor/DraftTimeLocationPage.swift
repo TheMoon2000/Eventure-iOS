@@ -36,8 +36,6 @@ class DraftTimeLocationPage: UITableViewController {
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
             cell.datePicker.setDate(rounded, animated: false)
             
-            startTopCell.displayedDate = rounded
-            
             return cell
         }()
         
@@ -51,9 +49,7 @@ class DraftTimeLocationPage: UITableViewController {
             
             let endDate = startBottomCell.datePicker.date.addingTimeInterval(3600)
             cell.datePicker.setDate(endDate, animated: false)
-            
-            endTopCell.displayedDate = endDate
-            
+                        
             cell.dateChangedHandler = { [weak self] date in
                 endTopCell.displayedDate = date
                 self?.draftPage.draft.endTime = date
