@@ -95,8 +95,7 @@ class ModifyAccountPage: UIViewController {
             myTextBox.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
             myTextBox.heightAnchor.constraint(equalToConstant: 45).isActive = true
             myTextBox.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            myTextBox.topAnchor.constraint(equalTo: view.centerYAnchor,
-                                     constant: -320).isActive = true
+            myTextBox.topAnchor.constraint(equalTo: view.topAnchor,constant: 130).isActive = true
             
             return myTextBox
         }()
