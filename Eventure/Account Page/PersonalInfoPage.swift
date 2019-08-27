@@ -81,7 +81,57 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 { //if the user tries to change the name
-            let modifyAccount = ModifyAccountPage(type: "Name")
+//            let modifyAccount = ModifyAccountPage(type: "Name")
+            let modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName)
+            modifyAccount.submitAction = { nameField, spinner in
+                
+                nameField.isEnabled = false
+                spinner.startAnimating()
+                
+                let url = URL.with(base: API_BASE_URL,
+                                   API_Name: "account/UpdateUserInfo",
+                                   parameters: [
+                                    "uuid": String(User.current!.uuid)
+                                   ])!
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.addAuthHeader()
+                
+                let body = JSON(dictionaryLiteral: ("Displayed name", nameField.text!))
+                request.httpBody = try? body.rawData()
+                
+                let task = CUSTOM_SESSION.dataTask(with: request) {
+                    data, response, error in
+                    
+                    DispatchQueue.main.async {
+                        spinner.stopAnimating()
+                        nameField.isEnabled = true
+                    }
+                    
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            internetUnavailableError(vc: self)
+                        }
+                        return
+                    }
+                    
+                    let msg = String(data: data!, encoding: .utf8)!
+                    
+                    if msg == INTERNAL_ERROR {
+                        DispatchQueue.main.async {
+                            serverMaintenanceError(vc: self)
+                        }
+                        return
+                    } else {
+                        DispatchQueue.main.async {
+                            User.current?.displayedName = nameField.text!
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                }
+                
+                task.resume()
+            }
             modifyAccount.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(modifyAccount, animated: true)
         } else if indexPath.row == 1 { //if the user tries to change the password
