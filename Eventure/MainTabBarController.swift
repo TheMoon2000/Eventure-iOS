@@ -84,8 +84,8 @@ class MainTabBarController: UITabBarController {
     
     func loginSetup() {
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
-            if type == ACCOUNT_TYPE_ORG {
-                Organization.current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH)
+            if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
+                Organization.current = current
                 openScreen(isUserAccount: false)
             } else {
                 User.current = User.cachedUser(at: CURRENT_USER_PATH)

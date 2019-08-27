@@ -25,8 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         window?.makeKeyAndVisible()
         
-        Organization.current = .init(title: "eventure")
-        UserDefaults.standard.set(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
         
         //entry view first presents the nav controller rooted at loginviewcontroller, later it will be dismissed upon successful login
         //DO NOT move this before makeKeyAndVisible(), otheriwse entrypoint would not be recognized as rootview and unable to push

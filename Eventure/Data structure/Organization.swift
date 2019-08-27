@@ -119,7 +119,8 @@ class Organization: CustomStringConvertible {
         for (key, value) in members {
             membersMap[String(key)] = value.rawValue
         }
-        var membersEncoded = JSON(membersMap)
+        
+        let membersEncoded = JSON(membersMap)
         json.dictionaryObject?["Members"] = membersEncoded.description
         
         json.dictionaryObject?["Tags"] = self.tags.description
@@ -129,6 +130,8 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Active"] = self.active ? 1 : 0
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
+        
+        try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
         let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
         return NSKeyedArchiver.archiveRootObject(encrypted, toFile: CURRENT_USER_PATH)

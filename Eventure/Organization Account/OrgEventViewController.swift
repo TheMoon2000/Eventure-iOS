@@ -192,6 +192,7 @@ class OrgEventViewController: UIViewController {
     }
     
     func updateDrafts() {
+        if Organization.current == nil { return }
         if let orgSpecificEvents = Event.readFromFile(path: DRAFTS_PATH.path)[Organization.current!.id] {
             allDrafts = orgSpecificEvents
         }
