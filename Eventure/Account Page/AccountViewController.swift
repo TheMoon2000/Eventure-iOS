@@ -6,6 +6,7 @@
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
+import SwiftyJSON
 import UIKit
 
 class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDataSource  {
@@ -77,20 +78,98 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
             }
         } else if indexPath.section == 1 && indexPath.row == 0 { //if the user tries to change account information
             if User.current == nil {
-                let alert = UIAlertController(title: "Do you want to log in?", message: "Log in to make changes to your account.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
-                    let login = LoginViewController()
-                    let nvc = InteractivePopNavigationController(rootViewController: login)
-                    nvc.isNavigationBarHidden = true
-                    login.navBar = nvc
-                    self.present(nvc, animated: true, completion: nil)
-                }))
-                alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
-                self.present(alert, animated: true)
+                popLoginReminder()
             } else {
                 let personalInfo = PersonalInfoPage()
                 personalInfo.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(personalInfo, animated: true)
+            }
+        } else if indexPath.section == 2 && indexPath.row == 3 { //if user wants to change the tags
+            if User.current == nil {
+                popLoginReminder()
+            } else {
+                let tagPicker = TagPickerView()
+                tagPicker.customTitle = "What interests you?"
+                tagPicker.customSubtitle = "Pick at least one. The more the better!"
+                tagPicker.maxPicks = 3
+                tagPicker.customButtonTitle = "Done"
+                tagPicker.customContinueMethod = { tagPicker in
+                    
+                    tagPicker.spinner.removeFromSuperview()
+                    
+                    let loadingView: UIView = UIView()
+                    loadingView.frame = CGRect(x:0, y:0, width:110, height:110)
+                    loadingView.center = tagPicker.view.center
+                    loadingView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+                    loadingView.clipsToBounds = true
+                    loadingView.layer.cornerRadius = 10
+                    
+                    let label = UILabel()
+                    label.text = "Updating..."
+                    label.font = .systemFont(ofSize: 17, weight: .medium)
+                    label.textColor = .white
+                    label.translatesAutoresizingMaskIntoConstraints = false
+                    loadingView.addSubview(label)
+                    label.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
+                    label.topAnchor.constraint(equalTo: loadingView.topAnchor,constant:80).isActive = true
+                    
+                    loadingView.addSubview(tagPicker.spinner)
+                    tagPicker.view.addSubview(loadingView)
+                    
+                    tagPicker.spinner.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
+                    tagPicker.spinner.centerYAnchor.constraint(equalTo: loadingView.centerYAnchor, constant: -5).isActive = true
+                    
+                    tagPicker.spinner.startAnimating()
+                    
+                    User.current!.tags = tagPicker.selectedTags
+                    
+                    let url = URL(string: API_BASE_URL + "account/UpdateTags")!
+                    var request = URLRequest(url: url)
+                    request.httpMethod = "POST"
+                    request.addAuthHeader()
+                    
+                    var body = JSON()
+                    body.dictionaryObject?["uuid"] = User.current?.uuid
+                    let tagsArray = tagPicker.selectedTags.map { $0 }
+                    body.dictionaryObject?["tags"] = tagsArray
+                    request.httpBody = try? body.rawData()
+                    
+                    let task = CUSTOM_SESSION.dataTask(with: request) {
+                        data, response, error in
+                        
+                        DispatchQueue.main.async {
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        
+                        guard error == nil else {
+                            DispatchQueue.main.async {
+                                internetUnavailableError(vc: self)
+                            }
+                            return
+                        }
+                        
+                        let msg = String(data: data!, encoding: .ascii) ?? ""
+                        switch msg {
+                        case INTERNAL_ERROR:
+                            serverMaintenanceError(vc: self)
+                        case "success":
+                            print("successfully updated tags")
+                            User.current!.tags = Set(tagsArray)
+                        default:
+                            break
+                        }
+                    }
+                    
+                    task.resume()
+                }
+                
+                tagPicker.hidesBottomBarWhenPushed = true
+                navigationController?.pushViewController(tagPicker, animated: true)
+                
+                DispatchQueue.main.async {
+                    tagPicker.selectedTags = User.current!.tags
+                }
+                
             }
         }
     }
@@ -189,6 +268,19 @@ class AccountViewController: UIViewController,UITableViewDelegate, UITableViewDa
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return currentImageView
+    }
+    
+    func popLoginReminder() {
+        let alert = UIAlertController(title: "Do you want to log in?", message: "Log in to make changes to your account.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
+            let login = LoginViewController()
+            let nvc = InteractivePopNavigationController(rootViewController: login)
+            nvc.isNavigationBarHidden = true
+            login.navBar = nvc
+            self.present(nvc, animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        self.present(alert, animated: true)
     }
     
 }
