@@ -211,6 +211,7 @@ class OrgEventViewController: UIViewController {
             spinner.startAnimating()
             spinnerLabel.isHidden = false
             allEvents.removeAll()
+            filteredEvents.removeAll()
             eventCatalog.reloadData()
             refreshControl.isEnabled = false
             refreshControl.isHidden = true

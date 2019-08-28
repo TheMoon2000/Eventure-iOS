@@ -13,7 +13,7 @@ class Event {
     static var current: Event?
     static var drafts = [Event]()
     
-    private static var cachedEvents = [String: [[String: Data]]]()
+    private static var cachedEvents = [String: [[String: Any]]]()
 
     let readableFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -151,7 +151,7 @@ class Event {
             return [:] // It's fine if no event collection cache exists.
         }
         
-        guard let collection = fileData as? [String: [[String: Data]]] else {
+        guard let collection = fileData as? [String: [[String: Any]]] else {
             print("WARNING: Cannot read event collection at \(path)!")
             return [:]
         }
@@ -160,7 +160,7 @@ class Event {
         
         for (id, eventList) in collection {
             for eventRawData in eventList {
-                guard let mainData = eventRawData["main"] else {
+                guard let mainData = eventRawData["main"] as? Data else {
                     print("WARNING: Key `main` not found in event collection cache!")
                     continue
                 }
@@ -178,7 +178,7 @@ class Event {
                     event.hostID = json.dictionary?["Host ID"]?.string ?? event.hostID
                     event.hostTitle = json.dictionary?["Host title"]?.string ?? event.hostTitle
                     
-                    event.eventVisual = UIImage(data: eventRawData["cover"] ?? Data())
+                    event.eventVisual = eventRawData["cover"] as? UIImage
                     orgSpecificEvents.append(event)
                     
                     events[id] = orgSpecificEvents
@@ -193,10 +193,10 @@ class Event {
     
     static func writeToFile(orgID: String, events: [Event], path: String) -> Bool {
         
-        var collection = [[String : Data]]()
+        var collection = [[String : Any]]()
         
         for event in events {
-            var eventRaw = [String : Data]()
+            var eventRaw = [String : Any]()
             
             var main = JSON()
             main.dictionaryObject?["uuid"] = event.uuid
@@ -223,7 +223,7 @@ class Event {
             let mainEncrypted: Data? = NSData(data: try! main.rawData()).aes256Encrypt(withKey: AES_KEY)
             
             eventRaw["main"] = mainEncrypted
-            eventRaw["cover"] = event.eventVisual?.pngData()
+            eventRaw["cover"] = event.eventVisual
             
             collection.append(eventRaw)
         }
