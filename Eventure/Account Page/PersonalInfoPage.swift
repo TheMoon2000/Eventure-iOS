@@ -9,9 +9,6 @@
 import Foundation
 import UIKit
 import SwiftyJSON
-import var CommonCrypto.CC_MD5_DIGEST_LENGTH
-import func CommonCrypto.CC_MD5
-import typealias CommonCrypto.CC_LONG
 
 class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSource  {
     
@@ -84,75 +81,28 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 { //if the user tries to change the name
-            self.pushToModifyPage(type: "Name")
+            self.pushToModifyPage(type: .displayedName)
         } else if indexPath.row == 1 { //if the user tries to change the password
-            let alert = UIAlertController(title: "Verification", message: "Please enter password to continue.", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Verification", message: "Please enter your current password to continue.", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
                 textField.isSecureTextEntry = true
             })
             alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler: { action in
-                
-                self.spinner.startAnimating()
-                self.spinnerLabel.isHidden = false
-                
                 let pwd = alert.textFields![0].text!
-                let email = User.current!.email
-                // Construct the URL parameters to be delivered
-                let authenticateParameters = [
-                    "login": email,
-                    "password": pwd
-                ]
-                
-                // Make the URL and URL request
-                let apiURL = URL.with(base: API_BASE_URL,
-                                      API_Name: "account/Authenticate",
-                                      parameters: authenticateParameters)!
-                var request = URLRequest(url: apiURL)
-                request.addAuthHeader()
-                
-                let task = CUSTOM_SESSION.dataTask(with: request) {
-                    data, response, error in
-                    
-                    DispatchQueue.main.async {
-                        self.spinner.stopAnimating()
-                        self.spinnerLabel.isHidden = true
-                    }
-                    
-                    guard error == nil else {
-                        DispatchQueue.main.async {
-                            internetUnavailableError(vc: self)
-                        }
-                        return
-                    }
-                    
-                    do {
-                        let result = try JSON(data: data!).dictionary
-                        let servermsg = result?["status"]?.stringValue
-                        if (servermsg == "success") {
-                            DispatchQueue.main.async {
-                                self.pushToModifyPage(type: "Password")
-                            }
-                        } else {
-                            DispatchQueue.main.async {
-                                if servermsg == INTERNAL_ERROR {
-                                    serverMaintenanceError(vc: self)
-                                    return
-                                }
-                                
-                                let alert = UIAlertController(title: "Password Error", message: servermsg, preferredStyle: .alert)
-                                alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
-                                self.present(alert, animated: true, completion: nil)
-                            }
-                        }
-                    } catch {
-                        print("error parsing")
-                    }
+                if pwd.md5() == User.current!.password_MD5 {
+                    let passwordSettings = UpdatePasswordPage()
+                    self.navigationController?.pushViewController(passwordSettings, animated: true)
+                } else {
+                    let warning = UIAlertController(title: "Incorrect Password", message: nil, preferredStyle: .alert)
+                    warning.addAction(.init(title: "Dismiss", style: .cancel, handler: nil))
+                    self.present(warning, animated: true, completion: nil)
                 }
-                task.resume()
-                
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
             self.present(alert, animated: true)
+        } else if indexPath.row == 2 {
+            pushToModifyPage(type: .email)
         }
     }
     
@@ -166,16 +116,17 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         return 55.0
     }
     
-    func pushToModifyPage(type: String) {
-        let modifyAccount : GenericOneFieldPage
-        if type == "Password" {
-            modifyAccount = GenericOneFieldPage(fieldName: "New Password", fieldDefault: "", type: "Password")
+    func pushToModifyPage(type: Types) {
+        let modifyAccount: GenericOneFieldPage
+        if type == .displayedName {
+            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName)
         } else {
-            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName, type: "Name")
+            modifyAccount = .init(fieldName: "Email Address", fieldDefault: User.current!.email)
         }
-        modifyAccount.submitAction = { nameField, spinner in
+        
+        modifyAccount.submitAction = { inputField, spinner in
             
-            nameField.isEnabled = false
+            inputField.isEnabled = false
             spinner.startAnimating()
             
             let url = URL.with(base: API_BASE_URL,
@@ -186,12 +137,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.addAuthHeader()
-            let body : JSON
-            if type == "Password" {
-                body = JSON(dictionaryLiteral: ("Password MD5", self.MD5(string:nameField.text!)))
-            } else {
-                body = JSON(dictionaryLiteral: ("Displayed name", nameField.text!))
-            }
+            let body = JSON(dictionaryLiteral: (type.rawValue, inputField.text!))
             request.httpBody = try? body.rawData()
             
             let task = CUSTOM_SESSION.dataTask(with: request) {
@@ -199,7 +145,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                 
                 DispatchQueue.main.async {
                     spinner.stopAnimating()
-                    nameField.isEnabled = true
+                    inputField.isEnabled = true
                 }
                 
                 guard error == nil else {
@@ -218,8 +164,10 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                     return
                 } else {
                     DispatchQueue.main.async {
-                        if type == "Name" {
-                            User.current?.displayedName = nameField.text!
+                        if type == .displayedName {
+                            User.current?.displayedName = inputField.text!
+                        } else if type == .email {
+                            User.current!.email = inputField.text!
                         }
                         self.navigationController?.popViewController(animated: true)
                     }
@@ -232,22 +180,11 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         navigationController?.pushViewController(modifyAccount, animated: true)
     }
     
-    
-    func MD5(string: String) -> String {
-        let length = Int(CC_MD5_DIGEST_LENGTH)
-        let messageData = string.data(using:.utf8)!
-        var digestData = Data(count: length)
-        
-        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
-            messageData.withUnsafeBytes { messageBytes -> UInt8 in
-                if let messageBytesBaseAddress = messageBytes.baseAddress, let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
-                    let messageLength = CC_LONG(messageData.count)
-                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
-                }
-                return 0
-            }
-        }
-        return digestData.map { String(format: "%02hhx", $0) }.joined()
+}
+
+extension PersonalInfoPage {
+    enum Types: String {
+        case displayedName = "Displayed name"
+        case email = "Email"
     }
-    
 }

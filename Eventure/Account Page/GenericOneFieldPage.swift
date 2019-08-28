@@ -19,15 +19,20 @@ class GenericOneFieldPage: UITableViewController {
     
     var textCell: GenericTextCell!
     
-    required init(fieldName: String, fieldDefault: String, type: String) {
+    required init(fieldName: String, fieldDefault: String, type: PersonalInfoPage.Types = .displayedName) {
         super.init(nibName: nil, bundle: nil)
         
         self.fieldName = fieldName
         tableView = UITableView(frame: .zero, style: .grouped)
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonPressed))
         
-        textCell = GenericTextCell(title: fieldName, type: type)
+        textCell = GenericTextCell(title: fieldName)
         textCell.inputField.text = fieldDefault
+        if type == .email {
+            textCell.inputField.keyboardType = .emailAddress
+            textCell.inputField.textContentType = .emailAddress
+            textCell.inputField.autocapitalizationType = .none
+        }
         textCell.submitAction = submitAction
     }
 

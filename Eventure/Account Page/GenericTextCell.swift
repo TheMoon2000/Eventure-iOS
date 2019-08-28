@@ -16,7 +16,7 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
     /// The handler to run when the new input is submitted.
     var submitAction: ((UITextField, UIActivityIndicatorView) -> ())?
 
-    required init(title: String, type: String) {
+    required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         selectionStyle = .none
         backgroundColor = .white
@@ -45,9 +45,6 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
             field.delegate = self
             field.enablesReturnKeyAutomatically = true
             field.translatesAutoresizingMaskIntoConstraints = false
-            if type == "Password" {
-                field.isSecureTextEntry = true
-            }
             addSubview(field)
             
             field.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
@@ -63,7 +60,6 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
         submit()
         return true
     }
