@@ -114,7 +114,6 @@ class EventDraft: UIPageViewController {
             }
             
             if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
-                self.orgEventView?.updateDrafts()
                 self.orgEventView?.eventCatalog.reloadData()
                 self.dismiss(animated: true, completion: nil)
             } else {

@@ -19,7 +19,7 @@ class EventImagePickerCell: UITableViewCell {
         
         selectionStyle = .none
         
-        heightAnchor.constraint(equalToConstant: 60).isActive = true
+        heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         bgView = {
             let view = UIView()
@@ -32,7 +32,7 @@ class EventImagePickerCell: UITableViewCell {
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
             view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
             
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -5)
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             

@@ -37,6 +37,8 @@ class EventDetailPage: UIViewController {
     private var eventTitle: UILabel!
     private var rightButton: UIBarButtonItem!
     private var tabStrip: ButtonBarPagerTabStripViewController!
+    
+    var emptyImageHeightConstraint: NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,19 +71,19 @@ class EventDetailPage: UIViewController {
         
         coverImage = {
             let iv = UIImageView(image: event.eventVisual)
-            if hideBlankImages && event.eventVisual == nil {
-                iv.isHidden = true
-            }
             iv.backgroundColor = MAIN_DISABLED
-            iv.contentMode = .scaleAspectFill
             iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
             
             iv.topAnchor.constraint(lessThanOrEqualTo: canvas.topAnchor).isActive = true
-            iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
             iv.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             iv.widthAnchor.constraint(lessThanOrEqualToConstant: 400).isActive = true
+            iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
+            
+            iv.leftAnchor.constraint(greaterThanOrEqualTo: canvas.leftAnchor).isActive = true
+            iv.rightAnchor.constraint(lessThanOrEqualTo: canvas.rightAnchor).isActive = true
+            
             let left = iv.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor)
             left.priority = .defaultHigh
             left.isActive = true
@@ -89,6 +91,11 @@ class EventDetailPage: UIViewController {
             let right = iv.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor)
             right.priority = .defaultHigh
             right.isActive = true
+            
+            if event.eventVisual == nil {
+                emptyImageHeightConstraint = iv.heightAnchor.constraint(equalToConstant: 0)
+                emptyImageHeightConstraint.isActive = true
+            }
             
             return iv
         }()
@@ -104,12 +111,7 @@ class EventDetailPage: UIViewController {
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            
-            if coverImage.isHidden {
-                label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 25).isActive = true
-            } else {
-                label.topAnchor.constraint(equalTo: coverImage.bottomAnchor, constant: 25).isActive = true
-            }
+            label.topAnchor.constraint(equalTo: coverImage.bottomAnchor, constant: 25).isActive = true
 
             return label
         }()
@@ -224,6 +226,16 @@ class EventDetailPage: UIViewController {
         super.viewWillAppear(animated)
         
         self.eventTitle.text = event.title
+        if event.eventVisual != nil {
+            emptyImageHeightConstraint?.isActive = false
+            coverImage.image = event.eventVisual
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        self.orgEventView?.eventCatalog?.reloadData()
     }
     
 
