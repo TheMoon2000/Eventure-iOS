@@ -12,7 +12,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
 
     private var bgView: UIView!
     private var locationLabel: UILabel!
-    private var locationText: UITextView!
+    private(set) var locationText: UITextView!
     private var placeholder: UILabel!
     private var baseline: UIView!
     

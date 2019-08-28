@@ -61,7 +61,7 @@ class Event {
         if startTime != nil && endTime != nil {
             return dc.string(from: endTime!.timeIntervalSince(startTime!))!
         } else {
-            return "TBD"
+            return "TBA"
         }
     }
     

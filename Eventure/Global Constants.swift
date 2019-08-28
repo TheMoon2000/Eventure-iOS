@@ -113,7 +113,7 @@ let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
     config.urlCache = nil
-    config.timeoutIntervalForRequest = 6.0
+    config.timeoutIntervalForRequest = 8.0
     return URLSession(configuration: config)
 }()
 
@@ -225,7 +225,7 @@ extension URLRequest {
         
         for file in files {
             data.append(string: prefix)
-            data.append(string: "Content-Disposition: form-data; name=\"\(file.key)\"\r\n")
+            data.append(string: "Content-Disposition: form-data; name=\"\(file.key)\"; filename=\"temp\"\r\n")
             data.append(string: "Content-Type: application/octet-stream\r\n\r\n")
             data.append(file.value)
             data.append(string: "\r\n")
@@ -273,10 +273,65 @@ extension UITextView {
         return contentSize.height
     }
 }
+
 extension Data {
     mutating func append(string: String) {
         let data = string.data(using: .utf8)!
         append(data)
+    }
+}
+
+extension UIImage {
+    func fixedOrientation() -> UIImage {
+        if imageOrientation == .up {
+            return self
+        }
+        
+        var transform: CGAffineTransform = CGAffineTransform.identity
+        
+        switch imageOrientation {
+        case .down, .downMirrored:
+            transform = transform.translatedBy(x: size.width, y: size.height)
+            transform = transform.rotated(by: .pi)
+            break
+        case .left, .leftMirrored:
+            transform = transform.translatedBy(x: size.width, y: 0)
+            transform = transform.rotated(by: .pi / 2)
+            break
+        case .right, .rightMirrored:
+            transform = transform.translatedBy(x: 0, y: size.height)
+            transform = transform.rotated(by: -.pi / 2)
+            break
+        case .up, .upMirrored:
+            break
+        }
+        switch imageOrientation {
+        case UIImageOrientation.upMirrored, UIImageOrientation.downMirrored:
+            transform.translatedBy(x: size.width, y: 0)
+            transform.scaledBy(x: -1, y: 1)
+            break
+        case UIImageOrientation.leftMirrored, UIImageOrientation.rightMirrored:
+            transform.translatedBy(x: size.height, y: 0)
+            transform.scaledBy(x: -1, y: 1)
+        case UIImageOrientation.up, UIImageOrientation.down, UIImageOrientation.left, UIImageOrientation.right:
+            break
+        }
+        
+        let ctx: CGContext = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: self.cgImage!.bitsPerComponent, bytesPerRow: 0, space: self.cgImage!.colorSpace!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        
+        ctx.concatenate(transform)
+        
+        switch imageOrientation {
+        case UIImageOrientation.left, UIImageOrientation.leftMirrored, UIImageOrientation.right, UIImageOrientation.rightMirrored:
+            ctx.draw(self.cgImage!, in: CGRect(origin: CGPoint.zero, size: size))
+        default:
+            ctx.draw(self.cgImage!, in: CGRect(origin: CGPoint.zero, size: size))
+            break
+        }
+        
+        let cgImage: CGImage = ctx.makeImage()!
+        
+        return UIImage(cgImage: cgImage)
     }
 }
 

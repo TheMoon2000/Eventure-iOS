@@ -283,7 +283,7 @@ class OrgEventViewController: UIViewController {
         task.resume()
     }
     
-    @objc private func refresh() {
+    @objc func refresh() {
         updateEvents(pulled: false)
     }
     
@@ -296,8 +296,12 @@ class OrgEventViewController: UIViewController {
         
         if isDraftMode {
             navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createNewEvent))
+            spinner.alpha = 0.0
+            spinnerLabel.alpha = 0.0
         } else {
             navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
+            spinner.alpha = 1.0
+            spinnerLabel.alpha = 1.0
         }
         
         updateFiltered()

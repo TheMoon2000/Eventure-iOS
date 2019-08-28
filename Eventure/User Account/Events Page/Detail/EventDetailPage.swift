@@ -57,13 +57,15 @@ class EventDetailPage: UIViewController {
 
         canvas = {
             let canvas = UIScrollView()
+            canvas.alwaysBounceVertical = true
+            canvas.contentInsetAdjustmentBehavior = .always
             canvas.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(canvas)
+            
             canvas.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             canvas.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             canvas.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-            canvas.contentInsetAdjustmentBehavior = .always
             
             return canvas
         }()
@@ -112,29 +114,10 @@ class EventDetailPage: UIViewController {
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: coverImage.bottomAnchor, constant: 25).isActive = true
+            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -300).isActive = true
 
             return label
         }()
-        
-        /*eventDescription = {
-            let tv = UITextView()
-            tv.attributedText = event.eventDescription.attributedText()
-            tv.textContainerInset = .zero
-            tv.textContainer.lineFragmentPadding = 0
-            tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
-            tv.isEditable = false
-            tv.isScrollEnabled = false
-            tv.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(tv)
-            
-            tv.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            tv.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            tv.topAnchor.constraint(equalTo: line.bottomAnchor, constant: 15).isActive = true
-            tv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -40).isActive = true
-            
-            return tv
-        }()*/
         
         
         tabStrip = {
@@ -145,7 +128,7 @@ class EventDetailPage: UIViewController {
             tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
-            tabStrip.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            tabStrip.view.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor).isActive = true
             
             addChild(tabStrip)
             tabStrip.didMove(toParent: self)

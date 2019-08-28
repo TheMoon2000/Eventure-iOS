@@ -123,7 +123,10 @@ class RegisterOrganization: UITableViewController {
         pageCells.append(tagCell)
         
         // 1.4 (5)
-        let imagePicker = ChooseImageCell(parentVC: self, sideInset: 15)
+        let imagePicker = ChooseImageCell(parentVC: self)
+        imagePicker.chooseImageHandler = { image in
+            self.registrationData.logo = image
+        }
         pageCells.append(imagePicker)
         
         
@@ -466,7 +469,7 @@ extension RegisterOrganization {
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetOrgInfo",
-                           parameters: ["id": id])!
+                           parameters: ["orgId": id])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -480,12 +483,13 @@ extension RegisterOrganization {
                 return
             }
             
-            let msg = String(data: data!, encoding: .ascii)!
+            let msg = String(data: data!, encoding: .utf8)!
             DispatchQueue.main.async {
                 if msg == "not found" {
                     cell.status = .tick
                     self.registrationData.orgIDVerified = true
                 } else {
+                    print(msg)
                     cell.status = .fail
                 }
             }

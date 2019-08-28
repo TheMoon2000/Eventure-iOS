@@ -30,7 +30,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         
         overlay = {
             let overlay = UIView()
-            overlay.layer.cornerRadius = 12
+            overlay.layer.cornerRadius = 7
             overlay.layer.borderColor = LINE_TINT.cgColor
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
@@ -108,7 +108,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         logo.backgroundColor = nil
         clearButton.isHidden = false
         logo.layer.borderWidth = 0
-        chooseImageHandler?(logo.image)
+        chooseImageHandler?(logo.image?.fixedOrientation())
         picker.dismiss(animated: true, completion: nil)
     }
     

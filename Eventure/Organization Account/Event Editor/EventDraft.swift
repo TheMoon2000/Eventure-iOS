@@ -13,6 +13,8 @@ class EventDraft: UIPageViewController {
     var orgEventView: OrgEventViewController?
     static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
     
+    var edited = false
+    
     var isEditingExistingEvent = false
     var currentPage = -1 {
         didSet {
@@ -128,6 +130,11 @@ class EventDraft: UIPageViewController {
         
         self.view.endEditing(true)
         
+        guard edited else {
+            self.dismiss(animated: true, completion: nil)
+            return
+        }
+        
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         alert.title = "Save changes?"
         
@@ -159,35 +166,129 @@ class EventDraft: UIPageViewController {
                 setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
             }
         } else {
-            let alert = UIAlertController(title: "Event Completed", message: "You have finished composing your new event. Would you like to publish it now?", preferredStyle: .alert)
             
+            let alert = UIAlertController(title: "Event Completed", message: nil, preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
-            alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
-            alert.addAction(.init(title: "Publish", style: .default, handler: { action in
-                
-            }))
+
+            if !isEditingExistingEvent {
+                alert.message = "You have finished composing your new event. Would you like to publish it now?"
+                alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
+                alert.addAction(.init(title: "Publish", style: .default, handler: { action in
+                    self.publishEvent()
+                }))
+            } else {
+                alert.message = "You have modified a published event. Would you like to publish your changes now or save them for later?"
+                alert.addAction(.init(title: "Save as New Draft", style: .default, handler: saveHandler))
+                alert.addAction(.init(title: "Re-publish", style: .default, handler: { action in
+                    self.publishEvent()
+                }))
+            }
             
             present(alert, animated: true, completion: nil)
         }
     }
     
     private func publishEvent() {
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/",
-                           parameters: [:])!
+        
+        let spinner = UIActivityIndicatorView(style: .gray)
+        spinner.startAnimating()
+        
+        let doneButton = navigationItem.rightBarButtonItem!
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: spinner)
+        
+        let warning = UIAlertController(title: "Unable to publish event", message: nil, preferredStyle: .alert)
+        warning.addAction(.init(title: "OK", style: .cancel, handler: nil))
+        
+        // Perform a series of checks to make sure that the event is valid
+        guard !draft.title.isEmpty else {
+            warning.message = "Event title should not be blank!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        guard draft.startTime != nil else {
+            warning.message = "Event start time should not be blank!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        guard draft.endTime != nil else {
+            warning.message = "Event end time should not be blank!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        guard !draft.tags.isEmpty && draft.tags.count <= 3 else {
+            warning.message = "You must pick between 1 ~ 3 tags!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        let url = URL(string: API_BASE_URL + "events/CreateEvent")!
         var request = URLRequest(url: url)
-        request.addAuthHeader()
         request.httpMethod = "POST"
         
         let parameters = [
             "uuid": draft.uuid,
-            "title": draft.title
+            "orgId": Organization.current!.id,
+            "title": draft.title,
+            "description": draft.eventDescription,
+            "location": draft.location,
+            "startTime": DATE_FORMATTER.string(from: draft.startTime!),
+            "endTime": DATE_FORMATTER.string(from: draft.endTime!),
+            "public": "1",
+            "tags": draft.tags.description
         ]
         
         var fileData = [String : Data]()
-        fileData["cover"] = draft.eventVisual?.pngData()
+        fileData["cover"] = draft.eventVisual?.fixedOrientation().pngData()
         
         request.addMultipartBody(parameters: parameters, files: fileData)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)!
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                DispatchQueue.main.async {
+                    self.dismiss(animated: true) {
+                        self.orgEventView?.refresh()
+                    }
+                }
+            default:
+                warning.message = msg
+                DispatchQueue.main.async {
+                    self.present(warning, animated: true, completion: nil)
+                }
+            }
+        }
+        
+        task.resume()
     }
 
     required init?(coder: NSCoder) {

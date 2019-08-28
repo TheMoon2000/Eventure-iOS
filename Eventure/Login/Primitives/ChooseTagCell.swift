@@ -46,7 +46,7 @@ class ChooseTagCell: UITableViewCell {
         
         overlay = {
             let overlay = UIView()
-            overlay.layer.cornerRadius = 10
+            overlay.layer.cornerRadius = 7
             overlay.layer.borderColor = LINE_TINT.cgColor
             overlay.backgroundColor = .white
             overlay.translatesAutoresizingMaskIntoConstraints = false
@@ -116,6 +116,20 @@ class ChooseTagCell: UITableViewCell {
             overlay.layer.borderWidth = 0
             leftLabel.textColor = .init(white: 0.3, alpha: 1)
             rightLabel.textColor = .init(white: 0.75, alpha: 1)
+        }
+    }
+    
+    func reloadTagPrompt(tags: Set<String>) {
+        if tags.count >= 1 && tags.count <= 3 {
+            status = .done
+            let tagword = tags.count == 1 ? "tag" : "tags"
+            rightLabel.text = "\(tags.count) \(tagword) selected"
+        } else if tags.isEmpty {
+            status = .none
+            rightLabel.text = "Choose"
+        } else {
+            status = .fail
+            rightLabel.text = "Too many tags"
         }
     }
     

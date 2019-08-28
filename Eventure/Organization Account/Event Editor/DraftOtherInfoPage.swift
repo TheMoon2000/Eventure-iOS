@@ -25,6 +25,7 @@ class DraftOtherInfoPage: UITableViewController {
                 
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
         tagPickerCell.backgroundColor = EventDraft.backgroundColor
+        tagPickerCell.reloadTagPrompt(tags: draftPage.draft.tags)
         contentCells.append(tagPickerCell)
         
         let imagePickerCell = EventImagePickerCell()
@@ -38,8 +39,9 @@ class DraftOtherInfoPage: UITableViewController {
             imagePreviewCell.previewImage.backgroundColor = nil
             imagePreviewCell.chooseImageLabel.isHidden = true
         }
-        imagePreviewCell.updateImageHandler = { image in
-            self.draftPage.draft.eventVisual = image
+        imagePreviewCell.updateImageHandler = { [weak self] image in
+            self?.draftPage.draft.eventVisual = image
+            self?.draftPage.edited = true
         }
         contentCells.append(imagePreviewCell)
     }
@@ -75,23 +77,14 @@ class DraftOtherInfoPage: UITableViewController {
                 self.navigationController?.popViewController(animated: true)
             }
             
-            tagPicker.customDisappearHandler = { tags in
-                self.draftPage.draft.tags = tagPicker.selectedTags
-                if tags.count >= 1 && tags.count <= 3 {
-                    tagPickerCell.status = .done
-                    let tagword = tags.count == 1 ? "tag" : "tags"
-                    tagPickerCell.rightLabel.text = "\(tags.count) \(tagword) selected"
-                } else {
-                    tagPickerCell.status = .fail
-                    if tags.isEmpty {
-                        tagPickerCell.rightLabel.text = "No tags chosen"
-                    } else {
-                        tagPickerCell.rightLabel.text = "Too many tags"
-                    }
-                }
+            tagPicker.customDisappearHandler = { [ weak self ] tags in
+                self?.draftPage.draft.tags = tagPicker.selectedTags
+                tagPickerCell.reloadTagPrompt(tags: tags)
+                self?.draftPage.edited = true
             }
             
             tagPicker.selectedTags = draftPage.draft.tags
+            
             navigationController?.pushViewController(tagPicker, animated: true)
         }
     }
