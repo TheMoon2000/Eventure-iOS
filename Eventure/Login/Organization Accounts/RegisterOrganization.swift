@@ -119,11 +119,11 @@ class RegisterOrganization: UITableViewController {
         pageCells.append(website)
         
         // 1.3 (4)
-        let tagCell = ChooseTagCell(vc: self)
+        let tagCell = ChooseTagCell(parentVC: self)
         pageCells.append(tagCell)
         
         // 1.4 (5)
-        let imagePicker = ChooseImageCell(vc: self)
+        let imagePicker = ChooseImageCell(parentVC: self, sideInset: 15)
         pageCells.append(imagePicker)
         
         
@@ -261,7 +261,7 @@ class RegisterOrganization: UITableViewController {
             cell.button.setTitle("Register", for: .normal)
             cell.button.isEnabled = false
             cell.button.backgroundColor = MAIN_TINT
-            cell.alpha = DISABLED_ALPHA
+            cell.button.alpha = DISABLED_ALPHA
             cell.primaryAction = {
                 self.registerOrg()
             }
@@ -345,8 +345,25 @@ class RegisterOrganization: UITableViewController {
         if let pickerCell = genericCell as? ChooseImageCell {
             pickerCell.chooseImage()
         } else if let tagCell = genericCell as? ChooseTagCell {
+            
+            let tagPicker = TagPickerView()
+            tagPicker.customTitle = "Pick 1 ~ 3 tags that best describe your organization!"
+            tagPicker.customSubtitle = ""
+            tagPicker.maxPicks = 3
+            tagPicker.customButtonTitle = "Done"
+            tagPicker.customContinueMethod = { tagPicker in
+                tagCell.status = .done
+                self.navigationController?.popViewController(animated: true)
+            }
+            
+            tagPicker.customDisappearHandler = { tags in
+                self.registrationData.tags = tags
+            }
+            
+            tagPicker.selectedTags = registrationData.tags
+
+            navigationController?.pushViewController(tagPicker, animated: true)
             tableView.endEditing(true)
-            tagCell.pickTags()
         }
     }
     

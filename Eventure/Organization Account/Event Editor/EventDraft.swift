@@ -11,6 +11,7 @@ import UIKit
 class EventDraft: UIPageViewController {
     
     var orgEventView: OrgEventViewController?
+    static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
     
     var isEditingExistingEvent = false
     var currentPage = -1 {
@@ -23,12 +24,21 @@ class EventDraft: UIPageViewController {
             
             let percentage = Float(currentPage + 1) / Float(pages.count)
             progressIndicator?.setProgress(percentage, animated: true)
+            
+            if currentPage + 1 < pages.count {
+                navigationItem.rightBarButtonItem?.title = "Next"
+            } else {
+                navigationItem.rightBarButtonItem?.title = "Finish"
+            }
         }
     }
     var draft: Event!
     var pages = [UIViewController]()
     
     private var progressIndicator: UIProgressView!
+    
+    var saveHandler: ((UIAlertAction) -> Void)!
+    
     
     /// Records the progress of the user's current swipe gesture. Negative values indicate a backward swipe.
     var transitionProgress: CGFloat = 0.0 {
@@ -47,14 +57,16 @@ class EventDraft: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = EventDraft.backgroundColor
         dataSource = self
         
         // Prepare for transition progress detection
         view.subviews.forEach { ($0 as? UIScrollView)?.delegate = self }
         
         navigationItem.leftBarButtonItem = .init(title: "Close", style: .plain, target: self, action: #selector(exitEditor))
-        navigationItem.rightBarButtonItem = .init(title: "Next", style: .done, target: self, action: #selector(flipPage))
+        navigationItem.rightBarButtonItem = .init(title: "Next", style: .done, target: self, action: #selector(flipPage(_:)))
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         
         // Set up pages
 
@@ -88,30 +100,18 @@ class EventDraft: UIPageViewController {
         
         currentPage = 0
         setViewControllers([descPage], direction: .forward, animated: false, completion: nil)
-    }
-    
-    @objc func exitEditor() {
-        
-        self.view.endEditing(true)
-        
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        alert.title = "Save changes?"
         
         let orgID = Organization.current!.id
         
-        let saveHandler: ((UIAlertAction) -> Void) = { action in
+        saveHandler = { action in
             // TODO: Correctly save the draft event to cache
             var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
-            
-            print("existing drafts: \(drafts.map { $0.uuid })")
             
             if let index = drafts.firstIndex(where: { $0.uuid == self.draft.uuid }) {
                 drafts[index] = self.draft
             } else {
                 drafts.append(self.draft)
             }
-            
-            print("after add: \(drafts.map { $0.uuid })")
             
             if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
                 self.orgEventView?.updateDrafts()
@@ -123,7 +123,14 @@ class EventDraft: UIPageViewController {
                 self.present(warning, animated: true, completion: nil)
             }
         }
+    }
+    
+    @objc func exitEditor() {
         
+        self.view.endEditing(true)
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+        alert.title = "Save changes?"
         
         if !isEditingExistingEvent {
             alert.message = "You can save the event as a draft and come back later, or discard it."
@@ -147,10 +154,41 @@ class EventDraft: UIPageViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    @objc private func flipPage() {
-        if currentPage + 1 < pages.count {
-            setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
+    @objc private func flipPage(_ sender: UIBarButtonItem) {
+        if sender.title == "Next" {
+            if currentPage + 1 < pages.count {
+                setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
+            }
+        } else {
+            let alert = UIAlertController(title: "Event Completed", message: "You have finished composing your new event. Would you like to publish it now?", preferredStyle: .alert)
+            
+            alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+            alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
+            alert.addAction(.init(title: "Publish", style: .default, handler: { action in
+                
+            }))
+            
+            present(alert, animated: true, completion: nil)
         }
+    }
+    
+    private func publishEvent() {
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/",
+                           parameters: [:])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        request.httpMethod = "POST"
+        
+        let parameters = [
+            "uuid": draft.uuid,
+            "title": draft.title
+        ]
+        
+        var fileData = [String : Data]()
+        fileData["cover"] = draft.eventVisual?.pngData()
+        
+        request.addMultipartBody(parameters: parameters, files: fileData)
     }
 
     required init?(coder: NSCoder) {

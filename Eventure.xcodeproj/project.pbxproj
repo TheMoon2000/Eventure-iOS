@@ -69,6 +69,8 @@
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
 		CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */; };
 		CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F922BC5F9900FFD251 /* ButtonCell.swift */; };
+		CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */; };
+		CCDEE720231601C100D8EB43 /* EventImagePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */; };
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
 		CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A822BD773A003E3315 /* ForgotPassword.swift */; };
 		CCE214252314ED0E00E9B137 /* GenericOneFieldPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE214242314ED0E00E9B137 /* GenericOneFieldPage.swift */; };
@@ -158,6 +160,8 @@
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
 		CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionCell.swift; sourceTree = "<group>"; };
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
+		CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePickerCell.swift; sourceTree = "<group>"; };
+		CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePreviewCell.swift; sourceTree = "<group>"; };
 		CCE176A622BD742F003E3315 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		CCE176A822BD773A003E3315 /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
 		CCE214242314ED0E00E9B137 /* GenericOneFieldPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericOneFieldPage.swift; sourceTree = "<group>"; };
@@ -335,6 +339,8 @@
 				CCE99AC6231210D100823A60 /* DatePickerBottomCell.swift */,
 				CCAFC82623127899005FC231 /* DraftLocationCell.swift */,
 				CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */,
+				CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */,
+				CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */,
 			);
 			path = "Event Editor";
 			sourceTree = "<group>";
@@ -667,6 +673,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCDEE720231601C100D8EB43 /* EventImagePreviewCell.swift in Sources */,
 				67AFF77D23121ACE00329626 /* ModifyAccountPage.swift in Sources */,
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
@@ -697,6 +704,7 @@
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */,
+				CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
 				CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */,

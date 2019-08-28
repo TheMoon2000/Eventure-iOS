@@ -29,13 +29,15 @@ class TagPickerView: UIViewController {
     var maxPicks: Int?
     
     var tagPicker: UICollectionView!
-    var tags = [String]()
+    private var tags = [String]()
     var selectedTags = Set<String>() {
         didSet {
             if tags.isEmpty { return }
             updateUI()
         }
     }
+    
+    var customDisappearHandler: ((Set<String>) -> ())?
     
     private func updateUI() {
         if selectedTags.isEmpty || maxPicks != nil && maxPicks! < selectedTags.count {
@@ -54,6 +56,7 @@ class TagPickerView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Tag Picker"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
         
         topBanner = {
@@ -310,6 +313,12 @@ class TagPickerView: UIViewController {
         }
         
         task.resume()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        customDisappearHandler?(selectedTags)
     }
 
 }

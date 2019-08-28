@@ -74,6 +74,7 @@ class EventDetailPage: UIViewController {
             }
             iv.backgroundColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFill
+            iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
             
@@ -155,7 +156,7 @@ class EventDetailPage: UIViewController {
             
             tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            tabStrip.view.topAnchor.constraint(equalTo: line.bottomAnchor).isActive = true
+            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
             tabStrip.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
             addChild(tabStrip)

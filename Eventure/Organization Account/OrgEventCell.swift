@@ -48,8 +48,8 @@ class OrgEventCell: UICollectionViewCell {
         
         cover = {
             let iv = UIImageView()
-            iv.contentMode = .scaleAspectFit
-            iv.backgroundColor = MAIN_DISABLED
+            iv.contentMode = .scaleAspectFill
+            iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(iv)
             
@@ -204,6 +204,7 @@ class OrgEventCell: UICollectionViewCell {
         timeText.text = event.timeDescription
         locationText.text = event.location
         descriptionText.setText(event.eventDescription.attributedText())
+        cover.image = event.eventVisual ?? #imageLiteral(resourceName: "cover_placeholder")
     }
     
     required init?(coder aDecoder: NSCoder) {
