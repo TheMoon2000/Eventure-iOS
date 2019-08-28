@@ -11,7 +11,6 @@
 		470D75024A526E9BCB68F95B /* Pods_EventureAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */; };
 		67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67705BD1231395900024FBBA /* PersonalInfoPage.swift */; };
 		67AFF77C23121ACE00329626 /* AccountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77923121ACE00329626 /* AccountCell.swift */; };
-		67AFF77D23121ACE00329626 /* ModifyAccountPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77A23121ACE00329626 /* ModifyAccountPage.swift */; };
 		67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77B23121ACE00329626 /* AccountViewController.swift */; };
 		CC0646D922FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
 		CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
@@ -103,7 +102,6 @@
 		314EE6D58DF621467DC05E60 /* Pods-EventureAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.release.xcconfig"; sourceTree = "<group>"; };
 		67705BD1231395900024FBBA /* PersonalInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalInfoPage.swift; sourceTree = "<group>"; };
 		67AFF77923121ACE00329626 /* AccountCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCell.swift; sourceTree = "<group>"; };
-		67AFF77A23121ACE00329626 /* ModifyAccountPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModifyAccountPage.swift; sourceTree = "<group>"; };
 		67AFF77B23121ACE00329626 /* AccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		7A2B839141C769AA5684B8EC /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
 		CC0646D822FDF1CC000BF3CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -300,7 +298,6 @@
 				67705BD1231395900024FBBA /* PersonalInfoPage.swift */,
 				67AFF77923121ACE00329626 /* AccountCell.swift */,
 				67AFF77B23121ACE00329626 /* AccountViewController.swift */,
-				67AFF77A23121ACE00329626 /* ModifyAccountPage.swift */,
 				CCE214242314ED0E00E9B137 /* GenericOneFieldPage.swift */,
 				CCE214262314ED4500E9B137 /* GenericTextCell.swift */,
 			);
@@ -673,8 +670,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCDEE720231601C100D8EB43 /* EventImagePreviewCell.swift in Sources */,
-				67AFF77D23121ACE00329626 /* ModifyAccountPage.swift in Sources */,
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
