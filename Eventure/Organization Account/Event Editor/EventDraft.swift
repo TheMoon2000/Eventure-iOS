@@ -106,7 +106,6 @@ class EventDraft: UIPageViewController {
         let orgID = Organization.current!.id
         
         saveHandler = { action in
-            // TODO: Correctly save the draft event to cache
             var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
             
             if let index = drafts.firstIndex(where: { $0.uuid == self.draft.uuid }) {
@@ -170,8 +169,14 @@ class EventDraft: UIPageViewController {
             let alert = UIAlertController(title: "Event Completed", message: nil, preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
 
-            if !isEditingExistingEvent {
+            if !draft.published && !isEditingExistingEvent {
                 alert.message = "You have finished composing your new event. Would you like to publish it now?"
+                alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
+                alert.addAction(.init(title: "Publish", style: .default, handler: { action in
+                    self.publishEvent()
+                }))
+            } else if !draft.published {
+                alert.message = "You have modified a draft event. Would you like to save your changes or publish this event right away?"
                 alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
                 alert.addAction(.init(title: "Publish", style: .default, handler: { action in
                     self.publishEvent()
@@ -249,7 +254,7 @@ class EventDraft: UIPageViewController {
         ]
         
         var fileData = [String : Data]()
-        fileData["cover"] = draft.eventVisual?.fixedOrientation().pngData()
+        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.8)
         
         request.addMultipartBody(parameters: parameters, files: fileData)
         request.addAuthHeader()
@@ -275,9 +280,10 @@ class EventDraft: UIPageViewController {
                     serverMaintenanceError(vc: self)
                 }
             case "success":
+                self.removeDraft(uuid: self.draft.uuid)
                 DispatchQueue.main.async {
                     self.dismiss(animated: true) {
-                        self.orgEventView?.refresh()
+                        self.orgEventView?.eventCatalog.reloadData()
                     }
                 }
             default:
@@ -289,6 +295,23 @@ class EventDraft: UIPageViewController {
         }
         
         task.resume()
+    }
+    
+    private func removeDraft(uuid: String) {
+        
+        guard let orgID = Organization.current?.id else {
+            preconditionFailure("Org ID is nil")
+        }
+        
+        var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
+        
+        drafts = drafts.filter { $0.uuid != uuid }
+        
+        if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
+            self.orgEventView?.allDrafts = drafts
+        } else {
+            print("WARNING: Failed to remove draft \(uuid)!")
+        }
     }
 
     required init?(coder: NSCoder) {

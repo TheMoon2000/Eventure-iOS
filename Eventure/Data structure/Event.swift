@@ -29,6 +29,7 @@ class Event {
     var endTime: Date?
     var eventDescription: String
     var eventVisual: UIImage?
+    var hasVisual = false
     var hostID: String
     var hostTitle: String
     var currentUserGoingStatus: Going = .neutral
@@ -141,6 +142,7 @@ class Event {
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
+        hasVisual = dictionary["Has cover"]?.bool ?? false
     }
     
     static func readFromFile(path: String) -> [String: [Event]] {
@@ -229,9 +231,7 @@ class Event {
         }
         
         Event.cachedEvents[orgID] = collection
-        
-        print(Event.cachedEvents)
-        
+                
         if NSKeyedArchiver.archiveRootObject(Event.cachedEvents, toFile: path) {
             return true
         } else {
@@ -269,6 +269,36 @@ class Event {
         }
         
         return ""
+    }
+    
+    
+    /// Load the cover image for an event.
+    func getCover(_ handler: ((Event) -> ())?) {
+        if !hasVisual || eventVisual != nil { return }
+        
+        print("getting cover for \(uuid)...")
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEventCover",
+                           parameters: ["uuid": uuid])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.eventVisual = UIImage(data: data!)
+            print("got cover for \(self.uuid)...")
+            DispatchQueue.main.async {
+                handler?(self)
+            }
+        }
+        
+        task.resume()
     }
     
 }

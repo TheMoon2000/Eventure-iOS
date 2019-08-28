@@ -194,7 +194,6 @@ class OrganizationsViewController: UIViewController {
                 var tmp = [OrgOverview]()
                 for org in orgs {
                     let orgObj = OrgOverview(json: org)
-                    self.getLogoImage(for: orgObj)
                     tmp.append(orgObj)
                 }
                 DispatchQueue.main.async {
@@ -208,29 +207,6 @@ class OrganizationsViewController: UIViewController {
                     serverMaintenanceError(vc: self)
                 }
             }
-        }
-        
-        task.resume()
-    }
-    
-    /// Load the logo image for an organization.
-    private func getLogoImage(for org: OrgOverview) {
-        if !org.hasLogo { return }
-                
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetLogo",
-                           parameters: ["id": org.id])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                return // Don't display any alert here
-            }
-            
-            org.logoImage = UIImage(data: data!)
         }
         
         task.resume()
@@ -254,17 +230,6 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
         let cell = tableView.dequeueReusableCell(withIdentifier: "org") as! OrganizationCell
         cell.setup(with: filteredOrgs[indexPath.row])
         
-        filteredOrgs[indexPath.row].logoUpdater = { [weak cell] image in
-            DispatchQueue.main.async {
-                cell?.logoImage.image = image
-                if image != nil {
-                    cell?.logoImage.backgroundColor = .clear
-                } else {
-                    cell?.logoImage.backgroundColor = LINE_TINT
-                }
-            }
-        }
-        
         return cell
     }
     
@@ -286,11 +251,7 @@ extension OrganizationsViewController {
         let hasLogo: Bool
         let members: [Int: Organization.MemberRole]
         var subscribed: Bool
-        var logoImage: UIImage? {
-            didSet {
-                logoUpdater?(logoImage)
-            }
-        }
+        var logoImage: UIImage?
         
         /// An optional function to be called when the logo image is loaded.
         var logoUpdater: ((UIImage?) -> Void)?
@@ -317,6 +278,32 @@ extension OrganizationsViewController {
             } else {
                 members = [:]
             }
+        }
+        
+        /// Load the logo image for an organization.
+        func getLogoImage(_ handler: ((OrgOverview) -> ())?) {
+            if !hasLogo || logoImage != nil { return }
+            
+            let url = URL.with(base: API_BASE_URL,
+                               API_Name: "events/GetLogo",
+                               parameters: ["id": id])!
+            var request = URLRequest(url: url)
+            request.addAuthHeader()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+                
+                guard error == nil else {
+                    return // Don't display any alert here
+                }
+                
+                self.logoImage = UIImage(data: data!)
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
+            }
+            
+            task.resume()
         }
     }
 }

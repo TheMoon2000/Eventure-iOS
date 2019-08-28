@@ -333,6 +333,30 @@ extension UIImage {
         
         return UIImage(cgImage: cgImage)
     }
+    
+    func sizeDown() -> UIImage {
+        
+        /*
+        var currentQuality: CGFloat = 1.0
+        var currentData = jpegData(compressionQuality: 1.0)
+        
+        while (currentData?.count ?? 0 && currentQuality > 0.01) > 200000 {
+            currentQuality *= 0.85
+            currentData = jpegData(compressionQuality: currentQuality)
+        }*/
+        
+        let width: CGFloat = 500
+        
+        if size.width > width {
+            let newSize = CGSize(width: width, height: width / size.width * size.height)
+            let renderer = UIGraphicsImageRenderer(size: newSize)
+            return renderer.image { context in
+                self.draw(in: CGRect(origin: .zero, size: newSize))
+            }
+        }
+        
+        return self
+    }
 }
 
 /// Documents directory URL.

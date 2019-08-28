@@ -120,7 +120,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        previewImage.image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        previewImage.image = (info[UIImagePickerController.InfoKey.originalImage] as? UIImage)?.sizeDown()
         previewImage.backgroundColor = nil
         chooseImageLabel.isHidden = true
         updateImageHandler?(previewImage.image)

@@ -183,12 +183,22 @@ class EventCell: UICollectionViewCell {
     }
     
     
-    func setupCellWithEvent(event: Event) {
+    func setupCellWithEvent(event: Event, withImage: Bool = false) {
         titleText.text = event.title
         timeText.text = event.timeDescription
         locationText.text = event.location
         eventHostText.text = event.hostTitle
-        cover.image = event.eventVisual ?? #imageLiteral(resourceName: "cover_placeholder")
+        
+        if event.eventVisual == nil {
+            if withImage {
+                event.getCover { eventWithCover in
+                    self.setupCellWithEvent(event: eventWithCover)
+                }
+            }
+            cover.image = #imageLiteral(resourceName: "cover_placeholder")
+        } else {
+            cover.image = event.eventVisual
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

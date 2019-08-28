@@ -229,7 +229,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: indexPath) as! EventCell
-        cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
+        cell.setupCellWithEvent(event: filteredEvents[indexPath.row], withImage: true)
         
         return cell
     }
@@ -293,7 +293,7 @@ extension EventViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         DispatchQueue.main.async {
             self.updateFiltered()
-            self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+            self.eventCatalog.reloadData()
         }
     }
     
