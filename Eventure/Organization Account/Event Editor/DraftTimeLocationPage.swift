@@ -19,7 +19,7 @@ class DraftTimeLocationPage: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .init(white: 0.94, alpha: 1)
+        view.backgroundColor = EventDraft.backgroundColor
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
