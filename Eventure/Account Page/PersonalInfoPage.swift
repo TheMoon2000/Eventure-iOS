@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 import SwiftyJSON
+import var CommonCrypto.CC_MD5_DIGEST_LENGTH
+import func CommonCrypto.CC_MD5
+import typealias CommonCrypto.CC_LONG
 
 class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSource  {
     
@@ -81,59 +84,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 { //if the user tries to change the name
-//            let modifyAccount = ModifyAccountPage(type: "Name")
-            let modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName)
-            modifyAccount.submitAction = { nameField, spinner in
-                
-                nameField.isEnabled = false
-                spinner.startAnimating()
-                
-                let url = URL.with(base: API_BASE_URL,
-                                   API_Name: "account/UpdateUserInfo",
-                                   parameters: [
-                                    "uuid": String(User.current!.uuid)
-                                   ])!
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.addAuthHeader()
-                
-                let body = JSON(dictionaryLiteral: ("Displayed name", nameField.text!))
-                request.httpBody = try? body.rawData()
-                
-                let task = CUSTOM_SESSION.dataTask(with: request) {
-                    data, response, error in
-                    
-                    DispatchQueue.main.async {
-                        spinner.stopAnimating()
-                        nameField.isEnabled = true
-                    }
-                    
-                    guard error == nil else {
-                        DispatchQueue.main.async {
-                            internetUnavailableError(vc: self)
-                        }
-                        return
-                    }
-                    
-                    let msg = String(data: data!, encoding: .utf8)!
-                    
-                    if msg == INTERNAL_ERROR {
-                        DispatchQueue.main.async {
-                            serverMaintenanceError(vc: self)
-                        }
-                        return
-                    } else {
-                        DispatchQueue.main.async {
-                            User.current?.displayedName = nameField.text!
-                            self.navigationController?.popViewController(animated: true)
-                        }
-                    }
-                }
-                
-                task.resume()
-            }
-            modifyAccount.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(modifyAccount, animated: true)
+            self.pushToModifyPage(type: "Name")
         } else if indexPath.row == 1 { //if the user tries to change the password
             let alert = UIAlertController(title: "Verification", message: "Please enter password to continue.", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
@@ -179,9 +130,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                         let servermsg = result?["status"]?.stringValue
                         if (servermsg == "success") {
                             DispatchQueue.main.async {
-                                let modifyAccount = ModifyAccountPage(type:"Password")
-                                modifyAccount.hidesBottomBarWhenPushed = true
-                                self.navigationController?.pushViewController(modifyAccount, animated: true)
+                                self.pushToModifyPage(type: "Password")
                             }
                         } else {
                             DispatchQueue.main.async {
@@ -215,6 +164,90 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 55.0
+    }
+    
+    func pushToModifyPage(type: String) {
+        let modifyAccount : GenericOneFieldPage
+        if type == "Password" {
+            modifyAccount = GenericOneFieldPage(fieldName: "New Password", fieldDefault: "", type: "Password")
+        } else {
+            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName, type: "Name")
+        }
+        modifyAccount.submitAction = { nameField, spinner in
+            
+            nameField.isEnabled = false
+            spinner.startAnimating()
+            
+            let url = URL.with(base: API_BASE_URL,
+                               API_Name: "account/UpdateUserInfo",
+                               parameters: [
+                                "uuid": String(User.current!.uuid)
+                ])!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.addAuthHeader()
+            let body : JSON
+            if type == "Password" {
+                body = JSON(dictionaryLiteral: ("Password MD5", self.MD5(string:nameField.text!)))
+            } else {
+                body = JSON(dictionaryLiteral: ("Displayed name", nameField.text!))
+            }
+            request.httpBody = try? body.rawData()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+                
+                DispatchQueue.main.async {
+                    spinner.stopAnimating()
+                    nameField.isEnabled = true
+                }
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self)
+                    }
+                    return
+                }
+                
+                let msg = String(data: data!, encoding: .utf8)!
+                
+                if msg == INTERNAL_ERROR {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                    }
+                    return
+                } else {
+                    DispatchQueue.main.async {
+                        if type == "Name" {
+                            User.current?.displayedName = nameField.text!
+                        }
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
+            }
+            
+            task.resume()
+        }
+        modifyAccount.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(modifyAccount, animated: true)
+    }
+    
+    
+    func MD5(string: String) -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = string.data(using:.utf8)!
+        var digestData = Data(count: length)
+        
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+            messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress, let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
     
 }

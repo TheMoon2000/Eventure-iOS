@@ -19,14 +19,14 @@ class GenericOneFieldPage: UITableViewController {
     
     var textCell: GenericTextCell!
     
-    required init(fieldName: String, fieldDefault: String) {
+    required init(fieldName: String, fieldDefault: String, type: String) {
         super.init(nibName: nil, bundle: nil)
         
         self.fieldName = fieldName
         tableView = UITableView(frame: .zero, style: .grouped)
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonPressed))
         
-        textCell = GenericTextCell(title: fieldName)
+        textCell = GenericTextCell(title: fieldName, type: type)
         textCell.inputField.text = fieldDefault
         textCell.submitAction = submitAction
     }
