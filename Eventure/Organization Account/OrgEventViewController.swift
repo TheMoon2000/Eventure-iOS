@@ -262,7 +262,7 @@ class OrgEventViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.updateFiltered()
                     self.eventCatalog.reloadData()
-                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Events" : ""
+                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Published Events" : ""
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -323,7 +323,9 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         
         let count = filteredEvents.count
         
-        if topTab.selectedSegmentIndex == 1 {
+        if topTab.selectedSegmentIndex == 0 {
+            publishedLabel.text = count == 0 && !spinner.isAnimating ? "No Published Events" : ""
+        } else if topTab.selectedSegmentIndex == 1 {
             draftLabel.text = count == 0 ? "No Drafts" : ""
         }
         
