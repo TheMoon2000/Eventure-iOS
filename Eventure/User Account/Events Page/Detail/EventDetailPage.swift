@@ -114,20 +114,6 @@ class EventDetailPage: UIViewController {
             return label
         }()
         
-        let line: UIView = {
-            let line = UIView()
-            line.backgroundColor = LINE_TINT
-            line.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(line)
-            
-            line.leftAnchor.constraint(equalTo: eventTitle.leftAnchor).isActive = true
-            line.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 15).isActive = true
-            line.widthAnchor.constraint(equalToConstant: 80).isActive = true
-            line.heightAnchor.constraint(equalToConstant: 1).isActive = true
-            
-            return line
-        }()
-        
         /*eventDescription = {
             let tv = UITextView()
             tv.attributedText = event.eventDescription.attributedText()
