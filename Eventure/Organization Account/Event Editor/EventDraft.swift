@@ -255,7 +255,7 @@ class EventDraft: UIPageViewController {
         ]
         
         var fileData = [String : Data]()
-        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.7)
+        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.6)
         
         request.addMultipartBody(parameters: parameters, files: fileData)
         request.addAuthHeader()

@@ -335,7 +335,7 @@ extension UIImage {
     }
     
     
-    func sizeDown(maxWidth: CGFloat = 600.0) -> UIImage {
+    func sizeDown(maxWidth: CGFloat = 500.0) -> UIImage {
         
         /*
         var currentQuality: CGFloat = 1.0
