@@ -39,8 +39,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         myTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        //make sure table view appears limited
-        self.myTableView.tableFooterView = UIView(frame: CGRect.zero)
         
     }
    
@@ -250,7 +248,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     //section titles
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return [
-            nil,
+            "",
             "Personal Information",
             "Event Check-in",
             "Personal Interests",

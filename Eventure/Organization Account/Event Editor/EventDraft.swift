@@ -244,6 +244,7 @@ class EventDraft: UIPageViewController {
         let parameters = [
             "uuid": draft.uuid,
             "orgId": Organization.current!.id,
+            "orgTitle": Organization.current!.title,
             "title": draft.title,
             "description": draft.eventDescription,
             "location": draft.location,

@@ -34,6 +34,8 @@ class OrgEventCell: UICollectionViewCell {
             let view = UIView()
             view.backgroundColor = .white
             view.layer.borderWidth = 1
+            view.layer.cornerRadius = 7
+            view.layer.masksToBounds = true
             view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)

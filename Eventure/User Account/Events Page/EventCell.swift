@@ -32,8 +32,6 @@ class EventCell: UICollectionViewCell {
             view.backgroundColor = .white
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
-            view.layer.shadowOffset.height = 3
-            view.layer.shadowOpacity = 0.2
             view.layer.masksToBounds = true
             view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
@@ -177,6 +175,7 @@ class EventCell: UICollectionViewCell {
             label.leftAnchor.constraint(equalTo: card.leftAnchor, constant: 20).isActive = true
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            label.bottomAnchor.constraint(lessThanOrEqualTo: card.bottomAnchor, constant: -20).isActive = true
 
             return label
         }()
