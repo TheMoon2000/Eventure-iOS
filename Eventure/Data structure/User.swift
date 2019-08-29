@@ -29,6 +29,8 @@ class User: CustomStringConvertible {
     var displayedName: String
     var gender: Gender
     var profilePicture: UIImage?
+    
+    /// A set of uuid strings for events which the user has favorited.
     var favoritedEvents = Set<String>()
     var goingList = [String: Int]()
     var subscriptions = Set<String>()
@@ -59,6 +61,12 @@ class User: CustomStringConvertible {
         if let tags_raw = dictionary["Tags"]?.string {
             let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
             tags = Set(tagsArray)
+        }
+        
+        if let likedEvents_raw = dictionary["Liked events"]?.string {
+            let likedArray = (JSON(parseJSON: likedEvents_raw).arrayObject as? [String]) ?? [String]()
+            print(likedArray)
+            favoritedEvents = Set(likedArray)
         }
         
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"

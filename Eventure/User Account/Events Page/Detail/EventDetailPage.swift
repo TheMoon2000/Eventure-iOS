@@ -50,6 +50,9 @@ class EventDetailPage: UIViewController {
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
             rightButton.isEnabled = User.current != nil
             navigationItem.rightBarButtonItem = rightButton
+            if User.current?.favoritedEvents.contains(event.uuid) ?? false {
+                rightButton.image = #imageLiteral(resourceName: "heart")
+            }
         } else if Organization.current?.id == event.hostID {
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "edit"), style: .plain, target: self, action: #selector(editEvent))
             navigationItem.rightBarButtonItem = rightButton
@@ -98,6 +101,9 @@ class EventDetailPage: UIViewController {
                 emptyImageHeightConstraint = iv.heightAnchor.constraint(equalToConstant: 0)
                 emptyImageHeightConstraint.isActive = true
             }
+            
+            iv.isUserInteractionEnabled = true
+            iv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             
             return iv
         }()
@@ -231,6 +237,13 @@ class EventDetailPage: UIViewController {
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
+    }
+    
+    @objc private func imageTapped() {
+        if let cover = event.eventVisual {
+            let fullScreen = ImageFullScreenPage(image: cover)
+            present(fullScreen, animated: false, completion: nil)
+        }
     }
 
 }

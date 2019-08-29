@@ -165,7 +165,7 @@ class EventDraft: UIPageViewController {
                 setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
             }
         } else {
-            
+            print("draft = \(draft.description)")
             let alert = UIAlertController(title: "Event Completed", message: nil, preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
 
@@ -254,7 +254,7 @@ class EventDraft: UIPageViewController {
         ]
         
         var fileData = [String : Data]()
-        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.8)
+        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.7)
         
         request.addMultipartBody(parameters: parameters, files: fileData)
         request.addAuthHeader()

@@ -106,15 +106,8 @@ class Event {
             self.endTime = DATE_FORMATTER.date(from: endTimeString)
         }
         eventDescription = dictionary["Description"]?.string ?? ""
-        //eventDescription = dictionary["Description"]?.string ?? ""
-        if let hostInfo = dictionary["Organization"] {
-            let org = Organization(orgInfo: hostInfo)
-            hostTitle = org.title
-            hostID = org.id
-        } else {
-            hostTitle = "<Title>"
-            hostID = "<org id>"
-        }
+        hostTitle = dictionary["Organization title"]?.string ?? "Untitled"
+        hostID = dictionary["Organization"]?.string ?? ""
         
         published = (dictionary["Published"]?.int ?? 0) == 1
         
@@ -137,12 +130,20 @@ class Event {
             tags = []
         }
         
-        if let going_raw = dictionary["Going"]?.int {
+        if let going_raw = dictionary["Current user going"]?.int {
             currentUserGoingStatus = Going(rawValue: going_raw) ?? .neutral
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = dictionary["Has cover"]?.bool ?? false
+        
+        if let isFavorited = dictionary["Is favorited"]?.bool {
+            if isFavorited {
+                User.current?.favoritedEvents.insert(uuid)
+            } else {
+                User.current?.favoritedEvents.remove(uuid)
+            }
+        }
     }
     
     static func readFromFile(path: String) -> [String: [Event]] {
@@ -276,8 +277,6 @@ class Event {
     func getCover(_ handler: ((Event) -> ())?) {
         if !hasVisual || eventVisual != nil { return }
         
-        print("getting cover for \(uuid)...")
-        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetEventCover",
                            parameters: ["uuid": uuid])!
@@ -292,7 +291,6 @@ class Event {
             }
             
             self.eventVisual = UIImage(data: data!)
-            print("got cover for \(self.uuid)...")
             DispatchQueue.main.async {
                 handler?(self)
             }
@@ -317,7 +315,8 @@ extension Event: CustomStringConvertible {
         str += "  uuid = \(uuid)\n"
         str += "  time = \(timeDescription)\n"
         str += "  location = \(location)\n"
-        str += "  tags = \(tags.description)"
+        str += "  tags = \(tags.description)\n"
+        str += "  published = \(published)"
         
         return str
     }

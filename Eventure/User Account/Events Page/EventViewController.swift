@@ -44,7 +44,7 @@ class EventViewController: UIViewController {
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Events"
         navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
+//        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
@@ -158,8 +158,13 @@ class EventViewController: UIViewController {
         allEvents.removeAll()
         self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
         
+        var parameters = [String : String]()
+        if User.current != nil {
+            parameters["userId"] = String(User.current!.uuid)
+        }
+            
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: [:])!
+                           API_Name: "events/List", parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         

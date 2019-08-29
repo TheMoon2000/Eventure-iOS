@@ -334,7 +334,8 @@ extension UIImage {
         return UIImage(cgImage: cgImage)
     }
     
-    func sizeDown() -> UIImage {
+    
+    func sizeDown(maxWidth: CGFloat = 600.0) -> UIImage {
         
         /*
         var currentQuality: CGFloat = 1.0
@@ -345,10 +346,8 @@ extension UIImage {
             currentData = jpegData(compressionQuality: currentQuality)
         }*/
         
-        let width: CGFloat = 500
-        
-        if size.width > width {
-            let newSize = CGSize(width: width, height: width / size.width * size.height)
+        if size.width > maxWidth {
+            let newSize = CGSize(width: maxWidth, height: maxWidth / size.width * size.height)
             let renderer = UIGraphicsImageRenderer(size: newSize)
             return renderer.image { context in
                 self.draw(in: CGRect(origin: .zero, size: newSize))

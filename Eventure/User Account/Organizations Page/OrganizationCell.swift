@@ -20,6 +20,7 @@ class OrganizationCell: UITableViewCell {
         
         logoImage = {
             let iv = UIImageView()
+            iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
