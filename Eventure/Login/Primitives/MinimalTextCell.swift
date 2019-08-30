@@ -95,8 +95,10 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     
     private func makeBackgroundOverlay() -> UIView {
         let view = UIView()
-        view.backgroundColor = .init(white: 0.88, alpha: 0.5)
+        view.backgroundColor = .init(white: 0.94, alpha: 1)
         view.layer.cornerRadius = RADIUS
+        view.layer.borderWidth = 1
+        view.layer.borderColor = LINE_TINT.cgColor
         view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)

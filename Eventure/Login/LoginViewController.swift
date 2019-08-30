@@ -321,7 +321,7 @@ class LoginViewController: UIViewController {
     
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
-        sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
+        sender.backgroundColor = UIColor(white: 1, alpha: 0.1)
     }
     
     @objc private func buttonLifted(_ sender: UIButton) {

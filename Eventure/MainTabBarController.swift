@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class MainTabBarController: UITabBarController {
     
@@ -16,9 +17,50 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .white
-        
+        view.backgroundColor = .white
         view.tintColor = MAIN_TINT
+    }
+    
+    func loadSupportedCampuses() {
+        
+        if !Event.supportedCampuses.isEmpty { return }
+        
+        let url = URL(string: API_BASE_URL + "account/Campuses")!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let json = try? JSON(data: data!).arrayValue {
+                for campus in json {
+                    if let name = campus.dictionary?["Name"]?.string, let suffix = campus.dictionary?["Email suffix"]?.string {
+                        Event.supportedCampuses[name] = suffix
+                    }
+                }
+                print("supported campuses: \(Event.supportedCampuses.values)")
+            } else {
+                print(String(data: data!, encoding: .utf8)!)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func checkForNotices() {
+        /*
+        let alert = UIAlertController(
+            title: "Server Notice",
+            message: String(data: data!, encoding: .utf8),
+            preferredStyle: .alert)
+        alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)*/
     }
     
     private func setupUserTabs() {
@@ -83,6 +125,10 @@ class MainTabBarController: UITabBarController {
     }
     
     func loginSetup() {
+        
+        loadSupportedCampuses()
+        checkForNotices()
+        
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
                 Organization.current = current

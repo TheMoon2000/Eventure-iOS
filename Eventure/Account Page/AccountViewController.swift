@@ -67,8 +67,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 personalInfo.hidesBottomBarWhenPushed = true
                 navigationController?.pushViewController(personalInfo, animated: true)
             }
-            
-        case (2, 3):
+        case (2, 0):
+            let scanVC = ScannerViewController()
+            scanVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(scanVC, animated: true)
+        case (3, 3):
             //if user wants to change the tags
             if User.current == nil {
                 popLoginReminder()

@@ -38,13 +38,15 @@ class EventDetailPage: UIViewController {
     private var rightButton: UIBarButtonItem!
     private var tabStrip: ButtonBarPagerTabStripViewController!
     
+    private(set) var invisible: AboutViewController!
+    
     var emptyImageHeightConstraint: NSLayoutConstraint!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.title = "Event Details"
-        view.backgroundColor = .white
+        view.backgroundColor = .init(white: 0.95, alpha: 1)
         
         if Organization.current == nil {
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
@@ -54,7 +56,7 @@ class EventDetailPage: UIViewController {
                 rightButton.image = #imageLiteral(resourceName: "heart")
             }
         } else if Organization.current?.id == event.hostID {
-            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "edit"), style: .plain, target: self, action: #selector(editEvent))
+            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(moreActions))
             navigationItem.rightBarButtonItem = rightButton
         }
 
@@ -76,6 +78,7 @@ class EventDetailPage: UIViewController {
         
         coverImage = {
             let iv = UIImageView(image: event.eventVisual)
+            iv.contentMode = .scaleAspectFill
             iv.backgroundColor = MAIN_DISABLED
             iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
@@ -120,27 +123,50 @@ class EventDetailPage: UIViewController {
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: coverImage.bottomAnchor, constant: 25).isActive = true
-            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -300).isActive = true
+//            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -300).isActive = true
 
             return label
         }()
         
+        view.layoutIfNeeded()
         
         tabStrip = {
-            let tabStrip = EventDetailTabStrip(event : event)
+            let tabStrip = EventDetailTabStrip(detailPage: self)
             tabStrip.view.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(tabStrip.view)
             
             tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
-            tabStrip.view.bottomAnchor.constraint(greaterThanOrEqualTo: view.bottomAnchor).isActive = true
+            
+            tabStrip.view.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
+            
+            let vc = AboutViewController(detailPage: self)
+            vc.view.isHidden = true
+            
+            vc.view.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(vc.view)
+            vc.view.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+            
+            invisible = vc
+            
+            tabStrip.view.heightAnchor.constraint(equalTo: vc.view.heightAnchor, constant: 70).isActive = true
             
             addChild(tabStrip)
             tabStrip.didMove(toParent: self)
             
             return tabStrip
         }()
+        
+        let white = UIView()
+        white.backgroundColor = .white
+        white.translatesAutoresizingMaskIntoConstraints = false
+        canvas.insertSubview(white, belowSubview: coverImage)
+        
+        white.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        white.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        white.topAnchor.constraint(equalTo: canvas.topAnchor).isActive = true
+        white.bottomAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
         
     }
     
@@ -228,7 +254,24 @@ class EventDetailPage: UIViewController {
     }
     
 
-    @objc private func editEvent() {
+    @objc private func moreActions() {
+        let alert = UIAlertController(title: "Event Actions", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(.init(title: "Edit", style: .default, handler: { action in
+            self.openEditor()
+        }))
+        
+        alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
+            let checkin = EventCheckinOverview()
+            self.present(checkin, animated: true, completion: nil)
+        }))
+        alert.addAction(.init(title: "Event Statistics", style: .default, handler: nil))
+        
+        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func openEditor() {
         let editor = EventDraft(event: event)
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true

@@ -236,22 +236,18 @@ class RegisterOrganization: UITableViewController {
         
         // 3.1 (10)
         let contactEmail: UITableViewCell = {
-            let cell = MinimalTextCell()
-            cell.textField.placeholder = "Contact Email"
-            cell.textField.keyboardType = .emailAddress
-            cell.textField.textContentType = .emailAddress
-            cell.textField.returnKeyType = .done
+            let cell = EmailCell(parentVC: self)
             
             cell.changeHandler = { cell in
-                self.registrationData.contactEmail = cell.textField.text!
+                self.registrationData.contactEmail = cell.email
             }
             
             cell.completionHandler = { cell in
-                cell.status = cell.textField.text!.isValidEmail() ? .tick : .fail
+                cell.status = cell.email.isValidEmail() ? .tick : .fail
             }
             
             cell.returnHandler = {
-                cell.textField.resignFirstResponder()
+                let _ = cell.resignFirstResponder()
             }
             
             return cell
@@ -437,8 +433,8 @@ extension RegisterOrganization {
      
      - Note: Here we do not require the email to be unique, since one person may be in charge of multiple organizations.
      */
-    private func verifyEmail(cell: MinimalTextCell) {
-        if cell.textField.text!.isValidEmail() {
+    private func verifyEmail(cell: EmailCell) {
+        if cell.email.isValidEmail() {
             cell.status = .tick
         } else {
             cell.status = .fail

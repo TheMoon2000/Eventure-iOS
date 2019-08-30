@@ -12,12 +12,20 @@ import SwiftyJSON
 class Event {
     static var current: Event?
     static var drafts = [Event]()
+    static var supportedCampuses = [String : String]()
     
     private static var cachedEvents = [String: [[String: Any]]]()
 
     let readableFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "E, d MMM yyyy @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    let shortFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM @ h:mm a"
         formatter.locale = Locale(identifier: "en_US")
         return formatter
     }()
@@ -45,7 +53,11 @@ class Event {
     /// A description of the start time of the event.
     var timeDescription: String {
         if startTime != nil {
-            return readableFormatter.string(from: startTime!)
+            if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: startTime!) {
+                return readableFormatter.string(from: startTime!)
+            } else {
+                return shortFormatter.string(from: startTime!)
+            }
         } else {
             return "Unspecified"
         }
@@ -75,8 +87,8 @@ class Event {
                      endTime: "",
                      location: "",
                      tags: Set<String>(),
-                     hostID: Organization.current?.id ?? "<org id>",
-                     hostTitle: Organization.current?.title ?? "<Title>")
+                     hostID: Organization.current?.id ?? "",
+                     hostTitle: Organization.current?.title ?? "Untitled")
     }
     
     init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
@@ -98,7 +110,7 @@ class Event {
         
         uuid = dictionary["uuid"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
-        location = dictionary["Location"]?.string ?? ""
+        location = dictionary["Location"]?.string ?? "TBA"
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)
         }
@@ -110,18 +122,6 @@ class Event {
         hostID = dictionary["Organization"]?.string ?? ""
         
         published = (dictionary["Published"]?.int ?? 0) == 1
-        
-        /*let attendees_raw = { () -> [String] in
-         var attendees_arr = [String]()
-         for a in attendees {
-         attendees_arr.append(a.email)
-         }
-         return attendees_arr
-         }()
-         
-         if let attendees_raw = dictionary["Attendees"]?.string {
-         let attendees_Email = (JSON(parseJSON: attendees_raw).arrayObject as? [String]) ?? [String]()
-         }*/
         
         if let tags_raw = dictionary["Tags"]?.string {
             let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()

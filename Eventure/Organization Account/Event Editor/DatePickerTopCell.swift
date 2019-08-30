@@ -23,13 +23,6 @@ class DatePickerTopCell: UITableViewCell {
         formatter.locale = Locale(identifier: "en_US")
         return formatter
     }()
-    
-    let yearFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
 
     private var bgView: UIView!
     private var leftLabel: UILabel!
@@ -38,7 +31,7 @@ class DatePickerTopCell: UITableViewCell {
     
     var displayedDate = Date() {
         didSet {
-            if yearFormatter.string(from: Date()) != yearFormatter.string(from: displayedDate) {
+            if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: displayedDate) {
                 rightLabel.text = longFormatter.string(from: displayedDate)
             } else {
                 rightLabel.text = shortFormatter.string(from: displayedDate)

@@ -12,11 +12,13 @@ import XLPagerTabStrip
 class EventDetailTabStrip : ButtonBarPagerTabStripViewController {
     
     var event: Event!
+    var detailPage: EventDetailPage!
     
-    required init(event: Event) {
+    required init(detailPage: EventDetailPage) {
         super.init(nibName: nil, bundle: nil)
         
-        self.event = event
+        self.event = detailPage.event
+        self.detailPage = detailPage
     }
     
     
@@ -43,14 +45,18 @@ class EventDetailTabStrip : ButtonBarPagerTabStripViewController {
     
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         
-        let about = AboutViewController(event: event)
-        let other = OtherViewController(event: event)
+        let about = AboutViewController(detailPage: detailPage)
+        let other = OtherViewController(detailPage: detailPage)
         
         return [about, other]
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+    }
+    
+    override func updateIndicator(for viewController: PagerTabStripViewController, fromIndex: Int, toIndex: Int) {
+        print(fromIndex, toIndex)
     }
     
 }
