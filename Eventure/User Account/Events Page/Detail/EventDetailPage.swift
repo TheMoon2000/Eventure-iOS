@@ -34,6 +34,8 @@ class EventDetailPage: UIViewController {
     private var coverImage: UIImageView!
     private var eventTitle: UILabel!
     private var favoriteButton: UIBarButtonItem!
+    private var goingButton: UIButton!
+    private var interestedButton: UIButton!
     //private var eventDescription: UITextView!
     private var tabStrip: ButtonBarPagerTabStripViewController!
 
@@ -46,7 +48,7 @@ class EventDetailPage: UIViewController {
         favoriteButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
         favoriteButton.isEnabled = User.current != nil
         navigationItem.rightBarButtonItem = favoriteButton
-
+        
         canvas = {
             let canvas = UIScrollView()
             canvas.translatesAutoresizingMaskIntoConstraints = false
@@ -54,7 +56,7 @@ class EventDetailPage: UIViewController {
             canvas.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             canvas.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             canvas.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -110).isActive = true
             canvas.contentInsetAdjustmentBehavior = .always
             
             return canvas
@@ -106,7 +108,6 @@ class EventDetailPage: UIViewController {
 
             return label
         }()
-        
         
         
         /*
@@ -171,13 +172,69 @@ class EventDetailPage: UIViewController {
             tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             tabStrip.view.topAnchor.constraint(equalTo: line.bottomAnchor).isActive = true
-            tabStrip.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            tabStrip.view.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 30).isActive = true
             
             addChild(tabStrip)
             tabStrip.didMove(toParent: self)
             
             return tabStrip
         }()
+        
+        goingButton = {
+            let gB = UIButton(type: .system)
+            gB.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+            gB.setTitle("Going", for: .normal)
+            gB.tintColor = MAIN_TINT
+            gB.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(gB)
+            
+            gB.widthAnchor.constraint(equalToConstant: 100).isActive = true
+            gB.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            gB.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
+            gB.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: -70).isActive = true
+        
+            gB.addTarget(self, action: #selector(goingAction), for: UIControl.Event.touchUpInside)
+            
+            return gB
+        }()
+        
+        interestedButton = {
+            let iB = UIButton(type: .system)
+            iB.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+            iB.setTitle("Interested", for: .normal)
+            iB.tintColor = MAIN_TINT
+            iB.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(iB)
+            
+            iB.widthAnchor.constraint(equalToConstant: 100).isActive = true
+            iB.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            iB.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50).isActive = true
+            iB.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 70).isActive = true
+            
+            iB.addTarget(self, action: #selector(interestedAction), for: UIControl.Event.touchUpInside)
+            
+            return iB
+        }()
+        
+    }
+    
+    @objc private func goingAction() {
+        if goingButton.currentImage == UIImage(named: "star_empty") {
+            goingButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+        } else {
+            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        }
+        
+    }
+    
+    @objc private func interestedAction() {
+        if interestedButton.currentImage == UIImage(named: "cross") {
+            interestedButton.setImage(#imageLiteral(resourceName: "check"), for: .normal)
+            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        } else {
+            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+        }
         
     }
     
