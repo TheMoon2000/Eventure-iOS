@@ -41,6 +41,8 @@ class EventDetailTabStrip : ButtonBarPagerTabStripViewController {
         }
         
         super.viewDidLoad()
+        
+        self.containerView.isScrollEnabled = false
     }
     
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {

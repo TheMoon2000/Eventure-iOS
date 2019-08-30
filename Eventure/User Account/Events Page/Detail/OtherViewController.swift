@@ -50,10 +50,12 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         super.init(coder: aDecoder)
     }
     
-    func updateParentSize() {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         detailPage.invisible.textView.attributedText = textView.attributedText
     }
-
+    
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: "Other")
     }

@@ -53,7 +53,9 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
         textView.attributedText = event.eventDescription.attributedText()
     }
     
-    func updateParentSize() {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
         detailPage.invisible.textView.attributedText = textView.attributedText
     }
     

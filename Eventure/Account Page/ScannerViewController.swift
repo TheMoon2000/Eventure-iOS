@@ -240,18 +240,18 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         
         if let eventUUID = filtered.first {
             
-            session?.stopRunning()
+//            session?.stopRunning()
             
-            //用网页打开扫描的信息
-            print("Scanned: \(eventUUID)")
+            cameraPrompt.text = "Scanned event <\(eventUUID)>. More work needs to be done to load the event information from the server."
             
         } else {
             cameraPrompt.text = "Oops, this QR code is not a valid event code."
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                if thisDate == self.lastReturnDate {
-                    self.cameraPrompt.text = self.cameraDefaultText
-                }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            if thisDate == self.lastReturnDate {
+                self.cameraPrompt.text = self.cameraDefaultText
             }
         }
         

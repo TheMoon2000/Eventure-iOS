@@ -47,6 +47,7 @@ class EventDetailPage: UIViewController {
         
         self.title = "Event Details"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
+        navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
         
         if Organization.current == nil {
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
@@ -262,7 +263,8 @@ class EventDetailPage: UIViewController {
         
         alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
             let checkin = EventCheckinOverview()
-            self.present(checkin, animated: true, completion: nil)
+            checkin.event = self.event
+            self.navigationController?.pushViewController(checkin, animated: true)
         }))
         
         alert.addAction(.init(title: "Event Statistics", style: .default, handler: nil))
