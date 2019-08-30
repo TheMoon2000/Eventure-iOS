@@ -264,7 +264,17 @@ class EventDetailPage: UIViewController {
             let checkin = EventCheckinOverview()
             self.present(checkin, animated: true, completion: nil)
         }))
+        
         alert.addAction(.init(title: "Event Statistics", style: .default, handler: nil))
+        
+        if event.published {
+            alert.addAction(.init(title: "Delete Event", style: .destructive) { _ in
+                let warning = UIAlertController(title: "Are you sure?", message: "You are about to delete this event from the server. This process cannot be undone.", preferredStyle: .alert)
+                warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+                warning.addAction(.init(title: "Delete", style: .destructive) { _ in self.removeEvent() })
+                self.present(warning, animated: true, completion: nil)
+            })
+        }
         
         alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
         
@@ -287,6 +297,52 @@ class EventDetailPage: UIViewController {
             let fullScreen = ImageFullScreenPage(image: cover)
             present(fullScreen, animated: false, completion: nil)
         }
+    }
+    
+    private func removeEvent() {
+        
+        let parameters = [
+            "uuid": event.uuid,
+            "orgId": event.hostID
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/RemoveEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)!
+            
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                print("Event <\(self.event.title)> was successfully deleted.")
+                DispatchQueue.main.async {
+                    self.orgEventView?.allEvents.removeAll { $0.uuid == self.event.uuid }
+                    self.orgEventView?.updateFiltered()
+                    self.orgEventView?.eventCatalog.reloadData()
+                    self.navigationController?.popViewController(animated: true)
+                }
+            default:
+                print("Server returned message: " + msg)
+            }
+        }
+        
+        task.resume()
     }
 
 }

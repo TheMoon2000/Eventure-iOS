@@ -194,7 +194,11 @@ class OrganizationsViewController: UIViewController {
                 var tmp = [OrgOverview]()
                 for org in orgs {
                     let orgObj = OrgOverview(json: org)
-                    tmp.append(orgObj)
+                    
+                    // Only show active organizations
+                    if orgObj.isActive {
+                        tmp.append(orgObj)
+                    }
                 }
                 DispatchQueue.main.async {
                     self.organizations = tmp
@@ -251,6 +255,7 @@ extension OrganizationsViewController {
         let hasLogo: Bool
         let members: [Int: Organization.MemberRole]
         var subscribed: Bool
+        let isActive: Bool
         var logoImage: UIImage?
         
         /// An optional function to be called when the logo image is loaded.
@@ -262,6 +267,7 @@ extension OrganizationsViewController {
             self.title = dictionary["Title"]?.string ?? "Untitled"
             self.hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
             self.subscribed = dictionary["Subscribed"]?.bool ?? false
+            self.isActive = (dictionary["Active"]?.int ?? 1) == 1
             
             if let tags_raw = dictionary["Tags"]?.string {
                 tags = Set(JSON(parseJSON: tags_raw).arrayObject as! [String])

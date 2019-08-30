@@ -46,13 +46,13 @@
 		CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC405DC92307F11D00B85BEC /* OrgDescriptionText.swift */; };
 		CC405DCC2307F32C00B85BEC /* OrgInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC405DCB2307F32C00B85BEC /* OrgInfoPage.swift */; };
 		CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC405DCD2307F47000B85BEC /* OrgInfoTabStrip.swift */; };
+		CC46772D2319956600A9FF18 /* Campus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC46772C2319956600A9FF18 /* Campus.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
 		CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC4CB5C4230516E200DC30AD /* OrganizationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* OrganizationsViewController.swift */; };
 		CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
 		CC4CB5C7230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
-		CC4E560522FFE0AC000C2BAC /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F563229AD518008FABEA /* MainTabBarController.swift */; };
 		CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */; };
 		CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
 		CC4EC93822FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
@@ -147,6 +147,7 @@
 		CC405DC92307F11D00B85BEC /* OrgDescriptionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgDescriptionText.swift; sourceTree = "<group>"; };
 		CC405DCB2307F32C00B85BEC /* OrgInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgInfoPage.swift; sourceTree = "<group>"; };
 		CC405DCD2307F47000B85BEC /* OrgInfoTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgInfoTabStrip.swift; sourceTree = "<group>"; };
+		CC46772C2319956600A9FF18 /* Campus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campus.swift; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationCell.swift; sourceTree = "<group>"; };
 		CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailPage.swift; sourceTree = "<group>"; };
@@ -236,6 +237,7 @@
 				CC0646D822FDF1CC000BF3CD /* User.swift */,
 				CC0646DB22FDF1EA000BF3CD /* Organization.swift */,
 				CC0646DE22FDF201000BF3CD /* Event.swift */,
+				CC46772C2319956600A9FF18 /* Campus.swift */,
 			);
 			path = "Data structure";
 			sourceTree = "<group>";
@@ -718,6 +720,7 @@
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
+				CC46772D2319956600A9FF18 /* Campus.swift in Sources */,
 				CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */,
 				CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */,
 				CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */,
@@ -763,7 +766,6 @@
 			files = (
 				CC4EC93822FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
 				CC4CB5C7230525BB00DC30AD /* OrganizationCell.swift in Sources */,
-				CC4E560522FFE0AC000C2BAC /* MainTabBarController.swift in Sources */,
 				DD1BB0D32310B1C40082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */,
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,

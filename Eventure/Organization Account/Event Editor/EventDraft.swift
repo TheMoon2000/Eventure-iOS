@@ -165,7 +165,6 @@ class EventDraft: UIPageViewController {
                 setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
             }
         } else {
-            print("draft = \(draft.description)")
             let alert = UIAlertController(title: "Event Completed", message: nil, preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
 
@@ -244,7 +243,6 @@ class EventDraft: UIPageViewController {
         let parameters = [
             "uuid": draft.uuid,
             "orgId": Organization.current!.id,
-            "orgTitle": Organization.current!.title,
             "title": draft.title,
             "description": draft.eventDescription,
             "location": draft.location,

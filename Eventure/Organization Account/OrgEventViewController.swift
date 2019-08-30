@@ -442,7 +442,7 @@ extension OrgEventViewController: UISearchResultsUpdating {
         }
     }
     
-    private func updateFiltered() {
+    func updateFiltered() {
         if topTab.selectedSegmentIndex == 0 {
             filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
         } else {

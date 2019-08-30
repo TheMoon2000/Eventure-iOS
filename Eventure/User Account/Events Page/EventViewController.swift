@@ -161,6 +161,7 @@ class EventViewController: UIViewController {
         var parameters = [String : String]()
         if User.current != nil {
             parameters["userId"] = String(User.current!.uuid)
+            parameters["userEmail"] = User.current!.email
         }
             
         let url = URL.with(base: API_BASE_URL,

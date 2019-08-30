@@ -23,7 +23,7 @@ class MainTabBarController: UITabBarController {
     
     func loadSupportedCampuses() {
         
-        if !Event.supportedCampuses.isEmpty { return }
+        if !Campus.supported.isEmpty { return }
         
         let url = URL(string: API_BASE_URL + "account/Campuses")!
         var request = URLRequest(url: url)
@@ -36,13 +36,13 @@ class MainTabBarController: UITabBarController {
                 return
             }
             
-            if let json = try? JSON(data: data!).arrayValue {
-                for campus in json {
-                    if let name = campus.dictionary?["Name"]?.string, let suffix = campus.dictionary?["Email suffix"]?.string {
-                        Event.supportedCampuses[name] = suffix
+            if let allCampuses = try? JSON(data: data!).arrayValue {
+                for campus in allCampuses {
+                    if campus.dictionary != nil {
+                        Campus.supported.append(Campus(json: campus))
                     }
                 }
-                print("supported campuses: \(Event.supportedCampuses.values)")
+                print("Loaded supported campuses: \(Campus.supported.map { $0.fullName })")
             } else {
                 print(String(data: data!, encoding: .utf8)!)
             }
