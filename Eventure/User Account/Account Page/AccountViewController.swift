@@ -11,8 +11,6 @@ import UIKit
 
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
-    private var myArray: NSArray = ["First","Second","Sign In"] //experimental
-    
     private var myTableView: UITableView!
     
     private var currentImageView: UIImageView!
@@ -42,122 +40,112 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
     
     //when table view is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
+        guard User.current != nil else {
+            popLoginReminder()
+            return
+        }
+        
         switch (indexPath.section, indexPath.row) {
             
         case (1, 0): // if the user tries to change account information
-            if User.current == nil {
-                popLoginReminder()
-            } else {
-                let personalInfo = PersonalInfoPage()
-                personalInfo.hidesBottomBarWhenPushed = true
-                navigationController?.pushViewController(personalInfo, animated: true)
-            }
+            let personalInfo = PersonalInfoPage()
+            personalInfo.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(personalInfo, animated: true)
+        case (1, 1):
+            let profileInfo = ProfileInfoPage()
+            profileInfo.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(profileInfo, animated: true)
         case (2, 0):
             let scanVC = ScannerViewController()
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
         case (3, 3):
             //if user wants to change the tags
-            if User.current == nil {
-                popLoginReminder()
-            } else {
-                let tagPicker = TagPickerView()
-                tagPicker.customTitle = "What interests you?"
-                tagPicker.customSubtitle = "Pick at least one. The more the better!"
-                tagPicker.maxPicks = 3
-                tagPicker.customButtonTitle = "Done"
-                tagPicker.customContinueMethod = { tagPicker in
+            let tagPicker = TagPickerView()
+            tagPicker.customTitle = "What interests you?"
+            tagPicker.customSubtitle = "Pick at least one. The more the better!"
+            tagPicker.maxPicks = 3
+            tagPicker.customButtonTitle = "Done"
+            tagPicker.customContinueMethod = { tagPicker in
+                
+                tagPicker.spinner.removeFromSuperview()
+                
+                let loadingView: UIView = UIView()
+                loadingView.frame = CGRect(x:0, y:0, width:110, height:110)
+                loadingView.center = tagPicker.view.center
+                loadingView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+                loadingView.clipsToBounds = true
+                loadingView.layer.cornerRadius = 10
+                
+                let label = UILabel()
+                label.text = "Updating..."
+                label.font = .systemFont(ofSize: 17, weight: .medium)
+                label.textColor = .white
+                label.translatesAutoresizingMaskIntoConstraints = false
+                loadingView.addSubview(label)
+                label.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
+                label.topAnchor.constraint(equalTo: loadingView.topAnchor,constant:80).isActive = true
+                
+                loadingView.addSubview(tagPicker.spinner)
+                tagPicker.view.addSubview(loadingView)
+                
+                tagPicker.spinner.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
+                tagPicker.spinner.centerYAnchor.constraint(equalTo: loadingView.centerYAnchor, constant: -5).isActive = true
+                
+                tagPicker.spinner.startAnimating()
+                
+                User.current!.tags = tagPicker.selectedTags
+                
+                let url = URL(string: API_BASE_URL + "account/UpdateTags")!
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.addAuthHeader()
+                
+                var body = JSON()
+                body.dictionaryObject?["uuid"] = User.current?.uuid
+                let tagsArray = tagPicker.selectedTags.map { $0 }
+                body.dictionaryObject?["tags"] = tagsArray
+                request.httpBody = try? body.rawData()
+                
+                let task = CUSTOM_SESSION.dataTask(with: request) {
+                    data, response, error in
                     
-                    tagPicker.spinner.removeFromSuperview()
-                    
-                    let loadingView: UIView = UIView()
-                    loadingView.frame = CGRect(x:0, y:0, width:110, height:110)
-                    loadingView.center = tagPicker.view.center
-                    loadingView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-                    loadingView.clipsToBounds = true
-                    loadingView.layer.cornerRadius = 10
-                    
-                    let label = UILabel()
-                    label.text = "Updating..."
-                    label.font = .systemFont(ofSize: 17, weight: .medium)
-                    label.textColor = .white
-                    label.translatesAutoresizingMaskIntoConstraints = false
-                    loadingView.addSubview(label)
-                    label.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
-                    label.topAnchor.constraint(equalTo: loadingView.topAnchor,constant:80).isActive = true
-                    
-                    loadingView.addSubview(tagPicker.spinner)
-                    tagPicker.view.addSubview(loadingView)
-                    
-                    tagPicker.spinner.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
-                    tagPicker.spinner.centerYAnchor.constraint(equalTo: loadingView.centerYAnchor, constant: -5).isActive = true
-                    
-                    tagPicker.spinner.startAnimating()
-                    
-                    User.current!.tags = tagPicker.selectedTags
-                    
-                    let url = URL(string: API_BASE_URL + "account/UpdateTags")!
-                    var request = URLRequest(url: url)
-                    request.httpMethod = "POST"
-                    request.addAuthHeader()
-                    
-                    var body = JSON()
-                    body.dictionaryObject?["uuid"] = User.current?.uuid
-                    let tagsArray = tagPicker.selectedTags.map { $0 }
-                    body.dictionaryObject?["tags"] = tagsArray
-                    request.httpBody = try? body.rawData()
-                    
-                    let task = CUSTOM_SESSION.dataTask(with: request) {
-                        data, response, error in
-                        
-                        DispatchQueue.main.async {
-                            self.navigationController?.popViewController(animated: true)
-                        }
-                        
-                        guard error == nil else {
-                            DispatchQueue.main.async {
-                                internetUnavailableError(vc: self)
-                            }
-                            return
-                        }
-                        
-                        let msg = String(data: data!, encoding: .ascii) ?? ""
-                        switch msg {
-                        case INTERNAL_ERROR:
-                            serverMaintenanceError(vc: self)
-                        case "success":
-                            print("successfully updated tags")
-                            User.current!.tags = Set(tagsArray)
-                        default:
-                            break
-                        }
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
                     }
                     
-                    task.resume()
+                    guard error == nil else {
+                        DispatchQueue.main.async {
+                            internetUnavailableError(vc: self)
+                        }
+                        return
+                    }
+                    
+                    let msg = String(data: data!, encoding: .ascii) ?? ""
+                    switch msg {
+                    case INTERNAL_ERROR:
+                        serverMaintenanceError(vc: self)
+                    case "success":
+                        print("successfully updated tags")
+                        User.current!.tags = Set(tagsArray)
+                    default:
+                        break
+                    }
                 }
                 
-                tagPicker.hidesBottomBarWhenPushed = true
-                navigationController?.pushViewController(tagPicker, animated: true)
-                
-                DispatchQueue.main.async {
-                    tagPicker.selectedTags = User.current!.tags
-                }
-                
+                task.resume()
+            }
+            
+            tagPicker.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(tagPicker, animated: true)
+            
+            DispatchQueue.main.async {
+                tagPicker.selectedTags = User.current!.tags
             }
             
         case (4, 0): // if the log out/sign in button is clicked
@@ -206,6 +194,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "default_user")
             cell.titleLabel.text = "Manage Account"
+        case (1, 1):
+            cell.icon.image = #imageLiteral(resourceName: "profile")
+            cell.titleLabel.text = "Professional Profile"
+            cell.valueLabel.text = User.current?.profileStatus
         case (2, 0):
             cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Scan Event Code"
@@ -261,7 +253,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 1, 1, 4, 1][section]
+        return [1, 2, 1, 4, 1][section]
     }
     
     //eliminate first section header

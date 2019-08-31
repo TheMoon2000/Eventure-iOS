@@ -24,6 +24,7 @@ class SettingsItemCell: UITableViewCell {
         accessoryType = .disclosureIndicator
         
         heightConstraint = heightAnchor.constraint(equalToConstant: 55)
+        heightConstraint.priority = .defaultHigh
         heightConstraint.isActive = true
         
         icon = {

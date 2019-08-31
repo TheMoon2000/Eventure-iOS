@@ -20,41 +20,59 @@ class User: CustomStringConvertible {
         
     /// The UUID of the user.
     let uuid: Int
-    var email: String {
-        didSet { save() }
-    }
-    var password_MD5: String {
-        didSet { save() }
-    }
-    var displayedName: String {
-        didSet { save() }
-    }
-    var gender: Gender {
-        didSet { save() }
-    }
-    var profilePicture: UIImage? {
-        didSet { save() }
-    }
+    var email: String { didSet { save() } }
+    var password_MD5: String { didSet { save() } }
+    var displayedName: String { didSet { save() } }
+    var gender: Gender { didSet { save() } }
+    var profilePicture: UIImage? { didSet { save() } }
     
     /// A set of uuid strings for events which the user has favorited.
-    var favoritedEvents = Set<String>() {
-        didSet { save() }
-    }
-    var interestedEvents = Set<String>() {
-        didSet { save() }
-    }
-    var subscriptions = Set<String>()
-    var tags = Set<String>()
+    var favoritedEvents = Set<String>() { didSet { save() } }
+    var interestedEvents = Set<String>() { didSet { save() } }
+    var subscriptions = Set<String>() { didSet { save() } }
+    var tags = Set<String>() { didSet { save() } }
     let dateRegistered: String // Only for debugging purpose
     
-    var saveEnabled = false
+    private var saveEnabled = false
     
-    enum Gender: Int {
-        case unspecified = -1
-        case male = 0
-        case female = 1
-        case non_binary = 2
+    
+    // MARK: - Profile information
+    var fullName: String?
+    var major: String?
+    var interests: String?
+    var resume: String?
+    var linkedIn: String?
+    var github: String?
+    var yearOfGraduation: Int?
+    var seasonOfGraduation: GraduationSeason?
+    var graduation: String {
+        if yearOfGraduation == nil || seasonOfGraduation == nil {
+            return "Not Set"
+        }
+        return seasonOfGraduation!.rawValue + " \(yearOfGraduation!)"
     }
+    
+    var profileStatus: String {
+        var allNil = true
+        for item in [fullName, major, interests, resume, linkedIn, github, yearOfGraduation, seasonOfGraduation] as [Any?] {
+            allNil = allNil && item != nil
+        }
+        
+        if allNil { return "Not Started" }
+        
+        var filledRequirements = true
+        for item in [fullName, major, interests, resume, yearOfGraduation, seasonOfGraduation] as [Any?] {
+            filledRequirements = filledRequirements && item != nil
+        }
+        
+        if filledRequirements {
+            return "Completed"
+        } else {
+            return "Incomplete"
+        }
+        
+    }
+    
     
     required init(userInfo: JSON) {
         let dictionary = userInfo.dictionary!
@@ -181,3 +199,19 @@ class User: CustomStringConvertible {
     }
 }
 
+
+extension User {
+    
+    enum Gender: Int {
+        case unspecified = -1
+        case male = 0
+        case female = 1
+        case non_binary = 2
+    }
+    
+    enum GraduationSeason: String {
+        case spring = "Spring"
+        case fall = "Fall"
+    }
+    
+}
