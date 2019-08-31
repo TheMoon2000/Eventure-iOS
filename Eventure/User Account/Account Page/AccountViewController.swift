@@ -170,12 +170,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             } else {
                 //pop out an alert window
                 let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .actionSheet)
-                alert.addAction(UIAlertAction(title: "Log out", style: .destructive, handler: { action in
+                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
                     UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                     User.current = nil
                     MainTabBarController.current.openScreen()
                 }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 self.present(alert, animated: true)
             }
         default:

@@ -191,18 +191,20 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             }
             
             session.startRunning()
-            
+            try input.device.lockForConfiguration()
         } catch  {}
         
     }
     
     @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {
-        print("max: \(device.activeFormat.videoMaxZoomFactor)")
-        let zoomFactor = lastZoomFactor * gesture.scale
-        if zoomFactor <= device.activeFormat.videoMaxZoomFactor {
-            device.videoZoomFactor = zoomFactor
+        let zoomFactor = max(min(1, lastZoomFactor * gesture.scale), device.activeFormat.videoMaxZoomFactor)
+        
+        device.videoZoomFactor = zoomFactor
+        
+        if gesture.state == .ended {
             lastZoomFactor = zoomFactor
         }
+        
     }
     
     

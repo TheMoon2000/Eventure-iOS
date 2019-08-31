@@ -60,17 +60,17 @@ class EventCheckinOverview: UIViewController {
         qrCode = {
             let iv = UIImageView(image: generateQRCode(from: code))
             iv.translatesAutoresizingMaskIntoConstraints = false
+            iv.isUserInteractionEnabled = true
+            iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))
             view.addSubview(iv)
             
-            iv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 40).isActive = true
-            iv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -40).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
-            
-            let center = iv.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 20)
-            center.priority = .defaultHigh
-            center.isActive = true
-            
+            iv.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 240).isActive = true
             iv.topAnchor.constraint(greaterThanOrEqualTo: subtitleLabel.bottomAnchor, constant: 50).isActive = true
+            
+            iv.centerYAnchor.constraint(greaterThanOrEqualTo: view.centerYAnchor, constant: 20).isActive = true
+            
             
             return iv
         }()
@@ -92,9 +92,42 @@ class EventCheckinOverview: UIViewController {
         return nil
     }
     
+    @objc private func saveImage(_ gesture: UIGestureRecognizer) {
+        
+        guard let qr = qrCode.image else {
+            print("no image found")
+            return
+        }
+        
+        if gesture.state != .began {
+            return
+        }
+        
+        let alert = UIAlertController(title: "QR Code", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Save QR Code", style: .default, handler: { _ in
+            UIImageWriteToSavedPhotosAlbum(qr, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }))
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            // we got back an error!
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: "Saved!", message: "The QR Code has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        }
+    }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }
-
+    
 }

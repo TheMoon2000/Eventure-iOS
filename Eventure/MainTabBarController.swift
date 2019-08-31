@@ -92,12 +92,11 @@ class MainTabBarController: UITabBarController {
         let tab1 = OrgEventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
         
-        let tab2 = AccountViewController()
-        tab2.tabBarItem = UITabBarItem(title: "Account Settings", image: #imageLiteral(resourceName: "settings"), tag: 1)
+        let tab2 = OrgAccountPageController()
+        tab2.tabBarItem = UITabBarItem(title: "Dashboard", image: #imageLiteral(resourceName: "dashboard"), tag: 1)
     
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
             
             return nav
