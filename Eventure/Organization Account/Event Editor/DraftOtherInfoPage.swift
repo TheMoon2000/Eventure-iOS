@@ -83,6 +83,10 @@ class DraftOtherInfoPage: UITableViewController {
                 self?.draftPage.edited = true
             }
             
+            tagPicker.errorHandler = {
+                self.navigationController?.popViewController(animated: true)
+            }
+            
             tagPicker.selectedTags = draftPage.draft.tags
             
             navigationController?.pushViewController(tagPicker, animated: true)

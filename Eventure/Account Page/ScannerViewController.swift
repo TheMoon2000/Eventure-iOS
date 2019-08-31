@@ -243,15 +243,16 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
 //            session?.stopRunning()
             
             cameraPrompt.text = "Scanned event <\(eventUUID)>. More work needs to be done to load the event information from the server."
-            
+            cameraPrompt.textColor = .white
         } else {
             cameraPrompt.text = "Oops, this QR code is not a valid event code."
-            
+            cameraPrompt.textColor = WARNING_COLOR
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             if thisDate == self.lastReturnDate {
                 self.cameraPrompt.text = self.cameraDefaultText
+                self.cameraPrompt.textColor = .white
             }
         }
         

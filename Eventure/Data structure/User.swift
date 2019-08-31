@@ -14,28 +14,40 @@ class User: CustomStringConvertible {
     /// The current user, if the app is logged in.
     static var current: User? {
         didSet {
-            if current?.writeToFile(path: CURRENT_USER_PATH) == false {
-                print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
-            } else {
-                print("successfully wrote user data to \(CURRENT_USER_PATH)")
-            }
+            current?.save()
         }
     }
         
     /// The UUID of the user.
-    var uuid: Int
-    var email: String
-    var password_MD5: String
-    var displayedName: String
-    var gender: Gender
-    var profilePicture: UIImage?
+    let uuid: Int
+    var email: String {
+        didSet { save() }
+    }
+    var password_MD5: String {
+        didSet { save() }
+    }
+    var displayedName: String {
+        didSet { save() }
+    }
+    var gender: Gender {
+        didSet { save() }
+    }
+    var profilePicture: UIImage? {
+        didSet { save() }
+    }
     
     /// A set of uuid strings for events which the user has favorited.
-    var favoritedEvents = Set<String>()
-    var goingList = [String: Int]()
+    var favoritedEvents = Set<String>() {
+        didSet { save() }
+    }
+    var interestedEvents = Set<String>() {
+        didSet { save() }
+    }
     var subscriptions = Set<String>()
     var tags = Set<String>()
-    var dateRegistered: String // Only for debugging purpose
+    let dateRegistered: String // Only for debugging purpose
+    
+    var saveEnabled = false
     
     enum Gender: Int {
         case unspecified = -1
@@ -44,7 +56,7 @@ class User: CustomStringConvertible {
         case non_binary = 2
     }
     
-    init(userInfo: JSON) {
+    required init(userInfo: JSON) {
         let dictionary = userInfo.dictionary!
         
         uuid = dictionary["uuid"]?.int ?? -1
@@ -64,12 +76,20 @@ class User: CustomStringConvertible {
         }
         
         if let likedEvents_raw = dictionary["Liked events"]?.string {
-            let likedArray = (JSON(parseJSON: likedEvents_raw).arrayObject as? [String]) ?? [String]()
-            print(likedArray)
-            favoritedEvents = Set(likedArray)
+            if let likedArray = (JSON(parseJSON: likedEvents_raw).arrayObject as? [String]) {
+                favoritedEvents = Set(likedArray)
+            }
+        }
+        
+        if let interested_raw = dictionary["Interested"]?.string {
+            if let interestArray = (JSON(parseJSON: interested_raw).arrayObject as? [String]) {
+                interestedEvents = Set(interestArray)
+            }
         }
         
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
+        
+        saveEnabled = true
     }
     
     var description: String {
@@ -120,6 +140,17 @@ class User: CustomStringConvertible {
         return user
     }
     
+    /// Short-cut for writeToFile().
+    func save() {
+        if !saveEnabled { return }
+        
+        if writeToFile(path: CURRENT_USER_PATH) == false {
+            print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
+        } else {
+            print("successfully wrote user data to \(CURRENT_USER_PATH)")
+        }
+    }
+    
     func writeToFile(path: String) -> Bool {
         
         var json = JSON()
@@ -131,6 +162,8 @@ class User: CustomStringConvertible {
         json.dictionaryObject?["Subscriptions"] = self.subscriptions.description
         json.dictionaryObject?["Tags"] = self.tags.description
         json.dictionaryObject?["Date registered"] = self.dateRegistered
+        json.dictionaryObject?["Liked events"] = self.favoritedEvents.description
+        json.dictionaryObject?["Interested"] = self.interestedEvents.description
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         

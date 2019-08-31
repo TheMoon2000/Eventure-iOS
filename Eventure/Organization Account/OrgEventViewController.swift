@@ -43,8 +43,18 @@ class OrgEventViewController: UIViewController {
     private var publishedLabel: UILabel!
     private var draftLabel: UILabel!
     
-    var allEvents = [Event]()
-    var allDrafts = [Event]()
+    var allEvents = Set<Event>() {
+        didSet {
+            updateFiltered()
+        }
+    }
+    var allDrafts = Set<Event>() {
+        didSet {
+            updateFiltered()
+        }
+    }
+    
+    /// An ordered list of events that should be shown.
     var filteredEvents = [Event]()
     
     override func viewDidLoad() {
@@ -104,6 +114,7 @@ class OrgEventViewController: UIViewController {
             if useRefreshControl {
                 ec.refreshControl = self.refreshControl
             }
+            ec.alwaysBounceVertical = true
             ec.contentInset.top = 8
             ec.contentInset.bottom = 8
             if !topTabBg.isHidden {
@@ -211,7 +222,6 @@ class OrgEventViewController: UIViewController {
             spinner.startAnimating()
             spinnerLabel.isHidden = false
             allEvents.removeAll()
-            filteredEvents.removeAll()
             eventCatalog.reloadData()
             refreshControl.isEnabled = false
             refreshControl.isHidden = true
@@ -251,17 +261,15 @@ class OrgEventViewController: UIViewController {
             }
             
             if let eventsList = try? JSON(data: data!).arrayValue {
-                self.allEvents.removeAll()
-                for eventData in eventsList {
-                    let event = Event(eventInfo: eventData)
-                    if self.filterFunction(event) {
-                        self.allEvents.append(event)
-                    }
+                
+                var tmp = Set<Event>()
+                for eventJSON in eventsList {
+                    print(eventJSON)
+                    tmp.insert(Event(eventInfo: eventJSON))
                 }
-                self.allEvents.sort { self.sortFunction(event1: $0, event2: $1) }
                 
                 DispatchQueue.main.async {
-                    self.updateFiltered()
+                    self.allEvents = tmp
                     self.eventCatalog.reloadData()
                     self.publishedLabel.text = self.allEvents.isEmpty ? "No Published Events" : ""
                 }
@@ -419,7 +427,7 @@ extension OrgEventViewController {
         }
     }
     
-    /// The filter that is applied to all events.
+    /// The filter that is adjusted by user settings.
     func filterFunction(_ event: Event) -> Bool {
         if event.startTime == nil {
             return false
@@ -445,9 +453,12 @@ extension OrgEventViewController: UISearchResultsUpdating {
     func updateFiltered() {
         if topTab.selectedSegmentIndex == 0 {
             filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
+            . sorted(by: { sortFunction(event1: $0, event2: $1) })
         } else {
             filteredEvents = allDrafts.filter { searchFilter(event: $0) }
+            . sorted(by: { sortFunction(event1: $0, event2: $1) })
         }
+        
     }
     
     func searchFilter(event: Event) -> Bool {

@@ -36,6 +36,9 @@ class EventDetailPage: UIViewController {
     private var coverImage: UIImageView!
     private var eventTitle: UILabel!
     private var rightButton: UIBarButtonItem!
+    private var goingButton: UIButton!
+    private var interestedButton: UIButton!
+    
     private var tabStrip: ButtonBarPagerTabStripViewController!
     
     private(set) var invisible: AboutViewController!
@@ -128,6 +131,7 @@ class EventDetailPage: UIViewController {
 
             return label
         }()
+        
         
         view.layoutIfNeeded()
         
@@ -254,6 +258,26 @@ class EventDetailPage: UIViewController {
         self.orgEventView?.eventCatalog?.reloadData()
     }
     
+    
+    @objc private func goingAction() {
+        if goingButton.currentImage == #imageLiteral(resourceName: "star_empty") {
+            goingButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+        } else {
+            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        }
+        
+    }
+    
+    @objc private func interestedAction() {
+        if interestedButton.currentImage == #imageLiteral(resourceName: "cross") {
+            interestedButton.setImage(#imageLiteral(resourceName: "check"), for: .normal)
+            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        } else {
+            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+        }
+        
+    }
 
     @objc private func moreActions() {
         let alert = UIAlertController(title: "Event Actions", message: nil, preferredStyle: .actionSheet)
@@ -269,11 +293,27 @@ class EventDetailPage: UIViewController {
         
         alert.addAction(.init(title: "Event Statistics", style: .default, handler: nil))
         
-        if event.published {
-            alert.addAction(.init(title: "Delete Event", style: .destructive) { _ in
-                let warning = UIAlertController(title: "Are you sure?", message: "You are about to delete this event from the server. This process cannot be undone.", preferredStyle: .alert)
+        if self.event.published {
+            alert.addAction(.init(title: "Remove Event", style: .destructive) { _ in
+                let warning = UIAlertController(title: "Are you sure?", message: "You are about to permanently remove this published event. There is no going back.", preferredStyle: .alert)
                 warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
-                warning.addAction(.init(title: "Delete", style: .destructive) { _ in self.removeEvent() })
+                warning.addAction(.init(title: "Remove", style: .destructive) { _ in
+                    self.removeEvent()
+                })
+                self.present(warning, animated: true, completion: nil)
+            })
+        } else {
+            alert.addAction(.init(title: "Delete Draft", style: .destructive) { _ in
+                let warning = UIAlertController(title: "Are you sure?", message: "You are about to delete this local draft. This process cannot be undone.", preferredStyle: .alert)
+                warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+                warning.addAction(.init(title: "Delete", style: .destructive) { _ in
+                    // Delete a local copy
+                    EventDraft.removeDraft(uuid: self.event.uuid) {
+                        self.orgEventView?.allDrafts.remove(self.event)
+                        self.orgEventView!.eventCatalog.reloadData()
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                })
                 self.present(warning, animated: true, completion: nil)
             })
         }
@@ -284,7 +324,7 @@ class EventDetailPage: UIViewController {
     }
     
     private func openEditor() {
-        let editor = EventDraft(event: event)
+        let editor = EventDraft(event: event.copy())
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
@@ -334,7 +374,7 @@ class EventDetailPage: UIViewController {
             case "success":
                 print("Event <\(self.event.title)> was successfully deleted.")
                 DispatchQueue.main.async {
-                    self.orgEventView?.allEvents.removeAll { $0.uuid == self.event.uuid }
+                    self.orgEventView?.allEvents.remove(self.event)
                     self.orgEventView?.updateFiltered()
                     self.orgEventView?.eventCatalog.reloadData()
                     self.navigationController?.popViewController(animated: true)

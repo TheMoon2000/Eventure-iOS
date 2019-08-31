@@ -202,9 +202,9 @@ class OrgEventCell: UICollectionViewCell {
     
     
     func setupCellWithEvent(event: Event, withImage: Bool = false) {
-        titleText.text = event.title
+        titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
-        locationText.text = event.location
+        locationText.text = event.location.isEmpty ? "TBA" : event.location
         descriptionText.setText(event.eventDescription.attributedText())
         
         if event.eventVisual == nil {
