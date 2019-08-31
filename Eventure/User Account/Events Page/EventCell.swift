@@ -12,8 +12,11 @@ class EventCell: UICollectionViewCell {
     
     private let verticalSpacing: CGFloat = 14
     
+    private var event: Event!
+    
     private var card: UIView!
     private var cover: UIImageView!
+    var interestedButton: UIButton!
     
     private var timeLabel: UILabel!
     private var locationLabel: UILabel!
@@ -64,6 +67,25 @@ class EventCell: UICollectionViewCell {
             iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
             
             return iv
+        }()
+        
+        interestedButton = {
+            let button = UIButton(type: .system)
+            button.isEnabled = User.current != nil
+            button.imageView?.contentMode = .scaleAspectFit
+            button.tintColor = MAIN_TINT
+            button.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(button)
+            
+            button.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -12).isActive = true
+            button.topAnchor.constraint(equalTo: card.topAnchor, constant: 12).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 32).isActive = true
+            button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+            
+            button.addTarget(self, action: #selector(toggleInterested), for: .touchUpInside)
+            
+            return button
         }()
         
         titleText = {
@@ -201,8 +223,18 @@ class EventCell: UICollectionViewCell {
         
     }
     
+    @objc private func toggleInterested() {
+        if interestedButton.currentImage == #imageLiteral(resourceName: "star_empty") {
+            interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+            User.current?.interestedEvents.insert(event.uuid)
+        } else {
+            interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+            User.current?.interestedEvents.remove(event.uuid)
+        }
+    }
     
     func setupCellWithEvent(event: Event, withImage: Bool = false) {
+        self.event = event
         titleText.text = event.title
         timeText.text = event.timeDescription
         locationText.text = event.location

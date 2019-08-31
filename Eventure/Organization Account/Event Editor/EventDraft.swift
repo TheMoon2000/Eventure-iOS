@@ -11,6 +11,8 @@ import UIKit
 class EventDraft: UIPageViewController {
     
     var orgEventView: OrgEventViewController?
+    var detailPage: EventDetailPage?
+    
     static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
     
     var edited = false
@@ -106,15 +108,14 @@ class EventDraft: UIPageViewController {
         let orgID = Organization.current!.id
         
         saveHandler = { action in
-            var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
+            var drafts: Set<Event> = self.orgEventView?.allDrafts ?? ( Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? [])
             
-            if let index = drafts.firstIndex(where: { $0.uuid == self.draft.uuid }) {
-                drafts[index] = self.draft
-            } else {
-                drafts.append(self.draft)
-            }
+            drafts.insert(self.draft)
+            
+            print(drafts.map { $0.title })
             
             if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
+                self.orgEventView?.allDrafts = drafts
                 self.orgEventView?.eventCatalog.reloadData()
                 self.dismiss(animated: true, completion: nil)
             } else {
@@ -143,7 +144,7 @@ class EventDraft: UIPageViewController {
         } else if draft.published {
             alert.message = "You have made changes to a published event."
             alert.addAction(.init(title: "Save and Re-publish", style: .default, handler: { action in
-                // TODO: publish the event
+                self.publishEvent()
             }))
         } else {
             alert.message = "You have made changes to an existing draft."
@@ -176,13 +177,17 @@ class EventDraft: UIPageViewController {
                 }))
             } else if !draft.published {
                 alert.message = "You have modified a draft event. Would you like to save your changes or publish this event right away?"
-                alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
+                alert.addAction(.init(title: "Save and Close", style: .default, handler: saveHandler))
                 alert.addAction(.init(title: "Publish", style: .default, handler: { action in
                     self.publishEvent()
                 }))
             } else {
-                alert.message = "You have modified a published event. Would you like to publish your changes now or save them for later?"
-                alert.addAction(.init(title: "Save as New Draft", style: .default, handler: saveHandler))
+                alert.message = "You have modified a published event. Would you like to publish your changes now or save a new local copy of it?"
+                alert.addAction(.init(title: "Save as New Draft", style: .default, handler: { action in
+                    self.draft.renewUUID() // The event now has its own UUID.
+                    self.draft.published = false // Duplicate copy is not published.
+                    self.saveHandler(action)
+                }))
                 alert.addAction(.init(title: "Re-publish", style: .default, handler: { action in
                     self.publishEvent()
                 }))
@@ -279,12 +284,19 @@ class EventDraft: UIPageViewController {
                     serverMaintenanceError(vc: self)
                 }
             case "success":
-                self.removeDraft(uuid: self.draft.uuid)
-                DispatchQueue.main.async {
-                    self.dismiss(animated: true) {
+                EventDraft.removeDraft(uuid: self.draft.uuid) {
+                    var published: Set<Event> = self.orgEventView?.allEvents ?? []
+                    published.insert(self.draft)
+                    
+                    self.detailPage?.event = self.draft
+                    
+                    DispatchQueue.main.async {
+                        self.orgEventView?.allEvents = published
                         self.orgEventView?.eventCatalog.reloadData()
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
+                
             default:
                 warning.message = msg
                 DispatchQueue.main.async {
@@ -296,18 +308,18 @@ class EventDraft: UIPageViewController {
         task.resume()
     }
     
-    private func removeDraft(uuid: String) {
+    static func removeDraft(uuid: String, handler: (() -> ())? = nil) {
         
         guard let orgID = Organization.current?.id else {
             preconditionFailure("Org ID is nil")
         }
         
-        var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
+        var drafts: Set<Event> = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
         
         drafts = drafts.filter { $0.uuid != uuid }
         
         if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
-            self.orgEventView?.allDrafts = drafts
+            handler?()
         } else {
             print("WARNING: Failed to remove draft \(uuid)!")
         }

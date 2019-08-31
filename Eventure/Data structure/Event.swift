@@ -30,7 +30,7 @@ class Event {
         return formatter
     }()
     
-    let uuid: String
+    var uuid: String
     var title: String
     var location: String
     var startTime: Date?
@@ -40,9 +40,13 @@ class Event {
     var hasVisual = false
     var hostID: String
     var hostTitle: String
-    var currentUserGoingStatus: Going = .neutral
+    var currentUserInterested: Bool {
+        return User.current != nil && User.current!.interestedEvents.contains(uuid)
+    }
+    var currentUserFavorited: Bool {
+        return User.current != nil && User.current!.favoritedEvents.contains(uuid)
+    }
     var tags = Set<String>()
-    // # of interested, # of going
     // API: array of user id
     
     var published: Bool
@@ -111,12 +115,15 @@ class Event {
         uuid = dictionary["uuid"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
         location = dictionary["Location"]?.string ?? "TBA"
+        
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)
         }
+        
         if let endTimeString = dictionary["End time"]?.string {
             self.endTime = DATE_FORMATTER.date(from: endTimeString)
         }
+        
         eventDescription = dictionary["Description"]?.string ?? ""
         hostTitle = dictionary["Organization title"]?.string ?? "Untitled"
         hostID = dictionary["Organization"]?.string ?? ""
@@ -124,18 +131,21 @@ class Event {
         published = (dictionary["Published"]?.int ?? 0) == 1
         
         if let tags_raw = dictionary["Tags"]?.string {
-            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
-            tags = Set(tagsArray)
-        } else {
-            tags = []
-        }
-        
-        if let going_raw = dictionary["Current user going"]?.int {
-            currentUserGoingStatus = Going(rawValue: going_raw) ?? .neutral
+            if let tagsArray = JSON(parseJSON: tags_raw).arrayObject as? [String] {
+                tags = Set(tagsArray)
+            }
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = dictionary["Has cover"]?.bool ?? false
+        
+        if let isInterested = dictionary["Is interested"]?.bool {
+            if isInterested {
+                User.current?.interestedEvents.insert(uuid)
+            } else {
+                User.current?.interestedEvents.remove(uuid)
+            }
+        }
         
         if let isFavorited = dictionary["Is favorited"]?.bool {
             if isFavorited {
@@ -146,9 +156,9 @@ class Event {
         }
     }
     
-    static func readFromFile(path: String) -> [String: [Event]] {
+    static func readFromFile(path: String) -> [String: Set<Event>] {
         
-        var events = [String: [Event]]()
+        var events = [String: Set<Event>]()
         
         guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: path) else {
             return [:] // It's fine if no event collection cache exists.
@@ -175,14 +185,14 @@ class Event {
                 
                 if let json = try? JSON(data: eventMain) {
                     let event: Event = Event(eventInfo: json)
-                    var orgSpecificEvents: [Event] = events[id] ?? []
+                    var orgSpecificEvents: Set<Event> = events[id] ?? []
 
                     // These two attributes need to be manually extracted from the JSON
                     event.hostID = json.dictionary?["Host ID"]?.string ?? event.hostID
                     event.hostTitle = json.dictionary?["Host title"]?.string ?? event.hostTitle
                     
                     event.eventVisual = eventRawData["cover"] as? UIImage
-                    orgSpecificEvents.append(event)
+                    orgSpecificEvents.insert(event)
                     
                     events[id] = orgSpecificEvents
                 } else {
@@ -194,36 +204,14 @@ class Event {
         return events
     }
     
-    static func writeToFile(orgID: String, events: [Event], path: String) -> Bool {
+    static func writeToFile(orgID: String, events: Set<Event>, path: String) -> Bool {
         
         var collection = [[String : Any]]()
         
         for event in events {
             var eventRaw = [String : Any]()
             
-            var main = JSON()
-            main.dictionaryObject?["uuid"] = event.uuid
-            main.dictionaryObject?["Title"] = event.title
-            main.dictionaryObject?["Location"] = event.location
-            
-            if let startTime = event.startTime {
-                main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime)
-            }
-            
-            if let endTime = event.endTime {
-                main.dictionaryObject?["End time"] = DATE_FORMATTER.string(from: endTime)
-            }
-            
-            main.dictionaryObject?["Description"] = event.eventDescription
-            
-            // These two values are not part of the JSON used for initialization
-            main.dictionaryObject?["Host title"] = event.hostTitle
-            main.dictionaryObject?["Host ID"] = event.hostID
-            main.dictionaryObject?["Published"] = event.published ? 1 : 0
-            main.dictionaryObject?["Tags"] = event.tags.description
-            main.dictionaryObject?["Going"] = event.currentUserGoingStatus.rawValue
-            
-            let mainEncrypted: Data? = NSData(data: try! main.rawData()).aes256Encrypt(withKey: AES_KEY)
+            let mainEncrypted: Data? = NSData(data: try! event.encodedJSON.rawData()).aes256Encrypt(withKey: AES_KEY)
             
             eventRaw["main"] = mainEncrypted
             eventRaw["cover"] = event.eventVisual
@@ -299,6 +287,42 @@ class Event {
         task.resume()
     }
     
+    
+    private var encodedJSON: JSON {
+        var main = JSON()
+        main.dictionaryObject?["uuid"] = uuid
+        main.dictionaryObject?["Title"] = title
+        main.dictionaryObject?["Location"] = location
+        
+        if startTime != nil {
+            main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime!)
+        }
+        
+        if endTime != nil {
+            main.dictionaryObject?["End time"] = DATE_FORMATTER.string(from: endTime!)
+        }
+        
+        main.dictionaryObject?["Description"] = eventDescription
+        main.dictionaryObject?["Organization title"] = hostTitle
+        main.dictionaryObject?["Organization"] = hostID
+        main.dictionaryObject?["Published"] = published ? 1 : 0
+        main.dictionaryObject?["Tags"] = tags.description
+        main.dictionaryObject?["Has cover"] = hasVisual
+        main.dictionaryObject?["Active"] = active ? 1 : 0
+        
+        return main
+    }
+    
+    func copy() -> Event {
+        let new = Event(eventInfo: encodedJSON)
+        new.eventVisual = self.eventVisual
+        return new
+    }
+    
+    func renewUUID() {
+        self.uuid = UUID().uuidString.lowercased()
+    }
+    
 }
 
 
@@ -309,7 +333,15 @@ extension Event {
 }
 
 
-extension Event: CustomStringConvertible {
+extension Event: CustomStringConvertible, Hashable {
+    static func == (lhs: Event, rhs: Event) -> Bool {
+        return lhs.uuid == rhs.uuid
+    }
+    
+    var hashValue: Int {
+        return uuid.hashValue
+    }
+    
     var description: String {
         var str = "Event \"\(title)\":\n"
         str += "  uuid = \(uuid)\n"

@@ -37,6 +37,8 @@ class TagPickerView: UIViewController {
         }
     }
     
+    var errorHandler: (() -> ())?
+    
     var customDisappearHandler: ((Set<String>) -> ())?
     
     private func updateUI() {
@@ -55,6 +57,10 @@ class TagPickerView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.errorHandler = {
+            self.dismiss(animated: true, completion: nil)
+        }
         
         title = "Tag Picker"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
@@ -226,7 +232,7 @@ class TagPickerView: UIViewController {
             guard error == nil else {
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self) {
-                        self.dismiss(animated: true, completion: nil)
+                        self.errorHandler?()
                     }
                 }
                 return
@@ -235,7 +241,7 @@ class TagPickerView: UIViewController {
             if let json = try? JSON(data: data!).dictionary {
                 if json?["status"]!.stringValue == INTERNAL_ERROR {
                     serverMaintenanceError(vc: self) {
-                        self.dismiss(animated: true, completion: nil)
+                        self.errorHandler?()
                     }
                 } else {
                     self.tags = json?["tags"]!.arrayObject as! [String]
