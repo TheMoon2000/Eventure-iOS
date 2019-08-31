@@ -25,6 +25,9 @@ class EventViewController: UIViewController {
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
     
+    private var shouldFilter: Bool = false
+    public static var chosenTags = Set<String>()
+    
     private(set) var allEvents = [Event]() {
         didSet {
             self.updateFiltered()
@@ -78,6 +81,7 @@ class EventViewController: UIViewController {
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
             
+            tab.addTarget(self, action: #selector(updateEvents), for: .valueChanged)
             return tab
         }()
         
@@ -146,9 +150,17 @@ class EventViewController: UIViewController {
         }()
         
         updateEvents()
+        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("user_chose_tags"), object: nil)
     }
     
+    @objc private func filteredByUser() {
+        shouldFilter = true
+        self.updateEvents()
+    }
+
+    
     @objc private func updateEvents() {
+        //shouldFilter = false
         
         navigationItem.rightBarButtonItem?.isEnabled = false
         
@@ -216,6 +228,12 @@ class EventViewController: UIViewController {
     
     @objc private func openOptions() {
         // TODO: filtering options here
+        let filter = FilterViewController()
+        let nav = UINavigationController(rootViewController: filter)
+        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.shadowImage = UIImage()
+        present(nav, animated: true, completion: nil)
     }
     
 
@@ -305,10 +323,21 @@ extension EventViewController: UISearchResultsUpdating {
     
     private func updateFiltered() {
         let searchText = searchController.searchBar.text!.lowercased()
+        var cnt = 0
         filteredEvents = allEvents.filter { (event: Event) -> Bool in
             let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
             var condition = true
-            if tabName == "Recommended" {
+            if tabName == "All Events" {
+                if (shouldFilter) {
+                    print(EventViewController.chosenTags)
+                    condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
+                    cnt += 1
+                    if (cnt == allEvents.count) {
+                        shouldFilter = false
+                    }
+                }
+            }
+            else if tabName == "Recommended" {
                 // If the current tab is 'Recommended', the current user must be logged in
                 condition = !event.tags.intersection(User.current!.tags).isEmpty
             } else if tabName == "Trending" {
