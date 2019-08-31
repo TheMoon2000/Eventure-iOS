@@ -323,6 +323,7 @@ extension EventViewController: UISearchResultsUpdating {
     
     private func updateFiltered() {
         let searchText = searchController.searchBar.text!.lowercased()
+        var cnt = 0
         filteredEvents = allEvents.filter { (event: Event) -> Bool in
             let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
             var condition = true
@@ -330,6 +331,10 @@ extension EventViewController: UISearchResultsUpdating {
                 if (shouldFilter) {
                     print(EventViewController.chosenTags)
                     condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
+                    cnt += 1
+                    if (cnt == allEvents.count) {
+                        shouldFilter = false
+                    }
                 }
             }
             else if tabName == "Recommended" {
