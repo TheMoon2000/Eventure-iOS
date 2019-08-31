@@ -69,7 +69,6 @@ class OrgEventViewController: UIViewController {
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Your Events"
         navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
@@ -264,7 +263,6 @@ class OrgEventViewController: UIViewController {
                 
                 var tmp = Set<Event>()
                 for eventJSON in eventsList {
-                    print(eventJSON)
                     tmp.insert(Event(eventInfo: eventJSON))
                 }
                 
@@ -385,8 +383,7 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     var equalSpacing: CGFloat {
         let rowCount = floor(usableWidth / cardWidth)
         let extraSpace = usableWidth - rowCount * cardWidth
-        
-        return extraSpace / (rowCount + 1)
+        return extraSpace / (rowCount + 1) - 1
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -406,9 +403,17 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: equalSpacing,
-                            left: equalSpacing,
+                            left: 8,
                             bottom: equalSpacing,
-                            right: equalSpacing)
+                            right: 8)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            self.eventCatalog.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
     }
 
 }

@@ -286,7 +286,7 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
         let rowCount = floor(usableWidth / cardWidth)
         let extraSpace = usableWidth - rowCount * cardWidth
 
-        return extraSpace / (rowCount + 1)
+        return extraSpace / (rowCount + 1) - 1
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -306,9 +306,9 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: equalSpacing,
-                            left: equalSpacing,
+                            left: 8,
                             bottom: equalSpacing,
-                            right: equalSpacing)
+                            right: 8)
     }
 }
 

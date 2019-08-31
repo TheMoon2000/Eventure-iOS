@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_1" orientation="portrait">
+    <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,19 +15,24 @@
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" image="launch" translatesAutoresizingMaskIntoConstraints="NO" id="DRX-ma-bIl">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="launch" translatesAutoresizingMaskIntoConstraints="NO" id="eJQ-ED-gR8">
+                                <rect key="frame" x="40" y="112.5" width="295" height="442.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="540" id="XZ4-wC-GBO"/>
+                                    <constraint firstAttribute="width" secondItem="eJQ-ED-gR8" secondAttribute="height" multiplier="2:3" id="ZEr-JH-lhn"/>
+                                </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="1" green="0.59999999999999998" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="DRX-ma-bIl" secondAttribute="trailing" id="8GR-96-Jrk"/>
-                            <constraint firstItem="DRX-ma-bIl" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Fga-kx-lzu"/>
-                            <constraint firstAttribute="bottom" secondItem="DRX-ma-bIl" secondAttribute="bottom" id="qQu-3a-uz5"/>
-                            <constraint firstItem="DRX-ma-bIl" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="yFc-UE-dDL"/>
+                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="40" id="IB2-xK-urS"/>
+                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="JOP-Vn-YSO"/>
+                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Jl8-Cd-c9R"/>
+                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Q4l-uK-R0n"/>
+                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.5" priority="750" id="ssi-Mq-rMB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -39,6 +44,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="launch" width="1562.6666259765625" height="3383.333251953125"/>
+        <image name="launch" width="1000" height="1000"/>
     </resources>
 </document>
