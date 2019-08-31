@@ -330,7 +330,6 @@ extension EventViewController: UISearchResultsUpdating {
                 if (shouldFilter) {
                     print(EventViewController.chosenTags)
                     condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
-                    shouldFilter = false
                 }
             }
             else if tabName == "Recommended" {
