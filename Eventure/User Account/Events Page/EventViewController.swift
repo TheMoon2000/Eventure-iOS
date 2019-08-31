@@ -78,6 +78,7 @@ class EventViewController: UIViewController {
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
             
+            tab.addTarget(self, action: #selector(updateEvents), for: .valueChanged)
             return tab
         }()
         
