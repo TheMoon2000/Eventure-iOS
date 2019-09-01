@@ -36,6 +36,7 @@
 		CC2167BE231B0C46003B8DE7 /* GraduationYearChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */; };
 		CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */; };
 		CC2167C2231B719D003B8DE7 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167C1231B719D003B8DE7 /* CommentCell.swift */; };
+		CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */; };
 		CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */; };
 		CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC23293123163B720097A915 /* UpdatePasswordPage.swift */; };
 		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
@@ -144,6 +145,7 @@
 		CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraduationYearChooser.swift; sourceTree = "<group>"; };
 		CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		CC2167C1231B719D003B8DE7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
+		CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICheckbox.swift; sourceTree = "<group>"; };
 		CC23293123163B720097A915 /* UpdatePasswordPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordPage.swift; sourceTree = "<group>"; };
 		CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
@@ -424,6 +426,7 @@
 		CC6D276D22F23470007E2C5A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */,
 				CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */,
 			);
 			path = Resources;
@@ -800,6 +803,7 @@
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
 				D560A305231A180E00062912 /* FilterViewController.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
+				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
