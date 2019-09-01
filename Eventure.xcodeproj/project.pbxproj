@@ -580,7 +580,7 @@
 				TargetAttributes = {
 					CC18F54A229AD4EB008FABEA = {
 						CreatedOnToolsVersion = 10.2.1;
-						LastSwiftMigration = 1030;
+						LastSwiftMigration = "";
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 0;
@@ -1030,6 +1030,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = EventureAPITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1053,6 +1054,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = EventureAPITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

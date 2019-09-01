@@ -16,7 +16,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     private var placeholder: UILabel!
     private var baseline: UIView!
     
-    var textChangeHandler: ((String) -> ())?
+    var textChangeHandler: ((UITextView) -> ())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -114,7 +114,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        textChangeHandler?(textView.text)
+        textChangeHandler?(textView)
         placeholder.isHidden = !textView.text.isEmpty
     }
     

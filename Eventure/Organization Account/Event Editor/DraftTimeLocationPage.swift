@@ -84,13 +84,16 @@ class DraftTimeLocationPage: UITableViewController {
         
         let locationCell = DraftLocationCell()
         locationCell.locationText.insertText(draftPage.draft.location)
-        locationCell.textChangeHandler = { [weak self] text in
+        locationCell.textChangeHandler = { [weak self] textView in
             UIView.performWithoutAnimation {
                 self?.tableView.beginUpdates()
                 self?.tableView.endUpdates()
             }
-            self?.draftPage.draft.location = text
+            self?.draftPage.draft.location = textView.text
             self?.draftPage.edited = true
+            if textView.selectedRange.location == textView.text.count {
+                self?.tableView.scrollToRow(at: [0, 4], at: .bottom, animated: false)
+            }
         }
         contentCells.append(locationCell)
     }
