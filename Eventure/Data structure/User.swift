@@ -45,24 +45,25 @@ class User {
     var github: String { didSet { save() } }
     var yearOfGraduation: Int? { didSet { save() } }
     var seasonOfGraduation: GraduationSeason? { didSet { save() } }
+    var comments: String { didSet { save() } }
     var graduation: String {
         if yearOfGraduation == nil || seasonOfGraduation == nil {
-            return "Not Set"
+            return ""
         }
         return seasonOfGraduation!.rawValue + " \(yearOfGraduation!)"
     }
     
     var profileStatus: String {
-        var allNil = true
-        for item in [fullName, major, interests, resume, linkedIn, github, yearOfGraduation, seasonOfGraduation] as [Any?] {
-            allNil = allNil && item == nil
+        var allEmpty = true
+        for item in [fullName, major, interests, resume, linkedIn, github, graduation, comments] {
+            allEmpty = allEmpty && item.isEmpty
         }
         
-        if allNil { return "Not Started" }
+        if allEmpty { return "Not Started" }
         
         var filledRequirements = true
-        for item in [fullName, major, interests, resume, yearOfGraduation, seasonOfGraduation] as [Any?] {
-            filledRequirements = filledRequirements && item != nil
+        for item in [fullName, major, resume, graduation] {
+            filledRequirements = filledRequirements && !item.isEmpty
         }
         
         if filledRequirements {
@@ -118,6 +119,7 @@ class User {
         linkedIn = dictionary["LinkedIn"]?.string ?? ""
         github = dictionary["GitHub"]?.string ?? ""
         interests = dictionary["Interests"]?.string ?? ""
+        comments = dictionary["Comments"]?.string ?? ""
         
         saveEnabled = true
     }
@@ -190,6 +192,7 @@ class User {
         json.dictionaryObject?["GitHub"] = self.github
         json.dictionaryObject?["LinkedIn"] = self.linkedIn
         json.dictionaryObject?["Interests"] = self.interests
+        json.dictionaryObject?["Comments"] = self.comments
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         

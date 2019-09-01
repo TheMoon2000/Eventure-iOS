@@ -43,7 +43,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        myTableView.reloadRows(at: [[1, 1]], with: .none)
+        UIView.performWithoutAnimation {
+            self.myTableView.beginUpdates()
+            self.myTableView.endUpdates()
+        }
     }
    
     

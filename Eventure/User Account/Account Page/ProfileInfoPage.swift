@@ -20,6 +20,7 @@ class ProfileInfoPage: UITableViewController {
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInset.top = 5
+        tableView.contentInset.bottom = 20
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
         
@@ -72,6 +73,7 @@ class ProfileInfoPage: UITableViewController {
             section.append(gradCell)
             
             let chooser = GraduationYearChooser()
+            chooser.set(year: User.current?.yearOfGraduation, season: User.current?.seasonOfGraduation)
             chooser.selectionHandler = { year, season in
                 User.current?.yearOfGraduation = year
                 User.current?.seasonOfGraduation = season
@@ -89,13 +91,14 @@ class ProfileInfoPage: UITableViewController {
             var section = [UITableViewCell]()
             
             let resumeCell = TextFieldCell(parentVC: self)
-            resumeCell.textfield.placeholder = "Link to resume (recommended)"
+            resumeCell.textfield.placeholder = "Link to resume"
             resumeCell.icon.image = #imageLiteral(resourceName: "resume")
             resumeCell.linkDetectionEnabled = true
             resumeCell.textfield.keyboardType = .URL
             resumeCell.textfield.autocapitalizationType = .none
             resumeCell.textfield.enablesReturnKeyAutomatically = true
             resumeCell.textfield.text = User.current?.resume
+            resumeCell.textChanged()
             
             resumeCell.endEditingHandler = { textfield in
                 User.current?.resume = textfield.text!
@@ -126,6 +129,7 @@ class ProfileInfoPage: UITableViewController {
             linkedInCell.textfield.keyboardType = .URL
             linkedInCell.textfield.autocapitalizationType = .none
             linkedInCell.textfield.text = User.current?.linkedIn
+            linkedInCell.textChanged()
             
             linkedInCell.endEditingHandler = { textfield in
                 User.current?.linkedIn = textfield.text!
@@ -145,6 +149,7 @@ class ProfileInfoPage: UITableViewController {
             githubCell.textfield.keyboardType = .URL
             githubCell.textfield.autocapitalizationType = .none
             githubCell.textfield.text = User.current?.github
+            githubCell.textChanged()
             
             githubCell.endEditingHandler = { textfield in
                 User.current?.github = textfield.text!
@@ -167,13 +172,33 @@ class ProfileInfoPage: UITableViewController {
             let hobbyCell = TextFieldCell(parentVC: self)
             hobbyCell.icon.image = #imageLiteral(resourceName: "interests")
             hobbyCell.textfield.placeholder = "Skills and interests (optional)"
-            hobbyCell.textfield.text = User.current?.interests
+            hobbyCell.textfield.text = User.current!.interests
             
             hobbyCell.endEditingHandler = { textfield in
                 User.current?.interests = textfield.text!
             }
             
+            hobbyCell.returnHandler = { textfield in
+                (self.contentCells[3][1] as! CommentCell).commentText.becomeFirstResponder()
+            }
+            
             section.append(hobbyCell)
+            
+            let commentCell = CommentCell()
+            commentCell.commentText.insertText(User.current!.comments)
+            commentCell.commentText.returnKeyType = .default
+            commentCell.textChangeHandler = { text in
+                UIView.performWithoutAnimation {
+                    self.tableView.beginUpdates()
+                    self.tableView.endUpdates()
+                }
+            }
+            
+            commentCell.textEndEditingHandler = { text in
+                User.current?.comments = text
+            }
+            
+            section.append(commentCell)
             
             return section
         }()
@@ -209,10 +234,6 @@ class ProfileInfoPage: UITableViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return contentCells.count
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return [nil, "Resume", "Platforms", "Others"][section]
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
