@@ -21,12 +21,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
-        title = "Me"
+        title = User.waitingForSync ? "Syncing..." : "Me"
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView = UITableView(frame: .zero, style: .grouped)
-        myTableView.register(AccountCell.classForCoder(), forCellReuseIdentifier: "MyCell")
-        myTableView.register(SettingsItemCell.classForCoder(), forCellReuseIdentifier: "item")
         myTableView.dataSource = self
         myTableView.delegate = self
         myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
@@ -38,14 +36,33 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
+        NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: USER_SYNC_FAILED, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: USER_SYNC_SUCCESS, object: nil)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        myTableView.reloadRows(at: [[1, 1]], with: .none)
+        UIView.performWithoutAnimation {
+            self.myTableView.beginUpdates()
+            self.myTableView.endUpdates()
+        }
     }
-   
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func userUpdated() {
+        DispatchQueue.main.async {
+            self.title = "Me"
+            self.navigationController?.navigationBar.setNeedsDisplay()
+            UIView.performWithoutAnimation {
+                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
+            }
+        }
+    }
     
     //when table view is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -66,6 +83,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             navigationController?.pushViewController(personalInfo, animated: true)
         case (1, 1):
             let profileInfo = ProfileInfoPage()
+            profileInfo.parentVC = self
             profileInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(profileInfo, animated: true)
         case (2, 0):
@@ -184,7 +202,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     //create a cell for each table view row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "item") as! SettingsItemCell
+        let cell = SettingsItemCell()
         
         switch (indexPath.section, indexPath.row) {
             

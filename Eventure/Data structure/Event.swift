@@ -139,19 +139,23 @@ class Event {
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = dictionary["Has cover"]?.bool ?? false
         
+        guard let user = User.current else {
+            return
+        }
+        
         if let isInterested = dictionary["Is interested"]?.bool {
-            if isInterested {
-                User.current?.interestedEvents.insert(uuid)
-            } else {
+            if isInterested && !user.interestedEvents.contains(uuid) {
+                user.interestedEvents.insert(uuid)
+            } else if !isInterested && user.interestedEvents.contains(uuid) {
                 User.current?.interestedEvents.remove(uuid)
             }
         }
         
         if let isFavorited = dictionary["Is favorited"]?.bool {
-            if isFavorited {
-                User.current?.favoritedEvents.insert(uuid)
-            } else {
-                User.current?.favoritedEvents.remove(uuid)
+            if isFavorited && !user.favoritedEvents.contains(uuid) {
+                user.favoritedEvents.insert(uuid)
+            } else if !isFavorited && user.favoritedEvents.contains(uuid) {
+                user.favoritedEvents.remove(uuid)
             }
         }
     }

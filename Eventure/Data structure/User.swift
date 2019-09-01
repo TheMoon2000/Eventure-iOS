@@ -27,14 +27,20 @@ class User {
     var profilePicture: UIImage? { didSet { save() } }
     
     /// A set of uuid strings for events which the user has favorited.
-    var favoritedEvents = Set<String>() { didSet { save() } }
+    var favoritedEvents = Set<String>() {
+        didSet { save() } }
     var interestedEvents = Set<String>() { didSet { save() } }
     var subscriptions = Set<String>() { didSet { save() } }
     var tags = Set<String>() { didSet { save() } }
     let dateRegistered: String // Only for debugging purpose
     
-    private var saveEnabled = false
+    var saveEnabled = false
     
+    /// Whether the app is in the middle of a sync session and is waiting for a response.
+    static var waitingForSync = false
+    
+    /// Whether the changes made locally are yet to be uploaded.
+    static var needsUpload = false
     
     // MARK: - Profile information
     var fullName: String { didSet { save() } }
@@ -45,24 +51,25 @@ class User {
     var github: String { didSet { save() } }
     var yearOfGraduation: Int? { didSet { save() } }
     var seasonOfGraduation: GraduationSeason? { didSet { save() } }
+    var comments: String { didSet { save() } }
     var graduation: String {
         if yearOfGraduation == nil || seasonOfGraduation == nil {
-            return "Not Set"
+            return ""
         }
         return seasonOfGraduation!.rawValue + " \(yearOfGraduation!)"
     }
     
     var profileStatus: String {
-        var allNil = true
-        for item in [fullName, major, interests, resume, linkedIn, github, yearOfGraduation, seasonOfGraduation] as [Any?] {
-            allNil = allNil && item == nil
+        var allEmpty = true
+        for item in [fullName, major, interests, resume, linkedIn, github, graduation, comments] {
+            allEmpty = allEmpty && item.isEmpty
         }
         
-        if allNil { return "Not Started" }
+        if allEmpty { return "Not Started" }
         
         var filledRequirements = true
-        for item in [fullName, major, interests, resume, yearOfGraduation, seasonOfGraduation] as [Any?] {
-            filledRequirements = filledRequirements && item != nil
+        for item in [fullName, major, resume, graduation] {
+            filledRequirements = filledRequirements && !item.isEmpty
         }
         
         if filledRequirements {
@@ -118,6 +125,7 @@ class User {
         linkedIn = dictionary["LinkedIn"]?.string ?? ""
         github = dictionary["GitHub"]?.string ?? ""
         interests = dictionary["Interests"]?.string ?? ""
+        comments = dictionary["Comments"]?.string ?? ""
         
         saveEnabled = true
     }
@@ -161,6 +169,8 @@ class User {
     func save() {
         if !saveEnabled { return }
         
+        User.needsUpload = true
+        
         if writeToFile(path: CURRENT_USER_PATH) == false {
             print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
         } else {
@@ -190,6 +200,7 @@ class User {
         json.dictionaryObject?["GitHub"] = self.github
         json.dictionaryObject?["LinkedIn"] = self.linkedIn
         json.dictionaryObject?["Interests"] = self.interests
+        json.dictionaryObject?["Comments"] = self.comments
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
@@ -204,6 +215,39 @@ class User {
         return NSKeyedArchiver.archiveRootObject(
             prepared,
             toFile: path)
+    }
+    
+    /// Sync the local user data with the server's.
+    static func syncFromServer() {
+        if User.current == nil { return }
+        User.waitingForSync = true
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetUserInfo",
+                           parameters: ["uuid": String(User.current!.uuid)])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            User.waitingForSync = false
+            
+            guard error == nil else {
+                print(error!)
+                NotificationCenter.default.post(name: USER_SYNC_FAILED, object: nil)
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                User.current = User(userInfo: json)
+                NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
+            } else {
+                print(String(data: data!, encoding: .utf8)!)
+                NotificationCenter.default.post(name: USER_SYNC_FAILED, object: nil)
+            }
+        }
+        
+        task.resume()
     }
 }
 

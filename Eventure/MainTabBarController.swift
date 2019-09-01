@@ -135,6 +135,7 @@ class MainTabBarController: UITabBarController {
                 openScreen(isUserAccount: false)
             } else {
                 User.current = User.cachedUser(at: CURRENT_USER_PATH)
+                if User.current != nil { User.syncFromServer() }
                 Organization.current = nil
                 openScreen(isUserAccount: true)
             }

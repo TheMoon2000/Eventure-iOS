@@ -35,6 +35,7 @@
 		CC2167BC231B06F0003B8DE7 /* ProfileInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */; };
 		CC2167BE231B0C46003B8DE7 /* GraduationYearChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */; };
 		CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */; };
+		CC2167C2231B719D003B8DE7 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167C1231B719D003B8DE7 /* CommentCell.swift */; };
 		CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */; };
 		CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC23293123163B720097A915 /* UpdatePasswordPage.swift */; };
 		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
@@ -142,6 +143,7 @@
 		CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoPage.swift; sourceTree = "<group>"; };
 		CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraduationYearChooser.swift; sourceTree = "<group>"; };
 		CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
+		CC2167C1231B719D003B8DE7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		CC23293123163B720097A915 /* UpdatePasswordPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordPage.swift; sourceTree = "<group>"; };
 		CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
@@ -331,6 +333,7 @@
 				67705BD1231395900024FBBA /* PersonalInfoPage.swift */,
 				CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */,
 				CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */,
+				CC2167C1231B719D003B8DE7 /* CommentCell.swift */,
 				CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */,
 				67AFF77923121ACE00329626 /* AccountCell.swift */,
 				CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */,
@@ -802,6 +805,7 @@
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
 				67AFF77C23121ACE00329626 /* AccountCell.swift in Sources */,
 				CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */,
+				CC2167C2231B719D003B8DE7 /* CommentCell.swift in Sources */,
 				CCE214252314ED0E00E9B137 /* GenericOneFieldPage.swift in Sources */,
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,

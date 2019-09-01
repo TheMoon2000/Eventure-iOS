@@ -22,6 +22,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         }
     }
     
+    var changeHandler: ((UITextField) -> ())?
     var endEditingHandler: ((UITextField) -> ())?
     var returnHandler: ((UITextField) -> ())?
     
@@ -44,8 +45,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         h.isActive = true
         
         icon = {
-            let iv = UIImageView()
-            iv.tintColor = MAIN_TINT
+            let iv = UIImageView(image: #imageLiteral(resourceName: "comments"))
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
@@ -63,8 +63,8 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
             button.imageView?.contentMode = .scaleAspectFit
             button.setImage(#imageLiteral(resourceName: "link").withRenderingMode(.alwaysTemplate), for: .normal)
             button.isEnabled = false
-            button.imageEdgeInsets.left = 10
-            button.imageEdgeInsets.right = 10
+            button.imageEdgeInsets.left = 8
+            button.imageEdgeInsets.right = 8
             button.translatesAutoresizingMaskIntoConstraints = false
             addSubview(button)
             
@@ -81,9 +81,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         textfield = {
             let tf = UITextField()
             tf.delegate = self
-            tf.adjustsFontSizeToFitWidth = true
             tf.clearButtonMode = .whileEditing
-            tf.minimumFontSize = 10
             tf.returnKeyType = .next
             tf.autocorrectionType = .no
             tf.translatesAutoresizingMaskIntoConstraints = false
@@ -99,7 +97,9 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         }()
     }
     
-    @objc private func textChanged() {
+    @objc func textChanged() {
+        changeHandler?(textfield)
+        
         let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
         let matches = detector.matches(in: textfield.text!, options: [], range: NSMakeRange(0, textfield.text!.count))
                 

@@ -15,8 +15,8 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
     
     private var yearList: [Int] {
         let currentYear = Int(YEAR_FORMATTER.string(from: Date()))!
-        let earliest = currentYear - 80
-        let latest = currentYear + 20
+        let earliest = currentYear - 49
+        let latest = currentYear + 50
         return Array(earliest...latest)
     }
     
@@ -35,7 +35,7 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
             picker.delegate = self
             picker.showsSelectionIndicator = true
             picker.reloadAllComponents()
-            picker.selectRow(82, inComponent: 0, animated: false) // This year
+            picker.selectRow(50, inComponent: 0, animated: false) // This year
             picker.selectRow(0, inComponent: 1, animated: false) // Spring
             picker.translatesAutoresizingMaskIntoConstraints = false
             addSubview(picker)
@@ -46,6 +46,17 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
             
             return picker
         }()
+    }
+    
+    func set(year: Int?, season: User.GraduationSeason?) {
+        if year != nil {
+            let bounded = min(max(year!, yearList[0]), yearList.last!)
+            picker.selectRow(bounded - yearList[0], inComponent: 0, animated: false)
+        }
+        
+        if season != nil {
+            picker.selectRow(season == .spring ? 0 : 1, inComponent: 1, animated: false)
+        }
     }
     
     // MARK: - Picker view data source

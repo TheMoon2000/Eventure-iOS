@@ -85,7 +85,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         placeholder = {
             let label = UILabel()
             label.text = "e.g. HP Auditorium, online"
-            label.textColor = .lightGray
+            label.textColor = .init(white: 0.79, alpha: 1)
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(label, belowSubview: locationText)
