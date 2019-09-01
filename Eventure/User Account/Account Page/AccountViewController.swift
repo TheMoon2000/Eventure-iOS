@@ -25,8 +25,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView = UITableView(frame: .zero, style: .grouped)
-        myTableView.register(AccountCell.classForCoder(), forCellReuseIdentifier: "MyCell")
-        myTableView.register(SettingsItemCell.classForCoder(), forCellReuseIdentifier: "item")
         myTableView.dataSource = self
         myTableView.delegate = self
         myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
@@ -203,13 +201,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     //create a cell for each table view row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "item") as! SettingsItemCell
+        let cell = SettingsItemCell()
         
         switch (indexPath.section, indexPath.row) {
             
         case (0, 0):
-            // First cell should not be recycled
-            let cell = SettingsItemCell()
             cell.icon.image = User.current?.profilePicture
             if cell.icon.image == nil && User.current != nil {
                 cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
@@ -220,8 +216,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.heightConstraint.constant = 100
             cell.spacingConstraint.constant = 18
             cell.titleLabel.text = "Profile Picture"
-            
-            return cell
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "default_user")
             cell.titleLabel.text = "Manage Account"
