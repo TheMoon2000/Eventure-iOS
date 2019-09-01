@@ -27,14 +27,15 @@ class User {
     var profilePicture: UIImage? { didSet { save() } }
     
     /// A set of uuid strings for events which the user has favorited.
-    var favoritedEvents = Set<String>() { didSet { save() } }
+    var favoritedEvents = Set<String>() {
+        didSet { save() } }
     var interestedEvents = Set<String>() { didSet { save() } }
     var subscriptions = Set<String>() { didSet { save() } }
     var tags = Set<String>() { didSet { save() } }
     let dateRegistered: String // Only for debugging purpose
     
-    private var saveEnabled = false
-    
+    var saveEnabled = false
+    static var waitingForSync = false
     
     // MARK: - Profile information
     var fullName: String { didSet { save() } }
@@ -207,6 +208,39 @@ class User {
         return NSKeyedArchiver.archiveRootObject(
             prepared,
             toFile: path)
+    }
+    
+    /// Sync the local user data with the server's.
+    static func syncFromServer() {
+        if User.current == nil { return }
+        User.waitingForSync = true
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetUserInfo",
+                           parameters: ["uuid": String(User.current!.uuid)])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            User.waitingForSync = false
+            
+            guard error == nil else {
+                print(error!)
+                NotificationCenter.default.post(name: USER_SYNC_FAILED, object: nil)
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                User.current = User(userInfo: json)
+                NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
+            } else {
+                print(String(data: data!, encoding: .utf8)!)
+                NotificationCenter.default.post(name: USER_SYNC_FAILED, object: nil)
+            }
+        }
+        
+        task.resume()
     }
 }
 

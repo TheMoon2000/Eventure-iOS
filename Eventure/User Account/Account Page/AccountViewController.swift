@@ -21,7 +21,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
-        title = "Me"
+        title = User.waitingForSync ? "Syncing..." : "Me"
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView = UITableView(frame: .zero, style: .grouped)
@@ -38,6 +38,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
+        NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: USER_SYNC_FAILED, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: USER_SYNC_SUCCESS, object: nil)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,7 +51,20 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.myTableView.endUpdates()
         }
     }
-   
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func userUpdated() {
+        DispatchQueue.main.async {
+            self.title = "Me"
+            self.navigationController?.navigationBar.setNeedsDisplay()
+            UIView.performWithoutAnimation {
+                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
+            }
+        }
+    }
     
     //when table view is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -192,6 +208,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch (indexPath.section, indexPath.row) {
             
         case (0, 0):
+            // First cell should not be recycled
+            let cell = SettingsItemCell()
             cell.icon.image = User.current?.profilePicture
             if cell.icon.image == nil && User.current != nil {
                 cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
@@ -202,6 +220,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.heightConstraint.constant = 100
             cell.spacingConstraint.constant = 18
             cell.titleLabel.text = "Profile Picture"
+            
+            return cell
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "default_user")
             cell.titleLabel.text = "Manage Account"

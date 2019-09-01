@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class ProfileInfoPage: UITableViewController {
     
     private var graduationCellExpanded = false
     private var contentCells = [[UITableViewCell]]()
+    
+    private var saveBarButton: UIBarButtonItem!
+    private var spinner: UIActivityIndicatorView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +39,12 @@ class ProfileInfoPage: UITableViewController {
             nameCell.textfield.enablesReturnKeyAutomatically = true
             nameCell.textfield.text = User.current?.fullName
             
+            nameCell.changeHandler = { textfield in
+                User.current?.saveEnabled = false
+                User.current?.fullName = textfield.text!
+                User.current?.saveEnabled = true
+            }
+            
             nameCell.endEditingHandler = { textfield in
                 User.current?.fullName = textfield.text!
             }
@@ -52,6 +62,13 @@ class ProfileInfoPage: UITableViewController {
             majorCell.textfield.returnKeyType = .next
             majorCell.textfield.text = User.current?.major
             
+            
+            majorCell.changeHandler = { textfield in
+                User.current?.saveEnabled = false
+                User.current?.major = textfield.text!
+                User.current?.saveEnabled = true
+            }
+            
             majorCell.endEditingHandler = { textfield in
                 User.current?.major = textfield.text!
             }
@@ -68,8 +85,13 @@ class ProfileInfoPage: UITableViewController {
             
             let gradCell = SettingsItemCell()
             gradCell.icon.image = #imageLiteral(resourceName: "graduation")
-            gradCell.titleLabel.text = "Year of Graduation"
+            gradCell.titleLabel.text = "Year of Graduation:"
             gradCell.valueLabel.text = User.current!.graduation
+            if User.current!.graduation.isEmpty {
+                gradCell.valueLabel.text = "Not Set"
+            } else {
+                gradCell.valueLabel.textColor = LINK_COLOR
+            }
             section.append(gradCell)
             
             let chooser = GraduationYearChooser()
@@ -78,6 +100,7 @@ class ProfileInfoPage: UITableViewController {
                 User.current?.yearOfGraduation = year
                 User.current?.seasonOfGraduation = season
                 gradCell.valueLabel.text = User.current!.graduation
+                gradCell.valueLabel.textColor = LINK_COLOR
             }
             section.append(chooser)
             
@@ -99,6 +122,12 @@ class ProfileInfoPage: UITableViewController {
             resumeCell.textfield.enablesReturnKeyAutomatically = true
             resumeCell.textfield.text = User.current?.resume
             resumeCell.textChanged()
+            
+            resumeCell.changeHandler = { textfield in
+                User.current?.saveEnabled = false
+                User.current?.resume = textfield.text!
+                User.current?.saveEnabled = true
+            }
             
             resumeCell.endEditingHandler = { textfield in
                 User.current?.resume = textfield.text!
@@ -131,6 +160,12 @@ class ProfileInfoPage: UITableViewController {
             linkedInCell.textfield.text = User.current?.linkedIn
             linkedInCell.textChanged()
             
+            linkedInCell.changeHandler = { textfield in
+                User.current?.saveEnabled = false
+                User.current?.linkedIn = textfield.text!
+                User.current?.saveEnabled = true
+            }
+            
             linkedInCell.endEditingHandler = { textfield in
                 User.current?.linkedIn = textfield.text!
             }
@@ -150,6 +185,12 @@ class ProfileInfoPage: UITableViewController {
             githubCell.textfield.autocapitalizationType = .none
             githubCell.textfield.text = User.current?.github
             githubCell.textChanged()
+            
+            githubCell.changeHandler = { textfield in
+                User.current?.saveEnabled = false
+                User.current?.github = textfield.text!
+                User.current?.saveEnabled = true
+            }
             
             githubCell.endEditingHandler = { textfield in
                 User.current?.github = textfield.text!
@@ -174,6 +215,12 @@ class ProfileInfoPage: UITableViewController {
             hobbyCell.textfield.placeholder = "Skills and interests (optional)"
             hobbyCell.textfield.text = User.current!.interests
             
+            hobbyCell.changeHandler = { textfield in
+                User.current?.saveEnabled = false
+                User.current?.interests = textfield.text!
+                User.current?.saveEnabled = true
+            }
+            
             hobbyCell.endEditingHandler = { textfield in
                 User.current?.interests = textfield.text!
             }
@@ -188,6 +235,11 @@ class ProfileInfoPage: UITableViewController {
             commentCell.commentText.insertText(User.current!.comments)
             commentCell.commentText.returnKeyType = .default
             commentCell.textChangeHandler = { text in
+                
+                User.current?.saveEnabled = false
+                User.current?.comments = text
+                User.current?.saveEnabled = true
+                
                 UIView.performWithoutAnimation {
                     self.tableView.beginUpdates()
                     self.tableView.endUpdates()
@@ -204,6 +256,78 @@ class ProfileInfoPage: UITableViewController {
         }()
         
         contentCells.append(section3)
+        
+        spinner = UIActivityIndicatorView(style: .gray)
+        spinner.startAnimating()
+        
+        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
+        navigationItem.rightBarButtonItem = saveBarButton
+    }
+    
+    @objc private func save() {
+        
+        guard let user = User.current else {
+            return
+        }
+        
+        navigationItem.rightBarButtonItem = .init(customView: spinner)
+                
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/UpdateUserInfo",
+                           parameters: ["uuid": String(user.uuid)])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        request.httpMethod = "POST"
+        
+        var body = JSON()
+        body.dictionaryObject?["Full name"] = user.fullName
+        body.dictionaryObject?["Graduation year"] = user.yearOfGraduation
+        body.dictionaryObject?["Graduation season"] = user.seasonOfGraduation?.rawValue
+        body.dictionaryObject?["Major"] = user.major
+        body.dictionaryObject?["Resume"] = user.resume
+        body.dictionaryObject?["LinkedIn"] = user.linkedIn
+        body.dictionaryObject?["GitHub"] = user.github
+        body.dictionaryObject?["Interests"] = user.interests
+        body.dictionaryObject?["Comments"] = user.comments
+        
+        request.httpBody = try? body.rawData()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.navigationItem.rightBarButtonItem = self.saveBarButton
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                break
+            default:
+                print(msg!)
+            }
+            
+        }
+        
+        task.resume()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        save()
     }
 
     // MARK: - Table view data source

@@ -22,6 +22,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         }
     }
     
+    var changeHandler: ((UITextField) -> ())?
     var endEditingHandler: ((UITextField) -> ())?
     var returnHandler: ((UITextField) -> ())?
     
@@ -97,6 +98,8 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
     }
     
     @objc func textChanged() {
+        changeHandler?(textfield)
+        
         let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
         let matches = detector.matches(in: textfield.text!, options: [], range: NSMakeRange(0, textfield.text!.count))
                 
