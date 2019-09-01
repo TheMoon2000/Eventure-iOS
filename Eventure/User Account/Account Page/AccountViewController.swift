@@ -54,6 +54,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         NotificationCenter.default.removeObserver(self)
     }
     
+    /// New user data was synced from the server. Make appropriate updates to the account page to reflect those changes.
     @objc private func userUpdated() {
         DispatchQueue.main.async {
             self.title = "Me"

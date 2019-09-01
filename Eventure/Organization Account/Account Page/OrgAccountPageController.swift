@@ -27,7 +27,7 @@ class OrgAccountPageController: UITableViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    /// New account data has been synced from the server and are reflected in the new `Organization.current` instance. Make changes to the dashboard page accordingly, e.g. reload certain row cells.
+    /// New account data has been synced from the server and are reflected in the new `Organization.current` instance. Make appropriate changes to the dashboard page accordingly, e.g. reload certain row cells.
     @objc private func orgUpdated() {
         DispatchQueue.main.async {
             self.title = "Dashboard"
