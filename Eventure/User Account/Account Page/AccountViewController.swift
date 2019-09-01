@@ -190,10 +190,16 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         case (0, 0):
             cell.icon.image = User.current?.profilePicture
+            
+            cell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
+            
             if cell.icon.image == nil && User.current != nil {
                 cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
+                cell.icon.isUserInteractionEnabled = true
+                profilePicture = cell.icon.image
             } else {
                 cell.icon.image = #imageLiteral(resourceName: "guest_profile")
+                cell.icon.isUserInteractionEnabled = false
             }
             cell.imageWidthConstraint.constant = 65
             cell.heightConstraint.constant = 100
