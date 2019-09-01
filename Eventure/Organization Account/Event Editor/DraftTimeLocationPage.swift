@@ -113,9 +113,9 @@ class DraftTimeLocationPage: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 1 {
-            return startTimeExpanded ? 230 : 0
+            return startTimeExpanded ? 220 : 0
         } else if indexPath.row == 3 {
-            return endTimeExpanded ? 230 : 0
+            return endTimeExpanded ? 220 : 0
         }
         
         return super.tableView(tableView, heightForRowAt: indexPath)

@@ -338,8 +338,8 @@ extension Event: CustomStringConvertible, Hashable {
         return lhs.uuid == rhs.uuid
     }
     
-    var hashValue: Int {
-        return uuid.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
     }
     
     var description: String {

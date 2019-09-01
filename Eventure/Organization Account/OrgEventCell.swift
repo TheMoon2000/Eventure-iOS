@@ -228,9 +228,9 @@ class OrgEventCell: UICollectionViewCell {
 extension OrgEventCell: TTTAttributedLabelDelegate {
     func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWith url: URL!) {
         let alert = UIAlertController(title: "Open Link?", message: "You will be redirected to " + url.absoluteString, preferredStyle: .alert)
-        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Go", style: .default, handler: { action in
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            UIApplication.shared.open(url, options: [:])
         }))
         parentVC?.present(alert, animated: true, completion: nil)
     }

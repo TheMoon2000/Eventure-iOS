@@ -33,6 +33,8 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             return
         }
         
+         view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:))))
+        
         device = newDevice
         setCamera(device: device)
     }
@@ -44,6 +46,7 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             let region = UIView()
             region.layer.borderWidth = 1.5
             region.layer.borderColor = MAIN_TINT.cgColor
+            region.isUserInteractionEnabled = false
             region.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(region)
             
@@ -51,8 +54,6 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             region.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -50).isActive = true
             region.widthAnchor.constraint(equalTo: region.heightAnchor).isActive = true
             region.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-            
-            region.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinch(_:))))
             
             return region
         }()
@@ -64,6 +65,7 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         let leftWall: UIView = {
             let wall = UIView()
             wall.backgroundColor = wallColor
+            wall.isUserInteractionEnabled = false
             wall.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(wall)
             
@@ -78,6 +80,7 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         // Right wall
         let rightWall: UIView = {
             let wall = UIView()
+            wall.isUserInteractionEnabled = false
             wall.backgroundColor = wallColor
             wall.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(wall)
@@ -93,6 +96,7 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         // Top wall
         let _: UIView = {
             let wall = UIView()
+            wall.isUserInteractionEnabled = false
             wall.backgroundColor = wallColor
             wall.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(wall)
@@ -108,6 +112,7 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         // Bottom wall
         let _: UIView = {
             let wall = UIView()
+            wall.isUserInteractionEnabled = false
             wall.backgroundColor = wallColor
             wall.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(wall)
@@ -197,7 +202,7 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
     }
     
     @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {
-        let zoomFactor = max(min(1, lastZoomFactor * gesture.scale), device.activeFormat.videoMaxZoomFactor)
+        let zoomFactor = min(max(1, lastZoomFactor * gesture.scale), device.activeFormat.videoMaxZoomFactor)
         
         device.videoZoomFactor = zoomFactor
         

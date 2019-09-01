@@ -35,7 +35,7 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
             picker.delegate = self
             picker.showsSelectionIndicator = true
             picker.reloadAllComponents()
-            picker.selectRow(80, inComponent: 0, animated: false) // This year
+            picker.selectRow(82, inComponent: 0, animated: false) // This year
             picker.selectRow(0, inComponent: 1, animated: false) // Spring
             picker.translatesAutoresizingMaskIntoConstraints = false
             addSubview(picker)
@@ -68,12 +68,15 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        let year = yearList[pickerView.selectedRow(inComponent: 0)]
-        let season = seasons[pickerView.selectedRow(inComponent: 1)]
+        valueChanged()
+    }
+    
+    @objc func valueChanged() {
+        let year = yearList[picker.selectedRow(inComponent: 0)]
+        let season = seasons[picker.selectedRow(inComponent: 1)]
         
         selectionHandler?(year, season)
     }
-    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

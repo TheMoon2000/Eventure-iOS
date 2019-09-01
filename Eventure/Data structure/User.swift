@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class User: CustomStringConvertible {
+class User {
     
     /// The current user, if the app is logged in.
     static var current: User? {
@@ -37,14 +37,14 @@ class User: CustomStringConvertible {
     
     
     // MARK: - Profile information
-    var fullName: String?
-    var major: String?
-    var interests: String?
-    var resume: String?
-    var linkedIn: String?
-    var github: String?
-    var yearOfGraduation: Int?
-    var seasonOfGraduation: GraduationSeason?
+    var fullName: String { didSet { save() } }
+    var major: String { didSet { save() } }
+    var interests: String { didSet { save() } }
+    var resume: String { didSet { save() } }
+    var linkedIn: String { didSet { save() } }
+    var github: String { didSet { save() } }
+    var yearOfGraduation: Int? { didSet { save() } }
+    var seasonOfGraduation: GraduationSeason? { didSet { save() } }
     var graduation: String {
         if yearOfGraduation == nil || seasonOfGraduation == nil {
             return "Not Set"
@@ -55,7 +55,7 @@ class User: CustomStringConvertible {
     var profileStatus: String {
         var allNil = true
         for item in [fullName, major, interests, resume, linkedIn, github, yearOfGraduation, seasonOfGraduation] as [Any?] {
-            allNil = allNil && item != nil
+            allNil = allNil && item == nil
         }
         
         if allNil { return "Not Started" }
@@ -73,6 +73,7 @@ class User: CustomStringConvertible {
         
     }
     
+    // MARK: - Initialization and instance methods
     
     required init(userInfo: JSON) {
         let dictionary = userInfo.dictionary!
@@ -107,20 +108,18 @@ class User: CustomStringConvertible {
         
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
         
-        saveEnabled = true
-    }
-    
-    var description: String {
-        var str = "User <\(displayedName)>:\n"
-        str += "  uuid = \(uuid)\n"
-        str += "  email = \(email)\n"
-        str += "  gender = \(gender.rawValue)\n"
-        str += "  subscriptions = \(subscriptions)\n"
-        str += "  tags = \(tags)\n"
-        str += "  # of favorite events = \(favoritedEvents.count)"
-        str += "  dateRegistered = \(dateRegistered)"
+        fullName = dictionary["Full name"]?.string ?? ""
+        major = dictionary["Major"]?.string ?? ""
+        yearOfGraduation = dictionary["Graduation year"]?.int
+        if let tmp = dictionary["Graduation season"]?.string {
+            seasonOfGraduation = User.GraduationSeason(rawValue: tmp)
+        }
+        resume = dictionary["Resume"]?.string ?? ""
+        linkedIn = dictionary["LinkedIn"]?.string ?? ""
+        github = dictionary["GitHub"]?.string ?? ""
+        interests = dictionary["Interests"]?.string ?? ""
         
-        return str
+        saveEnabled = true
     }
     
     // MARK: - Read & Write
@@ -183,6 +182,15 @@ class User: CustomStringConvertible {
         json.dictionaryObject?["Liked events"] = self.favoritedEvents.description
         json.dictionaryObject?["Interested"] = self.interestedEvents.description
         
+        json.dictionaryObject?["Full name"] = self.fullName
+        json.dictionaryObject?["Major"] = self.major
+        json.dictionaryObject?["Graduation year"] = self.yearOfGraduation
+        json.dictionaryObject?["Graduation season"] = self.seasonOfGraduation?.rawValue
+        json.dictionaryObject?["Resume"] = self.resume
+        json.dictionaryObject?["GitHub"] = self.github
+        json.dictionaryObject?["LinkedIn"] = self.linkedIn
+        json.dictionaryObject?["Interests"] = self.interests
+        
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
         
@@ -212,6 +220,24 @@ extension User {
     enum GraduationSeason: String {
         case spring = "Spring"
         case fall = "Fall"
+    }
+    
+}
+
+
+extension User: CustomStringConvertible {
+    
+    var description: String {
+        var str = "User <\(displayedName)>:\n"
+        str += "  uuid = \(uuid)\n"
+        str += "  email = \(email)\n"
+        str += "  gender = \(gender.rawValue)\n"
+        str += "  subscriptions = \(subscriptions)\n"
+        str += "  tags = \(tags)\n"
+        str += "  # of favorite events = \(favoritedEvents.count)"
+        str += "  dateRegistered = \(dateRegistered)"
+        
+        return str
     }
     
 }

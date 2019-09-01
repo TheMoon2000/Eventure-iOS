@@ -39,15 +39,23 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        myTableView.reloadRows(at: [[1, 1]], with: .none)
+    }
    
     
     //when table view is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        guard User.current != nil else {
-            popLoginReminder()
-            return
+        if indexPath != [4, 0] {
+            guard User.current != nil else {
+                popLoginReminder()
+                return
+            }
         }
         
         switch (indexPath.section, indexPath.row) {

@@ -34,7 +34,7 @@ class SettingsItemCell: UITableViewCell {
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
-            iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 18).isActive = true
             imageWidthConstraint = iv.widthAnchor.constraint(equalToConstant: 28)
             imageWidthConstraint.isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
@@ -69,7 +69,7 @@ class SettingsItemCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(greaterThanOrEqualTo: titleLabel.leftAnchor, constant: 20).isActive = true
-            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -40).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -38).isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return label
