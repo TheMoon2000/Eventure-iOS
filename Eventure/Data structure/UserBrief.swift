@@ -9,7 +9,8 @@
 import UIKit
 import SwiftyJSON
 
-class UserBrief {
+/// An overview of a user's professional profile.
+class UserBrief: Hashable {
     
     let uuid: Int
     let name: String
@@ -48,6 +49,14 @@ class UserBrief {
         }
         
         task.resume()
+    }
+    
+    static func == (lhs: UserBrief, rhs: UserBrief) -> Bool {
+        return lhs.uuid == rhs.uuid
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
     }
 
 }

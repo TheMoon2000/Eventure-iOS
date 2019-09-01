@@ -405,3 +405,5 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
 // MARK: - Notifications
 let USER_SYNC_SUCCESS = Notification.Name("user sync success")
 let USER_SYNC_FAILED = Notification.Name("user sync failed")
+let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
+let ORG_SYNC_FAILED = Notification.Name("org sync failed")

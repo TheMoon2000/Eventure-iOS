@@ -131,10 +131,11 @@ class MainTabBarController: UITabBarController {
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
                 Organization.current = current
+                if Organization.current != nil { Organization.syncFromServer() }
                 User.current = nil
                 openScreen(isUserAccount: false)
-            } else {
-                User.current = User.cachedUser(at: CURRENT_USER_PATH)
+            } else if type == ACCOUNT_TYPE_USER, let current = User.cachedUser(at: CURRENT_USER_PATH) {
+                User.current = current
                 if User.current != nil { User.syncFromServer() }
                 Organization.current = nil
                 openScreen(isUserAccount: true)
