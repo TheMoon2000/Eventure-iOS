@@ -58,7 +58,7 @@ class OrgInfoPage: UIViewController {
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             
             iv.isUserInteractionEnabled = true
-            iv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
+            iv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             
             return iv
         }()
@@ -145,6 +145,13 @@ class OrgInfoPage: UIViewController {
             return tabStrip
         }()
     }
+    
+    @objc private func imageTapped() {
+        if let logo = organization.logoImage {
+            let fullScreen = ImageFullScreenPage(image: logo)
+            present(fullScreen, animated: false, completion: nil)
+        }
+    }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -164,41 +171,5 @@ class OrgInfoPage: UIViewController {
             }
             self.lineTopConstraint.isActive = true
         }, completion: nil)
-    }
-}
-
-
-extension OrgInfoPage: UIScrollViewDelegate {
-    
-    @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
-        let sv = UIScrollView(frame: UIScreen.main.bounds)
-        sv.backgroundColor = .white
-        sv.maximumZoomScale = 3.0
-        sv.minimumZoomScale = 1.0
-        sv.delegate = self
-        
-        let iv = UIImageView(image: logoImage.image)
-        iv.contentMode = .center
-        currentImageView = iv
-        iv.frame = sv.frame
-        
-        sv.addSubview(iv)
-        
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissFullscreenImage))
-        sv.addGestureRecognizer(tap)
-        
-        self.view.addSubview(sv)
-        self.navigationController?.isNavigationBarHidden = true
-    }
-    
-    @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
-        self.navigationController?.isNavigationBarHidden = false
-        sender.view?.removeFromSuperview()
-        currentImageView = nil
-    }
-    
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return currentImageView
     }
 }

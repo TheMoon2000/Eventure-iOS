@@ -11,6 +11,11 @@ import UIKit
 class EventDraft: UIPageViewController {
     
     var orgEventView: OrgEventViewController?
+    var detailPage: EventDetailPage?
+    
+    static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
+    
+    var edited = false
     
     var isEditingExistingEvent = false
     var currentPage = -1 {
@@ -23,12 +28,21 @@ class EventDraft: UIPageViewController {
             
             let percentage = Float(currentPage + 1) / Float(pages.count)
             progressIndicator?.setProgress(percentage, animated: true)
+            
+            if currentPage + 1 < pages.count {
+                navigationItem.rightBarButtonItem?.title = "Next"
+            } else {
+                navigationItem.rightBarButtonItem?.title = "Finish"
+            }
         }
     }
     var draft: Event!
     var pages = [UIViewController]()
     
     private var progressIndicator: UIProgressView!
+    
+    var saveHandler: ((UIAlertAction) -> Void)!
+    
     
     /// Records the progress of the user's current swipe gesture. Negative values indicate a backward swipe.
     var transitionProgress: CGFloat = 0.0 {
@@ -47,14 +61,16 @@ class EventDraft: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = EventDraft.backgroundColor
         dataSource = self
         
         // Prepare for transition progress detection
         view.subviews.forEach { ($0 as? UIScrollView)?.delegate = self }
         
         navigationItem.leftBarButtonItem = .init(title: "Close", style: .plain, target: self, action: #selector(exitEditor))
-        navigationItem.rightBarButtonItem = .init(title: "Next", style: .done, target: self, action: #selector(flipPage))
+        navigationItem.rightBarButtonItem = .init(title: "Next", style: .done, target: self, action: #selector(flipPage(_:)))
+        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
         
         // Set up pages
 
@@ -88,33 +104,18 @@ class EventDraft: UIPageViewController {
         
         currentPage = 0
         setViewControllers([descPage], direction: .forward, animated: false, completion: nil)
-    }
-    
-    @objc func exitEditor() {
-        
-        self.view.endEditing(true)
-        
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-        alert.title = "Save changes?"
         
         let orgID = Organization.current!.id
         
-        let saveHandler: ((UIAlertAction) -> Void) = { action in
-            // TODO: Correctly save the draft event to cache
-            var drafts: [Event] = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
+        saveHandler = { action in
+            var drafts: Set<Event> = self.orgEventView?.allDrafts ?? ( Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? [])
             
-            print("existing drafts: \(drafts.map { $0.uuid })")
+            drafts.insert(self.draft)
             
-            if let index = drafts.firstIndex(where: { $0.uuid == self.draft.uuid }) {
-                drafts[index] = self.draft
-            } else {
-                drafts.append(self.draft)
-            }
-            
-            print("after add: \(drafts.map { $0.uuid })")
+            print(drafts.map { $0.title })
             
             if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
-                self.orgEventView?.updateDrafts()
+                self.orgEventView?.allDrafts = drafts
                 self.orgEventView?.eventCatalog.reloadData()
                 self.dismiss(animated: true, completion: nil)
             } else {
@@ -123,7 +124,19 @@ class EventDraft: UIPageViewController {
                 self.present(warning, animated: true, completion: nil)
             }
         }
+    }
+    
+    @objc func exitEditor() {
         
+        self.view.endEditing(true)
+        
+        guard edited else {
+            self.dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+        alert.title = "Save changes?"
         
         if !isEditingExistingEvent {
             alert.message = "You can save the event as a draft and come back later, or discard it."
@@ -131,7 +144,7 @@ class EventDraft: UIPageViewController {
         } else if draft.published {
             alert.message = "You have made changes to a published event."
             alert.addAction(.init(title: "Save and Re-publish", style: .default, handler: { action in
-                // TODO: publish the event
+                self.publishEvent()
             }))
         } else {
             alert.message = "You have made changes to an existing draft."
@@ -147,9 +160,168 @@ class EventDraft: UIPageViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    @objc private func flipPage() {
-        if currentPage + 1 < pages.count {
-            setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
+    @objc private func flipPage(_ sender: UIBarButtonItem) {
+        if sender.title == "Next" {
+            if currentPage + 1 < pages.count {
+                setViewControllers([pages[currentPage + 1]], direction: .forward, animated: true, completion: nil)
+            }
+        } else {
+            let alert = UIAlertController(title: "Event Completed", message: nil, preferredStyle: .alert)
+            alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+
+            if !draft.published && !isEditingExistingEvent {
+                alert.message = "You have finished composing your new event. Would you like to publish it now?"
+                alert.addAction(.init(title: "Save to Drafts", style: .default, handler: saveHandler))
+                alert.addAction(.init(title: "Publish", style: .default, handler: { action in
+                    self.publishEvent()
+                }))
+            } else if !draft.published {
+                alert.message = "You have modified a draft event. Would you like to save your changes or publish this event right away?"
+                alert.addAction(.init(title: "Save and Close", style: .default, handler: saveHandler))
+                alert.addAction(.init(title: "Publish", style: .default, handler: { action in
+                    self.publishEvent()
+                }))
+            } else {
+                alert.message = "You have modified a published event. Would you like to publish your changes now or save a new local copy of it?"
+                alert.addAction(.init(title: "Save as New Draft", style: .default, handler: { action in
+                    self.draft.renewUUID() // The event now has its own UUID.
+                    self.draft.published = false // Duplicate copy is not published.
+                    self.saveHandler(action)
+                }))
+                alert.addAction(.init(title: "Re-publish", style: .default, handler: { action in
+                    self.publishEvent()
+                }))
+            }
+            
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    private func publishEvent() {
+        
+        let spinner = UIActivityIndicatorView(style: .gray)
+        spinner.startAnimating()
+        
+        let doneButton = navigationItem.rightBarButtonItem!
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: spinner)
+        
+        let warning = UIAlertController(title: "Unable to publish event", message: nil, preferredStyle: .alert)
+        warning.addAction(.init(title: "OK", style: .cancel, handler: nil))
+        
+        // Perform a series of checks to make sure that the event is valid
+        guard !draft.title.isEmpty else {
+            warning.message = "Event title should not be blank!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        guard draft.startTime != nil else {
+            warning.message = "Event start time should not be blank!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        guard draft.endTime != nil else {
+            warning.message = "Event end time should not be blank!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        guard !draft.tags.isEmpty && draft.tags.count <= 3 else {
+            warning.message = "You must pick between 1 ~ 3 tags!"
+            present(warning, animated: true) {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            return
+        }
+        
+        let url = URL(string: API_BASE_URL + "events/CreateEvent")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let parameters = [
+            "uuid": draft.uuid,
+            "orgId": Organization.current!.id,
+            "title": draft.title,
+            "description": draft.eventDescription,
+            "location": draft.location,
+            "startTime": DATE_FORMATTER.string(from: draft.startTime!),
+            "endTime": DATE_FORMATTER.string(from: draft.endTime!),
+            "public": "1",
+            "tags": draft.tags.description
+        ]
+        
+        var fileData = [String : Data]()
+        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.6)
+        
+        request.addMultipartBody(parameters: parameters, files: fileData)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.navigationItem.rightBarButtonItem = doneButton
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)!
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                EventDraft.removeDraft(uuid: self.draft.uuid) {
+                    var published: Set<Event> = self.orgEventView?.allEvents ?? []
+                    published.insert(self.draft)
+                    
+                    self.detailPage?.event = self.draft
+                    
+                    DispatchQueue.main.async {
+                        self.orgEventView?.allEvents = published
+                        self.orgEventView?.eventCatalog.reloadData()
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
+                
+            default:
+                warning.message = msg
+                DispatchQueue.main.async {
+                    self.present(warning, animated: true, completion: nil)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    static func removeDraft(uuid: String, handler: (() -> ())? = nil) {
+        
+        guard let orgID = Organization.current?.id else {
+            preconditionFailure("Org ID is nil")
+        }
+        
+        var drafts: Set<Event> = Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? []
+        
+        drafts = drafts.filter { $0.uuid != uuid }
+        
+        if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
+            handler?()
+        } else {
+            print("WARNING: Failed to remove draft \(uuid)!")
         }
     }
 

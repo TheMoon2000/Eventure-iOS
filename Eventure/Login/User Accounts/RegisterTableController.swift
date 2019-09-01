@@ -83,19 +83,15 @@ class RegisterTableController: UITableViewController {
         
         // 1.1 (2)
         let emailCell: UITableViewCell = {
-            let cell = MinimalTextCell()
-            cell.textField.placeholder = "Email Address"
-            cell.textField.keyboardType = .emailAddress
-            cell.textField.textContentType = .emailAddress
-            cell.textField.autocorrectionType = .no
+            let cell = EmailCell(parentVC: self)
             
             cell.changeHandler = { cell in
                 self.verifyEmail(cell: cell, editing: true)
-                self.registrationData.email = cell.textField.text!
+                self.registrationData.email = cell.email
             }
             
             cell.completionHandler = { cell in
-                cell.status = .loading
+                cell.status = .none
                 self.verifyEmail(cell: cell)
             }
             
@@ -309,28 +305,25 @@ class RegisterTableController: UITableViewController {
      - editing: Whether the verification is triggered by text change instead of end editing. Default is `false`.
      */
     
-    private func verifyEmail(cell: MinimalTextCell, editing: Bool = false) {
+    private func verifyEmail(cell: EmailCell, editing: Bool = false) {
                 
         if editing {
             cell.status = .none
             return
         }
         
-        guard cell.textField.text!.isValidEmail() else {
+        guard cell.email.isValidEmail() else {
             cell.status = .fail
             return
         }
         
-        let parameters = ["email": cell.textField.text ?? ""]
+        let parameters = ["email": cell.email]
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetUserInfo",
                            parameters: parameters)!
         
         var request = URLRequest(url: url)
-        
-        // Authentication
-        let token = "\(USERNAME):\(PASSWORD)".data(using: .ascii)!.base64EncodedString()
-        request.addValue("Basic \(token)", forHTTPHeaderField: "Authorization")
+        request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in

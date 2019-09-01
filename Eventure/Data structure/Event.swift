@@ -12,8 +12,9 @@ import SwiftyJSON
 class Event {
     static var current: Event?
     static var drafts = [Event]()
+    static var supportedCampuses = [String : String]()
     
-    private static var cachedEvents = [String: [[String: Data]]]()
+    private static var cachedEvents = [String: [[String: Any]]]()
 
     let readableFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -22,18 +23,30 @@ class Event {
         return formatter
     }()
     
-    let uuid: String
+    let shortFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    var uuid: String
     var title: String
     var location: String
     var startTime: Date?
     var endTime: Date?
     var eventDescription: String
     var eventVisual: UIImage?
+    var hasVisual = false
     var hostID: String
     var hostTitle: String
-    var currentUserGoingStatus: Going = .neutral
+    var currentUserInterested: Bool {
+        return User.current != nil && User.current!.interestedEvents.contains(uuid)
+    }
+    var currentUserFavorited: Bool {
+        return User.current != nil && User.current!.favoritedEvents.contains(uuid)
+    }
     var tags = Set<String>()
-    // # of interested, # of going
     // API: array of user id
     
     var published: Bool
@@ -44,7 +57,11 @@ class Event {
     /// A description of the start time of the event.
     var timeDescription: String {
         if startTime != nil {
-            return readableFormatter.string(from: startTime!)
+            if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: startTime!) {
+                return readableFormatter.string(from: startTime!)
+            } else {
+                return shortFormatter.string(from: startTime!)
+            }
         } else {
             return "Unspecified"
         }
@@ -61,7 +78,7 @@ class Event {
         if startTime != nil && endTime != nil {
             return dc.string(from: endTime!.timeIntervalSince(startTime!))!
         } else {
-            return "TBD"
+            return "TBA"
         }
     }
     
@@ -74,8 +91,8 @@ class Event {
                      endTime: "",
                      location: "",
                      tags: Set<String>(),
-                     hostID: Organization.current?.id ?? "<org id>",
-                     hostTitle: Organization.current?.title ?? "<Title>")
+                     hostID: Organization.current?.id ?? "",
+                     hostTitle: Organization.current?.title ?? "Untitled")
     }
     
     init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
@@ -97,61 +114,57 @@ class Event {
         
         uuid = dictionary["uuid"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
-        location = dictionary["Location"]?.string ?? ""
+        location = dictionary["Location"]?.string ?? "TBA"
+        
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)
         }
+        
         if let endTimeString = dictionary["End time"]?.string {
             self.endTime = DATE_FORMATTER.date(from: endTimeString)
         }
+        
         eventDescription = dictionary["Description"]?.string ?? ""
-        //eventDescription = dictionary["Description"]?.string ?? ""
-        if let hostInfo = dictionary["Organization"] {
-            let org = Organization(orgInfo: hostInfo)
-            hostTitle = org.title
-            hostID = org.id
-        } else {
-            hostTitle = "<Title>"
-            hostID = "<org id>"
-        }
+        hostTitle = dictionary["Organization title"]?.string ?? "Untitled"
+        hostID = dictionary["Organization"]?.string ?? ""
         
         published = (dictionary["Published"]?.int ?? 0) == 1
         
-        /*let attendees_raw = { () -> [String] in
-         var attendees_arr = [String]()
-         for a in attendees {
-         attendees_arr.append(a.email)
-         }
-         return attendees_arr
-         }()
-         
-         if let attendees_raw = dictionary["Attendees"]?.string {
-         let attendees_Email = (JSON(parseJSON: attendees_raw).arrayObject as? [String]) ?? [String]()
-         }*/
-        
         if let tags_raw = dictionary["Tags"]?.string {
-            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
-            tags = Set(tagsArray)
-        } else {
-            tags = []
-        }
-        
-        if let going_raw = dictionary["Going"]?.int {
-            currentUserGoingStatus = Going(rawValue: going_raw) ?? .neutral
+            if let tagsArray = JSON(parseJSON: tags_raw).arrayObject as? [String] {
+                tags = Set(tagsArray)
+            }
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
+        hasVisual = dictionary["Has cover"]?.bool ?? false
+        
+        if let isInterested = dictionary["Is interested"]?.bool {
+            if isInterested {
+                User.current?.interestedEvents.insert(uuid)
+            } else {
+                User.current?.interestedEvents.remove(uuid)
+            }
+        }
+        
+        if let isFavorited = dictionary["Is favorited"]?.bool {
+            if isFavorited {
+                User.current?.favoritedEvents.insert(uuid)
+            } else {
+                User.current?.favoritedEvents.remove(uuid)
+            }
+        }
     }
     
-    static func readFromFile(path: String) -> [String: [Event]] {
+    static func readFromFile(path: String) -> [String: Set<Event>] {
         
-        var events = [String: [Event]]()
+        var events = [String: Set<Event>]()
         
         guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: path) else {
             return [:] // It's fine if no event collection cache exists.
         }
         
-        guard let collection = fileData as? [String: [[String: Data]]] else {
+        guard let collection = fileData as? [String: [[String: Any]]] else {
             print("WARNING: Cannot read event collection at \(path)!")
             return [:]
         }
@@ -160,7 +173,7 @@ class Event {
         
         for (id, eventList) in collection {
             for eventRawData in eventList {
-                guard let mainData = eventRawData["main"] else {
+                guard let mainData = eventRawData["main"] as? Data else {
                     print("WARNING: Key `main` not found in event collection cache!")
                     continue
                 }
@@ -172,14 +185,14 @@ class Event {
                 
                 if let json = try? JSON(data: eventMain) {
                     let event: Event = Event(eventInfo: json)
-                    var orgSpecificEvents: [Event] = events[id] ?? []
+                    var orgSpecificEvents: Set<Event> = events[id] ?? []
 
                     // These two attributes need to be manually extracted from the JSON
                     event.hostID = json.dictionary?["Host ID"]?.string ?? event.hostID
                     event.hostTitle = json.dictionary?["Host title"]?.string ?? event.hostTitle
                     
-                    event.eventVisual = UIImage(data: eventRawData["cover"] ?? Data())
-                    orgSpecificEvents.append(event)
+                    event.eventVisual = eventRawData["cover"] as? UIImage
+                    orgSpecificEvents.insert(event)
                     
                     events[id] = orgSpecificEvents
                 } else {
@@ -191,47 +204,23 @@ class Event {
         return events
     }
     
-    static func writeToFile(orgID: String, events: [Event], path: String) -> Bool {
+    static func writeToFile(orgID: String, events: Set<Event>, path: String) -> Bool {
         
-        var collection = [[String : Data]]()
+        var collection = [[String : Any]]()
         
         for event in events {
-            var eventRaw = [String : Data]()
+            var eventRaw = [String : Any]()
             
-            var main = JSON()
-            main.dictionaryObject?["uuid"] = event.uuid
-            main.dictionaryObject?["Title"] = event.title
-            main.dictionaryObject?["Location"] = event.location
-            
-            if let startTime = event.startTime {
-                main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime)
-            }
-            
-            if let endTime = event.endTime {
-                main.dictionaryObject?["End time"] = DATE_FORMATTER.string(from: endTime)
-            }
-            
-            main.dictionaryObject?["Description"] = event.eventDescription
-            
-            // These two values are not part of the JSON used for initialization
-            main.dictionaryObject?["Host title"] = event.hostTitle
-            main.dictionaryObject?["Host ID"] = event.hostID
-            main.dictionaryObject?["Published"] = event.published ? 1 : 0
-            main.dictionaryObject?["Tags"] = event.tags.description
-            main.dictionaryObject?["Going"] = event.currentUserGoingStatus.rawValue
-            
-            let mainEncrypted: Data? = NSData(data: try! main.rawData()).aes256Encrypt(withKey: AES_KEY)
+            let mainEncrypted: Data? = NSData(data: try! event.encodedJSON.rawData()).aes256Encrypt(withKey: AES_KEY)
             
             eventRaw["main"] = mainEncrypted
-            eventRaw["cover"] = event.eventVisual?.pngData()
+            eventRaw["cover"] = event.eventVisual
             
             collection.append(eventRaw)
         }
         
         Event.cachedEvents[orgID] = collection
-        
-        print(Event.cachedEvents)
-        
+                
         if NSKeyedArchiver.archiveRootObject(Event.cachedEvents, toFile: path) {
             return true
         } else {
@@ -271,6 +260,69 @@ class Event {
         return ""
     }
     
+    
+    /// Load the cover image for an event.
+    func getCover(_ handler: ((Event) -> ())?) {
+        if !hasVisual || eventVisual != nil { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEventCover",
+                           parameters: ["uuid": uuid])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.eventVisual = UIImage(data: data!)
+            DispatchQueue.main.async {
+                handler?(self)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    private var encodedJSON: JSON {
+        var main = JSON()
+        main.dictionaryObject?["uuid"] = uuid
+        main.dictionaryObject?["Title"] = title
+        main.dictionaryObject?["Location"] = location
+        
+        if startTime != nil {
+            main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime!)
+        }
+        
+        if endTime != nil {
+            main.dictionaryObject?["End time"] = DATE_FORMATTER.string(from: endTime!)
+        }
+        
+        main.dictionaryObject?["Description"] = eventDescription
+        main.dictionaryObject?["Organization title"] = hostTitle
+        main.dictionaryObject?["Organization"] = hostID
+        main.dictionaryObject?["Published"] = published ? 1 : 0
+        main.dictionaryObject?["Tags"] = tags.description
+        main.dictionaryObject?["Has cover"] = hasVisual
+        main.dictionaryObject?["Active"] = active ? 1 : 0
+        
+        return main
+    }
+    
+    func copy() -> Event {
+        let new = Event(eventInfo: encodedJSON)
+        new.eventVisual = self.eventVisual
+        return new
+    }
+    
+    func renewUUID() {
+        self.uuid = UUID().uuidString.lowercased()
+    }
+    
 }
 
 
@@ -281,13 +333,22 @@ extension Event {
 }
 
 
-extension Event: CustomStringConvertible {
+extension Event: CustomStringConvertible, Hashable {
+    static func == (lhs: Event, rhs: Event) -> Bool {
+        return lhs.uuid == rhs.uuid
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
+    }
+    
     var description: String {
         var str = "Event \"\(title)\":\n"
         str += "  uuid = \(uuid)\n"
         str += "  time = \(timeDescription)\n"
         str += "  location = \(location)\n"
-        str += "  tags = \(tags.description)"
+        str += "  tags = \(tags.description)\n"
+        str += "  published = \(published)"
         
         return str
     }

@@ -9,16 +9,18 @@
 import UIKit
 import XLPagerTabStrip
 
-class OtherViewController: UIViewController, IndicatorInfoProvider  {
+class OtherViewController: UIViewController, IndicatorInfoProvider {
     
     var event: Event!
+    var detailPage: EventDetailPage!
     private var textView: UITextView!
 
-    required init(event: Event!) {
+    required init(detailPage: EventDetailPage) {
         super.init(nibName: nil, bundle: nil)
         
-        self.event = event!
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
+        self.event = detailPage.event
+        self.detailPage = detailPage
+        view.backgroundColor = detailPage.view.backgroundColor
         
         textView = {
             let tv = UITextView()
@@ -28,14 +30,15 @@ class OtherViewController: UIViewController, IndicatorInfoProvider  {
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
             tv.isEditable = false
+            tv.isScrollEnabled = false
             tv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(tv)
             
             tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
             tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-            tv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            tv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
             
-            let bottomConstraint = tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            let bottomConstraint = tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
@@ -50,23 +53,11 @@ class OtherViewController: UIViewController, IndicatorInfoProvider  {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // Reload information here
+        detailPage.invisible.textView.attributedText = textView.attributedText
     }
     
-
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: "Other")
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

@@ -23,15 +23,17 @@ class OrgEventViewController: UIViewController {
         return false
     }
     
-    // Date bounds
-    var lowerBound: Date?
-    var upperBound: Date?
-    
     private let refreshControl = UIRefreshControl()
     private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
         NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
         .font: UIFont.systemFont(ofSize: 17, weight: .medium)
     ]
+    
+    // Date bounds
+    var lowerBound: Date?
+    var upperBound: Date?
+    
+    private let searchController = UISearchController(searchResultsController: nil)
     
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
@@ -41,15 +43,19 @@ class OrgEventViewController: UIViewController {
     private var publishedLabel: UILabel!
     private var draftLabel: UILabel!
     
-    var allEvents = [Event]()
-    var allDrafts = [Event]()
-    var displayedEvents: [Event] {
-        if topTab.selectedSegmentIndex == 0 {
-            return allEvents
-        } else {
-            return allDrafts
+    var allEvents = Set<Event>() {
+        didSet {
+            updateFiltered()
         }
     }
+    var allDrafts = Set<Event>() {
+        didSet {
+            updateFiltered()
+        }
+    }
+    
+    /// An ordered list of events that should be shown.
+    var filteredEvents = [Event]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +63,15 @@ class OrgEventViewController: UIViewController {
         view.backgroundColor = .white
         title = "Event Posts"
         
-        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createNewEvent))
+        // Search bar setup
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.placeholder = "Search Your Events"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
+        
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -99,6 +113,7 @@ class OrgEventViewController: UIViewController {
             if useRefreshControl {
                 ec.refreshControl = self.refreshControl
             }
+            ec.alwaysBounceVertical = true
             ec.contentInset.top = 8
             ec.contentInset.bottom = 8
             if !topTabBg.isHidden {
@@ -198,7 +213,7 @@ class OrgEventViewController: UIViewController {
         }
     }
     
-    private func updateEvents(pulled: Bool = false) {
+    @objc private func updateEvents(pulled: Bool = false) {
         
         publishedLabel.text = ""
 
@@ -206,7 +221,7 @@ class OrgEventViewController: UIViewController {
             spinner.startAnimating()
             spinnerLabel.isHidden = false
             allEvents.removeAll()
-            eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+            eventCatalog.reloadData()
             refreshControl.isEnabled = false
             refreshControl.isHidden = true
         }
@@ -245,18 +260,16 @@ class OrgEventViewController: UIViewController {
             }
             
             if let eventsList = try? JSON(data: data!).arrayValue {
-                self.allEvents.removeAll()
-                for eventData in eventsList {
-                    let event = Event(eventInfo: eventData)
-                    if self.filterFunction(event) {
-                        self.allEvents.append(event)
-                    }
+                
+                var tmp = Set<Event>()
+                for eventJSON in eventsList {
+                    tmp.insert(Event(eventInfo: eventJSON))
                 }
-                self.allEvents.sort { self.sortFunction(event1: $0, event2: $1) }
                 
                 DispatchQueue.main.async {
+                    self.allEvents = tmp
                     self.eventCatalog.reloadData()
-                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Events" : ""
+                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Published Events" : ""
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -276,14 +289,29 @@ class OrgEventViewController: UIViewController {
         task.resume()
     }
     
+    @objc func refresh() {
+        updateEvents(pulled: false)
+    }
+    
     @objc private func changedTab() {
         eventCatalog.reloadData()
         
         let isDraftMode = topTab.selectedSegmentIndex == 1
         publishedLabel.isHidden = isDraftMode
         draftLabel.isHidden = !isDraftMode
+        
+        if isDraftMode {
+            navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createNewEvent))
+            spinner.alpha = 0.0
+            spinnerLabel.alpha = 0.0
+        } else {
+            navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
+            spinner.alpha = 1.0
+            spinnerLabel.alpha = 1.0
+        }
+        
+        updateFiltered()
     }
-    
     
     @objc private func createNewEvent() {
         let draftEvent = Event.empty
@@ -304,9 +332,11 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let count = displayedEvents.count
+        let count = filteredEvents.count
         
-        if topTab.selectedSegmentIndex == 1 {
+        if topTab.selectedSegmentIndex == 0 {
+            publishedLabel.text = count == 0 && !spinner.isAnimating ? "No Published Events" : ""
+        } else if topTab.selectedSegmentIndex == 1 {
             draftLabel.text = count == 0 ? "No Drafts" : ""
         }
         
@@ -320,7 +350,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "org event", for: indexPath) as! OrgEventCell
         cell.parentVC = self
-        cell.setupCellWithEvent(event: displayedEvents[indexPath.row])
+        cell.setupCellWithEvent(event: filteredEvents[indexPath.row], withImage: true)
         
         return cell
     }
@@ -330,7 +360,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
         detailPage.orgEventView = self
-        detailPage.event = displayedEvents[indexPath.row]
+        detailPage.event = filteredEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
     }
 }
@@ -353,13 +383,12 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     var equalSpacing: CGFloat {
         let rowCount = floor(usableWidth / cardWidth)
         let extraSpace = usableWidth - rowCount * cardWidth
-        
-        return extraSpace / (rowCount + 1)
+        return extraSpace / (rowCount + 1) - 1
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cell = OrgEventCell()
-        cell.setupCellWithEvent(event: displayedEvents[indexPath.row])
+        cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
     }
@@ -374,9 +403,17 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: equalSpacing,
-                            left: equalSpacing,
+                            left: 8,
                             bottom: equalSpacing,
-                            right: equalSpacing)
+                            right: 8)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            self.eventCatalog.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
     }
 
 }
@@ -395,7 +432,7 @@ extension OrgEventViewController {
         }
     }
     
-    /// The filter that is applied to all events.
+    /// The filter that is adjusted by user settings.
     func filterFunction(_ event: Event) -> Bool {
         if event.startTime == nil {
             return false
@@ -406,5 +443,31 @@ extension OrgEventViewController {
         let hostCond = orgID == nil || event.hostID == orgID
         
         return lowCond && highCond && hostCond
+    }
+}
+
+
+extension OrgEventViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        DispatchQueue.main.async {
+            self.updateFiltered()
+            self.eventCatalog.reloadData()
+        }
+    }
+    
+    func updateFiltered() {
+        if topTab.selectedSegmentIndex == 0 {
+            filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
+            . sorted(by: { sortFunction(event1: $0, event2: $1) })
+        } else {
+            filteredEvents = allDrafts.filter { searchFilter(event: $0) }
+            . sorted(by: { sortFunction(event1: $0, event2: $1) })
+        }
+        
+    }
+    
+    func searchFilter(event: Event) -> Bool {
+        let searchString = searchController.searchBar.text!
+        return searchString.isEmpty || event.title.lowercased().contains(searchString.lowercased()) || event.eventDescription.lowercased().contains(searchString.lowercased())
     }
 }

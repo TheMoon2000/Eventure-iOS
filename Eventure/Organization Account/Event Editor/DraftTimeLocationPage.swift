@@ -19,13 +19,16 @@ class DraftTimeLocationPage: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .init(white: 0.94, alpha: 1)
+        view.backgroundColor = EventDraft.backgroundColor
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
         tableView.tintColor = MAIN_TINT
 
         let startTopCell = DatePickerTopCell(title: "Start time:")
+        if let startDate = draftPage.draft.startTime {
+            startTopCell.displayedDate = startDate
+        }
         contentCells.append(startTopCell)
         
         
@@ -34,7 +37,7 @@ class DraftTimeLocationPage: UITableViewController {
             
             let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
-            cell.datePicker.setDate(rounded, animated: false)
+            cell.datePicker.date = draftPage.draft.startTime ?? rounded
             
             return cell
         }()
@@ -42,17 +45,22 @@ class DraftTimeLocationPage: UITableViewController {
         contentCells.append(startBottomCell)
         
         let endTopCell = DatePickerTopCell(title: "End time:")
+        if let endDate = draftPage.draft.endTime {
+            endTopCell.displayedDate = endDate
+        }
         contentCells.append(endTopCell)
         
         let endBottomCell: DatePickerBottomCell = {
             let cell = DatePickerBottomCell()
             
-            let endDate = startBottomCell.datePicker.date.addingTimeInterval(3600)
-            cell.datePicker.setDate(endDate, animated: false)
-                        
+            let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
+            let rounded = Date(timeIntervalSinceReferenceDate: seconds)
+            cell.datePicker.date = draftPage.draft.endTime ?? rounded
+            
             cell.dateChangedHandler = { [weak self] date in
                 endTopCell.displayedDate = date
                 self?.draftPage.draft.endTime = date
+                self?.draftPage.edited = true
             }
             
             return cell
@@ -64,21 +72,25 @@ class DraftTimeLocationPage: UITableViewController {
         startBottomCell.dateChangedHandler = { [weak self] date in
             startTopCell.displayedDate = date
             self?.draftPage.draft.startTime = date
-            endBottomCell.datePicker.minimumDate = date.addingTimeInterval(5 * 60)
-            if date.timeIntervalSince(endTopCell.displayedDate) > 0 {
-                endBottomCell.datePicker.date = date
-                endBottomCell.dateChangedHandler?(date)
+            let minimumEndTime = date.addingTimeInterval(300)
+            endBottomCell.datePicker.minimumDate = minimumEndTime
+            if endTopCell.displayedDate.timeIntervalSince(date) < 300 {
+                endBottomCell.datePicker.setDate(minimumEndTime, animated: false)
+                endBottomCell.dateChangedHandler!(minimumEndTime)
             }
+            self?.draftPage.edited = true
         }
         
         
         let locationCell = DraftLocationCell()
+        locationCell.locationText.insertText(draftPage.draft.location)
         locationCell.textChangeHandler = { [weak self] text in
             UIView.performWithoutAnimation {
                 self?.tableView.beginUpdates()
                 self?.tableView.endUpdates()
             }
             self?.draftPage.draft.location = text
+            self?.draftPage.edited = true
         }
         contentCells.append(locationCell)
     }
@@ -101,9 +113,9 @@ class DraftTimeLocationPage: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 1 {
-            return startTimeExpanded ? 230 : 0
+            return startTimeExpanded ? 220 : 0
         } else if indexPath.row == 3 {
-            return endTimeExpanded ? 230 : 0
+            return endTimeExpanded ? 220 : 0
         }
         
         return super.tableView(tableView, heightForRowAt: indexPath)

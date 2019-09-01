@@ -308,9 +308,11 @@ extension DraftDescriptionPage: UITextViewDelegate {
         if textView == titleText {
             titlePlaceholder.isHidden = !textView.text.isEmpty
             draftPage.draft.title = textView.text
+            draftPage.edited = true
         } else if textView == descriptionText {
             descriptionPlaceholder.isHidden = !textView.text.isEmpty
             draftPage.draft.eventDescription = textView.text
+            draftPage.edited = true
             
             updateWordCount()
             scrollToCursor()

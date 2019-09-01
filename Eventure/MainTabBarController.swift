@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class MainTabBarController: UITabBarController {
     
@@ -16,9 +17,50 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .white
-        
+        view.backgroundColor = .white
         view.tintColor = MAIN_TINT
+    }
+    
+    func loadSupportedCampuses() {
+        
+        if !Campus.supported.isEmpty { return }
+        
+        let url = URL(string: API_BASE_URL + "account/Campuses")!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let allCampuses = try? JSON(data: data!).arrayValue {
+                for campus in allCampuses {
+                    if campus.dictionary != nil {
+                        Campus.supported.append(Campus(json: campus))
+                    }
+                }
+                print("Loaded supported campuses: \(Campus.supported.map { $0.fullName })")
+            } else {
+                print(String(data: data!, encoding: .utf8)!)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func checkForNotices() {
+        /*
+        let alert = UIAlertController(
+            title: "Server Notice",
+            message: String(data: data!, encoding: .utf8),
+            preferredStyle: .alert)
+        alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)*/
     }
     
     private func setupUserTabs() {
@@ -50,12 +92,11 @@ class MainTabBarController: UITabBarController {
         let tab1 = OrgEventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
         
-        let tab2 = AccountViewController()
-        tab2.tabBarItem = UITabBarItem(title: "Account Settings", image: #imageLiteral(resourceName: "settings"), tag: 1)
+        let tab2 = OrgAccountPageController()
+        tab2.tabBarItem = UITabBarItem(title: "Dashboard", image: #imageLiteral(resourceName: "dashboard"), tag: 1)
     
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
             
             return nav
@@ -83,12 +124,18 @@ class MainTabBarController: UITabBarController {
     }
     
     func loginSetup() {
+        
+        loadSupportedCampuses()
+        checkForNotices()
+        
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
                 Organization.current = current
+                User.current = nil
                 openScreen(isUserAccount: false)
             } else {
                 User.current = User.cachedUser(at: CURRENT_USER_PATH)
+                Organization.current = nil
                 openScreen(isUserAccount: true)
             }
         } else {

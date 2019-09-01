@@ -23,13 +23,6 @@ class DatePickerTopCell: UITableViewCell {
         formatter.locale = Locale(identifier: "en_US")
         return formatter
     }()
-    
-    let yearFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
 
     private var bgView: UIView!
     private var leftLabel: UILabel!
@@ -38,7 +31,7 @@ class DatePickerTopCell: UITableViewCell {
     
     var displayedDate = Date() {
         didSet {
-            if yearFormatter.string(from: Date()) != yearFormatter.string(from: displayedDate) {
+            if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: displayedDate) {
                 rightLabel.text = longFormatter.string(from: displayedDate)
             } else {
                 rightLabel.text = shortFormatter.string(from: displayedDate)
@@ -49,7 +42,7 @@ class DatePickerTopCell: UITableViewCell {
     required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        backgroundColor = .init(white: 0.94, alpha: 1)
+        backgroundColor = EventDraft.backgroundColor
         selectionStyle = .none
         
         bgView = {
@@ -61,9 +54,9 @@ class DatePickerTopCell: UITableViewCell {
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 6).isActive = true
             
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -5)
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -6)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             

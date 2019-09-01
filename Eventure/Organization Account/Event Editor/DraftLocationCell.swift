@@ -12,7 +12,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
 
     private var bgView: UIView!
     private var locationLabel: UILabel!
-    private var locationText: UITextView!
+    private(set) var locationText: UITextView!
     private var placeholder: UILabel!
     private var baseline: UIView!
     
@@ -77,7 +77,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
             tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             tv.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 5).isActive = true
-            tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
+            tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -10).isActive = true
             
             return tv
         }()

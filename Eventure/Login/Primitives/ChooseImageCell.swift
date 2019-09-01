@@ -10,31 +10,33 @@ import UIKit
 
 class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    private var parentVC: RegisterOrganization!
+    private var parentVC: UIViewController!
     private var overlay: UIView!
     private var titleLabel: UILabel!
     private var logo: UIImageView!
     private var clearButton: UIButton!
     
     private var logoShadeColor = UIColor(white: 0.92, alpha: 1)
+    
+    var chooseImageHandler: ((UIImage?) -> ())?
 
-    init(vc: RegisterOrganization) {
+    init(parentVC: UIViewController, sideInset: CGFloat = 30) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        parentVC = vc
+        self.parentVC = parentVC
         
         selectionStyle = .none
         heightAnchor.constraint(equalToConstant: 65).isActive = true
         
         overlay = {
             let overlay = UIView()
-            overlay.layer.cornerRadius = 12
+            overlay.layer.cornerRadius = 7
             overlay.layer.borderColor = LINE_TINT.cgColor
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
-            overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: sideInset).isActive = true
+            overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -sideInset).isActive = true
             overlay.heightAnchor.constraint(equalToConstant: 60).isActive = true
             overlay.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
@@ -102,12 +104,11 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        print(info)
         logo.image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         logo.backgroundColor = nil
         clearButton.isHidden = false
         logo.layer.borderWidth = 0
-        parentVC.registrationData.logo = logo.image
+        chooseImageHandler?(logo.image?.fixedOrientation())
         picker.dismiss(animated: true, completion: nil)
     }
     

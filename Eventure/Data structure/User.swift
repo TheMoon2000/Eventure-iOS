@@ -9,40 +9,73 @@
 import UIKit
 import SwiftyJSON
 
-class User: CustomStringConvertible {
+class User {
     
     /// The current user, if the app is logged in.
     static var current: User? {
         didSet {
-            if current?.writeToFile(path: CURRENT_USER_PATH) == false {
-                print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
-            } else {
-                print("successfully wrote user data to \(CURRENT_USER_PATH)")
-            }
+            current?.save()
         }
     }
         
     /// The UUID of the user.
-    var uuid: Int
-    var email: String
-    var password_MD5: String
-    var displayedName: String
-    var gender: Gender
-    var profilePicture: UIImage?
-    var favoritedEvents = Set<String>()
-    var goingList = [String: Int]()
-    var subscriptions = Set<String>()
-    var tags = Set<String>()
-    var dateRegistered: String // Only for debugging purpose
+    let uuid: Int
+    var email: String { didSet { save() } }
+    var password_MD5: String { didSet { save() } }
+    var displayedName: String { didSet { save() } }
+    var gender: Gender { didSet { save() } }
+    var profilePicture: UIImage? { didSet { save() } }
     
-    enum Gender: Int {
-        case unspecified = -1
-        case male = 0
-        case female = 1
-        case non_binary = 2
+    /// A set of uuid strings for events which the user has favorited.
+    var favoritedEvents = Set<String>() { didSet { save() } }
+    var interestedEvents = Set<String>() { didSet { save() } }
+    var subscriptions = Set<String>() { didSet { save() } }
+    var tags = Set<String>() { didSet { save() } }
+    let dateRegistered: String // Only for debugging purpose
+    
+    private var saveEnabled = false
+    
+    
+    // MARK: - Profile information
+    var fullName: String { didSet { save() } }
+    var major: String { didSet { save() } }
+    var interests: String { didSet { save() } }
+    var resume: String { didSet { save() } }
+    var linkedIn: String { didSet { save() } }
+    var github: String { didSet { save() } }
+    var yearOfGraduation: Int? { didSet { save() } }
+    var seasonOfGraduation: GraduationSeason? { didSet { save() } }
+    var graduation: String {
+        if yearOfGraduation == nil || seasonOfGraduation == nil {
+            return "Not Set"
+        }
+        return seasonOfGraduation!.rawValue + " \(yearOfGraduation!)"
     }
     
-    init(userInfo: JSON) {
+    var profileStatus: String {
+        var allNil = true
+        for item in [fullName, major, interests, resume, linkedIn, github, yearOfGraduation, seasonOfGraduation] as [Any?] {
+            allNil = allNil && item == nil
+        }
+        
+        if allNil { return "Not Started" }
+        
+        var filledRequirements = true
+        for item in [fullName, major, interests, resume, yearOfGraduation, seasonOfGraduation] as [Any?] {
+            filledRequirements = filledRequirements && item != nil
+        }
+        
+        if filledRequirements {
+            return "Completed"
+        } else {
+            return "Incomplete"
+        }
+        
+    }
+    
+    // MARK: - Initialization and instance methods
+    
+    required init(userInfo: JSON) {
         let dictionary = userInfo.dictionary!
         
         uuid = dictionary["uuid"]?.int ?? -1
@@ -61,20 +94,32 @@ class User: CustomStringConvertible {
             tags = Set(tagsArray)
         }
         
-        dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
-    }
-    
-    var description: String {
-        var str = "User <\(displayedName)>:\n"
-        str += "  uuid = \(uuid)\n"
-        str += "  email = \(email)\n"
-        str += "  gender = \(gender.rawValue)\n"
-        str += "  subscriptions = \(subscriptions)\n"
-        str += "  tags = \(tags)\n"
-        str += "  # of favorite events = \(favoritedEvents.count)"
-        str += "  dateRegistered = \(dateRegistered)"
+        if let likedEvents_raw = dictionary["Liked events"]?.string {
+            if let likedArray = (JSON(parseJSON: likedEvents_raw).arrayObject as? [String]) {
+                favoritedEvents = Set(likedArray)
+            }
+        }
         
-        return str
+        if let interested_raw = dictionary["Interested"]?.string {
+            if let interestArray = (JSON(parseJSON: interested_raw).arrayObject as? [String]) {
+                interestedEvents = Set(interestArray)
+            }
+        }
+        
+        dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
+        
+        fullName = dictionary["Full name"]?.string ?? ""
+        major = dictionary["Major"]?.string ?? ""
+        yearOfGraduation = dictionary["Graduation year"]?.int
+        if let tmp = dictionary["Graduation season"]?.string {
+            seasonOfGraduation = User.GraduationSeason(rawValue: tmp)
+        }
+        resume = dictionary["Resume"]?.string ?? ""
+        linkedIn = dictionary["LinkedIn"]?.string ?? ""
+        github = dictionary["GitHub"]?.string ?? ""
+        interests = dictionary["Interests"]?.string ?? ""
+        
+        saveEnabled = true
     }
     
     // MARK: - Read & Write
@@ -112,6 +157,17 @@ class User: CustomStringConvertible {
         return user
     }
     
+    /// Short-cut for writeToFile().
+    func save() {
+        if !saveEnabled { return }
+        
+        if writeToFile(path: CURRENT_USER_PATH) == false {
+            print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
+        } else {
+            print("successfully wrote user data to \(CURRENT_USER_PATH)")
+        }
+    }
+    
     func writeToFile(path: String) -> Bool {
         
         var json = JSON()
@@ -123,6 +179,17 @@ class User: CustomStringConvertible {
         json.dictionaryObject?["Subscriptions"] = self.subscriptions.description
         json.dictionaryObject?["Tags"] = self.tags.description
         json.dictionaryObject?["Date registered"] = self.dateRegistered
+        json.dictionaryObject?["Liked events"] = self.favoritedEvents.description
+        json.dictionaryObject?["Interested"] = self.interestedEvents.description
+        
+        json.dictionaryObject?["Full name"] = self.fullName
+        json.dictionaryObject?["Major"] = self.major
+        json.dictionaryObject?["Graduation year"] = self.yearOfGraduation
+        json.dictionaryObject?["Graduation season"] = self.seasonOfGraduation?.rawValue
+        json.dictionaryObject?["Resume"] = self.resume
+        json.dictionaryObject?["GitHub"] = self.github
+        json.dictionaryObject?["LinkedIn"] = self.linkedIn
+        json.dictionaryObject?["Interests"] = self.interests
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
@@ -140,3 +207,37 @@ class User: CustomStringConvertible {
     }
 }
 
+
+extension User {
+    
+    enum Gender: Int {
+        case unspecified = -1
+        case male = 0
+        case female = 1
+        case non_binary = 2
+    }
+    
+    enum GraduationSeason: String {
+        case spring = "Spring"
+        case fall = "Fall"
+    }
+    
+}
+
+
+extension User: CustomStringConvertible {
+    
+    var description: String {
+        var str = "User <\(displayedName)>:\n"
+        str += "  uuid = \(uuid)\n"
+        str += "  email = \(email)\n"
+        str += "  gender = \(gender.rawValue)\n"
+        str += "  subscriptions = \(subscriptions)\n"
+        str += "  tags = \(tags)\n"
+        str += "  # of favorite events = \(favoritedEvents.count)"
+        str += "  dateRegistered = \(dateRegistered)"
+        
+        return str
+    }
+    
+}

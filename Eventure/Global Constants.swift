@@ -10,6 +10,9 @@
 import UIKit
 import SwiftyJSON
 import Down
+import var CommonCrypto.CC_MD5_DIGEST_LENGTH
+import func CommonCrypto.CC_MD5
+import typealias CommonCrypto.CC_LONG
 
 // MARK: - Global constants
 
@@ -30,17 +33,19 @@ let KEY_ACCOUNT_TYPE = "Account Type"
 let ACCOUNT_TYPE_USER = "User"
 let ACCOUNT_TYPE_ORG = "Org"
 
+let URL_PREFIX = "eventure://"
+
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
 let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
 let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
-
-let MAIN_TINT3 = UIColor(red: 133/255, green: 215/255, blue: 205/255, alpha: 1.0)
+let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
+let FATAL_COLOR = UIColor(red: 224/255, green: 33/255, blue: 0, alpha: 1)
+let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
 
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
-
 let MAIN_TINT8 = UIColor(red: 255/255, green: 153/255, blue: 102/255, alpha: 1.0)
 
 let SAMPLE_TEXT = """
@@ -110,7 +115,7 @@ let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
     config.urlCache = nil
-    config.timeoutIntervalForRequest = 6.0
+    config.timeoutIntervalForRequest = 8.0
     return URLSession(configuration: config)
 }()
 
@@ -120,6 +125,14 @@ let DATE_FORMATTER: DateFormatter = {
     formatter.locale = Locale(identifier: "en_US")
     formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     formatter.timeZone = TimeZone(abbreviation: "UTC")!
+    return formatter
+}()
+
+/// A formatter to get the current year in string format.
+let YEAR_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy"
+    formatter.locale = Locale(identifier: "en_US")
     return formatter
 }()
 
@@ -152,6 +165,23 @@ extension String {
             print("WARNING: markdown failed")
             return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
         }
+    }
+    
+    func md5() -> String {
+        let length = Int(CC_MD5_DIGEST_LENGTH)
+        let messageData = data(using:.utf8)!
+        var digestData = Data(count: length)
+        
+        _ = digestData.withUnsafeMutableBytes { digestBytes -> UInt8 in
+            messageData.withUnsafeBytes { messageBytes -> UInt8 in
+                if let messageBytesBaseAddress = messageBytes.baseAddress, let digestBytesBlindMemory = digestBytes.bindMemory(to: UInt8.self).baseAddress {
+                    let messageLength = CC_LONG(messageData.count)
+                    CC_MD5(messageBytesBaseAddress, messageLength, digestBytesBlindMemory)
+                }
+                return 0
+            }
+        }
+        return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
 }
 
@@ -205,7 +235,7 @@ extension URLRequest {
         
         for file in files {
             data.append(string: prefix)
-            data.append(string: "Content-Disposition: form-data; name=\"\(file.key)\"\r\n")
+            data.append(string: "Content-Disposition: form-data; name=\"\(file.key)\"; filename=\"temp\"\r\n")
             data.append(string: "Content-Type: application/octet-stream\r\n\r\n")
             data.append(file.value)
             data.append(string: "\r\n")
@@ -253,10 +283,88 @@ extension UITextView {
         return contentSize.height
     }
 }
+
 extension Data {
     mutating func append(string: String) {
         let data = string.data(using: .utf8)!
         append(data)
+    }
+}
+
+extension UIImage {
+    func fixedOrientation() -> UIImage {
+        if imageOrientation == .up {
+            return self
+        }
+        
+        var transform: CGAffineTransform = CGAffineTransform.identity
+        
+        switch imageOrientation {
+        case .down, .downMirrored:
+            transform = transform.translatedBy(x: size.width, y: size.height)
+            transform = transform.rotated(by: .pi)
+            break
+        case .left, .leftMirrored:
+            transform = transform.translatedBy(x: size.width, y: 0)
+            transform = transform.rotated(by: .pi / 2)
+            break
+        case .right, .rightMirrored:
+            transform = transform.translatedBy(x: 0, y: size.height)
+            transform = transform.rotated(by: -.pi / 2)
+            break
+        case .up, .upMirrored:
+            break
+        }
+        switch imageOrientation {
+        case UIImageOrientation.upMirrored, UIImageOrientation.downMirrored:
+            transform.translatedBy(x: size.width, y: 0)
+            transform.scaledBy(x: -1, y: 1)
+            break
+        case UIImageOrientation.leftMirrored, UIImageOrientation.rightMirrored:
+            transform.translatedBy(x: size.height, y: 0)
+            transform.scaledBy(x: -1, y: 1)
+        case UIImageOrientation.up, UIImageOrientation.down, UIImageOrientation.left, UIImageOrientation.right:
+            break
+        }
+        
+        let ctx: CGContext = CGContext(data: nil, width: Int(size.width), height: Int(size.height), bitsPerComponent: self.cgImage!.bitsPerComponent, bytesPerRow: 0, space: self.cgImage!.colorSpace!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        
+        ctx.concatenate(transform)
+        
+        switch imageOrientation {
+        case UIImageOrientation.left, UIImageOrientation.leftMirrored, UIImageOrientation.right, UIImageOrientation.rightMirrored:
+            ctx.draw(self.cgImage!, in: CGRect(origin: CGPoint.zero, size: size))
+        default:
+            ctx.draw(self.cgImage!, in: CGRect(origin: CGPoint.zero, size: size))
+            break
+        }
+        
+        let cgImage: CGImage = ctx.makeImage()!
+        
+        return UIImage(cgImage: cgImage)
+    }
+    
+    
+    func sizeDown(maxWidth: CGFloat = 500.0) -> UIImage {
+        
+        /*
+        var currentQuality: CGFloat = 1.0
+        var currentData = jpegData(compressionQuality: 1.0)
+        
+        while (currentData?.count ?? 0 && currentQuality > 0.01) > 200000 {
+            currentQuality *= 0.85
+            currentData = jpegData(compressionQuality: currentQuality)
+        }*/
+        
+        if size.width > maxWidth {
+            let newSize = CGSize(width: maxWidth, height: maxWidth / size.width * size.height)
+            let renderer = UIGraphicsImageRenderer(size: newSize)
+            return renderer.image { context in
+                self.draw(in: CGRect(origin: .zero, size: newSize))
+            }
+        }
+        
+        return self
     }
 }
 

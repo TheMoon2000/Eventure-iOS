@@ -119,11 +119,14 @@ class RegisterOrganization: UITableViewController {
         pageCells.append(website)
         
         // 1.3 (4)
-        let tagCell = ChooseTagCell(vc: self)
+        let tagCell = ChooseTagCell(parentVC: self)
         pageCells.append(tagCell)
         
         // 1.4 (5)
-        let imagePicker = ChooseImageCell(vc: self)
+        let imagePicker = ChooseImageCell(parentVC: self)
+        imagePicker.chooseImageHandler = { image in
+            self.registrationData.logo = image
+        }
         pageCells.append(imagePicker)
         
         
@@ -233,22 +236,18 @@ class RegisterOrganization: UITableViewController {
         
         // 3.1 (10)
         let contactEmail: UITableViewCell = {
-            let cell = MinimalTextCell()
-            cell.textField.placeholder = "Contact Email"
-            cell.textField.keyboardType = .emailAddress
-            cell.textField.textContentType = .emailAddress
-            cell.textField.returnKeyType = .done
+            let cell = EmailCell(parentVC: self)
             
             cell.changeHandler = { cell in
-                self.registrationData.contactEmail = cell.textField.text!
+                self.registrationData.contactEmail = cell.email
             }
             
             cell.completionHandler = { cell in
-                cell.status = cell.textField.text!.isValidEmail() ? .tick : .fail
+                cell.status = cell.email.isValidEmail() ? .tick : .fail
             }
             
             cell.returnHandler = {
-                cell.textField.resignFirstResponder()
+                let _ = cell.resignFirstResponder()
             }
             
             return cell
@@ -261,7 +260,7 @@ class RegisterOrganization: UITableViewController {
             cell.button.setTitle("Register", for: .normal)
             cell.button.isEnabled = false
             cell.button.backgroundColor = MAIN_TINT
-            cell.alpha = DISABLED_ALPHA
+            cell.button.alpha = DISABLED_ALPHA
             cell.primaryAction = {
                 self.registerOrg()
             }
@@ -345,8 +344,25 @@ class RegisterOrganization: UITableViewController {
         if let pickerCell = genericCell as? ChooseImageCell {
             pickerCell.chooseImage()
         } else if let tagCell = genericCell as? ChooseTagCell {
+            
+            let tagPicker = TagPickerView()
+            tagPicker.customTitle = "Pick 1 ~ 3 tags that best describe your organization!"
+            tagPicker.customSubtitle = ""
+            tagPicker.maxPicks = 3
+            tagPicker.customButtonTitle = "Done"
+            tagPicker.customContinueMethod = { tagPicker in
+                tagCell.status = .done
+                self.navigationController?.popViewController(animated: true)
+            }
+            
+            tagPicker.customDisappearHandler = { tags in
+                self.registrationData.tags = tags
+            }
+            
+            tagPicker.selectedTags = registrationData.tags
+
+            navigationController?.pushViewController(tagPicker, animated: true)
             tableView.endEditing(true)
-            tagCell.pickTags()
         }
     }
     
@@ -417,8 +433,8 @@ extension RegisterOrganization {
      
      - Note: Here we do not require the email to be unique, since one person may be in charge of multiple organizations.
      */
-    private func verifyEmail(cell: MinimalTextCell) {
-        if cell.textField.text!.isValidEmail() {
+    private func verifyEmail(cell: EmailCell) {
+        if cell.email.isValidEmail() {
             cell.status = .tick
         } else {
             cell.status = .fail
@@ -449,7 +465,7 @@ extension RegisterOrganization {
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetOrgInfo",
-                           parameters: ["id": id])!
+                           parameters: ["orgId": id])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -463,12 +479,13 @@ extension RegisterOrganization {
                 return
             }
             
-            let msg = String(data: data!, encoding: .ascii)!
+            let msg = String(data: data!, encoding: .utf8)!
             DispatchQueue.main.async {
                 if msg == "not found" {
                     cell.status = .tick
                     self.registrationData.orgIDVerified = true
                 } else {
+                    print(msg)
                     cell.status = .fail
                 }
             }
