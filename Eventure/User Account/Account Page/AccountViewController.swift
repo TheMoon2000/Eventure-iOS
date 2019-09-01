@@ -83,6 +83,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             navigationController?.pushViewController(personalInfo, animated: true)
         case (1, 1):
             let profileInfo = ProfileInfoPage()
+            profileInfo.parentVC = self
             profileInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(profileInfo, animated: true)
         case (2, 0):

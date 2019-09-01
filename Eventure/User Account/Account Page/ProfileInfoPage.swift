@@ -11,6 +11,8 @@ import SwiftyJSON
 
 class ProfileInfoPage: UITableViewController {
     
+    var parentVC: AccountViewController?
+    
     private var graduationCellExpanded = false
     private var contentCells = [[UITableViewCell]]()
     
@@ -264,9 +266,13 @@ class ProfileInfoPage: UITableViewController {
         navigationItem.rightBarButtonItem = saveBarButton
     }
     
-    @objc private func save() {
+    @objc private func save(disappearing: Bool = false) {
         
         guard let user = User.current else {
+            return
+        }
+        
+        guard User.needsUpload else {
             return
         }
         
@@ -300,8 +306,16 @@ class ProfileInfoPage: UITableViewController {
             }
             
             guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self)
+                if !disappearing {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self)
+                    }
+                } else {
+                    let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your profile information could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
+                    alert.addAction(.init(title: "I Understand", style: .cancel))
+                    DispatchQueue.main.async {
+                        self.parentVC?.present(alert, animated: true, completion: nil)
+                    }
                 }
                 return
             }
@@ -314,7 +328,7 @@ class ProfileInfoPage: UITableViewController {
                     serverMaintenanceError(vc: self)
                 }
             case "success":
-                break
+                User.needsUpload = false
             default:
                 print(msg!)
             }
@@ -327,7 +341,9 @@ class ProfileInfoPage: UITableViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
-        save()
+        if User.needsUpload {
+            save(disappearing: true)
+        }
     }
 
     // MARK: - Table view data source

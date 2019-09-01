@@ -35,7 +35,12 @@ class User {
     let dateRegistered: String // Only for debugging purpose
     
     var saveEnabled = false
+    
+    /// Whether the app is in the middle of a sync session and is waiting for a response.
     static var waitingForSync = false
+    
+    /// Whether the changes made locally are yet to be uploaded.
+    static var needsUpload = false
     
     // MARK: - Profile information
     var fullName: String { didSet { save() } }
@@ -163,6 +168,8 @@ class User {
     /// Short-cut for writeToFile().
     func save() {
         if !saveEnabled { return }
+        
+        User.needsUpload = true
         
         if writeToFile(path: CURRENT_USER_PATH) == false {
             print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
