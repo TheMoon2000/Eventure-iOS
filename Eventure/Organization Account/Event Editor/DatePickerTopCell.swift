@@ -97,7 +97,7 @@ class DatePickerTopCell: UITableViewCell {
         rightLabel = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.text = "No date specified"
+            label.text = "Any time"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
             label.textColor = MAIN_TINT

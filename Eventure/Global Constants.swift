@@ -36,7 +36,7 @@ let ACCOUNT_TYPE_ORG = "Org"
 let URL_PREFIX = "eventure://"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
-let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
+let MAIN_TINT = UIColor(red: 1.0, green: 153/255, blue: 102/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
 let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
