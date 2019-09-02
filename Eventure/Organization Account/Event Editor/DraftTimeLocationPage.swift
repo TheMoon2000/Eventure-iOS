@@ -75,8 +75,8 @@ class DraftTimeLocationPage: UITableViewController {
             let minimumEndTime = date.addingTimeInterval(300)
             endBottomCell.datePicker.minimumDate = minimumEndTime
             if endTopCell.displayedDate.timeIntervalSince(date) < 300 {
-                endBottomCell.datePicker.setDate(minimumEndTime, animated: false)
-                endBottomCell.dateChangedHandler!(minimumEndTime)
+                endBottomCell.datePicker.setDate(date.addingTimeInterval(7200), animated: false)
+                endBottomCell.dateChangedHandler!(date.addingTimeInterval(7200))
             }
             self?.draftPage.edited = true
         }

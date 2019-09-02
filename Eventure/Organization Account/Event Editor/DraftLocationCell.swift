@@ -61,6 +61,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.delegate = self
             tv.backgroundColor = .clear
             tv.keyboardDismissMode = .onDrag
+        
             tv.textContainer.lineFragmentPadding = 0
             
             let pStyle = NSMutableParagraphStyle()
@@ -84,7 +85,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         placeholder = {
             let label = UILabel()
-            label.text = "e.g. HP Auditorium, online"
+            label.text = "TBA"
             label.textColor = .init(white: 0.79, alpha: 1)
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false

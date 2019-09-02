@@ -302,6 +302,5 @@ extension UICheckbox {
         self.checkmarkColor = MAIN_TINT
         self.checkedBorderColor = MAIN_DISABLED
         self.uncheckedBorderColor = .init(white: 0.87, alpha: 1)
-        self.translatesAutoresizingMaskIntoConstraints = false
     }
 }

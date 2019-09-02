@@ -11,9 +11,7 @@ import SwiftyJSON
 
 class Event {
     static var current: Event?
-    static var drafts = [Event]()
-    static var supportedCampuses = [String : String]()
-    
+    static var drafts = [Event]()    
     private static var cachedEvents = [String: [[String: Any]]]()
 
     let readableFormatter: DateFormatter = {
@@ -40,12 +38,8 @@ class Event {
     var hasVisual = false
     var hostID: String
     var hostTitle: String
-    var currentUserInterested: Bool {
-        return User.current != nil && User.current!.interestedEvents.contains(uuid)
-    }
-    var currentUserFavorited: Bool {
-        return User.current != nil && User.current!.favoritedEvents.contains(uuid)
-    }
+    var interestedList = [Int]()
+    var favoriteList = [Int]()
     var tags = Set<String>()
     // API: array of user id
     
@@ -137,27 +131,7 @@ class Event {
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
-        hasVisual = dictionary["Has cover"]?.bool ?? false
-        
-        guard let user = User.current else {
-            return
-        }
-        
-        if let isInterested = dictionary["Is interested"]?.bool {
-            if isInterested && !user.interestedEvents.contains(uuid) {
-                user.interestedEvents.insert(uuid)
-            } else if !isInterested && user.interestedEvents.contains(uuid) {
-                User.current?.interestedEvents.remove(uuid)
-            }
-        }
-        
-        if let isFavorited = dictionary["Is favorited"]?.bool {
-            if isFavorited && !user.favoritedEvents.contains(uuid) {
-                user.favoritedEvents.insert(uuid)
-            } else if !isFavorited && user.favoritedEvents.contains(uuid) {
-                user.favoritedEvents.remove(uuid)
-            }
-        }
+        hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
     }
     
     static func readFromFile(path: String) -> [String: Set<Event>] {

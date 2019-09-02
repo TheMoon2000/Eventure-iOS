@@ -112,7 +112,7 @@ class EventDraft: UIPageViewController {
             
             drafts.insert(self.draft)
             
-            print(drafts.map { $0.title })
+            print("Current draft titles: ", drafts.map { $0.title })
             
             if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
                 self.orgEventView?.allDrafts = drafts

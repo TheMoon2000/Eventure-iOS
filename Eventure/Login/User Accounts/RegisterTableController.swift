@@ -107,7 +107,7 @@ class RegisterTableController: UITableViewController {
         let passwordCell: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.isSecureTextEntry = true
-            cell.textField.placeholder = "Password"
+            cell.textField.placeholder = "Password (length ≥ 8)"
             cell.textField.textContentType = .password
             
             cell.changeHandler = { cell in

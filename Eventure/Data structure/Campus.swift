@@ -11,7 +11,7 @@ import SwiftyJSON
 
 class Campus {
 
-    static var supported = [Campus]()
+    static var supported = [String : Campus]()
     
     /// The full name of the location.
     let fullName: String

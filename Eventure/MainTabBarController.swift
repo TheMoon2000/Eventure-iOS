@@ -39,10 +39,11 @@ class MainTabBarController: UITabBarController {
             if let allCampuses = try? JSON(data: data!).arrayValue {
                 for campus in allCampuses {
                     if campus.dictionary != nil {
-                        Campus.supported.append(Campus(json: campus))
+                        let new = Campus(json: campus)
+                        Campus.supported[new.fullName] = new
                     }
                 }
-                print("Loaded supported campuses: \(Campus.supported.map { $0.fullName })")
+                print("Loaded supported campuses: \(Campus.supported.keys)")
             } else {
                 print(String(data: data!, encoding: .utf8)!)
             }

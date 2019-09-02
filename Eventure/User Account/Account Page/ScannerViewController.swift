@@ -8,18 +8,31 @@
 
 import UIKit
 import AVFoundation
+import SwiftyJSON
 
-class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDelegate {
+class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    var session:AVCaptureSession!
-    var device: AVCaptureDevice!
-    var screenWidth : CGFloat!
-    var screenHeight: CGFloat!
+    private var session:AVCaptureSession!
+    private var device: AVCaptureDevice!
+    private var screenWidth : CGFloat!
+    private var screenHeight: CGFloat!
     
     private var activeRegion: UIView!
     private var cameraPrompt: UILabel!
+    private var spinner: UIActivityIndicatorView!
+    private var torchSwitch: UIButton!
     private var cameraDefaultText = "Place QR code within to scan!"
     private var lastZoomFactor: CGFloat = 1.0
+    
+    private var torchOnText = "Let there be light"
+    private var torchOffText = "Tap to turn off flashlight"
+    
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
+    // MARK: - Begin methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +40,19 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         title = "Scan Code"
         
         setupViews()
+        
+        spinner = {
+            let spinner = UIActivityIndicatorView(style: .white)
+            spinner.hidesWhenStopped = true
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: activeRegion.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: activeRegion.centerYAnchor).isActive = true
+            
+            return spinner
+        }()
+        
         
         guard let newDevice = AVCaptureDevice.default(for: AVMediaType.video) else {
             print("WARNING: Device has no camera!")
@@ -142,6 +168,27 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             return label
         }()
         
+        torchSwitch = {
+            let button = UIButton(type: .system)
+            button.tintColor = .white
+            button.isHidden = true
+            button.imageEdgeInsets.right = 10
+            button.imageView?.contentMode = .scaleAspectFit
+            button.titleLabel?.font = .systemFont(ofSize: 15)
+            button.setImage(#imageLiteral(resourceName: "light").withRenderingMode(.alwaysTemplate), for: .normal)
+            button.setTitle(torchOnText, for: .normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(button)
+            
+            button.centerXAnchor.constraint(equalTo: activeRegion.centerXAnchor).isActive = true
+            button.bottomAnchor.constraint(equalTo: activeRegion.bottomAnchor, constant: -10).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 28).isActive = true
+            
+            button.addTarget(self, action: #selector(toggleTorch(_:)), for: .touchUpInside)
+            
+            return button
+        }()
+        
     }
     
     
@@ -150,25 +197,24 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
     func setCamera(device: AVCaptureDevice) {
         
         do {
-            //创建输入流
             let input =  try AVCaptureDeviceInput(device: device)
-            
-            //创建输出流
             let output = AVCaptureMetadataOutput()
+            let videoOutput = AVCaptureVideoDataOutput()
             
             //设置会话
             session = AVCaptureSession()
             
             //连接输入输出
-            
             if session.canAddInput(input) {
                 session.addInput(input)
             }
             
             if session.canAddOutput(output) {
                 session.addOutput(output)
-            //设置输出流代理，从接收端收到的所有元数据都会被传送到delegate方法，所有delegate方法均在queue中执行
+                session.addOutput(videoOutput)
+                
                 output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+                videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue.main)
                 
                 //设置扫描二维码类型
                 output.metadataObjectTypes = [ AVMetadataObject.ObjectType.qr]
@@ -196,7 +242,6 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             }
             
             session.startRunning()
-            try input.device.lockForConfiguration()
         } catch  {}
         
     }
@@ -204,7 +249,9 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
     @objc private func pinch(_ gesture: UIPinchGestureRecognizer) {
         let zoomFactor = min(max(1, lastZoomFactor * gesture.scale), device.activeFormat.videoMaxZoomFactor)
         
+        try? device.lockForConfiguration()
         device.videoZoomFactor = zoomFactor
+        device.unlockForConfiguration()
         
         if gesture.state == .ended {
             lastZoomFactor = zoomFactor
@@ -212,13 +259,58 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         
     }
     
+    @objc private func toggleTorch(_ sender: UIButton) {
+        if device.hasTorch {
+            do {
+                try device.lockForConfiguration()
+                
+                if sender.title(for: .normal) == torchOnText {
+                    device.torchMode = .on
+                    sender.setImage(#imageLiteral(resourceName: "light_off").withRenderingMode(.alwaysTemplate), for: .normal)
+                    sender.setTitle(torchOffText, for: .normal)
+                } else {
+                    device.torchMode = .off
+                    sender.setImage(#imageLiteral(resourceName: "light").withRenderingMode(.alwaysTemplate), for: .normal)
+                    sender.setTitle(torchOnText, for: .normal)
+                }
+                
+                device.unlockForConfiguration()
+            } catch {
+                print("WARNING: Torch could not be used")
+            }
+        } else {
+            print("WARNING: Torch is not available")
+        }
+    }
     
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        
+        let rawMetadata = CMCopyDictionaryOfAttachments(allocator: nil, target: sampleBuffer, attachmentMode: kCMAttachmentMode_ShouldPropagate)
+        let metadata = CFDictionaryCreateMutableCopy(nil, 0, rawMetadata) as NSMutableDictionary
+        let exifData = metadata.value(forKey: "{Exif}") as? NSMutableDictionary
+        
+        let FNumber : Double = exifData?["FNumber"] as! Double
+        let ExposureTime : Double = exifData?["ExposureTime"] as! Double
+        let ISOSpeedRatingsArray = exifData!["ISOSpeedRatings"] as? NSArray
+        let ISOSpeedRatings : Double = ISOSpeedRatingsArray![0] as! Double
+        
+        //Calculating the luminosity
+        let luminosity : Double = (FNumber * FNumber ) / ( ExposureTime * ISOSpeedRatings)
+        
+        if device.hasTorch {
+            torchSwitch.isHidden = luminosity > 0.3 && device.torchMode == .off
+        }
+    }
     
     //扫描完成的代理
     
     private var lastReturnDate = Date(timeIntervalSinceReferenceDate: 0)
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        
+        
+        // If an event code is already being processed, then prevent any new codes from being scanned.
+        if spinner.isAnimating { return }
         
         let parsed: [String] = metadataObjects.map { raw in
             
@@ -245,15 +337,18 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
         let thisDate = Date()
         lastReturnDate = thisDate
         
-        if let eventUUID = filtered.first {
+        if let eventID = filtered.first {
             
-//            session?.stopRunning()
+            session?.stopRunning()
+            spinner.startAnimating()
             
-            cameraPrompt.text = "Scanned event <\(eventUUID)>. More work needs to be done to load the event information from the server."
+            cameraPrompt.text = "Event code scanned! Processing..."
             cameraPrompt.textColor = .white
+            
+            presentCheckinForm(eventID: eventID)
         } else {
             cameraPrompt.text = "Oops, this QR code is not a valid event code."
-            cameraPrompt.textColor = WARNING_COLOR
+            cameraPrompt.textColor = FATAL_COLOR
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -263,13 +358,47 @@ class ScannerViewController: UIViewController,AVCaptureMetadataOutputObjectsDele
             }
         }
         
-        
-        
     }
     
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
+    func presentCheckinForm(eventID: String) {
+        
+        print("presenting check-in form for \(eventID)")
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEvent",
+                           parameters: ["uuid": eventID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.spinner.stopAnimating()
+                self.session.startRunning()
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    self.cameraPrompt.text = "No internet connection."
+                    self.cameraPrompt.textColor = WARNING_COLOR
+                }
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                let event = Event(eventInfo: json)
+                print(event)
+                let checkinForm = CheckinPageController(event: event)
+                DispatchQueue.main.async {
+                    self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true, completion: nil)
+                }
+            }
+        }
+        
+        task.resume()
     }
+
         
 }
 

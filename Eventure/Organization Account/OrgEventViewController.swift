@@ -263,7 +263,8 @@ class OrgEventViewController: UIViewController {
                 
                 var tmp = Set<Event>()
                 for eventJSON in eventsList {
-                    tmp.insert(Event(eventInfo: eventJSON))
+                    let event = Event(eventInfo: eventJSON)
+                    tmp.insert(event)
                 }
                 
                 DispatchQueue.main.async {
@@ -350,7 +351,8 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "org event", for: indexPath) as! OrgEventCell
         cell.parentVC = self
-        cell.setupCellWithEvent(event: filteredEvents[indexPath.row], withImage: true)
+        
+        cell.setupCellWithEvent(event: self.filteredEvents[indexPath.row], withImage: true)
         
         return cell
     }

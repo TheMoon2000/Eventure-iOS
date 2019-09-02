@@ -56,13 +56,11 @@
 		CC46772D2319956600A9FF18 /* Campus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC46772C2319956600A9FF18 /* Campus.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
-		CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC4CB5C4230516E200DC30AD /* OrganizationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* OrganizationsViewController.swift */; };
 		CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
 		CC4CB5C7230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
 		CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */; };
 		CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
-		CC4EC93822FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
 		CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69A08D22F699F500C9920E /* SeparatorView.swift */; };
 		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
@@ -83,6 +81,7 @@
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
 		CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */; };
 		CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F922BC5F9900FFD251 /* ButtonCell.swift */; };
+		CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */; };
 		CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCA5F7523177F76003D89E6 /* ImageFullScreenPage.swift */; };
 		CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */; };
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
@@ -190,6 +189,7 @@
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
 		CCC824F722BC53F700FFD251 /* GenderSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderSelectionCell.swift; sourceTree = "<group>"; };
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
+		CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinNavigationController.swift; sourceTree = "<group>"; };
 		CCCA5F7523177F76003D89E6 /* ImageFullScreenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFullScreenPage.swift; sourceTree = "<group>"; };
 		CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePickerCell.swift; sourceTree = "<group>"; };
 		CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePreviewCell.swift; sourceTree = "<group>"; };
@@ -473,6 +473,7 @@
 		CCA6CF79231AF4D3005D8BB2 /* Checkin */ = {
 			isa = PBXGroup;
 			children = (
+				CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */,
 				CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */,
 				CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */,
 			);
@@ -751,6 +752,7 @@
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
+				CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
 				CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */,
 				DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */,
@@ -823,14 +825,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CC4EC93822FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
 				CC4CB5C7230525BB00DC30AD /* OrganizationCell.swift in Sources */,
 				DD1BB0D32310B1C40082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */,
 				CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */,
 				CC4CB5C4230516E200DC30AD /* OrganizationsViewController.swift in Sources */,
 				CC0646E022FDF201000BF3CD /* Event.swift in Sources */,
-				CC4ACC3822EA47F3002297EF /* Global Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

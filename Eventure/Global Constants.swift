@@ -95,6 +95,21 @@ let PLAIN_STYLE =  """
     h6 {
         font-size: 18px;
     }
+
+    a {
+        color: rgb(104, 165, 245);
+    }
+"""
+
+let COMPACT_STYLE = """
+    body {
+        font-family: -apple-system;
+        font-size: 16px;
+        line-height: 1.25;
+        letter-spacing: 1%;
+        color: #5A5A5A;
+        margin-bottom: 10px;
+    }
 """
 
 // MARK: - Cache files
@@ -157,9 +172,13 @@ extension String {
     }
     
     /// Markdown-formatted text.
-    func attributedText() -> NSAttributedString {
+    func attributedText(style: String = PLAIN_STYLE) -> NSAttributedString {
         if isEmpty { return NSAttributedString() }
-        if let d = try? Down(markdownString: self).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
+        
+        if let d = try? Down(markdownString: self).toAttributedString(.default, stylesheet: style) {
+            if d.string.isEmpty {
+                return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
+            }
             return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
         } else {
             print("WARNING: markdown failed")
@@ -183,6 +202,7 @@ extension String {
         }
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
+
 }
 
 extension URL {
