@@ -38,7 +38,7 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
             
             tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-            tv.topAnchor.constraint(equalTo: view.topAnchor, constant: 10).isActive = true
+            tv.topAnchor.constraint(equalTo: view.topAnchor, constant: 12).isActive = true
             
             tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
             

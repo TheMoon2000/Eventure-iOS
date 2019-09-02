@@ -43,7 +43,6 @@ class EventDraft: UIPageViewController {
     
     var saveHandler: ((UIAlertAction) -> Void)!
     
-    
     /// Records the progress of the user's current swipe gesture. Negative values indicate a backward swipe.
     var transitionProgress: CGFloat = 0.0 {
         didSet {
@@ -53,9 +52,11 @@ class EventDraft: UIPageViewController {
         }
     }
     
-    required init(event: Event) {
+    required init(event: Event, detailPage: EventDetailPage? = nil) {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+        
         self.draft = event
+        self.detailPage = detailPage
     }
 
     override func viewDidLoad() {
@@ -110,11 +111,13 @@ class EventDraft: UIPageViewController {
         saveHandler = { action in
             var drafts: Set<Event> = self.orgEventView?.allDrafts ?? ( Event.readFromFile(path: DRAFTS_PATH.path)[orgID] ?? [])
             
+            drafts.remove(self.draft)
             drafts.insert(self.draft)
             
             print("Current draft titles: ", drafts.map { $0.title })
             
             if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
+                self.detailPage?.event = self.draft
                 self.orgEventView?.allDrafts = drafts
                 self.orgEventView?.eventCatalog.reloadData()
                 self.dismiss(animated: true, completion: nil)
@@ -284,7 +287,7 @@ class EventDraft: UIPageViewController {
                     serverMaintenanceError(vc: self)
                 }
             case "success":
-                EventDraft.removeDraft(uuid: self.draft.uuid) {
+                EventDraft.removeDraft(uuid: self.draft.uuid) { remaining in
                     var published: Set<Event> = self.orgEventView?.allEvents ?? []
                     published.insert(self.draft)
                     
@@ -292,6 +295,8 @@ class EventDraft: UIPageViewController {
                     
                     DispatchQueue.main.async {
                         self.orgEventView?.allEvents = published
+                        self.orgEventView?.allDrafts = remaining
+                        self.orgEventView?.updateFiltered()
                         self.orgEventView?.eventCatalog.reloadData()
                         self.dismiss(animated: true, completion: nil)
                     }
@@ -308,7 +313,7 @@ class EventDraft: UIPageViewController {
         task.resume()
     }
     
-    static func removeDraft(uuid: String, handler: (() -> ())? = nil) {
+    static func removeDraft(uuid: String, handler: ((Set<Event>) -> ())? = nil) {
         
         guard let orgID = Organization.current?.id else {
             preconditionFailure("Org ID is nil")
@@ -319,7 +324,7 @@ class EventDraft: UIPageViewController {
         drafts = drafts.filter { $0.uuid != uuid }
         
         if Event.writeToFile(orgID: orgID, events: drafts, path: DRAFTS_PATH.path) {
-            handler?()
+            handler?(drafts)
         } else {
             print("WARNING: Failed to remove draft \(uuid)!")
         }

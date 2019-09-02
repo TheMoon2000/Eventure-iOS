@@ -308,8 +308,9 @@ class EventDetailPage: UIViewController {
                 warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
                 warning.addAction(.init(title: "Delete", style: .destructive) { _ in
                     // Delete a local copy
-                    EventDraft.removeDraft(uuid: self.event.uuid) {
-                        self.orgEventView?.allDrafts.remove(self.event)
+                    EventDraft.removeDraft(uuid: self.event.uuid) { remaining in
+                        self.orgEventView?.allDrafts = remaining
+                        self.orgEventView?.updateFiltered()
                         self.orgEventView!.eventCatalog.reloadData()
                         self.navigationController?.popViewController(animated: true)
                     }
@@ -324,7 +325,7 @@ class EventDetailPage: UIViewController {
     }
     
     private func openEditor() {
-        let editor = EventDraft(event: event.copy())
+        let editor = EventDraft(event: event.copy(), detailPage: self)
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
