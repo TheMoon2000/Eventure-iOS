@@ -28,7 +28,7 @@ class SignupSheet {
         
         if let regData = dictionary["Registrants"]?.string {
             for reg in JSON(parseJSON: regData).dictionaryValue {
-                registrants[Int(reg) ?? -1] = DATE_FORMATTER.date(from: reg.value.stringValue)
+                registrants[Int(reg.key) ?? -1] = DATE_FORMATTER.date(from: reg.value.stringValue)
             }
         }
         
