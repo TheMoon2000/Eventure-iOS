@@ -11,10 +11,14 @@ import SwiftyJSON
 
 class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
+    static var changed: Bool = false
+    
     private var myTableView: UITableView!
     
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
+    
+    private var backGroundLabel: UILabel!
     
     private var eventUUIDList: Set<String> = User.current!.favoritedEvents
     private var eventDictionaryList = [Event]()
@@ -50,7 +54,22 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         
         spinnerLabel = {
             let label = UILabel()
-            label.text = "Retrieving..."
+            label.text = "Updating..."
+            label.isHidden = true
+            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        backGroundLabel = {
+            let label = UILabel()
+            label.text = "Oops, nothing here..."
             label.isHidden = true
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.textColor = .darkGray
@@ -83,16 +102,25 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         
         self.view.bringSubviewToFront(spinnerLabel)
         self.view.bringSubviewToFront(spinner)
+        self.view.bringSubviewToFront(backGroundLabel)
 
         
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if LikedEvents.changed {
+            clearAll()
+            viewDidLoad()
+            LikedEvents.changed = false
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        //let detailPage = SubscribedEventDetailPage()
-        let detailPage = EventDetailPage()
+        let detailPage = SubscribedEventDetailPage()
+        //let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
         detailPage.event = displayedEvents[indexPath.section][indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
@@ -176,6 +204,9 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
                 self.groupEventsTime()
                 
                 DispatchQueue.main.async {
+                    if (self.eventDictionaryList.count == 0) {
+                        self.backGroundLabel.isHidden = false
+                    }
                     self.myTableView.reloadData()
                 }
             } else {
@@ -194,6 +225,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
     }
     
     func groupEventsTime() {
+        
         let today = Date()
         let calender = Calendar.current
         for event in eventDictionaryList {
@@ -255,21 +287,34 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         
     }
     
-    func removeEventFromTable(event: Event) {
-        // ...
-        myTableView.deleteRows(at: [], with: .automatic)
+
+    
+    func clearAll() {
+        today.removeAll()
+        tomorrow.removeAll()
+        thisWeek.removeAll()
+        future.removeAll()
+        past.removeAll()
+        
+        sections = 0
+        labels.removeAll()
+        displayedEvents.removeAll()
+        rowsForSection.removeAll()
+        
+        eventUUIDList.removeAll()
+        eventDictionaryList.removeAll()
+        eventToIndex.removeAll()
+        
     }
 }
 
 
 class SubscribedEventDetailPage: EventDetailPage {
-    var subscriptionPage: LikedEvents?
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         if !User.current!.favoritedEvents.contains(event.uuid) {
-            subscriptionPage?.removeEventFromTable(event: event)
+            LikedEvents.changed = true
         }
     }
 }
