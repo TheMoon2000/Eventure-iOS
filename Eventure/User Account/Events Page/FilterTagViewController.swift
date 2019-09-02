@@ -8,8 +8,8 @@
 
 import UIKit
 
-class FilterViewController: UITableViewController, UIGestureRecognizerDelegate {
-    var back : UISwipeGestureRecognizer!
+class FilterTagViewController: UITableViewController{
+    var filterPage: FilterPageViewController!
     private(set) var tags = Set<String>() {
         didSet {
             self.updateEventVC()
@@ -22,39 +22,27 @@ class FilterViewController: UITableViewController, UIGestureRecognizerDelegate {
         
         // Do any additional setup after loading the view.
         
-        tableView.backgroundColor = EventDraft.backgroundColor
+        tableView.backgroundColor = FilterPageViewController.backgroundColor
         tableView.separatorStyle = .none
         tableView.contentInset.top = 10
         tableView.tableFooterView = UIView()
         
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
-        tagPickerCell.backgroundColor = EventDraft.backgroundColor
+        tagPickerCell.backgroundColor = FilterPageViewController.backgroundColor
         tagPickerCell.reloadTagPrompt(tags: self.tags)
         contentCells.append(tagPickerCell)
-        
-        back = UISwipeGestureRecognizer(target: self, action: #selector(goBackToEvents))
-        tableView.addGestureRecognizer(back)
-        back.direction = .right
-        back.delegate = self
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        filterPage.currentPage = 1
     }
     
     private func updateEventVC() {
         EventViewController.chosenTags = tags
-        self.modalTransitionStyle = .crossDissolve
-        NotificationCenter.default.post(name: NSNotification.Name("user_chose_tags"), object: nil)
-        dismiss(animated: false, completion: nil)
     }
     
-    @objc private func goBackToEvents() {
-        print(tags)
-        self.modalTransitionStyle = .flipHorizontal
-        dismiss(animated: true, completion: nil)
-    }
     // MARK: - Table view data source
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -83,18 +71,16 @@ class FilterViewController: UITableViewController, UIGestureRecognizerDelegate {
             tagPicker.customDisappearHandler = { [ weak self ] tags in
                 self?.tags = tagPicker.selectedTags
                 tagPickerCell.reloadTagPrompt(tags: tags)
+                self?.filterPage.edited = true
+            }
+            
+            tagPicker.errorHandler = {
+                self.navigationController?.popViewController(animated: true)
             }
             
             tagPicker.selectedTags = self.tags
             
             navigationController?.pushViewController(tagPicker, animated: true)
         }
-    }
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return true
-    }
-    
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return true
     }
 }

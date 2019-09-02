@@ -27,6 +27,8 @@ class EventViewController: UIViewController {
     
     private var shouldFilter: Bool = false
     public static var chosenTags = Set<String>()
+    public static var start = Date.distantPast
+    public static var end = Date.distantFuture
     
     private(set) var allEvents = [Event]() {
         didSet {
@@ -47,7 +49,7 @@ class EventViewController: UIViewController {
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Events"
         navigationItem.searchController = searchController
-//        navigationItem.hidesSearchBarWhenScrolling = false
+//      navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
@@ -150,7 +152,7 @@ class EventViewController: UIViewController {
         }()
         
         updateEvents()
-        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("user_chose_tags"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
     }
     
     @objc private func filteredByUser() {
@@ -203,6 +205,9 @@ class EventViewController: UIViewController {
                 for event in eventsList {
                     tmp.append(Event(eventInfo: event))
                 }
+                tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
+                    return e1.startTime as Date! < e2.startTime as Date!
+                })
                 DispatchQueue.main.async {
                     self.allEvents = tmp
                     self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
@@ -228,7 +233,7 @@ class EventViewController: UIViewController {
     
     @objc private func openOptions() {
         // TODO: filtering options here
-        let filter = FilterViewController()
+        let filter = FilterPageViewController()
         let nav = UINavigationController(rootViewController: filter)
         nav.navigationBar.tintColor = MAIN_TINT
         nav.navigationBar.barTintColor = .white
@@ -329,10 +334,17 @@ extension EventViewController: UISearchResultsUpdating {
             var condition = true
             if tabName == "All Events" {
                 if (shouldFilter) {
-                    print(EventViewController.chosenTags)
-                    condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
+                    if (EventViewController.chosenTags.count > 0) {
+                        print(EventViewController.chosenTags)
+                        condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
+                    }
+                    condition = condition && event.startTime! >= EventViewController.start
+                    condition = condition && event.endTime! <= EventViewController.end
                     cnt += 1
                     if (cnt == allEvents.count) {
+                        EventViewController.chosenTags.removeAll()
+                        EventViewController.start = Date.distantPast
+                        EventViewController.end = Date.distantFuture
                         shouldFilter = false
                     }
                 }
@@ -343,12 +355,13 @@ extension EventViewController: UISearchResultsUpdating {
             } else if tabName == "Trending" {
                 // TODO: Replace with code to filter out non-trending events
             }
-            
+            condition = condition && Date() <= event.startTime!
             return condition && (searchText.isEmpty || event.title.lowercased().contains(searchText) || event.eventDescription.lowercased().contains(searchText))
         }
-                
+        print(filteredEvents.count)
+        print(allEvents.count)
         // TODO: Apply sorting algorithm depending on user settings
-        filteredEvents.sort(by: { $0.title < $1.title })
+        filteredEvents.sort(by: { $0.startTime as Date! < $1.startTime as Date! })
     }
     
    

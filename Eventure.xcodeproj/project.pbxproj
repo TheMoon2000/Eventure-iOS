@@ -96,7 +96,9 @@
 		CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCED539422F7DC16007ADC46 /* UserRegistrationData.swift */; };
 		CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF5896B22A22E0300F509C4 /* LoginViewController.swift */; };
 		CCFB7A20229FA6810082FEC6 /* EventureAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */; };
-		D560A305231A180E00062912 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D560A304231A180E00062912 /* FilterViewController.swift */; };
+		D5216647231D790700A54F21 /* FilterPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5216646231D790700A54F21 /* FilterPageViewController.swift */; };
+		D5216649231D828600A54F21 /* FilterDateTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5216648231D828600A54F21 /* FilterDateTableViewController.swift */; };
+		D560A305231A180E00062912 /* FilterTagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D560A304231A180E00062912 /* FilterTagViewController.swift */; };
 		DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */; };
 		DD1BB0D32310B1C40082C4EE /* EventDetailTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */; };
 		DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D52310B2350082C4EE /* AboutViewController.swift */; };
@@ -212,7 +214,9 @@
 		CCFB7A1F229FA6810082FEC6 /* EventureAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventureAPITests.swift; sourceTree = "<group>"; };
 		CCFB7A21229FA6810082FEC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CD8C43C5E3E63950507E5672 /* Pods-Eventure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.release.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.release.xcconfig"; sourceTree = "<group>"; };
-		D560A304231A180E00062912 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		D5216646231D790700A54F21 /* FilterPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPageViewController.swift; sourceTree = "<group>"; };
+		D5216648231D828600A54F21 /* FilterDateTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterDateTableViewController.swift; sourceTree = "<group>"; };
+		D560A304231A180E00062912 /* FilterTagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTagViewController.swift; sourceTree = "<group>"; };
 		DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventDetailTabStrip.swift; path = "Eventure/User Account/Events Page/Detail/EventDetailTabStrip.swift"; sourceTree = SOURCE_ROOT; };
 		DD1BB0D52310B2350082C4EE /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DD1BB0D72310B3560082C4EE /* OtherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewController.swift; sourceTree = "<group>"; };
@@ -370,7 +374,9 @@
 			isa = PBXGroup;
 			children = (
 				CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */,
-				D560A304231A180E00062912 /* FilterViewController.swift */,
+				D5216646231D790700A54F21 /* FilterPageViewController.swift */,
+				D5216648231D828600A54F21 /* FilterDateTableViewController.swift */,
+				D560A304231A180E00062912 /* FilterTagViewController.swift */,
 				CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */,
 				DD1BB0D22310B1BC0082C4EE /* Detail */,
 			);
@@ -760,6 +766,7 @@
 				CC39763F231025E3000CC35D /* NSData+AESCrypt.m in Sources */,
 				CCA0381C231DBF330011AE22 /* CheckinTable.swift in Sources */,
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
+				D5216647231D790700A54F21 /* FilterPageViewController.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
 				CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */,
@@ -769,6 +776,7 @@
 				CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */,
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CCE214272314ED4500E9B137 /* GenericTextCell.swift in Sources */,
+				D5216649231D828600A54F21 /* FilterDateTableViewController.swift in Sources */,
 				CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */,
 				CCA3EB302317A352008538A6 /* SettingsItemCell.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
@@ -813,7 +821,7 @@
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
-				D560A305231A180E00062912 /* FilterViewController.swift in Sources */,
+				D560A305231A180E00062912 /* FilterTagViewController.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
@@ -999,14 +1007,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = US8T2D45H8;
+				DEVELOPMENT_TEAM = 5Q42CPKUAT;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = "Xiang-Li";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1022,14 +1030,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = US8T2D45H8;
+				DEVELOPMENT_TEAM = 5Q42CPKUAT;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = "Xiang-Li";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
