@@ -94,7 +94,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let likeEventsPage = LikedEvents()
             likeEventsPage.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(likeEventsPage, animated: true)
-        case (3, 3):
+        case (3,1):
+            let interestedPage = InterestedEvents()
+            interestedPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(interestedPage, animated: true)
+        case (3, 2):
             //if user wants to change the tags
             let tagPicker = TagPickerView()
             tagPicker.customTitle = "What interests you?"
@@ -241,12 +245,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"
         case (3, 1):
-            cell.icon.image = #imageLiteral(resourceName: "done")
-            cell.titleLabel.text = "Going"
+            cell.icon.image = #imageLiteral(resourceName: "star_filled")
+            cell.titleLabel.text = "Interested Events"
         case (3, 2):
-            cell.icon.image = #imageLiteral(resourceName: "subscribe")
-            cell.titleLabel.text = "Subscriptions"
-        case (3, 3):
             cell.icon.image = #imageLiteral(resourceName: "tag")
             cell.titleLabel.text = "My Tags"
         case (4, 0):
@@ -289,7 +290,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 1, 4, 1][section]
+        return [1, 2, 1, 3, 1][section]
     }
     
     //eliminate first section header

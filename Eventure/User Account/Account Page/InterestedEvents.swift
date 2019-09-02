@@ -1,15 +1,15 @@
 //
-//  LikedEvents.swift
+//  InterestedEvents.swift
 //  Eventure
 //
-//  Created by jeffhe on 2019/9/1.
+//  Created by jeffhe on 2019/9/2.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 import SwiftyJSON
 
-class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource  {
     
     static var changed: Bool = false
     
@@ -83,7 +83,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         }()
         
         retrieveEvents()
- 
+        
         
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
@@ -103,7 +103,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         self.view.bringSubviewToFront(spinnerLabel)
         self.view.bringSubviewToFront(spinner)
         self.view.bringSubviewToFront(backGroundLabel)
-
+        
         
         
     }
@@ -119,7 +119,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let detailPage = SubscribedEventDetailPage()
+        let detailPage = InterestedEventDetailPage()
         //let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
         detailPage.event = displayedEvents[indexPath.section][indexPath.row]
@@ -192,7 +192,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
             
             if let eventsList = try? JSON(data: data!).arrayValue {
                 for eventData in eventsList {
-                    if (eventData.dictionary?["Is favorited"]?.bool ?? false)! {
+                    if (eventData.dictionary?["Is Interested"]?.bool ?? false)! {
                         let event = Event(eventInfo: eventData)
                         
                         event.getCover { eventWithImage in
@@ -294,7 +294,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         
     }
     
-
+    
     
     func clearAll() {
         today.removeAll()
@@ -316,7 +316,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
 }
 
 
-class SubscribedEventDetailPage: EventDetailPage {
+class InterestedEventDetailPage: EventDetailPage {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
