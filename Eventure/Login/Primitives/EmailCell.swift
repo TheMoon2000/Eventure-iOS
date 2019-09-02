@@ -169,18 +169,18 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
         
-        if Event.supportedCampuses.isEmpty {
+        if Campus.supported.isEmpty {
             alert.message = "Our list of supported campus email providers is not yet loaded. Please come back later!"
         }
         
         
         let chooseAction: ((UIAlertAction) -> ()) = { action in
             self.addressButton.setTitle(
-                "@" + Event.supportedCampuses[action.title!]!,
+                "@" + Campus.supported[action.title!]!.fullName,
                 for: .normal)
         }
         
-        for campus in Event.supportedCampuses {
+        for campus in Campus.supported {
             alert.addAction(.init(title: campus.key, style: .default, handler: chooseAction))
         }
         

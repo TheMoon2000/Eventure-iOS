@@ -13,9 +13,27 @@ class OrgAccountPageController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Dashboard"
+        title = Organization.waitingForSync ? "Syncing..." : "Dashboard"
+        view.backgroundColor = .init(white: 0.92, alpha: 1)
+        
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(SettingsItemCell.classForCoder(), forCellReuseIdentifier: "item")
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(orgUpdated), name: ORG_SYNC_SUCCESS, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(orgUpdated), name: ORG_SYNC_FAILED, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    /// New account data has been synced from the server and are reflected in the new `Organization.current` instance. Make appropriate changes to the dashboard page accordingly, e.g. reload certain row cells.
+    @objc private func orgUpdated() {
+        DispatchQueue.main.async {
+            self.title = "Dashboard"
+            self.navigationController?.navigationBar.setNeedsDisplay()
+            // TODO: Do stuff here to update the dashboard page...
+        }
     }
 
     // MARK: - Table view data source

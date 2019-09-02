@@ -159,12 +159,15 @@ class FinishRegistration: UIViewController {
             data, response, error in
             
             guard error == nil else {
-                print(error!)
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) {
+                        self.failed(msg: "No internet connection.")
+                    }
+                }
                 return
             }
             
-            if let str = String(data: data!, encoding: .ascii) {
-                print(str)
+            if let str = String(data: data!, encoding: .utf8) {
                 DispatchQueue.main.async {
                     if str == "success" {
                         self.succeeded()
@@ -173,6 +176,10 @@ class FinishRegistration: UIViewController {
                     }
                 }
                 
+            } else {
+                DispatchQueue.main.async {
+                    self.failed(msg: "There was a server error.")
+                }
             }
         }
         

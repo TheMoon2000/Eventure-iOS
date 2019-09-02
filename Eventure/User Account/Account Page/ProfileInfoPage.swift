@@ -26,7 +26,7 @@ class ProfileInfoPage: UITableViewController {
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInset.top = 5
-        tableView.contentInset.bottom = 20
+        tableView.contentInset.bottom = 10
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
         
@@ -236,17 +236,22 @@ class ProfileInfoPage: UITableViewController {
             let commentCell = CommentCell()
             commentCell.commentText.insertText(User.current!.comments)
             commentCell.commentText.returnKeyType = .default
-            commentCell.textChangeHandler = { text in
+            commentCell.textChangeHandler = { textView in
                 
                 User.current?.saveEnabled = false
-                User.current?.comments = text
+                User.current?.comments = textView.text
                 User.current?.saveEnabled = true
                 
                 UIView.performWithoutAnimation {
                     self.tableView.beginUpdates()
                     self.tableView.endUpdates()
                 }
+                
+                if textView.selectedRange.location == textView.text.count {
+                    self.tableView.scrollToRow(at: [3, 1], at: .bottom, animated: false)
+                }
             }
+            
             
             commentCell.textEndEditingHandler = { text in
                 User.current?.comments = text

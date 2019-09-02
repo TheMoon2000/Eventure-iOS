@@ -20,9 +20,22 @@ class CheckinPageController: UIPageViewController, UIPageViewControllerDataSourc
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        self.navigationItem.title = "Checkin Overview"
+        view.tintColor = MAIN_TINT
+        
+        navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeCheckin))
+        
+        let overviewPage = CheckinOverview(event: event)
+        setViewControllers([overviewPage], direction: .forward, animated: false, completion: nil)
     }
+    
+    @objc private func closeCheckin() {
+        self.dismiss(animated: true)
+    }
+    
+    
+    // MARK: = Page controller data source
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         return nil
@@ -34,6 +47,10 @@ class CheckinPageController: UIPageViewController, UIPageViewControllerDataSourc
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
     }
     
 }

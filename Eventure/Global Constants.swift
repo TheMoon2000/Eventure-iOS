@@ -36,7 +36,7 @@ let ACCOUNT_TYPE_ORG = "Org"
 let URL_PREFIX = "eventure://"
 
 /// Todo: REPLACE THIS WITH THE APP's THEME COLOR
-let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
+let MAIN_TINT = UIColor(red: 1.0, green: 153/255, blue: 102/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
 let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
@@ -94,6 +94,21 @@ let PLAIN_STYLE =  """
     }
     h6 {
         font-size: 18px;
+    }
+
+    a {
+        color: rgb(104, 165, 245);
+    }
+"""
+
+let COMPACT_STYLE = """
+    body {
+        font-family: -apple-system;
+        font-size: 16px;
+        line-height: 1.25;
+        letter-spacing: 1%;
+        color: #5A5A5A;
+        margin-bottom: 10px;
     }
 """
 
@@ -157,9 +172,13 @@ extension String {
     }
     
     /// Markdown-formatted text.
-    func attributedText() -> NSAttributedString {
+    func attributedText(style: String = PLAIN_STYLE) -> NSAttributedString {
         if isEmpty { return NSAttributedString() }
-        if let d = try? Down(markdownString: self).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
+        
+        if let d = try? Down(markdownString: self).toAttributedString(.default, stylesheet: style) {
+            if d.string.isEmpty {
+                return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
+            }
             return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
         } else {
             print("WARNING: markdown failed")
@@ -183,6 +202,7 @@ extension String {
         }
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
+
 }
 
 extension URL {
@@ -405,3 +425,5 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
 // MARK: - Notifications
 let USER_SYNC_SUCCESS = Notification.Name("user sync success")
 let USER_SYNC_FAILED = Notification.Name("user sync failed")
+let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
+let ORG_SYNC_FAILED = Notification.Name("org sync failed")

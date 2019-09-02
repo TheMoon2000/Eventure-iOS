@@ -14,7 +14,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
     private(set) var commentText: UITextView!
     private var placeholder: UILabel!
 
-    var textChangeHandler: ((String) -> ())?
+    var textChangeHandler: ((UITextView) -> ())?
     var textEndEditingHandler: ((String) -> ())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -85,7 +85,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        textChangeHandler?(textView.text)
+        textChangeHandler?(textView)
         placeholder.isHidden = !textView.text.isEmpty
     }
     

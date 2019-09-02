@@ -2,7 +2,6 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "531567203772_.pic_hd.jpg",
       "scale" : "1x"
     },
     {
@@ -11,7 +10,7 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "1401567235355_.pic_hd.jpg",
+      "filename" : "icons8-light_off.png",
       "scale" : "3x"
     }
   ],

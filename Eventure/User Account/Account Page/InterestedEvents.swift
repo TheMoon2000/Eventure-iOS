@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 
 class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource  {
-    
+    //
     static var changed: Bool = false
     
     private var myTableView: UITableView!

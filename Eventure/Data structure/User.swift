@@ -242,7 +242,7 @@ class User {
                 User.current = User(userInfo: json)
                 NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
             } else {
-                print(String(data: data!, encoding: .utf8)!)
+                print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'")
                 NotificationCenter.default.post(name: USER_SYNC_FAILED, object: nil)
             }
         }

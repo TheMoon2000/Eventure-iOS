@@ -86,7 +86,7 @@ class UpdatePasswordPage: UITableViewController {
         }
         
         guard new.count >= 8 else {
-            warning.message = "Pasword length must be at least 8 characters."
+            warning.message = "Paswords must be at least 8 characters long."
             present(warning, animated: true, completion: nil)
             return
         }

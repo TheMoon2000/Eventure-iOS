@@ -205,7 +205,7 @@ class OrgEventCell: UICollectionViewCell {
         titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
         locationText.text = event.location.isEmpty ? "TBA" : event.location
-        descriptionText.setText(event.eventDescription.attributedText())
+        self.descriptionText.setText(event.eventDescription.attributedText())
         
         if event.eventVisual == nil {
             if withImage {
