@@ -90,6 +90,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let scanVC = ScannerViewController()
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
+        case (3,0):
+            let likeEventsPage = LikedEvents()
+            likeEventsPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(likeEventsPage, animated: true)
         case (3, 3):
             //if user wants to change the tags
             let tagPicker = TagPickerView()

@@ -12,6 +12,8 @@
 		67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67705BD1231395900024FBBA /* PersonalInfoPage.swift */; };
 		67AFF77C23121ACE00329626 /* AccountCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77923121ACE00329626 /* AccountCell.swift */; };
 		67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AFF77B23121ACE00329626 /* AccountViewController.swift */; };
+		67E89385231C40FF004896F7 /* changeGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E89384231C40FF004896F7 /* changeGender.swift */; };
+		67E89387231C57F4004896F7 /* LikedEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E89386231C57F4004896F7 /* LikedEvents.swift */; };
 		CC0646D922FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
 		CC0646DA22FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
 		CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646DB22FDF1EA000BF3CD /* Organization.swift */; };
@@ -119,6 +121,8 @@
 		67705BD1231395900024FBBA /* PersonalInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalInfoPage.swift; sourceTree = "<group>"; };
 		67AFF77923121ACE00329626 /* AccountCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountCell.swift; sourceTree = "<group>"; };
 		67AFF77B23121ACE00329626 /* AccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
+		67E89384231C40FF004896F7 /* changeGender.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = changeGender.swift; sourceTree = "<group>"; };
+		67E89386231C57F4004896F7 /* LikedEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedEvents.swift; sourceTree = "<group>"; };
 		7A2B839141C769AA5684B8EC /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
 		CC0646D822FDF1CC000BF3CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		CC0646DB22FDF1EA000BF3CD /* Organization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organization.swift; sourceTree = "<group>"; };
@@ -330,6 +334,7 @@
 		CC2538AE22F4E47F00690503 /* Account Page */ = {
 			isa = PBXGroup;
 			children = (
+				67E89384231C40FF004896F7 /* changeGender.swift */,
 				67705BD1231395900024FBBA /* PersonalInfoPage.swift */,
 				CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */,
 				CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */,
@@ -343,6 +348,7 @@
 				CC23293123163B720097A915 /* UpdatePasswordPage.swift */,
 				CCE214242314ED0E00E9B137 /* GenericOneFieldPage.swift */,
 				CCE214262314ED4500E9B137 /* GenericTextCell.swift */,
+				67E89386231C57F4004896F7 /* LikedEvents.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -748,6 +754,7 @@
 				CC39763F231025E3000CC35D /* NSData+AESCrypt.m in Sources */,
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
+				67E89385231C40FF004896F7 /* changeGender.swift in Sources */,
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
 				CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */,
@@ -773,6 +780,7 @@
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC46772D2319956600A9FF18 /* Campus.swift in Sources */,
+				67E89387231C57F4004896F7 /* LikedEvents.swift in Sources */,
 				CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */,
 				CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */,
 				CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */,

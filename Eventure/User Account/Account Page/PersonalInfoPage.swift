@@ -103,6 +103,9 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
             self.present(alert, animated: true)
         } else if indexPath.row == 2 {
             pushToModifyPage(type: .email)
+        } else if indexPath.row == 3 {
+            var genderPage = changeGender()
+            navigationController?.pushViewController(genderPage, animated: true)
         }
     }
     
