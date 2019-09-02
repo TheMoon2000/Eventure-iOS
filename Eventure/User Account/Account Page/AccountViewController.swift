@@ -96,7 +96,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let tagPicker = TagPickerView()
             tagPicker.customTitle = "What interests you?"
             tagPicker.customSubtitle = "Pick at least one. The more the better!"
-            tagPicker.maxPicks = 3
             tagPicker.customButtonTitle = "Done"
             tagPicker.customContinueMethod = { tagPicker in
                 

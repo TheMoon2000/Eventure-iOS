@@ -15,7 +15,7 @@ class SignupSheet {
     let orgID: String
     var name: String
     var capacity: Int
-    var registrants = [UserBrief]()
+    var registrants = [Int: Date]()
     var createdDate: Date
     
     required init(json: JSON) {
@@ -26,9 +26,9 @@ class SignupSheet {
         name = dictionary["List name"]?.string ?? ""
         capacity = dictionary["Capacity"]?.int ?? 0
         
-        if let briefs = dictionary["Registrants"]?.array {
-            for brief in briefs {
-                registrants.append(UserBrief(json: brief))
+        if let regData = dictionary["Registrants"]?.string {
+            for reg in JSON(parseJSON: regData).dictionaryValue {
+                registrants[Int(reg) ?? -1] = DATE_FORMATTER.date(from: reg.value.stringValue)
             }
         }
         

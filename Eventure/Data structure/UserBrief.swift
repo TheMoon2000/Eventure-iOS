@@ -21,7 +21,7 @@ class UserBrief: Hashable {
         let dictionary = json.dictionaryValue
         uuid = dictionary["uuid"]?.int ?? -1
         name = dictionary["Name"]?.string ?? "<No Name>"
-        major = dictionary["Major"]?.string
+        major = dictionary["Major"]?.string ?? "Undecided"
     }
     
     /// Load the profile picture for a user.
