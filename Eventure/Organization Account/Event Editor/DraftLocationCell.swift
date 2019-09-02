@@ -61,6 +61,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.delegate = self
             tv.backgroundColor = .clear
             tv.keyboardDismissMode = .onDrag
+            tv.autocorrectionType = .no
         
             tv.textContainer.lineFragmentPadding = 0
             
