@@ -38,6 +38,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         super.viewDidLoad()
         
         title = "Scan Code"
+        navigationItem.rightBarButtonItem = .init(title: "Album", style: .plain, target: self, action: #selector(pickLocalImage))
         
         setupViews()
         
@@ -306,6 +307,20 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     private var lastReturnDate = Date(timeIntervalSinceReferenceDate: 0)
     
+    
+    private func decryptDataString(_ string: String) -> String? {
+        guard string.hasPrefix(URL_PREFIX) else { return nil }
+        
+        let encrypted = string[string.index(string.startIndex, offsetBy: URL_PREFIX.count)...]
+        
+        if let decrypted = NSString(string: String(encrypted)).aes256Decrypt(withKey: AES_KEY) {
+            
+            return decrypted
+        }
+        
+        return nil
+    }
+    
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         
         
@@ -319,17 +334,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                     return ""
             }
             
-            guard dataString.hasPrefix(URL_PREFIX) else { return "" }
-            
-            let encrypted = dataString[dataString.index(dataString.startIndex, offsetBy: URL_PREFIX.count)...]
-            
-            if let decrypted = NSString(string: String(encrypted)).aes256Decrypt(withKey: AES_KEY) {
-                
-                return decrypted
-            }
-            
-            return ""
-            
+            return decryptDataString(dataString) ?? ""
         }
         
         let filtered = parsed.filter { !$0.isEmpty }
@@ -349,14 +354,16 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         } else {
             cameraPrompt.text = INVALID_CODE
             cameraPrompt.textColor = LIGHT_RED
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            if thisDate == self.lastReturnDate {
-                self.cameraPrompt.text = self.cameraDefaultText
-                self.cameraPrompt.textColor = .white
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                if thisDate == self.lastReturnDate {
+                    self.cameraPrompt.text = self.cameraDefaultText
+                    self.cameraPrompt.textColor = .white
+                }
             }
         }
+        
+        
         
     }
     
@@ -396,8 +403,15 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                 }
             } else {
                 DispatchQueue.main.async {
-                    self.cameraPrompt.text = self.INVALID_CODE
+                    self.cameraPrompt.text = "The event you scanned does not exist or has been deleted by its host organization."
                     self.cameraPrompt.textColor = LIGHT_RED
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                if self.cameraPrompt.textColor == LIGHT_RED {
+                    self.cameraPrompt.text = self.cameraDefaultText
+                    self.cameraPrompt.textColor = .white
                 }
             }
         }
@@ -405,8 +419,49 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         task.resume()
     }
     
+    @objc private func pickLocalImage() {
+        guard UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) else {
+            return
+        }
+        
+        let picker = UIImagePickerController()
+        picker.sourceType = .savedPhotosAlbum
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+    
     override var shouldAutorotate: Bool {
         return false
+    }
+}
+
+
+extension ScannerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        if let message = detectQRCode(image), let eventUUID = decryptDataString(message) {
+            picker.dismiss(animated: true)
+            presentCheckinForm(eventID: eventUUID)
+        }
+    }
+    
+    func detectQRCode(_ image: UIImage?) -> String? {
+        if let image = image, let ciImage = CIImage.init(image: image){
+            var options: [String: Any]
+            let context = CIContext()
+            options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+            let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
+            if ciImage.properties.keys.contains((kCGImagePropertyOrientation as String)){
+                options = [CIDetectorImageOrientation: ciImage.properties[(kCGImagePropertyOrientation as String)] ?? 1]
+            }else {
+                options = [CIDetectorImageOrientation: 1]
+            }
+            let features = qrDetector?.features(in: ciImage, options: options)
+            
+            return (features?.first as? CIQRCodeFeature)?.messageString
+        }
+        return nil
     }
 }
 

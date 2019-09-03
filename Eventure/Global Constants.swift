@@ -43,7 +43,7 @@ let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
 let FATAL_COLOR = UIColor(red: 224/255, green: 33/255, blue: 0, alpha: 1)
 let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
-let LIGHT_RED = UIColor(red: 1, green: 100, blue: 90, alpha: 1)
+let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
 let MAIN_TINT8 = UIColor(red: 255/255, green: 153/255, blue: 102/255, alpha: 1.0)
@@ -150,6 +150,15 @@ let YEAR_FORMATTER: DateFormatter = {
     formatter.locale = Locale(identifier: "en_US")
     return formatter
 }()
+
+/// A formatter to get the current month in string format.
+let DAY_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "d"
+    formatter.locale = Locale(identifier: "en_US")
+    return formatter
+}()
+
 
 // MARK: - Classes and Extensions
 

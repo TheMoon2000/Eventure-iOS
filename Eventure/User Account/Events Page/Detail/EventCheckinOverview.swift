@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class EventCheckinOverview: UIViewController {
     
@@ -108,6 +109,16 @@ class EventCheckinOverview: UIViewController {
         alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Save QR Code", style: .default, handler: { _ in
             UIImageWriteToSavedPhotosAlbum(qr, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+            /*
+            PHPhotoLibrary.requestAuthorization { status in
+                guard status == .authorized else { return }
+                
+                PHPhotoLibrary.shared().performChanges({
+                    // Add the captured photo's file data as the main resource for the Photos asset.
+                    let creationRequest = PHAssetCreationRequest.forAsset()
+                    creationRequest.addResource(with: .photo, data: qrData, options: nil)
+                }, completionHandler: nil)
+            }*/
         }))
         
         present(alert, animated: true, completion: nil)

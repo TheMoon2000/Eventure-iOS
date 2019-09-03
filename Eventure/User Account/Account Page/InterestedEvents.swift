@@ -38,6 +38,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Interested"
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
@@ -134,11 +135,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         let cell = EventsCell()
         cell.titleLabel.text = event.title
         
-        let df1 = DateFormatter()
-        df1.dateFormat = "MM-dd hh:mm"
-        let df2 = DateFormatter()
-        df2.dateFormat = "-hh:mm"
-        cell.dateLabel.text = df1.string(from: event.startTime!) + df2.string(from: event.endTime!)
+        cell.setTime(for: event)
         
         if event.eventVisual != nil {
             cell.icon.image = event.eventVisual
