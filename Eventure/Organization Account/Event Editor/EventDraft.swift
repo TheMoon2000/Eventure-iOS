@@ -288,6 +288,7 @@ class EventDraft: UIPageViewController {
                     serverMaintenanceError(vc: self)
                 }
             case "success":
+                self.draft.lastModified = Date()
                 EventDraft.removeDraft(uuid: self.draft.uuid) { remaining in
                     var published: Set<Event> = self.orgEventView?.allEvents ?? []
                     published.insert(self.draft)

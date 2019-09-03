@@ -242,50 +242,21 @@ class EventCell: UICollectionViewCell {
     }
     
     @objc private func toggleInterested() {
-        toggle()
+        let isInterested = toggle()
         
-        let parameters = [
-            "userId": String(User.current!.uuid),
-            "eventId": event.uuid,
-            "interested": interestedButton.imageView?.image == #imageLiteral(resourceName: "star_filled") ? "1" : "0"
-        ]
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/MarkEvent",
-                           parameters: parameters)!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    self.toggle()
-                }
-                return
-            }
-            
-            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
-            
-            if msg == INTERNAL_ERROR {
-                DispatchQueue.main.async {
-                    self.toggle()
-                }
-            }
-        }
-        
-        task.resume()
+        User.current?.syncInterested(interested: isInterested, for: event, completion: nil)
     }
     
-    private func toggle() {
+    private func toggle() -> Bool {
         UISelectionFeedbackGenerator().selectionChanged()
         if !User.current!.interestedEvents.contains(event.uuid) {
             interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
             User.current?.interestedEvents.insert(event.uuid)
+            return true
         } else {
             interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
             User.current?.interestedEvents.remove(event.uuid)
+            return false
         }
     }
     

@@ -42,6 +42,7 @@ class Event {
     var favoriteList = [Int]()
     var tags = Set<String>()
     var capacity = 0
+    var lastModified: Date?
     
     var published: Bool
     var active: Bool
@@ -134,6 +135,10 @@ class Event {
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
         capacity = dictionary["Capacity"]?.int ?? 0
+       
+        if let dateString = dictionary["Last modified"]?.string {
+            lastModified = DATE_FORMATTER.date(from: dateString)
+        }
     }
     
     static func readFromFile(path: String) -> [String: Set<Event>] {

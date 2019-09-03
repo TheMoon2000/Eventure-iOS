@@ -249,6 +249,39 @@ class User {
         
         task.resume()
     }
+    
+    func syncInterested(interested: Bool, for event: Event, completion handler: ((Bool) -> ())? = nil) {
+        let parameters = [
+            "userId": String(uuid),
+            "eventId": event.uuid,
+            "interested": interested ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/MarkEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
+            
+            DispatchQueue.main.async {
+                handler?(msg != INTERNAL_ERROR)
+            }
+        }
+        
+        task.resume()
+    }
 }
 
 
