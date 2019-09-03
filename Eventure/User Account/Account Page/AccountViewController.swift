@@ -91,6 +91,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let scanVC = ScannerViewController()
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
+        case (2, 1):
+            let checkedInPage = CheckedInEvents()
+            checkedInPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(checkedInPage, animated: true)
         case (3,0):
             let likeEventsPage = LikedEvents()
             likeEventsPage.hidesBottomBarWhenPushed = true
@@ -181,8 +185,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             DispatchQueue.main.async {
                 tagPicker.selectedTags = User.current!.tags
             }
-            
-        case (4, 0): // if the log out/sign in button is clicked
+        case (4, 0):
+            let aboutPage = AboutEventure()
+            aboutPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(aboutPage, animated: true)
+        case (4, 1): // if the log out/sign in button is clicked
             if (User.current == nil) {
                 let login = LoginViewController()
                 let nvc = InteractivePopNavigationController(rootViewController: login)
@@ -258,6 +265,21 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
             
             let label = UILabel()
+            label.text = "About Eventure"
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            return cell
+        case (4, 1):
+            let cell = UITableViewCell()
+            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            
+            let label = UILabel()
             label.text = User.current != nil ? "Log Out" : "Log In"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .center
@@ -293,7 +315,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 2, 3, 1][section]
+        return [1, 2, 2, 3, 2][section]
     }
     
     //eliminate first section header
