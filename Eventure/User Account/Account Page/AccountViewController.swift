@@ -211,7 +211,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             if cell.icon.image == nil && User.current != nil {
                 cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
             } else {
-                cell.icon.image = #imageLiteral(resourceName: "unknown")
+                cell.icon.image = #imageLiteral(resourceName: "guest")
             }
             cell.imageWidthConstraint.constant = 65
             cell.heightConstraint.constant = 100

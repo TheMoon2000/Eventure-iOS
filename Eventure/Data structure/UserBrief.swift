@@ -12,16 +12,41 @@ import SwiftyJSON
 /// An overview of a user's professional profile.
 class UserBrief: Hashable {
     
-    let uuid: Int
+    let showProfile: Bool
+
+    let userID: Int
+    let orgID: String
     let name: String
-    let major: String?
+    let major: String
+    
+    let graduationYear: Int?
+    let graduationSeason: User.GraduationSeason?
+    
+    let resume: String
+    let linkedIn: String
+    let github: String
+    
+    let interests: String
+    let comments: String
+    
     var profilePicture: UIImage?
     
     init(json: JSON) {
         let dictionary = json.dictionaryValue
-        uuid = dictionary["uuid"]?.int ?? -1
+        
+        showProfile = (dictionary["Show profile"]?.int ?? 1) == 1
+        userID = dictionary["User ID"]?.int ?? -1
+        orgID = dictionary["Organization"]?.string ?? "Unknown Organization"
         name = dictionary["Name"]?.string ?? "<No Name>"
         major = dictionary["Major"]?.string ?? "Undecided"
+        graduationYear = dictionary["Graduation year"]?.int
+        graduationSeason = User.GraduationSeason(rawValue: dictionary["Graduation season"]?.string ?? "")
+        resume = dictionary["Resume"]?.string ?? ""
+        linkedIn = dictionary["LinkedIn"]?.string ?? ""
+        github = dictionary["GitHub"]?.string ?? ""
+        
+        interests = dictionary["Interests"]?.string ?? ""
+        comments = dictionary["Comments"]?.string ?? ""
     }
     
     /// Load the profile picture for a user.
@@ -30,7 +55,7 @@ class UserBrief: Hashable {
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetProfilePicture",
-                           parameters: ["userId": String(uuid)])!
+                           parameters: ["userId": String(userID)])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -52,11 +77,11 @@ class UserBrief: Hashable {
     }
     
     static func == (lhs: UserBrief, rhs: UserBrief) -> Bool {
-        return lhs.uuid == rhs.uuid
+        return lhs.userID == rhs.userID
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(uuid)
+        hasher.combine(userID)
     }
 
 }

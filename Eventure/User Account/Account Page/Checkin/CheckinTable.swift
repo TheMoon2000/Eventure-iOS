@@ -13,6 +13,11 @@ class CheckinTable: UIViewController {
     private var event: Event!
     private var sheetInfo: SignupSheet!
     private var banner: UIVisualEffectView!
+    
+    private var spinner: UIActivityIndicatorView!
+    private var spinnerLabel: UILabel!
+    private var emptyLabel: UILabel!
+    
     private var checkinTitle: UILabel!
     private var checkinSubtitle: UILabel!
     private var checkinTable: UITableView!
@@ -28,6 +33,8 @@ class CheckinTable: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = EventDraft.backgroundColor
         
         banner = {
             let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -102,8 +109,62 @@ class CheckinTable: UIViewController {
             
             return tv
         }()
+        
+        spinner = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.tintColor = .lightGray
+            spinner.hidesWhenStopped = true
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20).isActive = true
+            
+            return spinner
+        }()
+        
+        spinnerLabel = {
+            let label = UILabel()
+            label.isHidden = true
+            label.text = "Fetching registrants..."
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        emptyLabel = {
+            let label = UILabel()
+            label.isHidden = true
+            label.text = "No one checked in yet. Be the first!"
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
+        fetchRegistrants()
     }
     
+    private func fetchRegistrants() {
+        spinner.startAnimating()
+        spinnerLabel.isHidden = false
+        
+        // TODO
+    }
     
     private func adjustTableInset() {
         banner.layoutIfNeeded()
