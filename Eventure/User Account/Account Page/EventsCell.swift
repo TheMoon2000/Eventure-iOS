@@ -52,7 +52,7 @@ class EventsCell: UITableViewCell {
             spacingConstraint = label.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 15)
             spacingConstraint.isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
-            label.rightAnchor.constraint(equalTo: rightAnchor, constant: -30).isActive = true
+            label.rightAnchor.constraint(equalTo: rightAnchor, constant: -32).isActive = true
             
             return label
         }()
@@ -61,7 +61,7 @@ class EventsCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 17)
+            label.font = .systemFont(ofSize: 16)
             label.textColor = UIColor.gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
