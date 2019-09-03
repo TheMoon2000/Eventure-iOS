@@ -57,7 +57,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: "Other")
+        return IndicatorInfo(title: "Detail")
     }
     
 }

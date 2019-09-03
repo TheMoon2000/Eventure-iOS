@@ -8,9 +8,10 @@
 
 import UIKit
 
-class CheckinPageController: UIPageViewController, UIPageViewControllerDataSource {
+class CheckinPageController: UIPageViewController {
     
     private var event: Event!
+    private var sheetInfo: SignupSheet!
     
     required init(event: Event!) {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -34,17 +35,7 @@ class CheckinPageController: UIPageViewController, UIPageViewControllerDataSourc
         self.dismiss(animated: true)
     }
     
-    
-    // MARK: = Page controller data source
-    
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        return nil
-    }
-    
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        return nil
-    }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }

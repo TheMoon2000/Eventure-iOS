@@ -24,9 +24,9 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     private var cameraDefaultText = "Place QR code within to scan!"
     private var lastZoomFactor: CGFloat = 1.0
     
-    private var torchOnText = "Let there be light"
-    private var torchOffText = "Tap to turn off flashlight"
-    
+    private var TORCH_ON = "Let there be light"
+    private var TORCH_OFF = "Tap to turn off flashlight"
+    private var INVALID_CODE = "Oops, this QR code is not a valid event code."
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -176,7 +176,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             button.imageView?.contentMode = .scaleAspectFit
             button.titleLabel?.font = .systemFont(ofSize: 15)
             button.setImage(#imageLiteral(resourceName: "light").withRenderingMode(.alwaysTemplate), for: .normal)
-            button.setTitle(torchOnText, for: .normal)
+            button.setTitle(TORCH_ON, for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)
             
@@ -264,14 +264,14 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             do {
                 try device.lockForConfiguration()
                 
-                if sender.title(for: .normal) == torchOnText {
+                if sender.title(for: .normal) == TORCH_ON {
                     device.torchMode = .on
                     sender.setImage(#imageLiteral(resourceName: "light_off").withRenderingMode(.alwaysTemplate), for: .normal)
-                    sender.setTitle(torchOffText, for: .normal)
+                    sender.setTitle(TORCH_OFF, for: .normal)
                 } else {
                     device.torchMode = .off
                     sender.setImage(#imageLiteral(resourceName: "light").withRenderingMode(.alwaysTemplate), for: .normal)
-                    sender.setTitle(torchOnText, for: .normal)
+                    sender.setTitle(TORCH_ON, for: .normal)
                 }
                 
                 device.unlockForConfiguration()
@@ -347,8 +347,8 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             
             presentCheckinForm(eventID: eventID)
         } else {
-            cameraPrompt.text = "Oops, this QR code is not a valid event code."
-            cameraPrompt.textColor = FATAL_COLOR
+            cameraPrompt.text = INVALID_CODE
+            cameraPrompt.textColor = LIGHT_RED
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -375,13 +375,13 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             
             DispatchQueue.main.async {
                 self.spinner.stopAnimating()
-                self.session.startRunning()
             }
             
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.cameraPrompt.text = "No internet connection."
                     self.cameraPrompt.textColor = WARNING_COLOR
+                    self.session.startRunning()
                 }
                 return
             }
@@ -392,6 +392,11 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                 let checkinForm = CheckinPageController(event: event)
                 DispatchQueue.main.async {
                     self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true, completion: nil)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.cameraPrompt.text = self.INVALID_CODE
+                    self.cameraPrompt.textColor = LIGHT_RED
                 }
             }
         }

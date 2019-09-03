@@ -41,7 +41,7 @@ class Event {
     var interestedList = [Int]()
     var favoriteList = [Int]()
     var tags = Set<String>()
-    // API: array of user id
+    var capacity = 0
     
     var published: Bool
     var active: Bool
@@ -132,6 +132,7 @@ class Event {
         
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
+        capacity = dictionary["Capacity"]?.int ?? 0
     }
     
     static func readFromFile(path: String) -> [String: Set<Event>] {
@@ -287,6 +288,7 @@ class Event {
         main.dictionaryObject?["Tags"] = tags.description
         main.dictionaryObject?["Has cover"] = hasVisual
         main.dictionaryObject?["Active"] = active ? 1 : 0
+        main.dictionaryObject?["Capacity"] = capacity
         
         return main
     }

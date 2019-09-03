@@ -133,7 +133,7 @@ class RegisterOrganization: UITableViewController {
         // 2.0 (6)
         let orgID: UITableViewCell = {
             let cell = MinimalTextCell()
-            cell.textField.placeholder = "Org. Account ID (permanent)"
+            cell.textField.placeholder = "Organization ID (permanent)"
             cell.textField.autocorrectionType = .no
             cell.textField.autocapitalizationType = .none
             cell.textField.enablesReturnKeyAutomatically = true

@@ -76,6 +76,9 @@
 		CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */; };
 		CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */; };
 		CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */; };
+		CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA03819231DB6A20011AE22 /* CheckinUserCell.swift */; };
+		CCA0381C231DBF330011AE22 /* CheckinTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0381B231DBF330011AE22 /* CheckinTable.swift */; };
+		CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0381D231DC8C10011AE22 /* DraftCapacityCell.swift */; };
 		CCA3EB302317A352008538A6 /* SettingsItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */; };
 		CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */; };
 		CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */; };
@@ -190,6 +193,9 @@
 		CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftOtherInfoPage.swift; sourceTree = "<group>"; };
 		CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventCell.swift; sourceTree = "<group>"; };
 		CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationRegistrationData.swift; sourceTree = "<group>"; };
+		CCA03819231DB6A20011AE22 /* CheckinUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinUserCell.swift; sourceTree = "<group>"; };
+		CCA0381B231DBF330011AE22 /* CheckinTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTable.swift; sourceTree = "<group>"; };
+		CCA0381D231DC8C10011AE22 /* DraftCapacityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftCapacityCell.swift; sourceTree = "<group>"; };
 		CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItemCell.swift; sourceTree = "<group>"; };
 		CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgAccountPageController.swift; sourceTree = "<group>"; };
 		CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinOverview.swift; sourceTree = "<group>"; };
@@ -401,6 +407,7 @@
 				CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */,
 				CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */,
 				CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */,
+				CCA0381D231DC8C10011AE22 /* DraftCapacityCell.swift */,
 			);
 			path = "Event Editor";
 			sourceTree = "<group>";
@@ -494,6 +501,8 @@
 				CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */,
 				CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */,
 				CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */,
+				CCA03819231DB6A20011AE22 /* CheckinUserCell.swift */,
+				CCA0381B231DBF330011AE22 /* CheckinTable.swift */,
 			);
 			path = Checkin;
 			sourceTree = "<group>";
@@ -767,6 +776,7 @@
 				CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */,
 				CC3F000122F7EFEC00996440 /* OrgFinishRegistration.swift in Sources */,
 				CC39763F231025E3000CC35D /* NSData+AESCrypt.m in Sources */,
+				CCA0381C231DBF330011AE22 /* CheckinTable.swift in Sources */,
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
 				D5216647231D790700A54F21 /* FilterPageViewController.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
@@ -823,6 +833,7 @@
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
+				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
@@ -840,6 +851,7 @@
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
 				CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */,
+				CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */,
 				CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */,
 				CC3D875C231848B800F1F1E7 /* ScannerViewController.swift in Sources */,
 			);
@@ -1011,7 +1023,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5Q42CPKUAT;
+				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1034,7 +1046,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 5Q42CPKUAT;
+				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -205,6 +205,9 @@ class EventViewController: UIViewController {
                 for event in eventsList {
                     tmp.append(Event(eventInfo: event))
                 }
+                tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
+                    return e1.startTime as Date! < e2.startTime as Date!
+                })
                 DispatchQueue.main.async {
                     self.allEvents = tmp
                     self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
@@ -352,13 +355,13 @@ extension EventViewController: UISearchResultsUpdating {
             } else if tabName == "Trending" {
                 // TODO: Replace with code to filter out non-trending events
             }
-            
+            condition = condition && Date() <= event.startTime!
             return condition && (searchText.isEmpty || event.title.lowercased().contains(searchText) || event.eventDescription.lowercased().contains(searchText))
         }
         print(filteredEvents.count)
         print(allEvents.count)
         // TODO: Apply sorting algorithm depending on user settings
-        filteredEvents.sort(by: { $0.title < $1.title })
+        filteredEvents.sort(by: { $0.startTime as Date! < $1.startTime as Date! })
     }
     
    

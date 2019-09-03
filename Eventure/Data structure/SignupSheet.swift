@@ -13,9 +13,11 @@ class SignupSheet {
     
     let uuid: String
     let orgID: String
-    var name: String
-    var capacity: Int
-    var registrants = [UserBrief]()
+    let name: String
+    let capacity: Int
+    var registrants = [Int: Date]()
+    var currentOccupied: Int
+    var currentUserCheckedIn: Bool
     var createdDate: Date
     
     required init(json: JSON) {
@@ -23,12 +25,12 @@ class SignupSheet {
         
         uuid = dictionary["uuid"]?.string ?? ""
         orgID = dictionary["Organization"]?.string ?? ""
-        name = dictionary["List name"]?.string ?? ""
+        name = dictionary["List name"]?.string ?? "Online Check-in"
         capacity = dictionary["Capacity"]?.int ?? 0
         
-        if let briefs = dictionary["Registrants"]?.array {
-            for brief in briefs {
-                registrants.append(UserBrief(json: brief))
+        if let regData = dictionary["Registrants"]?.string {
+            for reg in JSON(parseJSON: regData).dictionaryValue {
+                registrants[Int(reg.key) ?? -1] = DATE_FORMATTER.date(from: reg.value.stringValue)
             }
         }
         
@@ -37,6 +39,9 @@ class SignupSheet {
         } else {
             createdDate = Date(timeIntervalSinceReferenceDate: 0)
         }
+        
+        currentOccupied = dictionary["Occupied"]?.int ?? 0
+        currentUserCheckedIn = dictionary["Checked in"]?.bool ?? false
     }
     
 }

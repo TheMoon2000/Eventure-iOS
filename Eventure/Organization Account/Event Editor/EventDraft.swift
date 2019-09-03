@@ -257,7 +257,8 @@ class EventDraft: UIPageViewController {
             "startTime": DATE_FORMATTER.string(from: draft.startTime!),
             "endTime": DATE_FORMATTER.string(from: draft.endTime!),
             "public": "1",
-            "tags": draft.tags.description
+            "tags": draft.tags.description,
+            "capacity": String(draft.capacity)
         ]
         
         var fileData = [String : Data]()
