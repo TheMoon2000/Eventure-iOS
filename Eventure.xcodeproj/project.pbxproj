@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		0D922978F88AA540F1FBE70D /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2446E41F2700045698ADEDAB /* Pods_Eventure.framework */; };
 		470D75024A526E9BCB68F95B /* Pods_EventureAPITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */; };
+		67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67017DB0231F09D2006321F6 /* CheckedInEvents.swift */; };
+		67017DB3231F132F006321F6 /* AboutEventure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67017DB2231F132F006321F6 /* AboutEventure.swift */; };
 		67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67705BD1231395900024FBBA /* PersonalInfoPage.swift */; };
 		677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677A8CA9231D8489007CB04F /* EventsCell.swift */; };
 		677A8CAC231DA132007CB04F /* InterestedEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677A8CAB231DA132007CB04F /* InterestedEvents.swift */; };
@@ -124,6 +126,8 @@
 		2DFC3F4441E3980AF60A28B5 /* Pods_EventureAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventureAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EBCBAB1E31272FAA462C515 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 		314EE6D58DF621467DC05E60 /* Pods-EventureAPITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.release.xcconfig"; sourceTree = "<group>"; };
+		67017DB0231F09D2006321F6 /* CheckedInEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckedInEvents.swift; sourceTree = "<group>"; };
+		67017DB2231F132F006321F6 /* AboutEventure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutEventure.swift; sourceTree = "<group>"; };
 		67705BD1231395900024FBBA /* PersonalInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalInfoPage.swift; sourceTree = "<group>"; };
 		677A8CA9231D8489007CB04F /* EventsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCell.swift; sourceTree = "<group>"; };
 		677A8CAB231DA132007CB04F /* InterestedEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestedEvents.swift; sourceTree = "<group>"; };
@@ -366,6 +370,8 @@
 				67E89386231C57F4004896F7 /* LikedEvents.swift */,
 				677A8CA9231D8489007CB04F /* EventsCell.swift */,
 				677A8CAB231DA132007CB04F /* InterestedEvents.swift */,
+				67017DB0231F09D2006321F6 /* CheckedInEvents.swift */,
+				67017DB2231F132F006321F6 /* AboutEventure.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -794,6 +800,7 @@
 				CCA3EB302317A352008538A6 /* SettingsItemCell.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */,
+				67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */,
 				CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */,
 				CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */,
 				CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */,
@@ -830,6 +837,7 @@
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
 				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
+				67017DB3231F132F006321F6 /* AboutEventure.swift in Sources */,
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
