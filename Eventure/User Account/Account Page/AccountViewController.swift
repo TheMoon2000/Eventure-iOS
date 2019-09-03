@@ -225,12 +225,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 cell.icon.isUserInteractionEnabled = true
                 profilePicture = cell.icon.image
             } else {
-<<<<<<< HEAD
-                cell.icon.image = #imageLiteral(resourceName: "guest_profile")
-                cell.icon.isUserInteractionEnabled = false
-=======
                 cell.icon.image = #imageLiteral(resourceName: "unknown")
->>>>>>> master
+                cell.icon.isUserInteractionEnabled = false
             }
             cell.imageWidthConstraint.constant = 65
             cell.heightConstraint.constant = 100

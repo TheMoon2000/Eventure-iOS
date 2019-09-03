@@ -224,6 +224,43 @@ class EventCell: UICollectionViewCell {
     }
     
     @objc private func toggleInterested() {
+        toggle()
+        
+        let parameters = [
+            "userId": String(User.current!.uuid),
+            "eventId": event.uuid,
+            "interested": interestedButton.imageView?.image == #imageLiteral(resourceName: "star_filled") ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/MarkEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    //internetUnavailableError(vc: self) { toggle() }
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
+            
+            if msg == INTERNAL_ERROR {
+                DispatchQueue.main.async {
+                    //serverMaintenanceError(vc: self) { toggle() }
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func toggle() {
         if interestedButton.currentImage == #imageLiteral(resourceName: "star_empty") {
             interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
             User.current?.interestedEvents.insert(event.uuid)
@@ -239,6 +276,16 @@ class EventCell: UICollectionViewCell {
         timeText.text = event.timeDescription
         locationText.text = event.location
         eventHostText.text = event.hostTitle
+        
+        if User.current! == nil {
+            interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+        } else {
+            if User.current!.interestedEvents.contains(event.uuid) {
+                interestedButton.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
+            } else {
+                interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+            }
+        }
         
         if event.eventVisual == nil {
             if withImage {

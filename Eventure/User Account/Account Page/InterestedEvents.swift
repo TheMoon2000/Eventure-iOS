@@ -10,7 +10,7 @@ import UIKit
 import SwiftyJSON
 
 class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource  {
-    //
+    
     static var changed: Bool = false
     
     private var myTableView: UITableView!
@@ -109,10 +109,10 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if LikedEvents.changed {
+        if InterestedEvents.changed {
             clearAll()
             viewDidLoad()
-            LikedEvents.changed = false
+            InterestedEvents.changed = false
         }
     }
     
@@ -120,7 +120,6 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         tableView.deselectRow(at: indexPath, animated: true)
         
         let detailPage = InterestedEventDetailPage()
-        //let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
         detailPage.event = displayedEvents[indexPath.section][indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
@@ -179,7 +178,6 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
             DispatchQueue.main.async {
                 self.spinner.stopAnimating()
                 self.spinnerLabel.isHidden = true
-                //load the events in tableview
             }
             
             guard error == nil else {
@@ -192,7 +190,8 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
             
             if let eventsList = try? JSON(data: data!).arrayValue {
                 for eventData in eventsList {
-                    if (eventData.dictionary?["Is Interested"]?.bool ?? false)! {
+                    if (eventData.dictionary?["Is interested"]?.bool ?? false)! {
+                        
                         let event = Event(eventInfo: eventData)
                         
                         event.getCover { eventWithImage in
@@ -320,8 +319,8 @@ class InterestedEventDetailPage: EventDetailPage {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if !User.current!.favoritedEvents.contains(event.uuid) {
-            LikedEvents.changed = true
+        if !User.current!.interestedEvents.contains(event.uuid) {
+            InterestedEvents.changed = true
         }
     }
 }
