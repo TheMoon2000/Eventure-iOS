@@ -11,8 +11,9 @@ import SwiftyJSON
 
 class CheckinOverview: UIViewController {
     
+    private var parentVC: CheckinPageController!
     private var event: Event!
-    private var sheetInfo: SignupSheet?
+    private var sheetInfo: SignupSheet!
     
     private var orgLogo: UIImageView!
     private var orgTitle: UILabel!
@@ -28,16 +29,20 @@ class CheckinOverview: UIViewController {
     private var blocker: UIView!
     private var spinner: UIActivityIndicatorView!
     
+    private var CHECK_IN = "Check In"
+    private var LIST_FULL = "List is Full"
+    private var ALREADY_CHECKED_IN = "Already Checked In"
+    
     private var readyToDisplay: Bool {
         return orgLogo.image != nil && sheetInfo != nil
     }
     
-    required init(event: Event!) {
+    required init(parentVC: CheckinPageController, event: Event!, sheetInfo: SignupSheet) {
         super.init(nibName: nil, bundle: nil)
         
+        self.parentVC = parentVC
         self.event = event
-        loadLogoImage()
-        loadSheetInfo()
+        self.sheetInfo = sheetInfo
     }
     
     override func viewDidLoad() {
@@ -108,19 +113,21 @@ class CheckinOverview: UIViewController {
         checkinButton = {
             let button = UIButton(type: .system)
             button.tintColor = .white
-            button.setTitle("Check In", for: .normal)
+            button.setTitle(CHECK_IN, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
             button.backgroundColor = MAIN_TINT
             button.layer.cornerRadius = 10
+            button.titleEdgeInsets.left = 20
+            button.titleEdgeInsets.right = 20
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)
             
             button.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
             button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70).isActive = true
-            button.widthAnchor.constraint(equalToConstant: 220).isActive = true
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 220).isActive = true
             button.heightAnchor.constraint(equalToConstant: 53).isActive = true
             
-            button.addTarget(self, action: #selector(checkin), for: .touchUpInside)
+            button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
             
             return button
         }()
@@ -196,7 +203,7 @@ class CheckinOverview: UIViewController {
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.tintColor = .lightGray
+            spinner.color = .lightGray
             spinner.hidesWhenStopped = true
             spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -224,11 +231,11 @@ class CheckinOverview: UIViewController {
             if event.capacity > 0 && event.capacity <= sheetInfo!.currentOccupied && !sheetInfo!.currentUserCheckedIn {
                 self.checkinButton.isUserInteractionEnabled = false
                 self.checkinButton.alpha = DISABLED_ALPHA
-                self.checkinButton.setTitle("List is Full", for: .normal)
+                self.checkinButton.setTitle(LIST_FULL, for: .normal)
             } else if sheetInfo!.currentUserCheckedIn {
                 self.checkinButton.isUserInteractionEnabled = false
                 self.checkinButton.alpha = DISABLED_ALPHA
-                self.checkinButton.setTitle("Already Checked In", for: .normal)
+                self.checkinButton.setTitle(ALREADY_CHECKED_IN, for: .normal)
             }
         }
     }
@@ -260,49 +267,16 @@ class CheckinOverview: UIViewController {
         task.resume()
     }
     
-    private func loadSheetInfo() {
-        let parameters = [
-            "sheetId": event.uuid,
-            "userId": String(User.current!.uuid),
-            "orgId": event.hostID
-        ]
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetCheckinSheet",
-                           parameters: parameters)!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self) { self.dismiss(animated: true, completion: nil) }
-                }
-                return
-            }
-            
-            if let json = try? JSON(data: data!) {
-                self.sheetInfo = SignupSheet(json: json)
-                DispatchQueue.main.async {
-                    self.showUI()
-                }
-            } else {
-                print(String(data: data!, encoding: .utf8))
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self) { self.dismiss(animated: true, completion: nil) }
-                }
-                return
-            }
-            
+    @objc private func buttonPressed() {
+        switch checkinButton.title(for: .normal) {
+        case CHECK_IN:
+            sendCheckinRequest()
+        default:
+            break
         }
-        
-        task.resume()
-        
     }
     
-    
-    @objc private func checkin() {
+    private func sendCheckinRequest() {
         let parameters: [String: String] = [
             "userId": String(User.current!.uuid),
             "orgId": event.hostID,
@@ -327,33 +301,41 @@ class CheckinOverview: UIViewController {
             
             let msg = String(data: data!, encoding: .utf8)
             
+            let alert: UIAlertController
+            
             switch msg {
             case INTERNAL_ERROR :
                 DispatchQueue.main.async {
                     serverMaintenanceError(vc: self)
                 }
+                return
             case "success":
-                let alert = UIAlertController(title: "Successfully checked in!", message: "You name is now on the list!", preferredStyle: .alert)
+                self.sheetInfo.currentOccupied += 1
+                alert = UIAlertController(title: "Successfully checked in!", message: "You name is now on the list!", preferredStyle: .alert)
                 alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)
                 }))
+                alert.addAction(.init(title: "View Details", style: .default, handler: { _ in
+                    self.parentVC.flipPage()
+                }))
             case "full":
-                let alert = UIAlertController(title: "You're too late!", message: "Unfortunately, the check-in list for this event has already met its capacity of \(self.event.capacity). Please check-in earlier next time!", preferredStyle: .alert)
+                alert = UIAlertController(title: "You're too late!", message: "Unfortunately, the check-in list for this event has already met its capacity of \(self.event.capacity). Please check-in earlier next time!", preferredStyle: .alert)
                 alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)
                 }))
             default:
-                let alert = UIAlertController(title: "Failed to check in :(", message: "For some weird server-side problem, we were unable to get your name onto the checkin list. Be sure to email us at support@eventure-app.com and we'll fix this bug as soon as possible.", preferredStyle: .alert)
+                alert = UIAlertController(title: "Failed to check in :(", message: "For some weird server-side problem, we were unable to get your name onto the checkin list. Be sure to email us at support@eventure-app.com and we'll fix this bug as soon as possible.", preferredStyle: .alert)
                 alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)
                 }))
+            }
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
             }
         }
         
         task.resume()
     }
-    
-    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

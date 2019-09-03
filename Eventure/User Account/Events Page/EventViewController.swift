@@ -358,8 +358,7 @@ extension EventViewController: UISearchResultsUpdating {
             condition = condition && Date() <= event.startTime!
             return condition && (searchText.isEmpty || event.title.lowercased().contains(searchText) || event.eventDescription.lowercased().contains(searchText))
         }
-        print(filteredEvents.count)
-        print(allEvents.count)
+        print("\(allEvents.count) events, \(filteredEvents.count) visible")
         // TODO: Apply sorting algorithm depending on user settings
         filteredEvents.sort(by: { $0.startTime as Date! < $1.startTime as Date! })
     }

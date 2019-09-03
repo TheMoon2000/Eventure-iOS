@@ -241,6 +241,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         case (2, 0):
             cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Scan Event Code"
+        case (2, 1):
+            cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "Events I Checked in"
         case (3, 0):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"
@@ -290,7 +293,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 1, 3, 1][section]
+        return [1, 2, 2, 3, 1][section]
     }
     
     //eliminate first section header
@@ -323,9 +326,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let nvc = InteractivePopNavigationController(rootViewController: login)
             nvc.isNavigationBarHidden = true
             login.navBar = nvc
-            self.present(nvc, animated: true, completion: nil)
+            self.present(nvc, animated: true)
         }))
-        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "No", style: .cancel))
         self.present(alert, animated: true)
     }
     

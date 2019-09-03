@@ -75,7 +75,7 @@ class UpdatePasswordPage: UITableViewController {
         
         let warning = UIAlertController(title: "Cannot update password", message: nil, preferredStyle: .alert)
         
-        warning.addAction(.init(title: "Dismiss", style: .cancel, handler: nil))
+        warning.addAction(.init(title: "Dismiss", style: .cancel))
         
         // Perform a series of checks to make sure that the passwords are valid
         

@@ -1,5 +1,5 @@
 //
-//  UserBrief.swift
+//  Registrant.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/8/31.
@@ -10,9 +10,10 @@ import UIKit
 import SwiftyJSON
 
 /// An overview of a user's professional profile.
-class UserBrief: Hashable {
+class Registrant: Hashable {
     
     let showProfile: Bool
+    let checkedInDate: Date
 
     let userID: Int
     let orgID: String
@@ -37,7 +38,7 @@ class UserBrief: Hashable {
         showProfile = (dictionary["Show profile"]?.int ?? 1) == 1
         userID = dictionary["User ID"]?.int ?? -1
         orgID = dictionary["Organization"]?.string ?? "Unknown Organization"
-        name = dictionary["Name"]?.string ?? "<No Name>"
+        name = dictionary["Full name"]?.string ?? "<No Name>"
         major = dictionary["Major"]?.string ?? "Undecided"
         graduationYear = dictionary["Graduation year"]?.int
         graduationSeason = User.GraduationSeason(rawValue: dictionary["Graduation season"]?.string ?? "")
@@ -47,10 +48,16 @@ class UserBrief: Hashable {
         
         interests = dictionary["Interests"]?.string ?? ""
         comments = dictionary["Comments"]?.string ?? ""
+        
+        if let dateString = dictionary["Date"]?.string {
+            checkedInDate = DATE_FORMATTER.date(from: dateString) ?? Date.distantFuture
+        } else {
+            checkedInDate = Date.distantFuture
+        }
     }
     
     /// Load the profile picture for a user.
-    func getProfilePicture(_ handler: ((UserBrief) -> ())?) {
+    func getProfilePicture(_ handler: ((Registrant) -> ())?) {
         if profilePicture != nil { return }
         
         let url = URL.with(base: API_BASE_URL,
@@ -76,7 +83,7 @@ class UserBrief: Hashable {
         task.resume()
     }
     
-    static func == (lhs: UserBrief, rhs: UserBrief) -> Bool {
+    static func == (lhs: Registrant, rhs: Registrant) -> Bool {
         return lhs.userID == rhs.userID
     }
     

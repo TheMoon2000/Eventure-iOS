@@ -109,6 +109,7 @@ class Event {
         uuid = dictionary["uuid"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
         location = dictionary["Location"]?.string ?? "TBA"
+        if location.isEmpty { location = "TBA" }
         
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)

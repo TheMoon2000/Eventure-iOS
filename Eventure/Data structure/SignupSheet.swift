@@ -15,7 +15,6 @@ class SignupSheet {
     let orgID: String
     let name: String
     let capacity: Int
-    var registrants = [Int: Date]()
     var currentOccupied: Int
     var currentUserCheckedIn: Bool
     var createdDate: Date
@@ -27,12 +26,6 @@ class SignupSheet {
         orgID = dictionary["Organization"]?.string ?? ""
         name = dictionary["List name"]?.string ?? "Online Check-in"
         capacity = dictionary["Capacity"]?.int ?? 0
-        
-        if let regData = dictionary["Registrants"]?.string {
-            for reg in JSON(parseJSON: regData).dictionaryValue {
-                registrants[Int(reg.key) ?? -1] = DATE_FORMATTER.date(from: reg.value.stringValue)
-            }
-        }
         
         if let dateString = dictionary["Created date"]?.string {
             createdDate = DATE_FORMATTER.date(from: dateString) ?? Date(timeIntervalSinceReferenceDate: 0)
