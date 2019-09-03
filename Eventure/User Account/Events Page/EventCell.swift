@@ -277,7 +277,7 @@ class EventCell: UICollectionViewCell {
         locationText.text = event.location
         eventHostText.text = event.hostTitle
         
-        if User.current! == nil {
+        if User.current == nil {
             interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
         } else {
             if User.current!.interestedEvents.contains(event.uuid) {
