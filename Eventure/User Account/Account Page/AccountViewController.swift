@@ -91,7 +91,15 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let scanVC = ScannerViewController()
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
-        case (3, 3):
+        case (3,0):
+            let likeEventsPage = LikedEvents()
+            likeEventsPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(likeEventsPage, animated: true)
+        case (3,1):
+            let interestedPage = InterestedEvents()
+            interestedPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(interestedPage, animated: true)
+        case (3, 2):
             //if user wants to change the tags
             let tagPicker = TagPickerView()
             tagPicker.customTitle = "What interests you?"
@@ -208,10 +216,16 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         case (0, 0):
             cell.icon.image = User.current?.profilePicture
+            
+            cell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
+            
             if cell.icon.image == nil && User.current != nil {
                 cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
+                cell.icon.isUserInteractionEnabled = true
+                profilePicture = cell.icon.image
             } else {
-                cell.icon.image = #imageLiteral(resourceName: "guest")
+                cell.icon.image = #imageLiteral(resourceName: "unknown")
+                cell.icon.isUserInteractionEnabled = false
             }
             cell.imageWidthConstraint.constant = 65
             cell.heightConstraint.constant = 100
@@ -231,12 +245,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"
         case (3, 1):
-            cell.icon.image = #imageLiteral(resourceName: "done")
-            cell.titleLabel.text = "Going"
+            cell.icon.image = #imageLiteral(resourceName: "star_filled")
+            cell.titleLabel.text = "Interested Events"
         case (3, 2):
-            cell.icon.image = #imageLiteral(resourceName: "subscribe")
-            cell.titleLabel.text = "Subscriptions"
-        case (3, 3):
             cell.icon.image = #imageLiteral(resourceName: "tag")
             cell.titleLabel.text = "My Tags"
         case (4, 0):
@@ -279,7 +290,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 1, 4, 1][section]
+        return [1, 2, 1, 3, 1][section]
     }
     
     //eliminate first section header
