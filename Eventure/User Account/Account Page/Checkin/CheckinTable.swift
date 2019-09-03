@@ -7,22 +7,23 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class CheckinTable: UIViewController {
+    
+    private let refreshControl = UIRefreshControl()
     
     private var event: Event!
     private var sheetInfo: SignupSheet!
     private var banner: UIVisualEffectView!
     
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
     
     private var checkinTitle: UILabel!
     private var checkinSubtitle: UILabel!
     private var checkinTable: UITableView!
     
-    var sortedRegistrants = [UserBrief]()
+    var sortedRegistrants = [Registrant]()
     
     required init(event: Event, sheet: SignupSheet) {
         super.init(nibName: nil, bundle: nil)
@@ -34,16 +35,21 @@ class CheckinTable: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.view.backgroundColor = .clear
         view.backgroundColor = EventDraft.backgroundColor
         
+        refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
+        
         banner = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             
             v.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             v.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            v.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            v.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
             
             return v
         }()
@@ -54,27 +60,20 @@ class CheckinTable: UIViewController {
             label.lineBreakMode = .byWordWrapping
             label.text = "Online Check-in"
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 24, weight: .medium)
+            label.font = .systemFont(ofSize: 23, weight: .medium)
             label.textColor = .init(white: 0.1, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
 
             label.leftAnchor.constraint(equalTo: banner.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: banner.rightAnchor, constant: -30).isActive = true
-            label.topAnchor.constraint(equalTo: banner.topAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: banner.safeAreaLayoutGuide.topAnchor).isActive = true
             
             return label
         }()
         
         checkinSubtitle = {
             let label = UILabel()
-            
-            let word = sheetInfo.registrants.count == 1 ? "person" : "people"
-            if sheetInfo.capacity == 0 {
-                label.text = "\(sheetInfo.registrants.count) \(word) checked in."
-            } else {
-                label.text = "\(sheetInfo.registrants.count) / \(sheetInfo.capacity) \(word) checked in."
-            }
             
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
@@ -87,20 +86,20 @@ class CheckinTable: UIViewController {
             label.leftAnchor.constraint(equalTo: banner.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: banner.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: checkinTitle.bottomAnchor, constant: 10).isActive = true
-            label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -20).isActive = true
+            label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -15).isActive = true
             
             return label
         }()
         
-        banner.layoutIfNeeded()
-
         checkinTable = {
             let tv = UITableView()
             tv.dataSource = self
-            tv.contentInsetAdjustmentBehavior = .always
+            tv.tableFooterView = UIView()
+            tv.separatorStyle = .none
+            tv.backgroundColor = .clear
             tv.register(CheckinUserCell.classForCoder(), forCellReuseIdentifier: "user")
             tv.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(tv)
+            view.insertSubview(tv, belowSubview: banner)
             
             tv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
@@ -109,40 +108,11 @@ class CheckinTable: UIViewController {
             
             return tv
         }()
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.tintColor = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.isHidden = true
-            label.text = "Fetching registrants..."
-            label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
-        
+
         emptyLabel = {
             let label = UILabel()
             label.isHidden = true
-            label.text = "No one checked in yet. Be the first!"
+            label.text = "Loading registrants..."
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.textAlignment = .center
@@ -156,29 +126,88 @@ class CheckinTable: UIViewController {
             return label
         }()
         
-        fetchRegistrants()
-    }
-    
-    private func fetchRegistrants() {
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
+        refreshRegistrants()
         
-        // TODO
+        DispatchQueue.main.async {
+            self.checkinTable.contentInset.top = self.banner.frame.height - UIApplication.shared.statusBarFrame.height * 2
+            self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
+        }
     }
     
-    private func adjustTableInset() {
-        banner.layoutIfNeeded()
-        checkinTable.contentInset.top = banner.frame.height
-        checkinTable.scrollIndicatorInsets.top = banner.frame.height
+    
+    private func reloadStats() {
+        let word = sheetInfo.currentOccupied == 1 ? "person" : "people"
+        if sheetInfo.capacity == 0 {
+            checkinSubtitle.text = "\(sheetInfo.currentOccupied) \(word) checked in"
+        } else {
+            checkinSubtitle.text = "\(sheetInfo.currentOccupied) / \(sheetInfo.capacity) \(word) checked in."
+        }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
+    @objc private func refreshRegistrants() {
+        let parameters = [
+            "sheetId": event.uuid,
+            "orgId": event.hostID
+        ]
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetRegistrants",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
         
-        coordinator.animate(alongsideTransition: { _ in self.adjustTableInset()})
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.checkinTable.refreshControl = self.refreshControl
+                self.refreshControl.endRefreshing()
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) {
+                        self.dismiss(animated: true)
+                    }
+                }
+                return
+            }
+            
+            if let json = try? JSON(data: data!).arrayValue {
+                var tmp = Set<Registrant>()
+                for registrantData in json {
+                    tmp.insert(Registrant(json: registrantData))
+                }
+                self.sheetInfo.currentOccupied = tmp.count
+                
+                self.sortedRegistrants = tmp.sorted { r1, r2 in
+                    r1.checkedInDate.timeIntervalSince(r1.checkedInDate) <= 0
+                }
+                
+                DispatchQueue.main.async {
+                    if tmp.count == 0 {
+                        self.emptyLabel.text = "No one checked in yet. Be the first!"
+                    } else {
+                        self.emptyLabel.text = ""
+                    }
+                    self.reloadStats()
+                    self.checkinTable.reloadData()
+                }
+            } else {
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self) {
+                        self.dismiss(animated: true)
+                    }
+                }
+            }
+        }
+        
+        task.resume()
     }
     
-
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -187,6 +216,7 @@ class CheckinTable: UIViewController {
 extension CheckinTable: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return sortedRegistrants.count
     }
     
@@ -194,7 +224,8 @@ extension CheckinTable: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "user") as! CheckinUserCell
         
-        cell.setup(brief: sortedRegistrants[indexPath.row])
+        cell.setup(registrant: sortedRegistrants[indexPath.row])
+        cell.placeLabel.text = String(indexPath.row + 1)
         
         return cell
     }

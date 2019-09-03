@@ -388,10 +388,11 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             
             if let json = try? JSON(data: data!) {
                 let event = Event(eventInfo: json)
-                print(event)
                 let checkinForm = CheckinPageController(event: event)
                 DispatchQueue.main.async {
-                    self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true, completion: nil)
+                    self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true) {
+                        self.navigationController?.popViewController(animated: false)
+                    }
                 }
             } else {
                 DispatchQueue.main.async {
@@ -403,7 +404,9 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         
         task.resume()
     }
-
-        
+    
+    override var shouldAutorotate: Bool {
+        return false
+    }
 }
 

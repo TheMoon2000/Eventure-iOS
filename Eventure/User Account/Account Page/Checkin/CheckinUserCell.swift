@@ -14,7 +14,8 @@ class CheckinUserCell: UITableViewCell {
     private var profilePicture: UIImageView!
     private var nameLabel: UILabel!
     private var majorLabel: UILabel!
-    private var brief: UserBrief?
+    private var registrant: Registrant?
+    private(set) var placeLabel: UILabel!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -25,7 +26,7 @@ class CheckinUserCell: UITableViewCell {
         bgView = {
             let view = UIView()
             view.backgroundColor = .white
-            view.layer.cornerRadius = 7
+            view.layer.cornerRadius = 8
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
@@ -63,7 +64,7 @@ class CheckinUserCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: profilePicture.rightAnchor, constant: 12).isActive = true
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -20).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 10).isActive = true
             
             return label
@@ -85,15 +86,29 @@ class CheckinUserCell: UITableViewCell {
             
             return label
         }()
+        
+        placeLabel = {
+            let label = UILabel()
+            label.textColor = .lightGray
+            label.font = .systemFont(ofSize: 16)
+            label.textAlignment = .right
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
+            label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
+            
+            return label
+        }()
     }
     
     
-    func setup(brief: UserBrief) {
-        self.brief = brief
-        nameLabel.text = brief.name
-        majorLabel.text = brief.major
-        if brief.profilePicture != nil {
-            profilePicture.image = brief.profilePicture
+    func setup(registrant: Registrant) {
+        self.registrant = registrant
+        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + registrant.name : registrant.name
+        majorLabel.text = registrant.major
+        if registrant.profilePicture != nil {
+            profilePicture.image = registrant.profilePicture
         }
     }
     

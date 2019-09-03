@@ -30,7 +30,7 @@
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */; };
 		CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */; };
-		CC2167BA231B0171003B8DE7 /* UserBrief.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B9231B0171003B8DE7 /* UserBrief.swift */; };
+		CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B9231B0171003B8DE7 /* Registrant.swift */; };
 		CC2167BC231B06F0003B8DE7 /* ProfileInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */; };
 		CC2167BE231B0C46003B8DE7 /* GraduationYearChooser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */; };
 		CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */; };
@@ -143,7 +143,7 @@
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
 		CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinPageController.swift; sourceTree = "<group>"; };
 		CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSheet.swift; sourceTree = "<group>"; };
-		CC2167B9231B0171003B8DE7 /* UserBrief.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBrief.swift; sourceTree = "<group>"; };
+		CC2167B9231B0171003B8DE7 /* Registrant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registrant.swift; sourceTree = "<group>"; };
 		CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoPage.swift; sourceTree = "<group>"; };
 		CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraduationYearChooser.swift; sourceTree = "<group>"; };
 		CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
@@ -266,7 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				CC0646D822FDF1CC000BF3CD /* User.swift */,
-				CC2167B9231B0171003B8DE7 /* UserBrief.swift */,
+				CC2167B9231B0171003B8DE7 /* Registrant.swift */,
 				CC0646DB22FDF1EA000BF3CD /* Organization.swift */,
 				CC0646DE22FDF201000BF3CD /* Event.swift */,
 				CC46772C2319956600A9FF18 /* Campus.swift */,
@@ -758,7 +758,7 @@
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
 				CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */,
-				CC2167BA231B0171003B8DE7 /* UserBrief.swift in Sources */,
+				CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */,
 				CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */,
 				CC2167BC231B06F0003B8DE7 /* ProfileInfoPage.swift in Sources */,
 				CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */,

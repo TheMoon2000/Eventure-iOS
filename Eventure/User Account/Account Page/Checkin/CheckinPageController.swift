@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class CheckinPageController: UIPageViewController {
     
     private var event: Event!
-    private var sheetInfo: SignupSheet!
+
+    private var sheetInfo: SignupSheet?
+    
+    private var spinner: UIActivityIndicatorView!
     
     required init(event: Event!) {
         super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -22,17 +26,94 @@ class CheckinPageController: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "Checkin Overview"
+        self.navigationItem.title = "Loading..."
         view.tintColor = MAIN_TINT
+        view.backgroundColor = .white
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeCheckin))
         
-        let overviewPage = CheckinOverview(event: event)
-        setViewControllers([overviewPage], direction: .forward, animated: false, completion: nil)
+        spinner = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.color = .lightGray
+            spinner.hidesWhenStopped = true
+            spinner.startAnimating()
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            
+            return spinner
+        }()
+
+        self.loadSheetInfo()
+    }
+    
+    private func loadSheetInfo() {
+        let parameters = [
+            "sheetId": event.uuid,
+            "userId": String(User.current!.uuid),
+            "orgId": event.hostID
+        ]
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetCheckinSheet",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) { self.dismiss(animated: true, completion: nil) }
+                }
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                self.sheetInfo = SignupSheet(json: json)
+                DispatchQueue.main.async {
+                    self.checkIfReady()
+                }
+            } else {
+                print(String(data: data!, encoding: .utf8)!)
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self) { self.dismiss(animated: true, completion: nil) }
+                }
+                return
+            }
+            
+        }
+        
+        task.resume()
+        
+    }
+    
+    /// Both the check-in list information and the registrant data need to be loaded before we present either one of the child view controllers.
+    func checkIfReady() {
+        
+        if sheetInfo == nil { return }
+        
+        let vc: UIViewController
+        
+        if !sheetInfo!.currentUserCheckedIn {
+            navigationItem.title = "Checkin Overview"
+            vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+        } else {
+            navigationItem.title = nil
+            vc = CheckinTable(event: event, sheet: self.sheetInfo!)
+        }
+        spinner.stopAnimating()
+        self.setViewControllers([vc], direction: .forward, animated: true)
     }
     
     @objc private func closeCheckin() {
         self.dismiss(animated: true)
+    }
+    
+    func flipPage() {
+        
     }
     
 
