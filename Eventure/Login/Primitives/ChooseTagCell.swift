@@ -9,53 +9,51 @@
 import UIKit
 
 class ChooseTagCell: UITableViewCell {
-    
-    private var parentVC: RegisterOrganization!
-    private(set) var selectedTags = Set<String>() {
-        didSet {
-            parentVC.registrationData.tags = selectedTags.description
-            print(parentVC.registrationData)
-        }
-    }
+
+    private(set) var parentVC: UIViewController!
     
     var status: Status = .none {
         didSet {
             switch status {
             case .none:
-                statusIcon.image = #imageLiteral(resourceName: "disclosure")
-                rightLabel.isHidden = false
+                statusIcon.image = #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate)
+                rightLabel.text = "Choose"
+
             case .done:
                 statusIcon.image = #imageLiteral(resourceName: "check")
-                rightLabel.isHidden = true
+                rightLabel.text = ""
             case .fail:
                 statusIcon.image = #imageLiteral(resourceName: "cross")
-                rightLabel.isHidden = true
+                rightLabel.text = "Choose"
             }
         }
     }
     
     private var overlay: UIView!
     private var leftLabel: UILabel!
-    private var rightLabel: UILabel!
+    private(set) var rightLabel: UILabel!
     private var statusIcon: UIImageView!
     private var disclosure: UIImageView!
 
-    required init(vc: RegisterOrganization) {
+    required init(parentVC: UIViewController, sideInset: CGFloat = 30) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        parentVC = vc
+        self.parentVC = parentVC
+        
+        backgroundColor = .clear
         selectionStyle = .none
         heightAnchor.constraint(equalToConstant: 60).isActive = true
         
         overlay = {
             let overlay = UIView()
-            overlay.layer.cornerRadius = 10
+            overlay.layer.cornerRadius = 7
             overlay.layer.borderColor = LINE_TINT.cgColor
+            overlay.backgroundColor = .white
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
-            overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: sideInset).isActive = true
+            overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -sideInset).isActive = true
             overlay.heightAnchor.constraint(equalToConstant: 50).isActive = true
             overlay.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
@@ -70,20 +68,22 @@ class ChooseTagCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: overlay.leftAnchor, constant: 12).isActive = true
+            label.leftAnchor.constraint(equalTo: overlay.leftAnchor, constant: 15).isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return label
         }()
         
         statusIcon = {
-            let icon = UIImageView(image: #imageLiteral(resourceName: "disclosure"))
+            let icon = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
+            icon.contentMode = .scaleAspectFit
+            icon.tintColor = .lightGray
             icon.translatesAutoresizingMaskIntoConstraints = false
             addSubview(icon)
             
-            icon.widthAnchor.constraint(equalToConstant: 25).isActive = true
-            icon.heightAnchor.constraint(equalToConstant: 25).isActive = true
-            icon.rightAnchor.constraint(equalTo: overlay.rightAnchor, constant: -15).isActive = true
+            icon.widthAnchor.constraint(equalToConstant: 22).isActive = true
+            icon.heightAnchor.constraint(equalToConstant: 22).isActive = true
+            icon.rightAnchor.constraint(equalTo: overlay.rightAnchor, constant: -10).isActive = true
             icon.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return icon
@@ -97,29 +97,12 @@ class ChooseTagCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.rightAnchor.constraint(equalTo: statusIcon.leftAnchor, constant: -10).isActive = true
+            label.rightAnchor.constraint(equalTo: statusIcon.leftAnchor, constant: -8).isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return label
         }()
         
-    }
-    
-    func pickTags() {
-        let tagPicker = TagPickerView()
-        tagPicker.customTitle = "Pick 1 ~ 3 tags that best describe your organization!"
-        tagPicker.customSubtitle = ""
-        tagPicker.maxPicks = 3
-        tagPicker.customButtonTitle = "Done"
-        tagPicker.customContinueMethod = { tagPicker in
-            self.selectedTags = tagPicker.selectedTags
-            self.parentVC.navigationController?.popToViewController(self.parentVC, animated: true)
-            self.status = .done
-        }
-        parentVC.navigationController?.pushViewController(tagPicker, animated: true)
-        DispatchQueue.main.async {
-            tagPicker.selectedTags = self.selectedTags
-        }
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
@@ -129,16 +112,24 @@ class ChooseTagCell: UITableViewCell {
             overlay.layer.borderWidth = 1
             leftLabel.textColor = .init(white: 0.1, alpha: 1)
             rightLabel.textColor = .lightGray
-            if status == .none {
-                statusIcon.image = #imageLiteral(resourceName: "disclosure_pressed")
-            }
         } else {
             overlay.layer.borderWidth = 0
             leftLabel.textColor = .init(white: 0.3, alpha: 1)
             rightLabel.textColor = .init(white: 0.75, alpha: 1)
-            if status == .none {
-                statusIcon.image = #imageLiteral(resourceName: "disclosure")
-            }
+        }
+    }
+    
+    func reloadTagPrompt(tags: Set<String>) {
+        if tags.count >= 1 && tags.count <= 3 {
+            status = .done
+            let tagword = tags.count == 1 ? "tag" : "tags"
+            rightLabel.text = "\(tags.count) \(tagword) selected"
+        } else if tags.isEmpty {
+            status = .none
+            rightLabel.text = "Choose"
+        } else {
+            status = .fail
+            rightLabel.text = "Too many tags"
         }
     }
     

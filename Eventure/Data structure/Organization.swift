@@ -10,24 +10,71 @@ import UIKit
 import SwiftyJSON
 
 class Organization: CustomStringConvertible {
-    static var current: Organization?
+    
+    static var current: Organization? {
+        didSet {
+            if current?.writeToFile(path: CURRENT_USER_PATH) == false {
+                print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
+            } else {
+                print("successfully wrote user data to \(CURRENT_USER_PATH)")
+            }
+        }
+    }
     
     var id: String
     var title: String
-    var orgDescription: String
-    var website: String
     var members = [Int: MemberRole]()
     var password_MD5: String
-    var tags = [String]()
-    var contactName: String
-    var contactEmail: String
     var active: Bool
     var dateRegistered: String
     var logoImage: UIImage?
     var hasLogo: Bool
+    var subscribers = Set<Int>()
+    
+    //Profile Information
+    var contactName: String
+    var tags = Set<String>()
+    var website: String
+    var contactEmail: String
+    var orgDescription: String
+    
+    var saveEnabled = false
+    
+    static var empty: Organization {
+        return Organization(title: "")
+    }
+    
+    /// Whether the app is in the middle of a sync session and is waiting for a response.
+    static var waitingForSync = false
+    
+    /// Whether the changes made locally are yet to be uploaded.
+    static var needsUpload = false
+    
+    var profileStatus: String {
+        var allEmpty = true
+        for item in [website, contactEmail, orgDescription, contactName] {
+            allEmpty = allEmpty && item.isEmpty
+        }
+        allEmpty = allEmpty && tags.isEmpty
+        
+        if allEmpty { return "Not Started" }
+        
+        var filledRequirements = true
+        for item in [contactName] {
+            filledRequirements = filledRequirements && !item.isEmpty
+        }
+        allEmpty = allEmpty && tags.isEmpty
+        
+        if filledRequirements {
+            return "Completed"
+        } else {
+            return "Incomplete"
+        }
+        
+    }
     
     init(title: String) {
-        id = ""
+        id = title
         self.title = title
         orgDescription = ""
         website = ""
@@ -39,10 +86,6 @@ class Organization: CustomStringConvertible {
         active = true
         dateRegistered = ""
         hasLogo = false
-    }
-    
-    static var empty: Organization {
-        return Organization(title: "")
     }
     
     init(orgInfo: JSON) {
@@ -60,9 +103,10 @@ class Organization: CustomStringConvertible {
         }
         
         if let tags_raw = dictionary["Tags"]?.string {
-            tags = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+            tags = Set(tagsArray)
         } else {
-            tags = [String]()
+            tags = []
         }
         
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
@@ -71,6 +115,12 @@ class Organization: CustomStringConvertible {
         active = (dictionary["Active"]?.int ?? 1) == 1
         dateRegistered = dictionary["Date registered"]?.string ?? ""
         hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
+        
+        if let subscribers_raw = dictionary["Subscribers"]?.string {
+            if let subArray = JSON(parseJSON: subscribers_raw).arrayObject as? [Int] {
+                subscribers = Set(subArray)
+            }
+        }
     }
     
     var description: String {
@@ -78,9 +128,89 @@ class Organization: CustomStringConvertible {
         str += "  id = \(String(describing: id))\n"
         str += "  website = \(String(describing: website))\n"
         str += "  tags = \(tags.description)\n"
-        str += "  date registered = \(String(describing: dateRegistered))"
+        str += "  date registered = \(String(describing: dateRegistered))\n"
+        str += "  # of subscribers = \(subscribers.count)"
         
         return str
+    }
+    
+    static func cachedOrgAccount(at path: String) -> Organization? {
+        if let data = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? Data {
+            guard let decrypted = NSData(data: data).aes256Decrypt(withKey: AES_KEY) else {
+                print("WARNING: Cannot decrypt cached organization account data!")
+                return nil
+            }
+            
+            if let json = try? JSON(data: decrypted) {
+                return Organization(orgInfo: json)
+            }
+        }
+        
+        return nil
+    }
+    
+    func writeToFile(path: String) -> Bool {
+        var json = JSON()
+        json.dictionaryObject?["ID"] = self.id
+        json.dictionaryObject?["Title"] = self.title
+        json.dictionaryObject?["Description"] = self.orgDescription
+        json.dictionaryObject?["Website"] = self.website
+        
+        var membersMap = [String : String]()
+        for (key, value) in members {
+            membersMap[String(key)] = value.rawValue
+        }
+        
+        let membersEncoded = JSON(membersMap)
+        json.dictionaryObject?["Members"] = membersEncoded.description
+        
+        json.dictionaryObject?["Tags"] = self.tags.description
+        json.dictionaryObject?["Password MD5"] = self.password_MD5
+        json.dictionaryObject?["Contact name"] = self.contactName
+        json.dictionaryObject?["Email"] = self.contactEmail
+        json.dictionaryObject?["Active"] = self.active ? 1 : 0
+        json.dictionaryObject?["Date registered"] = self.dateRegistered
+        json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
+        
+        try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
+        
+        let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
+        return NSKeyedArchiver.archiveRootObject(encrypted, toFile: CURRENT_USER_PATH)
+    }
+    
+    
+    
+    /// Sync the local organization account data with the server's.
+    static func syncFromServer() {
+        if Organization.current == nil { return }
+        Organization.waitingForSync = true
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetOrgInfo",
+                           parameters: ["orgId": String(Organization.current!.id)])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            Organization.waitingForSync = false
+            
+            guard error == nil else {
+                print(error!)
+                NotificationCenter.default.post(name: ORG_SYNC_FAILED, object: nil)
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                Organization.current = Organization(orgInfo: json)
+                NotificationCenter.default.post(name: ORG_SYNC_SUCCESS, object: nil)
+            } else {
+                print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'")
+                NotificationCenter.default.post(name: ORG_SYNC_FAILED, object: nil)
+            }
+        }
+        
+        task.resume()
     }
     
 }

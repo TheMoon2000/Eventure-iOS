@@ -146,7 +146,7 @@ class OrgFinishRegistration: UIViewController {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addMultipartBody(parameters: registrationData.parameters, files: registrationData.fileData)
-        
+                
         // Authentication
         request.addAuthHeader()
         

@@ -16,10 +16,11 @@ class TagPickerView: UIViewController {
     private var topBanner: UIVisualEffectView!
     private var titleLabel: UILabel!
     private var subtitleLabel: UILabel!
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
     private var bottomBanner: UIVisualEffectView!
     private var continueButton: UIButton!
+    
+    var spinner: UIActivityIndicatorView!
+    var spinnerLabel: UILabel!
     
     var customContinueMethod: ((TagPickerView) -> ())?
     var customTitle: String?
@@ -28,13 +29,17 @@ class TagPickerView: UIViewController {
     var maxPicks: Int?
     
     var tagPicker: UICollectionView!
-    var tags = [String]()
+    private var tags = [String]()
     var selectedTags = Set<String>() {
         didSet {
             if tags.isEmpty { return }
             updateUI()
         }
     }
+    
+    var errorHandler: (() -> ())?
+    
+    var customDisappearHandler: ((Set<String>) -> ())?
     
     private func updateUI() {
         if selectedTags.isEmpty || maxPicks != nil && maxPicks! < selectedTags.count {
@@ -53,6 +58,11 @@ class TagPickerView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.errorHandler = {
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        title = "Tag Picker"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
         
         topBanner = {
@@ -222,7 +232,7 @@ class TagPickerView: UIViewController {
             guard error == nil else {
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self) {
-                        self.dismiss(animated: true, completion: nil)
+                        self.errorHandler?()
                     }
                 }
                 return
@@ -231,7 +241,7 @@ class TagPickerView: UIViewController {
             if let json = try? JSON(data: data!).dictionary {
                 if json?["status"]!.stringValue == INTERNAL_ERROR {
                     serverMaintenanceError(vc: self) {
-                        self.dismiss(animated: true, completion: nil)
+                        self.errorHandler?()
                     }
                 } else {
                     self.tags = json?["tags"]!.arrayObject as! [String]
@@ -299,7 +309,7 @@ class TagPickerView: UIViewController {
                 serverMaintenanceError(vc: self)
             case "success":
                 print("successfully updated tags")
-                User.current!.tags = tagsArray
+                User.current!.tags = Set(tagsArray)
                 DispatchQueue.main.async {
                     MainTabBarController.current.openScreen()
                 }
@@ -309,6 +319,12 @@ class TagPickerView: UIViewController {
         }
         
         task.resume()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        customDisappearHandler?(selectedTags)
     }
 
 }

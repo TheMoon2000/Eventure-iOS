@@ -12,7 +12,7 @@ struct OrganizationRegistrationData {
     
     var title = ""
     var website = ""
-    var tags = "" // Tags are stored in string format
+    var tags = Set<String>()
     var logo: UIImage?
     var orgID = "" {
         didSet {
@@ -28,14 +28,16 @@ struct OrganizationRegistrationData {
     var isValid: Bool {
         
         // Check non-blank
-        if [title, tags, orgID, contactName, contactEmail].contains(where: { blank($0) }) {
+        if [title, orgID, contactName, contactEmail].contains(where: { blank($0) }) {
             return false
         }
         
         // Varchar cannot exceed 255 characters in a MySQL database
-        if [title, tags, orgID, contactName, contactEmail, website].contains(where: { $0.count > 255 }) {
+        if [title, orgID, contactName, contactEmail, website].contains(where: { $0.count > 255 }) {
             return false
         }
+        
+        if tags.isEmpty { return false }
         
         if password != retype { return false }
         if password.count < 8 { return false }
@@ -51,14 +53,14 @@ struct OrganizationRegistrationData {
             "password": password,
             "title": title,
             "website": website,
-            "tags": tags,
+            "tags": tags.description,
             "name": contactName,
             "email": contactEmail
         ]
     }
     
     var fileData: [String: Data] {
-        if let pngData = logo?.pngData() {
+        if let pngData = logo?.sizeDown(maxWidth: 1000).jpegData(compressionQuality: 0.6) {
             return ["logo": pngData]
         } else {
             return [:]

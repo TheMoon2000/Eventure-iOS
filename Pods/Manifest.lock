@@ -1,8 +1,8 @@
 PODS:
-  - Down (0.5.2)
-  - SwiftyJSON (4.2.0)
+  - Down (0.8.6)
+  - SwiftyJSON (5.0.0)
   - TTTAttributedLabel (2.0.0)
-  - XLPagerTabStrip (8.1.0)
+  - XLPagerTabStrip (9.0.0)
 
 DEPENDENCIES:
   - Down
@@ -18,10 +18,10 @@ SPEC REPOS:
     - XLPagerTabStrip
 
 SPEC CHECKSUMS:
-  Down: 587371ad58002b06023d9c602519216862c3acbc
-  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  Down: 3c758f2388fa739663023f400e742a988fa1e21d
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
-  XLPagerTabStrip: 22d4c58200d7c105e0e407ab6bfd01a5d85014be
+  XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
 
 PODFILE CHECKSUM: 7570a193f40ea42539a9f62bbfabc9ac7ecc7377
 

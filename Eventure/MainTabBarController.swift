@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftyJSON
 
 class MainTabBarController: UITabBarController {
     
@@ -16,10 +17,50 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        self.view.backgroundColor = .white
-        self.setupUserTabs() // Guest login assumes user identity
-        
+        view.backgroundColor = .white
         view.tintColor = MAIN_TINT
+    }
+    
+    func loadSupportedCampuses() {
+        
+        if !Campus.supported.isEmpty { return }
+        
+        let url = URL(string: API_BASE_URL + "account/Campuses")!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let allCampuses = try? JSON(data: data!).arrayValue {
+                for campus in allCampuses {
+                    if campus.dictionary != nil {
+                        Campus.supported.append(Campus(json: campus))
+                    }
+                }
+                print("Loaded supported campuses: \(Campus.supported.map { $0.fullName })")
+            } else {
+                print(String(data: data!, encoding: .utf8)!)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func checkForNotices() {
+        /*
+        let alert = UIAlertController(
+            title: "Server Notice",
+            message: String(data: data!, encoding: .utf8),
+            preferredStyle: .alert)
+        alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
+            
+        }))
+        self.present(alert, animated: true, completion: nil)*/
     }
     
     private func setupUserTabs() {
@@ -51,15 +92,12 @@ class MainTabBarController: UITabBarController {
         let tab1 = OrgEventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
         
-        let tab2 = OrganizationsViewController()
-        tab2.tabBarItem = UITabBarItem(title: "Organizations", image: #imageLiteral(resourceName: "organization"), tag: 1)
+        let tab2 = OrgAccountPageController()
+        tab2.tabBarItem = UITabBarItem(title: "Dashboard", image: #imageLiteral(resourceName: "dashboard"), tag: 1)
         
-        let tab3 = OrgSettingViewController()
-        tab3.tabBarItem = UITabBarItem(title: "My Org", image: #imageLiteral(resourceName: "home"), tag: 2)
     
-        viewControllers = [tab1, tab2, tab3].map {
+        viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
             
             return nav
@@ -87,13 +125,27 @@ class MainTabBarController: UITabBarController {
     }
     
     func loginSetup() {
+        
+        loadSupportedCampuses()
+        checkForNotices()
+        
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
-            if type == ACCOUNT_TYPE_ORG {
+            if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
+                Organization.current = current
+                if Organization.current != nil { Organization.syncFromServer() }
+                User.current = nil
                 openScreen(isUserAccount: false)
-            } else {
-                setupUserTabs()
+            } else if type == ACCOUNT_TYPE_USER, let current = User.cachedUser(at: CURRENT_USER_PATH) {
+                User.current = current
+                if User.current != nil { User.syncFromServer() }
+                Organization.current = nil
+                openScreen(isUserAccount: true)
             }
+        } else {
+            // Login as guest
+            openScreen()
         }
+        
     }
     /*
      // MARK: - Navigation

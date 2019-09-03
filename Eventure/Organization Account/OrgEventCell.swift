@@ -34,6 +34,8 @@ class OrgEventCell: UICollectionViewCell {
             let view = UIView()
             view.backgroundColor = .white
             view.layer.borderWidth = 1
+            view.layer.cornerRadius = 7
+            view.layer.masksToBounds = true
             view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -48,8 +50,8 @@ class OrgEventCell: UICollectionViewCell {
         
         cover = {
             let iv = UIImageView()
-            iv.contentMode = .scaleAspectFit
-            iv.backgroundColor = MAIN_DISABLED
+            iv.contentMode = .scaleAspectFill
+            iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(iv)
             
@@ -199,11 +201,22 @@ class OrgEventCell: UICollectionViewCell {
     }
     
     
-    func setupCellWithEvent(event: Event) {
-        titleText.text = event.title
+    func setupCellWithEvent(event: Event, withImage: Bool = false) {
+        titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
-        locationText.text = event.location
+        locationText.text = event.location.isEmpty ? "TBA" : event.location
         descriptionText.setText(event.eventDescription.attributedText())
+        
+        if event.eventVisual == nil {
+            if withImage {
+                event.getCover { eventWithCover in
+                    self.setupCellWithEvent(event: eventWithCover)
+                }
+            }
+            cover.image = #imageLiteral(resourceName: "cover_placeholder")
+        } else {
+            cover.image = event.eventVisual
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -215,9 +228,9 @@ class OrgEventCell: UICollectionViewCell {
 extension OrgEventCell: TTTAttributedLabelDelegate {
     func attributedLabel(_ label: TTTAttributedLabel!, didSelectLinkWith url: URL!) {
         let alert = UIAlertController(title: "Open Link?", message: "You will be redirected to " + url.absoluteString, preferredStyle: .alert)
-        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Go", style: .default, handler: { action in
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            UIApplication.shared.open(url, options: [:])
         }))
         parentVC?.present(alert, animated: true, completion: nil)
     }

@@ -67,14 +67,16 @@ class LoginViewController: UIViewController {
         self.setupLogins()
         
         // Setup keyboard show/hide observers
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardDidShow(_:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardDidHide(_:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardDidShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardDidHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
         
         // to detect rotation change and any kind of unexpected UI changes/lack of changes
         // NotificationCenter.default.addObserver(self, selector: #selector(rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -93,6 +95,9 @@ class LoginViewController: UIViewController {
         }, completion: nil)
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     func rotated(frame: CGRect?) {
         //see viewWillAppear for another call to this method
@@ -316,7 +321,7 @@ class LoginViewController: UIViewController {
     
     @objc private func buttonPressed(_ sender: UIButton) {
         sender.setTitleColor(UIColor(white: 1, alpha: 0.7), for: .normal)
-        sender.backgroundColor = UIColor(white: 1, alpha: 0.15)
+        sender.backgroundColor = UIColor(white: 1, alpha: 0.1)
     }
     
     @objc private func buttonLifted(_ sender: UIButton) {
