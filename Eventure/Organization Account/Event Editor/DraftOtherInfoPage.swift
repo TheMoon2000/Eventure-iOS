@@ -19,6 +19,7 @@ class DraftOtherInfoPage: UITableViewController {
         // Do any additional setup after loading the view.
                 
         tableView.backgroundColor = EventDraft.backgroundColor
+        tableView.keyboardDismissMode = .interactive
         tableView.separatorStyle = .none
         tableView.contentInset.top = 10
         tableView.tableFooterView = UIView()
@@ -27,6 +28,13 @@ class DraftOtherInfoPage: UITableViewController {
         tagPickerCell.backgroundColor = EventDraft.backgroundColor
         tagPickerCell.reloadTagPrompt(tags: draftPage.draft.tags)
         contentCells.append(tagPickerCell)
+        
+        let capacityCell = DraftCapacityCell()
+        capacityCell.changeHandler = { [weak self] textfield in
+            self?.draftPage.draft.capacity = Int(textfield.text!) ?? 0
+        }
+        contentCells.append(capacityCell)
+        
         
         let imagePickerCell = EventImagePickerCell()
         imagePickerCell.backgroundColor = EventDraft.backgroundColor
