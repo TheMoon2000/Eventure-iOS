@@ -12,14 +12,7 @@ import SwiftyJSON
 
 class OrgDetailPage: UIViewController {
     
-    var orgOverview: OrganizationsViewController.OrgOverview!
-    private(set) var organization: Organization? {
-        didSet {
-            DispatchQueue.main.async {
-                self.expandButton.isEnabled = self.organization != nil
-            }
-        }
-    }
+    var organization: Organization!
     
     private var previewContainer: UIView!
     private var thumbNail: UIImageView!
@@ -33,6 +26,12 @@ class OrgDetailPage: UIViewController {
     
     private var tabStrip: ButtonBarPagerTabStripViewController!
     private var tabTopConstraint: NSLayoutConstraint!
+    
+    required init(organization: Organization) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.organization = organization
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +39,10 @@ class OrgDetailPage: UIViewController {
         view.backgroundColor = .white
         navigationController?.navigationBar.shadowImage = UIImage()
         
-        let favImage = orgOverview.subscribed ? #imageLiteral(resourceName: "heart") : #imageLiteral(resourceName: "heart_empty")
+        var favImage = #imageLiteral(resourceName: "heart_empty")
+        if User.current != nil && organization.subscribers.contains(User.current!.uuid) {
+            favImage = #imageLiteral(resourceName: "heart")
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(subscribe(_:)))
         navigationItem.rightBarButtonItem?.isEnabled = User.current != nil
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
@@ -48,7 +50,7 @@ class OrgDetailPage: UIViewController {
         view.layoutIfNeeded()
         
         if view.frame.height < 450 {
-            self.title = orgOverview.title
+            self.title = organization.title
             self.navigationController?.navigationBar.setNeedsDisplay()
         }
         
@@ -66,7 +68,14 @@ class OrgDetailPage: UIViewController {
         }()
         
         thumbNail = {
-            let thumbNail = UIImageView(image: orgOverview.logoImage)
+            let thumbNail = UIImageView(image: organization.logoImage)
+            
+            if organization.logoImage == nil {
+                organization.getLogoImage { orgWithImage in
+                    self.thumbNail.image = orgWithImage.logoImage
+                }
+            }
+            
             thumbNail.contentMode = .scaleAspectFit
             if thumbNail.image == nil {
                 // TODO: Replace with default logo image
@@ -103,7 +112,7 @@ class OrgDetailPage: UIViewController {
             titleLabel = {
                 let label = UILabel()
                 label.numberOfLines = 2
-                label.text = orgOverview.title
+                label.text = organization.title
                 label.font = .systemFont(ofSize: 18, weight: .semibold)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 
@@ -115,6 +124,9 @@ class OrgDetailPage: UIViewController {
                 label.font = .systemFont(ofSize: 16.5)
                 label.textColor = .lightGray
                 label.text = "Loading member info..."
+                label.text = "Active Members: \(organization.members.count)"
+                label.textColor = .gray
+
                 label.translatesAutoresizingMaskIntoConstraints = false
                 
                 return label
@@ -175,14 +187,11 @@ class OrgDetailPage: UIViewController {
             
             return tabStrip
         }()
-        
-        loadOrganizationInfo()
-        getLogoImage(for: orgOverview)
     }
     
     @objc private func subscribe(_ sender: UIBarButtonItem) {
         
-        guard User.current != nil else {
+        guard let currentUser = User.current else {
             let alert = UIAlertController(title: "You are not logged in", message: "Add to favorites is only available to registered users.", preferredStyle: .alert)
             alert.addAction(.init(title: "Dismiss", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)
@@ -190,22 +199,29 @@ class OrgDetailPage: UIViewController {
             return
         }
         
-        let originalSubscription = orgOverview.subscribed
+        let alreadySubscribed = organization.subscribers.contains(currentUser.uuid)
         
         func toggle(_ update: Bool = true) {
-            if update {
-                orgOverview.subscribed = !originalSubscription
+            
+            var newStatus: Bool
+            
+            if update && !alreadySubscribed || !update && alreadySubscribed {
+                newStatus = true
+                currentUser.subscriptions.insert(organization.id)
+                organization.subscribers.insert(currentUser.uuid)
             } else {
-                orgOverview.subscribed = originalSubscription
+                newStatus = false
+                currentUser.subscriptions.remove(organization.id)
+                organization.subscribers.remove(currentUser.uuid)
             }
-            sender.image = orgOverview.subscribed ? #imageLiteral(resourceName: "heart") : #imageLiteral(resourceName: "heart_empty")
+            sender.image = newStatus ? #imageLiteral(resourceName: "heart") : #imageLiteral(resourceName: "heart_empty")
         }
         
         toggle()
         
         let parameters = [
             "userId": String(User.current!.uuid),
-            "orgId": orgOverview.id,
+            "orgId": organization.id,
             "subscribed": sender.image == #imageLiteral(resourceName: "heart") ? "1" : "0"
         ]
         
@@ -245,79 +261,6 @@ class OrgDetailPage: UIViewController {
     }
     
     
-    private func loadOrganizationInfo() {
-        
-        var parameters = ["orgId": orgOverview.id]
-        parameters["userId"] = User.current?.uuid.description
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/GetOrgInfo",
-                           parameters: parameters)!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self) {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                }
-                return
-            }
-            
-            if let orgInfo = try? JSON(data: data!) {
-                
-                self.organization = Organization(orgInfo: orgInfo)
-                self.organization?.logoImage = self.orgOverview.logoImage
-                let infoPage = OrgInfoPage()
-                infoPage.organization = self.organization!
-                
-                DispatchQueue.main.async {
-                    self.descriptionLabel.text = "Active Members: \(self.organization!.members.count)"
-                    self.descriptionLabel.textColor = .gray
-                }
-            } else {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self) {
-                        self.navigationController?.popViewController(animated: true)
-                    }
-                }
-            }
-        }
-        
-        task.resume()
-    }
-    
-    /// Load the logo image for an organization.
-    private func getLogoImage(for org: OrganizationsViewController.OrgOverview) {
-        if !org.hasLogo { return }
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetLogo",
-                           parameters: ["id": org.id])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                return // Don't display any alert here
-            }
-            
-            DispatchQueue.main.async {
-                self.thumbNail.image = UIImage(data: data!)
-                self.thumbNail.backgroundColor = self.thumbNail.image == nil ? LINE_TINT : nil
-                self.orgOverview.logoImage = self.thumbNail.image
-            }
-        }
-        
-        task.resume()
-    }
-    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -328,11 +271,16 @@ class OrgDetailPage: UIViewController {
                 self.previewContainer.isHidden = false
             } else {
                 self.tabTopConstraint.constant = 0
-                self.title = self.orgOverview.title
+                self.title = self.organization.title
                 self.previewContainer.isHidden = true
             }
             self.navigationController?.navigationBar.setNeedsDisplay()
         }, completion: nil)
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
 

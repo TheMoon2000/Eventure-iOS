@@ -151,6 +151,32 @@ class Organization: CustomStringConvertible {
         return NSKeyedArchiver.archiveRootObject(encrypted, toFile: CURRENT_USER_PATH)
     }
     
+    /// Load the logo image for an organization.
+    func getLogoImage(_ handler: ((Organization) -> ())?) {
+        if !hasLogo || logoImage != nil { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetLogo",
+                           parameters: ["id": id])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.logoImage = UIImage(data: data!)
+            DispatchQueue.main.async {
+                handler?(self)
+            }
+        }
+        
+        task.resume()
+    }
+    
     
     /// Sync the local organization account data with the server's.
     static func syncFromServer() {
@@ -192,5 +218,16 @@ extension Organization {
     enum MemberRole: String {
         case member = "Member"
         case president = "President"
+    }
+}
+
+
+extension Organization: Hashable {
+    static func == (lhs: Organization, rhs: Organization) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

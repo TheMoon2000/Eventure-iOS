@@ -48,7 +48,7 @@ class OrganizationCell: UITableViewCell {
         }()
     }
 
-    func setup(with org: OrganizationsViewController.OrgOverview) {
+    func setup(with org: Organization) {
         
         orgTitle.text = org.title
         logoImage.image = org.logoImage

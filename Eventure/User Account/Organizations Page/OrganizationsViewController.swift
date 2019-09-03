@@ -19,13 +19,13 @@ class OrganizationsViewController: UIViewController {
     private var orgTable: UITableView!
     private var emptyLabel: UILabel!
     
-    private var organizations = [OrgOverview]() {
+    private var organizations = Set<Organization>() {
         didSet {
             self.updateFiltered()
         }
     }
     
-    private var filteredOrgs = [OrgOverview]()
+    private var filteredOrgs = [Organization]()
     
     private var isFiltering: Bool {
         return searchController.isActive && !searchController.searchBar.text!.isEmpty
@@ -191,13 +191,13 @@ class OrganizationsViewController: UIViewController {
             }
             
             if let orgs = try? JSON(data: data!).arrayValue {
-                var tmp = [OrgOverview]()
+                var tmp = Set<Organization>()
                 for org in orgs {
-                    let orgObj = OrgOverview(json: org)
+                    let orgObj = Organization(orgInfo: org)
                     
                     // Only show active organizations
-                    if orgObj.isActive {
-                        tmp.append(orgObj)
+                    if orgObj.active {
+                        tmp.insert(orgObj)
                     }
                 }
                 DispatchQueue.main.async {
@@ -239,78 +239,9 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let orgDetail = OrgDetailPage()
+        let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.row])
         orgDetail.hidesBottomBarWhenPushed = true
-        orgDetail.orgOverview = filteredOrgs[indexPath.row]
         navigationController?.pushViewController(orgDetail, animated: true)
-    }
-}
-
-
-extension OrganizationsViewController {
-    class OrgOverview {
-        let id: String
-        let title: String
-        let tags: Set<String>
-        let hasLogo: Bool
-        let members: [Int: Organization.MemberRole]
-        var subscribed: Bool
-        let isActive: Bool
-        var logoImage: UIImage?
-        
-        /// An optional function to be called when the logo image is loaded.
-        var logoUpdater: ((UIImage?) -> Void)?
-        
-        init(json: JSON) {
-            let dictionary = json.dictionary!
-            self.id = dictionary["ID"]?.string ?? ""
-            self.title = dictionary["Title"]?.string ?? "Untitled"
-            self.hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
-            self.subscribed = dictionary["Subscribed"]?.bool ?? false
-            self.isActive = (dictionary["Active"]?.int ?? 1) == 1
-            
-            if let tags_raw = dictionary["Tags"]?.string {
-                tags = Set(JSON(parseJSON: tags_raw).arrayObject as! [String])
-            } else {
-                tags = []
-            }
-            
-            if let members_raw = dictionary["Members"]?.string {
-                var tmp = [Int: Organization.MemberRole]()
-                for pair in JSON(parseJSON: members_raw).dictionaryValue {
-                    tmp[Int(pair.key)!] = Organization.MemberRole(rawValue: pair.value.stringValue)
-                }
-                members = tmp
-            } else {
-                members = [:]
-            }
-        }
-        
-        /// Load the logo image for an organization.
-        func getLogoImage(_ handler: ((OrgOverview) -> ())?) {
-            if !hasLogo || logoImage != nil { return }
-            
-            let url = URL.with(base: API_BASE_URL,
-                               API_Name: "events/GetLogo",
-                               parameters: ["id": id])!
-            var request = URLRequest(url: url)
-            request.addAuthHeader()
-            
-            let task = CUSTOM_SESSION.dataTask(with: request) {
-                data, response, error in
-                
-                guard error == nil else {
-                    return // Don't display any alert here
-                }
-                
-                self.logoImage = UIImage(data: data!)
-                DispatchQueue.main.async {
-                    handler?(self)
-                }
-            }
-            
-            task.resume()
-        }
     }
 }
 
@@ -324,7 +255,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
     
     private func updateFiltered() {
         let searchText = searchController.searchBar.text!.lowercased()
-        filteredOrgs = organizations.filter { (org: OrgOverview) -> Bool in
+        filteredOrgs = organizations.filter { (org: Organization) -> Bool in
             let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
             var condition = true
             if tabName == "Recommended" {

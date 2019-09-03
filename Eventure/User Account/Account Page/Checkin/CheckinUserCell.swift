@@ -20,7 +20,7 @@ class CheckinUserCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        backgroundColor = EventDraft.backgroundColor
+        backgroundColor = .clear
         selectionStyle = .none
         
         bgView = {
@@ -64,7 +64,7 @@ class CheckinUserCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: profilePicture.rightAnchor, constant: 12).isActive = true
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -20).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -35).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 10).isActive = true
             
             return label
@@ -95,7 +95,7 @@ class CheckinUserCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -20).isActive = true
             label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
             
             return label
