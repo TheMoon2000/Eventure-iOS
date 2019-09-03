@@ -17,7 +17,7 @@ class PastEvents: OrgEventViewController, IndicatorInfoProvider {
     
     /// By providing the current organization's ID, the API only returns events that the current organization hosts.
     override var orgID: String? {
-        return detailPage.orgOverview.id
+        return detailPage.organization.id
     }
     
     required init(detailPage: OrgDetailPage) {

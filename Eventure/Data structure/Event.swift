@@ -11,9 +11,7 @@ import SwiftyJSON
 
 class Event {
     static var current: Event?
-    static var drafts = [Event]()
-    static var supportedCampuses = [String : String]()
-    
+    static var drafts = [Event]()    
     private static var cachedEvents = [String: [[String: Any]]]()
 
     let readableFormatter: DateFormatter = {
@@ -40,14 +38,10 @@ class Event {
     var hasVisual = false
     var hostID: String
     var hostTitle: String
-    var currentUserInterested: Bool {
-        return User.current != nil && User.current!.interestedEvents.contains(uuid)
-    }
-    var currentUserFavorited: Bool {
-        return User.current != nil && User.current!.favoritedEvents.contains(uuid)
-    }
+    var interestedList = [Int]()
+    var favoriteList = [Int]()
     var tags = Set<String>()
-    // API: array of user id
+    var capacity = 0
     
     var published: Bool
     var active: Bool
@@ -115,6 +109,7 @@ class Event {
         uuid = dictionary["uuid"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
         location = dictionary["Location"]?.string ?? "TBA"
+        if location.isEmpty { location = "TBA" }
         
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)
@@ -137,23 +132,8 @@ class Event {
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
-        hasVisual = dictionary["Has cover"]?.bool ?? false
-        
-        if let isInterested = dictionary["Is interested"]?.bool {
-            if isInterested {
-                User.current?.interestedEvents.insert(uuid)
-            } else {
-                User.current?.interestedEvents.remove(uuid)
-            }
-        }
-        
-        if let isFavorited = dictionary["Is favorited"]?.bool {
-            if isFavorited {
-                User.current?.favoritedEvents.insert(uuid)
-            } else {
-                User.current?.favoritedEvents.remove(uuid)
-            }
-        }
+        hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
+        capacity = dictionary["Capacity"]?.int ?? 0
     }
     
     static func readFromFile(path: String) -> [String: Set<Event>] {
@@ -309,6 +289,7 @@ class Event {
         main.dictionaryObject?["Tags"] = tags.description
         main.dictionaryObject?["Has cover"] = hasVisual
         main.dictionaryObject?["Active"] = active ? 1 : 0
+        main.dictionaryObject?["Capacity"] = capacity
         
         return main
     }
@@ -338,8 +319,8 @@ extension Event: CustomStringConvertible, Hashable {
         return lhs.uuid == rhs.uuid
     }
     
-    var hashValue: Int {
-        return uuid.hashValue
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
     }
     
     var description: String {

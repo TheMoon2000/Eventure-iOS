@@ -16,7 +16,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     private var placeholder: UILabel!
     private var baseline: UIView!
     
-    var textChangeHandler: ((String) -> ())?
+    var textChangeHandler: ((UITextView) -> ())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -61,6 +61,8 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.delegate = self
             tv.backgroundColor = .clear
             tv.keyboardDismissMode = .onDrag
+            tv.autocorrectionType = .no
+        
             tv.textContainer.lineFragmentPadding = 0
             
             let pStyle = NSMutableParagraphStyle()
@@ -84,8 +86,8 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         placeholder = {
             let label = UILabel()
-            label.text = "e.g. HP Auditorium, online"
-            label.textColor = .lightGray
+            label.text = "TBA"
+            label.textColor = .init(white: 0.79, alpha: 1)
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(label, belowSubview: locationText)
@@ -114,7 +116,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        textChangeHandler?(textView.text)
+        textChangeHandler?(textView)
         placeholder.isHidden = !textView.text.isEmpty
     }
     

@@ -39,10 +39,11 @@ class MainTabBarController: UITabBarController {
             if let allCampuses = try? JSON(data: data!).arrayValue {
                 for campus in allCampuses {
                     if campus.dictionary != nil {
-                        Campus.supported.append(Campus(json: campus))
+                        let new = Campus(json: campus)
+                        Campus.supported[new.fullName] = new
                     }
                 }
-                print("Loaded supported campuses: \(Campus.supported.map { $0.fullName })")
+                print("Loaded supported campuses: \(Campus.supported.keys)")
             } else {
                 print(String(data: data!, encoding: .utf8)!)
             }
@@ -92,12 +93,11 @@ class MainTabBarController: UITabBarController {
         let tab1 = OrgEventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
         
-        let tab2 = AccountViewController()
-        tab2.tabBarItem = UITabBarItem(title: "Account Settings", image: #imageLiteral(resourceName: "settings"), tag: 1)
+        let tab2 = OrgAccountPageController()
+        tab2.tabBarItem = UITabBarItem(title: "Dashboard", image: #imageLiteral(resourceName: "dashboard"), tag: 1)
     
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
             
             return nav
@@ -132,10 +132,12 @@ class MainTabBarController: UITabBarController {
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
                 Organization.current = current
+                if Organization.current != nil { Organization.syncFromServer() }
                 User.current = nil
                 openScreen(isUserAccount: false)
-            } else {
-                User.current = User.cachedUser(at: CURRENT_USER_PATH)
+            } else if type == ACCOUNT_TYPE_USER, let current = User.cachedUser(at: CURRENT_USER_PATH) {
+                User.current = current
+                if User.current != nil { User.syncFromServer() }
                 Organization.current = nil
                 openScreen(isUserAccount: true)
             }

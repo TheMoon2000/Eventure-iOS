@@ -207,6 +207,7 @@ class EventDetailPage: UIViewController {
         }
         
         toggle()
+        UISelectionFeedbackGenerator().selectionChanged()
         
         let parameters = [
             "userId": String(currentUser.uuid),
@@ -291,7 +292,7 @@ class EventDetailPage: UIViewController {
             self.navigationController?.pushViewController(checkin, animated: true)
         }))
         
-        alert.addAction(.init(title: "Event Statistics", style: .default, handler: nil))
+        alert.addAction(.init(title: "Event Statistics", style: .default))
         
         if self.event.published {
             alert.addAction(.init(title: "Remove Event", style: .destructive) { _ in
@@ -300,44 +301,45 @@ class EventDetailPage: UIViewController {
                 warning.addAction(.init(title: "Remove", style: .destructive) { _ in
                     self.removeEvent()
                 })
-                self.present(warning, animated: true, completion: nil)
+                self.present(warning, animated: true)
             })
         } else {
             alert.addAction(.init(title: "Delete Draft", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to delete this local draft. This process cannot be undone.", preferredStyle: .alert)
-                warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+                warning.addAction(.init(title: "Cancel", style: .cancel))
                 warning.addAction(.init(title: "Delete", style: .destructive) { _ in
                     // Delete a local copy
-                    EventDraft.removeDraft(uuid: self.event.uuid) {
-                        self.orgEventView?.allDrafts.remove(self.event)
+                    EventDraft.removeDraft(uuid: self.event.uuid) { remaining in
+                        self.orgEventView?.allDrafts = remaining
+                        self.orgEventView?.updateFiltered()
                         self.orgEventView!.eventCatalog.reloadData()
                         self.navigationController?.popViewController(animated: true)
                     }
                 })
-                self.present(warning, animated: true, completion: nil)
+                self.present(warning, animated: true)
             })
         }
         
-        alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(.init(title: "Cancel", style: .cancel))
         
-        present(alert, animated: true, completion: nil)
+        present(alert, animated: true)
     }
     
     private func openEditor() {
-        let editor = EventDraft(event: event.copy())
+        let editor = EventDraft(event: event.copy(), detailPage: self)
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
         nav.navigationBar.tintColor = MAIN_TINT
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
-        present(nav, animated: true, completion: nil)
+        present(nav, animated: true)
     }
     
     @objc private func imageTapped() {
         if let cover = event.eventVisual {
             let fullScreen = ImageFullScreenPage(image: cover)
-            present(fullScreen, animated: false, completion: nil)
+            present(fullScreen, animated: false)
         }
     }
     

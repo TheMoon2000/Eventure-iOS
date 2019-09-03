@@ -209,7 +209,7 @@ class DraftDescriptionPage: UIViewController {
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.textColor = .init(white: 0.8, alpha: 1)
             label.isHidden = !draftPage.draft.eventDescription.isEmpty
-            label.text = "Describe your event within \(descriptionMaxLength) characters..."
+            label.text = "Here, describe your event within \(descriptionMaxLength) characters. Markdown is supported!"
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.insertSubview(label, belowSubview: descriptionText)
             

@@ -69,7 +69,7 @@ class RegisterOrganization: UITableViewController {
         // 1.1 (2)
         let displayName: UITableViewCell = {
             let cell = MinimalTextCell()
-            cell.textField.placeholder = "Organization Title"
+            cell.textField.placeholder = "Organization Name"
             cell.textField.autocapitalizationType = .words
             cell.textField.enablesReturnKeyAutomatically = true
             cell.textField.returnKeyType = .next
@@ -133,7 +133,7 @@ class RegisterOrganization: UITableViewController {
         // 2.0 (6)
         let orgID: UITableViewCell = {
             let cell = MinimalTextCell()
-            cell.textField.placeholder = "Organization Account ID"
+            cell.textField.placeholder = "Organization ID (permanent)"
             cell.textField.autocorrectionType = .no
             cell.textField.autocapitalizationType = .none
             cell.textField.enablesReturnKeyAutomatically = true
@@ -160,7 +160,7 @@ class RegisterOrganization: UITableViewController {
         // 2.1 (7)
         let password: UITableViewCell = {
             let cell = MinimalTextCell()
-            cell.textField.placeholder = "Password"
+            cell.textField.placeholder = "Password (length ≥ 8)"
             cell.textField.isSecureTextEntry = true
             cell.textField.textContentType = .password
             
@@ -213,7 +213,7 @@ class RegisterOrganization: UITableViewController {
         // 3.0 (9)
         let contactName: UITableViewCell = {
             let cell = MinimalTextCell()
-            cell.textField.placeholder = "Contact Name"
+            cell.textField.placeholder = "President / Contact Name"
             cell.textField.autocapitalizationType = .words
             cell.textField.autocorrectionType = .no
             cell.textField.textContentType = .name

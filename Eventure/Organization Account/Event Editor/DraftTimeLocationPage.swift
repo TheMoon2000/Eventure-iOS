@@ -75,8 +75,8 @@ class DraftTimeLocationPage: UITableViewController {
             let minimumEndTime = date.addingTimeInterval(300)
             endBottomCell.datePicker.minimumDate = minimumEndTime
             if endTopCell.displayedDate.timeIntervalSince(date) < 300 {
-                endBottomCell.datePicker.setDate(minimumEndTime, animated: false)
-                endBottomCell.dateChangedHandler!(minimumEndTime)
+                endBottomCell.datePicker.setDate(date.addingTimeInterval(3600), animated: false)
+                endBottomCell.dateChangedHandler!(date.addingTimeInterval(3600))
             }
             self?.draftPage.edited = true
         }
@@ -84,13 +84,16 @@ class DraftTimeLocationPage: UITableViewController {
         
         let locationCell = DraftLocationCell()
         locationCell.locationText.insertText(draftPage.draft.location)
-        locationCell.textChangeHandler = { [weak self] text in
+        locationCell.textChangeHandler = { [weak self] textView in
             UIView.performWithoutAnimation {
                 self?.tableView.beginUpdates()
                 self?.tableView.endUpdates()
             }
-            self?.draftPage.draft.location = text
+            self?.draftPage.draft.location = textView.text
             self?.draftPage.edited = true
+            if textView.selectedRange.location == textView.text.count {
+                self?.tableView.scrollToRow(at: [0, 4], at: .bottom, animated: false)
+            }
         }
         contentCells.append(locationCell)
     }
@@ -113,9 +116,9 @@ class DraftTimeLocationPage: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 1 {
-            return startTimeExpanded ? 230 : 0
+            return startTimeExpanded ? 220 : 0
         } else if indexPath.row == 3 {
-            return endTimeExpanded ? 230 : 0
+            return endTimeExpanded ? 220 : 0
         }
         
         return super.tableView(tableView, heightForRowAt: indexPath)

@@ -16,7 +16,8 @@ class EventCell: UICollectionViewCell {
     
     private var card: UIView!
     private var cover: UIImageView!
-    var interestedButton: UIButton!
+    private var interestBG: UIView!
+    private var interestedButton: UIButton!
     
     private var timeLabel: UILabel!
     private var locationLabel: UILabel!
@@ -71,7 +72,7 @@ class EventCell: UICollectionViewCell {
         
         interestedButton = {
             let button = UIButton(type: .system)
-            button.isEnabled = User.current != nil
+            button.isHidden = User.current == nil
             button.imageView?.contentMode = .scaleAspectFit
             button.tintColor = MAIN_TINT
             button.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
@@ -80,13 +81,30 @@ class EventCell: UICollectionViewCell {
             
             button.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -12).isActive = true
             button.topAnchor.constraint(equalTo: card.topAnchor, constant: 12).isActive = true
-            button.widthAnchor.constraint(equalToConstant: 32).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 25).isActive = true
             button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
             
             button.addTarget(self, action: #selector(toggleInterested), for: .touchUpInside)
             
             return button
         }()
+        
+        interestBG = {
+            let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            view.isHidden = User.current == nil
+            view.layer.cornerRadius = 5
+            view.layer.masksToBounds = true
+            view.translatesAutoresizingMaskIntoConstraints = false
+            card.addSubview(view)
+            
+            view.topAnchor.constraint(equalTo: card.topAnchor, constant: -10).isActive = true
+            view.rightAnchor.constraint(equalTo: card.rightAnchor, constant: 10).isActive = true
+            view.widthAnchor.constraint(equalToConstant: 60).isActive = true
+            view.heightAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+            
+            return view
+        }()
+        
         
         titleText = {
             let label = UILabel()
@@ -224,7 +242,45 @@ class EventCell: UICollectionViewCell {
     }
     
     @objc private func toggleInterested() {
-        if interestedButton.currentImage == #imageLiteral(resourceName: "star_empty") {
+        toggle()
+        
+        let parameters = [
+            "userId": String(User.current!.uuid),
+            "eventId": event.uuid,
+            "interested": interestedButton.imageView?.image == #imageLiteral(resourceName: "star_filled") ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/MarkEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    self.toggle()
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
+            
+            if msg == INTERNAL_ERROR {
+                DispatchQueue.main.async {
+                    self.toggle()
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    private func toggle() {
+        UISelectionFeedbackGenerator().selectionChanged()
+        if !User.current!.interestedEvents.contains(event.uuid) {
             interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
             User.current?.interestedEvents.insert(event.uuid)
         } else {
@@ -239,6 +295,16 @@ class EventCell: UICollectionViewCell {
         timeText.text = event.timeDescription
         locationText.text = event.location
         eventHostText.text = event.hostTitle
+        
+        if User.current == nil {
+            interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+        } else {
+            if User.current!.interestedEvents.contains(event.uuid) {
+                interestedButton.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
+            } else {
+                interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+            }
+        }
         
         if event.eventVisual == nil {
             if withImage {

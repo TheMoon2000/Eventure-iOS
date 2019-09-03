@@ -35,7 +35,6 @@ let ACCOUNT_TYPE_ORG = "Org"
 
 let URL_PREFIX = "eventure://"
 
-/// Todo: REPLACE THIS WITH THE APP's THEME COLOR
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
@@ -44,6 +43,7 @@ let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
 let FATAL_COLOR = UIColor(red: 224/255, green: 33/255, blue: 0, alpha: 1)
 let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
+let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
 let MAIN_TINT8 = UIColor(red: 255/255, green: 153/255, blue: 102/255, alpha: 1.0)
@@ -95,6 +95,21 @@ let PLAIN_STYLE =  """
     h6 {
         font-size: 18px;
     }
+
+    a {
+        color: rgb(104, 165, 245);
+    }
+"""
+
+let COMPACT_STYLE = """
+    body {
+        font-family: -apple-system;
+        font-size: 16px;
+        line-height: 1.25;
+        letter-spacing: 1%;
+        color: #5A5A5A;
+        margin-bottom: 10px;
+    }
 """
 
 // MARK: - Cache files
@@ -136,6 +151,15 @@ let YEAR_FORMATTER: DateFormatter = {
     return formatter
 }()
 
+/// A formatter to get the current month in string format.
+let DAY_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "d"
+    formatter.locale = Locale(identifier: "en_US")
+    return formatter
+}()
+
+
 // MARK: - Classes and Extensions
 
 extension String {
@@ -157,9 +181,13 @@ extension String {
     }
     
     /// Markdown-formatted text.
-    func attributedText() -> NSAttributedString {
+    func attributedText(style: String = PLAIN_STYLE) -> NSAttributedString {
         if isEmpty { return NSAttributedString() }
-        if let d = try? Down(markdownString: self).toAttributedString(.hardBreaks, stylesheet: PLAIN_STYLE) {
+        
+        if let d = try? Down(markdownString: self).toAttributedString(.default, stylesheet: style) {
+            if d.string.isEmpty {
+                return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
+            }
             return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
         } else {
             print("WARNING: markdown failed")
@@ -183,6 +211,7 @@ extension String {
         }
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
+
 }
 
 extension URL {
@@ -401,3 +430,9 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
     }))
     vc.present(alert, animated: true, completion: nil)
 }
+
+// MARK: - Notifications
+let USER_SYNC_SUCCESS = Notification.Name("user sync success")
+let USER_SYNC_FAILED = Notification.Name("user sync failed")
+let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
+let ORG_SYNC_FAILED = Notification.Name("org sync failed")
