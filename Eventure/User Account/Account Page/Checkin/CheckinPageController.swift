@@ -81,7 +81,6 @@ class CheckinPageController: UIPageViewController {
                 DispatchQueue.main.async {
                     serverMaintenanceError(vc: self) { self.dismiss(animated: true, completion: nil) }
                 }
-                return
             }
             
         }
@@ -113,7 +112,8 @@ class CheckinPageController: UIPageViewController {
     }
     
     func flipPage() {
-        
+        let vc = CheckinTable(event: event, sheet: sheetInfo!)
+        self.setViewControllers([vc], direction: .forward, animated: true)
     }
     
 

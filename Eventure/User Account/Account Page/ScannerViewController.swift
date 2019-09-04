@@ -343,13 +343,6 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         lastReturnDate = thisDate
         
         if let eventID = filtered.first {
-            
-            session?.stopRunning()
-            spinner.startAnimating()
-            
-            cameraPrompt.text = "Event code scanned! Processing..."
-            cameraPrompt.textColor = .white
-            
             presentCheckinForm(eventID: eventID)
         } else {
             cameraPrompt.text = INVALID_CODE
@@ -370,6 +363,12 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     func presentCheckinForm(eventID: String) {
         
         print("presenting check-in form for \(eventID)")
+        
+        session?.stopRunning()
+        spinner.startAnimating()
+        
+        cameraPrompt.text = "Event code scanned! Processing..."
+        cameraPrompt.textColor = .white
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetEvent",

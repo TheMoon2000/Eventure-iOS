@@ -148,7 +148,6 @@ class OrgDetailPage: UIViewController {
         
         expandButton = {
             let button = UIButton()
-            button.isEnabled = false
             button.translatesAutoresizingMaskIntoConstraints = false
             previewContainer.addSubview(button)
             

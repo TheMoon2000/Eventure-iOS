@@ -62,8 +62,7 @@ class CheckinTable: UIViewController {
         
         checkinTitle = {
             let label = UILabel()
-            label.numberOfLines = 3
-            label.lineBreakMode = .byWordWrapping
+            label.numberOfLines = 5
             label.text = event.title
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 22, weight: .medium)
@@ -80,9 +79,8 @@ class CheckinTable: UIViewController {
         
         checkinSubtitle = {
             let label = UILabel()
-            
+            label.text = "Loading..."
             label.numberOfLines = 5
-            label.lineBreakMode = .byWordWrapping
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 16.5)
             label.textColor = .darkGray
@@ -184,8 +182,15 @@ class CheckinTable: UIViewController {
         refreshRegistrants()
         loadOrganizationInfo()
         
+        banner.layoutIfNeeded()
+        
         DispatchQueue.main.async {
-            self.checkinTable.contentInset.top = self.banner.frame.height - UIApplication.shared.statusBarFrame.height * 2
+            
+            let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
+            
+            
+
+            self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
             self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
         }
     }
