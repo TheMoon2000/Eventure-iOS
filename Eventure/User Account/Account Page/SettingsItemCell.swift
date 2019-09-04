@@ -46,6 +46,7 @@ class SettingsItemCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
+            label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -63,7 +64,6 @@ class SettingsItemCell: UITableViewCell {
             label.numberOfLines = 3
             label.textAlignment = .right
             label.textColor = UIColor.gray
-            label.lineBreakMode = .byTruncatingTail
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .right
             addSubview(label)

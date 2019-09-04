@@ -78,7 +78,6 @@ class OrgProfilePage: UITableViewController {
             let emailCell = TextFieldCell(parentVC: self)
             emailCell.textfield.placeholder = "Contact Email"
             emailCell.icon.image = #imageLiteral(resourceName: "email")
-            emailCell.linkDetectionEnabled = true
             emailCell.textfield.keyboardType = .emailAddress
             emailCell.textfield.autocapitalizationType = .none
             emailCell.textfield.enablesReturnKeyAutomatically = true

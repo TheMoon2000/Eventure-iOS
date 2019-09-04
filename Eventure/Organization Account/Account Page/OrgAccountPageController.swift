@@ -20,7 +20,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         
         //Do any additional setup after loading the view.
-        title = Organization.waitingForSync ? "Syncing..." : "Org Settings"
+        title = Organization.waitingForSync ? "Syncing..." : "Dashboard"
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         myTableView = UITableView(frame: .zero, style: .grouped)
@@ -45,8 +45,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillAppear(animated)
         
         UIView.performWithoutAnimation {
-            self.myTableView.beginUpdates()
-            self.myTableView.endUpdates()
+            self.myTableView.reloadData()
         }
     }
     
@@ -57,11 +56,8 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     /// New account data has been synced from the server and are reflected in the new `Organization.current` instance. Make appropriate changes to the dashboard page accordingly, e.g. reload certain row cells.
     @objc private func orgUpdated() {
         DispatchQueue.main.async {
-            self.title = "Org Settings"
-            self.navigationController?.navigationBar.setNeedsDisplay()
-            UIView.performWithoutAnimation {
-                print("function incomplete")
-            }
+            self.navigationItem.title = "Dashboard"
+            self.myTableView.reloadData()
         }
     }
     
@@ -85,9 +81,9 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             orgProfile.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgProfile, animated: true)
         case (2, 0):
-            let orgEvent = OrgEventBriefPage()
-            orgEvent.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(orgEvent, animated: true)
+            let alert = UIAlertController(title: "Feature unavailable", message: "We are still working on this feature. Please wait a few weeks for our next release.", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            present(alert, animated: true)
         case (2, 1):
             print(indexPath)
             //commented for TEST
@@ -95,7 +91,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
 //            subscriber.hidesBottomBarWhenPushed = true
 //            navigationController?.pushViewController(subscriber, animated:true)
         case(3, 0):
-            let aboutPage = AboutEventure()
+            let aboutPage = AboutPage()
             aboutPage.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(aboutPage, animated: true)
         case (3,1):
@@ -124,18 +120,21 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         let cell = SettingsItemCell()
         
         switch (indexPath.section, indexPath.row) {
-        
-        
-            
         case (0, 0):
-            cell.icon.image = Organization.current?.logoImage
-            if cell.icon.image == nil {
-                cell.icon.image = #imageLiteral(resourceName: "group")
+            let profileCell = ProfilePreviewCell()
+            profileCell.titleLabel.text = Organization.current!.title
+            if let logo = Organization.current?.logoImage {
+                profileCell.icon.image = logo
+            } else {
+                profileCell.icon.image = #imageLiteral(resourceName: "group")
+                Organization.current?.getLogoImage { orgWithImage in
+                    profileCell.icon.image = orgWithImage.logoImage
+                }
             }
-            cell.imageWidthConstraint.constant = 65
-            cell.heightConstraint.constant = 100
-            cell.spacingConstraint.constant = 18
-            cell.titleLabel.text = "Organization Logo"
+            let noun = Organization.current!.numberOfEvents == 1 ? "event" : "events"
+            profileCell.subtitleLabel.text = "\(Organization.current!.numberOfEvents) " + noun
+            
+            return profileCell
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "resume")
             cell.titleLabel.text = "Manage Account"
@@ -144,11 +143,12 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
-            cell.icon.image = #imageLiteral(resourceName: "tag")
-            cell.titleLabel.text = "Our Events"
+            cell.icon.image = #imageLiteral(resourceName: "stats")
+            cell.titleLabel.text = "Event Statistics"
         case (2, 1):
-            cell.icon.image = #imageLiteral(resourceName: "surprised")
+            cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Our Subscribers"
+            cell.valueLabel.text = "\(Organization.current!.subscribers.count)"
         case(3, 0):
             let cell = UITableViewCell()
             cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -198,7 +198,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         return [
             "",
             "Organization Information",
-            "Event and Subscriptions",
+            "Events and Subscriptions",
             nil
             ][section]
     }
@@ -214,6 +214,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     //full screen profile picture when tapped
+    
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
         let fullScreen = ImageFullScreenPage(image: profilePicture)
         present(fullScreen, animated: true, completion: nil)
@@ -228,8 +229,5 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return currentImageView
     }
-    
-    
-    
     
 }

@@ -25,6 +25,7 @@ class User {
     var displayedName: String { didSet { save() } }
     var gender: Gender { didSet { save() } }
     var profilePicture: UIImage? { didSet { save() } }
+    var numberOfAttendedEvents = 0 { didSet { save() } }
     
     /// A set of uuid strings for events which the user has favorited.
     var favoritedEvents = Set<String>() {
@@ -114,6 +115,7 @@ class User {
         }
         
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
+        numberOfAttendedEvents = dictionary["# checked in"]?.int ?? 0
         
         fullName = dictionary["Full name"]?.string ?? ""
         major = dictionary["Major"]?.string ?? ""
@@ -201,6 +203,7 @@ class User {
         json.dictionaryObject?["LinkedIn"] = self.linkedIn
         json.dictionaryObject?["Interests"] = self.interests
         json.dictionaryObject?["Comments"] = self.comments
+        json.dictionaryObject?["# checked in"] = self.numberOfAttendedEvents
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
@@ -277,6 +280,34 @@ class User {
             
             DispatchQueue.main.async {
                 handler?(msg != INTERNAL_ERROR)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    /// Load the profile picture for the current user.
+    func getProfilePicture(_ handler: ((User) -> ())?) {
+        if profilePicture != nil { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetProfilePicture",
+                           parameters: ["userId": String(uuid)])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                handler?(self)
+                return // Don't display any alert here
+            }
+            
+            self.profilePicture = UIImage(data: data!) ?? #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
+            DispatchQueue.main.async {
+                handler?(self)
             }
         }
         
