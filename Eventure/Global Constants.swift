@@ -215,6 +215,40 @@ extension String {
 
 }
 
+extension Date {
+    
+    static let readableFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM yyyy @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    static let shortFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    static let todayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "'Today' @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    func readableString() -> String {
+        if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {
+            return Date.readableFormatter.string(from: self)
+        } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: self) {
+            return Date.shortFormatter.string(from: self)
+        } else {
+            return Date.todayFormatter.string(from: self)
+        }
+    }
+}
+
 extension URL {
     
     /**

@@ -20,25 +20,25 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     private var backGroundLabel: UILabel!
     
-    private var eventDictionaryList = [Event]()
+    private var recordDictionaryList = [CheckinRecord]()
     private var eventUUIDList = [String]()
-    private var eventToIndex = [Event : IndexPath]()
+    private var eventToIndex = [CheckinRecord : IndexPath]()
     
-    private var today = [Event]()
-    private var tomorrow = [Event]()
-    private var thisWeek = [Event]()
-    private var future = [Event]()
-    private var past = [Event]()
+    private var today = [CheckinRecord]()
+    private var tomorrow = [CheckinRecord]()
+    private var thisWeek = [CheckinRecord]()
+    private var future = [CheckinRecord]()
+    private var past = [CheckinRecord]()
     
     private var sections = 0
     private var labels = [String]()
-    private var displayedEvents = [[Event]]()
+    private var displayedRecords = [[CheckinRecord]]()
     private var rowsForSection = [Int]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Checked-In"
+        title = "Events I Checked In"
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
@@ -114,27 +114,27 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let detailPage = EventDetailPage()
-        detailPage.hidesBottomBarWhenPushed = true
-        detailPage.event = displayedEvents[indexPath.section][indexPath.row]
-        navigationController?.pushViewController(detailPage, animated: true)
+        print(indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-        let event = displayedEvents[indexPath.section][indexPath.row]
-        eventToIndex[event] = indexPath
+        let record = displayedRecords[indexPath.section][indexPath.row]
+        eventToIndex[record] = indexPath
         
         let cell = EventsCell()
-        cell.titleLabel.text = event.title
+        cell.titleLabel.text = record.eventTitle
         
-        cell.setTime(for: event)
+        cell.dateLabel.text = "Checked in at " + record.checkedInDate.readableString()
         
-        if event.eventVisual != nil {
-            cell.icon.image = event.eventVisual
+        if record.coverImage != nil {
+            cell.icon.image = record.coverImage
         } else {
-            cell.icon.image = UIImage(named: "cover_placeholder")
+            cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
+            record.getCover { recordWithCover in
+                cell.icon.image = recordWithCover.coverImage
+            }
         }
         return cell
     }
@@ -180,17 +180,16 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
                 return
             }
             
-            if let eventsList = try? JSON(data: data!).arrayValue {
-                for eventData in eventsList {
-                    let eventUUID = eventData.dictionary?["Sheet ID"]?.string!
-                    self.retrieveSingleEvent(UUID: eventUUID!)
+            if let recordList = try? JSON(data: data!).arrayValue {
+                for record in recordList {
+                    self.recordDictionaryList.append(CheckinRecord(json: record))
                 }
                 
                 //group events according to their time
                 self.groupEventsTime()
                 
                 DispatchQueue.main.async {
-                    if (self.eventDictionaryList.count == 0) {
+                    if (self.recordDictionaryList.count == 0) {
                         self.backGroundLabel.isHidden = false
                     }
                     self.myTableView.reloadData()
@@ -214,60 +213,64 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         
         let today = Date()
         let calender = Calendar.current
-        for event in eventDictionaryList {
-            let eventDate = event.startTime
-            let eventDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: eventDate!)
+        for record in recordDictionaryList {
+            let eventDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: record.checkedInDate)
             let todayDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: today)
             let isSameYear = eventDateComponents.year == todayDateComponents.year
             let isSameMonth = eventDateComponents.month == todayDateComponents.month
             let isSameDay = eventDateComponents.day == todayDateComponents.day
             
             if (isSameDay && isSameYear && isSameMonth) {
-                self.today.append(event)
+                self.today.append(record)
             } else if (isSameYear && isSameMonth && (eventDateComponents.day! - todayDateComponents.day! == 1)) {
-                self.tomorrow.append(event)
+                self.tomorrow.append(record)
             } else if (isSameYear && isSameMonth && (eventDateComponents.day! - todayDateComponents.day! <= 7)) {
-                self.thisWeek.append(event)
-            } else if (eventDate! > today) {
-                self.future.append(event)
+                self.thisWeek.append(record)
+            } else if (record.checkedInDate > today) {
+                self.future.append(record)
             } else {
-                self.past.append(event)
+                self.past.append(record)
             }
         }
-        self.today = self.today.sorted(by: { $0.startTime! < $1.startTime! })
-        self.tomorrow = self.tomorrow.sorted(by: { $0.startTime! < $1.startTime! })
-        self.thisWeek = self.thisWeek.sorted(by: { $0.startTime! < $1.startTime! })
-        self.future = self.future.sorted(by: { $0.startTime! < $1.startTime! })
-        self.past = self.past.sorted(by: { $0.startTime! > $1.startTime! })
+        
+        let sortFunction: ((CheckinRecord, CheckinRecord) -> Bool) = {
+            return $0.checkedInDate < $1.checkedInDate
+        }
+        
+        self.today = self.today.sorted(by: sortFunction)
+        self.tomorrow = self.tomorrow.sorted(by: sortFunction)
+        self.thisWeek = self.thisWeek.sorted(by: sortFunction)
+        self.future = self.future.sorted(by: sortFunction)
+        self.past = self.past.sorted(by: sortFunction)
         
         if self.today.count > 0 {
             sections += 1
             labels.append("Today")
-            displayedEvents.append(self.today)
+            displayedRecords.append(self.today)
             rowsForSection.append(self.today.count)
         }
         if self.tomorrow.count > 0 {
             sections += 1
             labels.append("Tomorrow")
-            displayedEvents.append(self.tomorrow)
+            displayedRecords.append(self.tomorrow)
             rowsForSection.append(self.tomorrow.count)
         }
         if self.thisWeek.count > 0 {
             sections += 1
             labels.append("This Week")
-            displayedEvents.append(self.thisWeek)
+            displayedRecords.append(self.thisWeek)
             rowsForSection.append(self.thisWeek.count)
         }
         if self.future.count > 0 {
             sections += 1
             labels.append("In the future...")
-            displayedEvents.append(self.future)
+            displayedRecords.append(self.future)
             rowsForSection.append(self.future.count)
         }
         if self.past.count > 0 {
             sections += 1
             labels.append("Past Events")
-            displayedEvents.append(self.past)
+            displayedRecords.append(self.past)
             rowsForSection.append(self.past.count)
         }
         
@@ -284,14 +287,15 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         
         sections = 0
         labels.removeAll()
-        displayedEvents.removeAll()
+        displayedRecords.removeAll()
         rowsForSection.removeAll()
         
-        eventDictionaryList.removeAll()
+        recordDictionaryList.removeAll()
         eventToIndex.removeAll()
         
     }
     
+    // Unused
     func retrieveSingleEvent(UUID: String) {
     
         
@@ -341,6 +345,6 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             }
         }
         
-        task.resume()
     }
+   
 }

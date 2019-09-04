@@ -19,8 +19,6 @@ class MainTabBarController: UITabBarController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         view.tintColor = MAIN_TINT
-        
-        self.restorationIdentifier = "main tab"
     }
     
     func loadSupportedCampuses() {
@@ -147,6 +145,8 @@ class MainTabBarController: UITabBarController {
                 if User.current != nil { User.syncFromServer() }
                 Organization.current = nil
                 openScreen(isUserAccount: true)
+            } else {
+                openScreen()
             }
         } else {
             // Login as guest

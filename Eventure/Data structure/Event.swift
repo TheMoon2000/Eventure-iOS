@@ -13,27 +13,6 @@ class Event {
     static var current: Event?
     static var drafts = [Event]()    
     private static var cachedEvents = [String: [[String: Any]]]()
-
-    let readableFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "E, d MMM yyyy @ h:mm a"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
-    
-    let shortFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "E, d MMM @ h:mm a"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
-    
-    let todayFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "'Today' @ h:mm a"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
     
     var uuid: String
     var title: String
@@ -51,6 +30,9 @@ class Event {
     var capacity = 0
     var lastModified: Date?
     
+    // Only used as a temporary storage
+    var hostInfo: Organization?
+    
     var published: Bool
     var active: Bool
     
@@ -58,17 +40,7 @@ class Event {
     
     /// A description of the start time of the event.
     var timeDescription: String {
-        if startTime != nil {
-            if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: startTime!) {
-                return readableFormatter.string(from: startTime!)
-            } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: startTime!) {
-                return shortFormatter.string(from: startTime!)
-            } else {
-                return todayFormatter.string(from: startTime!)
-            }
-        } else {
-            return "Unspecified"
-        }
+        return startTime?.readableString() ?? "Unspecified"
     }
     
     /// A description of the duration of the event.
@@ -318,6 +290,30 @@ class Event {
         self.uuid = UUID().uuidString.lowercased()
     }
     
+    func fetchHostInfo(_ handler: ((Organization) -> ())?) {
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetOrgInfo",
+                           parameters: ["orgId": hostID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                self.hostInfo = Organization(orgInfo: json)
+                DispatchQueue.main.async {
+                    handler?(self.hostInfo!)
+                }
+            }
+        }
+        
+        task.resume()
+    }
 }
 
 

@@ -46,6 +46,7 @@
 		CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC23293123163B720097A915 /* UpdatePasswordPage.swift */; };
 		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
 		CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */; };
+		CC2EB24D231F9E68004245F8 /* CheckinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */; };
 		CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6EA2306F9750044C6ED /* OrgDetailPage.swift */; };
 		CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6EE230706FC0044C6ED /* PastEvents.swift */; };
 		CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */; };
@@ -170,6 +171,7 @@
 		CC23293123163B720097A915 /* UpdatePasswordPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordPage.swift; sourceTree = "<group>"; };
 		CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
+		CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinRecord.swift; sourceTree = "<group>"; };
 		CC2EE6EA2306F9750044C6ED /* OrgDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgDetailPage.swift; sourceTree = "<group>"; };
 		CC2EE6EE230706FC0044C6ED /* PastEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastEvents.swift; sourceTree = "<group>"; };
 		CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingEvents.swift; sourceTree = "<group>"; };
@@ -297,6 +299,7 @@
 				CC0646DE22FDF201000BF3CD /* Event.swift */,
 				CC46772C2319956600A9FF18 /* Campus.swift */,
 				CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */,
+				CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */,
 			);
 			path = "Data structure";
 			sourceTree = "<group>";
@@ -814,6 +817,7 @@
 				CC405DCC2307F32C00B85BEC /* OrgInfoPage.swift in Sources */,
 				CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
 				CCD65519231F4A3400088646 /* EventSearchResults.swift in Sources */,
+				CC2EB24D231F9E68004245F8 /* CheckinRecord.swift in Sources */,
 				CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */,

@@ -13,7 +13,12 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     
     var event: Event!
     var detailPage: EventDetailPage!
-    private var textView: UITextView!
+    
+    var organization: Organization?
+    
+    private var canvas: UIScrollView!
+    private var hostLabel: UILabel!
+    private var hostLink: UIButton!
 
     required init(detailPage: EventDetailPage) {
         super.init(nibName: nil, bundle: nil)
@@ -22,29 +27,62 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         self.detailPage = detailPage
         view.backgroundColor = detailPage.view.backgroundColor
         
-        textView = {
-            let tv = UITextView()
-            tv.attributedText = "Event details".attributedText()
-            tv.textContainerInset = .init(top: 30, left: 30, bottom: 40, right: 30)
-            tv.backgroundColor = .clear
-            tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
-            tv.isEditable = false
-            tv.isScrollEnabled = false
-            tv.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(tv)
+        canvas = {
+            let canvas = UIScrollView()
+            canvas.alwaysBounceVertical = true
+            canvas.contentInsetAdjustmentBehavior = .always
+            canvas.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(canvas)
             
-            tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-            tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-            tv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+            canvas.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            canvas.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            canvas.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
-            let bottomConstraint = tv.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
-            bottomConstraint.priority = .defaultHigh
-            bottomConstraint.isActive = true
-            
-            return tv
+            return canvas
         }()
+        
+        
+        hostLabel = {
+            let label = UILabel()
+            label.text = "Host: "
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 35).isActive = true
+            
+            return label
+        }()
+        
+        hostLink = {
+            let button = UIButton(type: .system)
+            button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+            button.titleLabel?.numberOfLines = 0
+            button.titleLabel?.textAlignment = .right
+            button.setTitle(event.hostTitle, for: .normal)
+            button.setTitleColor(LINK_COLOR, for: .normal)
+            button.contentHorizontalAlignment = .right
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
+            
+            button.leftAnchor.constraint(equalTo: hostLabel.rightAnchor, constant: 15).isActive = true
+            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            button.topAnchor.constraint(equalTo: hostLabel.topAnchor).isActive = true
+            
+            button.addTarget(self, action: #selector(openOrganization), for: .touchUpInside)
+            
+            return button
+        }()
+        
+        
     }
+    
+    @objc private func openOrganization() {
+        print("open")
+    }
+    
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -53,7 +91,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        detailPage.invisible.textView.attributedText = textView.attributedText
+        
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
