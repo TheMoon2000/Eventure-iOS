@@ -365,7 +365,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
             let url = URL(string: API_BASE_URL + "account/UpdateProfilePicture")!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
@@ -388,6 +388,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                         internetUnavailableError(vc: self)
                     }
                     return
+                }
+                
+                DispatchQueue.main.async {
+                    self.myTableView.reloadData()
                 }
                 
                 let msg = String(data: data!, encoding: .utf8)!
