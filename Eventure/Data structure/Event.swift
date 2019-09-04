@@ -292,7 +292,7 @@ class Event {
     
     func fetchHostInfo(_ handler: ((Organization) -> ())?) {
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetOrgInfo",
+                           API_Name: "account/GetOrgInfo",
                            parameters: ["orgId": hostID])!
         var request = URLRequest(url: url)
         request.addAuthHeader()

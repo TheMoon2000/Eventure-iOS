@@ -51,7 +51,7 @@ class EventDetailPage: UIViewController {
         self.title = "Event Details"
         view.backgroundColor = .init(white: 0.95, alpha: 1)
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
-        
+                
         if Organization.current == nil {
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
             rightButton.isEnabled = User.current != nil

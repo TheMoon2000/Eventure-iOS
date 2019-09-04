@@ -296,6 +296,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     }
     
     // Unused
+    /*
     func retrieveSingleEvent(UUID: String) {
     
         
@@ -345,6 +346,6 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             }
         }
         
-    }
+    }*/
    
 }
