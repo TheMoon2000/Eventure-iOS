@@ -30,6 +30,7 @@ class Organization: CustomStringConvertible {
     var logoImage: UIImage? { didSet { save() } }
     var hasLogo: Bool
     var subscribers = Set<Int>() { didSet { save() } }
+    var numberOfEvents = 0
     
     // Profile Information
     var contactName: String { didSet { save() } }
@@ -115,6 +116,7 @@ class Organization: CustomStringConvertible {
         active = (dictionary["Active"]?.int ?? 1) == 1
         dateRegistered = dictionary["Date registered"]?.string ?? ""
         hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
+        numberOfEvents = dictionary["# of events"]?.int ?? 0
         
         if let subscribers_raw = dictionary["Subscribers"]?.string {
             if let subArray = JSON(parseJSON: subscribers_raw).arrayObject as? [Int] {
@@ -186,6 +188,7 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Active"] = self.active ? 1 : 0
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
+        json.dictionaryObject?["# of events"] = self.numberOfEvents
         json.dictionaryObject?["Subscribers"] = self.subscribers.description
         
         

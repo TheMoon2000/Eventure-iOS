@@ -186,7 +186,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 tagPicker.selectedTags = User.current!.tags
             }
         case (4, 0):
-            let aboutPage = AboutEventure()
+            let aboutPage = AboutPage()
             aboutPage.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(aboutPage, animated: true)
         case (4, 1): // if the log out/sign in button is clicked
@@ -222,22 +222,19 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch (indexPath.section, indexPath.row) {
             
         case (0, 0):
-            cell.icon.image = User.current?.profilePicture
-            
-            cell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
-            
-            if cell.icon.image == nil && User.current != nil {
-                cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
-                cell.icon.isUserInteractionEnabled = true
-                profilePicture = cell.icon.image
+            let profileCell = ProfilePreviewCell()
+            profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
+            profileCell.subtitleLabel.text = User.current!.email
+            if let image = User.current?.profilePicture {
+                profileCell.icon.image = image
             } else {
-                cell.icon.image = #imageLiteral(resourceName: "unknown")
-                cell.icon.isUserInteractionEnabled = false
+                profileCell.icon.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
+                User.current?.getProfilePicture { userWithProfile in
+                    profileCell.icon.image = userWithProfile.profilePicture
+                }
             }
-            cell.imageWidthConstraint.constant = 65
-            cell.heightConstraint.constant = 100
-            cell.spacingConstraint.constant = 18
-            cell.titleLabel.text = "Profile Picture"
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
+            return profileCell
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "default_user")
             cell.titleLabel.text = "Manage Account"

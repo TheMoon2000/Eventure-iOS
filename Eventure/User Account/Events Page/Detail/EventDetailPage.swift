@@ -316,8 +316,6 @@ class EventDetailPage: UIViewController {
             self.navigationController?.pushViewController(checkin, animated: true)
         }))
         
-        alert.addAction(.init(title: "Event Statistics", style: .default))
-        
         if self.event.published {
             alert.addAction(.init(title: "Remove Event", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to permanently remove this published event. There is no going back.", preferredStyle: .alert)
