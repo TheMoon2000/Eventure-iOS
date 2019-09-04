@@ -20,7 +20,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         
         //Do any additional setup after loading the view.
-        title = Organization.waitingForSync ? "Syncing..." : "Dashboard"
+        title = Organization.waitingForSync ? "Syncing..." : "Org Settings"
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         myTableView = UITableView(frame: .zero, style: .grouped)
@@ -57,7 +57,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     /// New account data has been synced from the server and are reflected in the new `Organization.current` instance. Make appropriate changes to the dashboard page accordingly, e.g. reload certain row cells.
     @objc private func orgUpdated() {
         DispatchQueue.main.async {
-            self.title = "Dashboard"
+            self.title = "Org Settings"
             self.navigationController?.navigationBar.setNeedsDisplay()
             UIView.performWithoutAnimation {
                 print("function incomplete")
@@ -84,15 +84,21 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             orgProfile.parentVC = self
             orgProfile.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgProfile, animated: true)
-//        case (2, 0):
-//            let orgEvent =
+        case (2, 0):
+            let orgEvent = OrgEventBriefPage()
+            orgEvent.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(orgEvent, animated: true)
         case (2, 1):
             print(indexPath)
             //commented for TEST
 //            let subscriber = SubscriberListPage()
 //            subscriber.hidesBottomBarWhenPushed = true
 //            navigationController?.pushViewController(subscriber, animated:true)
-        case (3,0):
+        case(3, 0):
+            let aboutPage = AboutEventure()
+            aboutPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(aboutPage, animated: true)
+        case (3,1):
             //if the log out/sign in button is clicked
             //Note: Do not need to imeplement the case where Organization.current == nil
             //because we have already logged in for Org
@@ -143,7 +149,23 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "surprised")
             cell.titleLabel.text = "Our Subscribers"
-        case (3, 0):
+        case(3, 0):
+            let cell = UITableViewCell()
+            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            
+            let label = UILabel()
+            label.text = "About Eventure"
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            return cell
+            
+        case (3, 1):
             let cell = UITableViewCell()
             cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
@@ -183,7 +205,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     
     //rows in sections
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 2, 1][section]
+        return [1, 2, 2, 2][section]
     }
     
     //eliminate first section header
