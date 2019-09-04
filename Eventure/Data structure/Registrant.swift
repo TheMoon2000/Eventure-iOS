@@ -74,9 +74,11 @@ class Registrant: Hashable {
                 return // Don't display any alert here
             }
             
-            self.profilePicture = UIImage(data: data!) ?? #imageLiteral(resourceName: "user_default")
-            DispatchQueue.main.async {
-                handler?(self)
+            self.profilePicture = UIImage(data: data!)
+            if self.profilePicture != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
             }
         }
         

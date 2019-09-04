@@ -6,11 +6,11 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "gender@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "icons8-gender_symbols.png",
       "scale" : "3x"
     }
   ],

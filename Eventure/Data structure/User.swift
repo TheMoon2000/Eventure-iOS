@@ -305,9 +305,11 @@ class User {
                 return // Don't display any alert here
             }
             
-            self.profilePicture = UIImage(data: data!) ?? #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
-            DispatchQueue.main.async {
-                handler?(self)
+            self.profilePicture = UIImage(data: data!)
+            if self.profilePicture != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
             }
         }
         

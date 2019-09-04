@@ -43,7 +43,7 @@ class CheckinUserCell: UITableViewCell {
         
         profilePicture = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = MAIN_DISABLED
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -110,6 +110,7 @@ class CheckinUserCell: UITableViewCell {
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {
+            profilePicture.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
             registrant.getProfilePicture { registrantWithProfile in
                 self.profilePicture.image = registrantWithProfile.profilePicture
             }

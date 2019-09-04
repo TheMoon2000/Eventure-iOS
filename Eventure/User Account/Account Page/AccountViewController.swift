@@ -69,7 +69,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath != [4, 0] {
+        if indexPath.section != 4 {
             guard User.current != nil else {
                 popLoginReminder()
                 return
@@ -336,8 +336,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //full screen profile picture when tapped
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
-        let fullScreen = ImageFullScreenPage(image: User.current!.profilePicture!)
-        present(fullScreen, animated: true, completion: nil)
+        if let profile = User.current?.profilePicture {
+            let fullScreen = ImageFullScreenPage(image: profile)
+            present(fullScreen, animated: true, completion: nil)
+        }
     }
     
     //exit profile picture fullscreen
@@ -376,7 +378,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             var fileData = [String : Data]()
             fileData["picture"] = image.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.6)
             
-            request.addMultipartBody(parameters: parameters as! [String : String],
+            request.addMultipartBody(parameters: parameters as [String : String],
                                      files: fileData)
             request.addAuthHeader()
             
