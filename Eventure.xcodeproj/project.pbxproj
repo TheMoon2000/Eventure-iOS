@@ -90,6 +90,7 @@
 		CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F922BC5F9900FFD251 /* ButtonCell.swift */; };
 		CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */; };
 		CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCA5F7523177F76003D89E6 /* ImageFullScreenPage.swift */; };
+		CCD65519231F4A3400088646 /* EventSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD65518231F4A3400088646 /* EventSearchResults.swift */; };
 		CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */; };
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
 		CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A822BD773A003E3315 /* ForgotPassword.swift */; };
@@ -209,6 +210,7 @@
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinNavigationController.swift; sourceTree = "<group>"; };
 		CCCA5F7523177F76003D89E6 /* ImageFullScreenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFullScreenPage.swift; sourceTree = "<group>"; };
+		CCD65518231F4A3400088646 /* EventSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchResults.swift; sourceTree = "<group>"; };
 		CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePickerCell.swift; sourceTree = "<group>"; };
 		CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePreviewCell.swift; sourceTree = "<group>"; };
 		CCE176A622BD742F003E3315 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
@@ -390,6 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */,
+				CCD65518231F4A3400088646 /* EventSearchResults.swift */,
 				D5216646231D790700A54F21 /* FilterPageViewController.swift */,
 				D5216648231D828600A54F21 /* FilterDateTableViewController.swift */,
 				D560A304231A180E00062912 /* FilterTagViewController.swift */,
@@ -806,6 +809,7 @@
 				CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */,
 				CC405DCC2307F32C00B85BEC /* OrgInfoPage.swift in Sources */,
 				CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */,
+				CCD65519231F4A3400088646 /* EventSearchResults.swift in Sources */,
 				CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */,

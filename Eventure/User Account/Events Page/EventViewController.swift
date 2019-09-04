@@ -16,8 +16,8 @@ class EventViewController: UIViewController {
     }
     
     // The search bar
-    private let searchController = UISearchController(searchResultsController: nil)
-
+    private let searchResultTable = EventSearchResults()
+    private var searchController: UISearchController!
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
     private var eventCatalog: UICollectionView!
@@ -32,7 +32,8 @@ class EventViewController: UIViewController {
     
     private(set) var allEvents = [Event]() {
         didSet {
-            self.updateFiltered()
+            updateFiltered()
+            searchResultTable.allEvents = allEvents
         }
     }
     private var filteredEvents = [Event]()
@@ -44,13 +45,28 @@ class EventViewController: UIViewController {
         title = "Events"
         
         // Search bar setup
+                
+        searchController = {
+            let sc = UISearchController(searchResultsController: searchResultTable)
+            sc.searchResultsUpdater = searchResultTable
+            sc.searchBar.placeholder = "Search Events"
+            sc.searchBar.tintColor = MAIN_TINT
+            navigationItem.hidesSearchBarWhenScrolling = false
+            sc.obscuresBackgroundDuringPresentation = true
+            
+            navigationItem.searchController = sc
+            return sc
+        }()
+        
+        definesPresentationContext = true
+        
+        /*
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Events"
-        navigationItem.searchController = searchController
+ */
 //      navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(updateEvents))
@@ -114,6 +130,7 @@ class EventViewController: UIViewController {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
             spinner.color = .lightGray
             spinner.hidesWhenStopped = true
+            spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(spinner)
             
@@ -170,7 +187,8 @@ class EventViewController: UIViewController {
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
         allEvents.removeAll()
-        self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+        filteredEvents.removeAll()
+        self.eventCatalog.reloadData()
         
         var parameters = [String : String]()
         if User.current != nil {
@@ -183,18 +201,19 @@ class EventViewController: UIViewController {
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
+        func stop() {
+            self.spinner.stopAnimating()
+            self.spinnerLabel.isHidden = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
+        
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
-            
-            DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
-                self.navigationItem.rightBarButtonItem?.isEnabled = true
-            }
             
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.emptyLabel.text = CONNECTION_ERROR
+                    stop()
                     internetUnavailableError(vc: self)
                 }
                 return
@@ -205,18 +224,22 @@ class EventViewController: UIViewController {
                 for event in eventsList {
                     tmp.append(Event(eventInfo: event))
                 }
-                tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
-                    return e1.startTime as Date! < e2.startTime as Date!
-                })
-                DispatchQueue.main.async {
-                    self.allEvents = tmp
-                    self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
-                    self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+                DispatchQueue.global(qos: .default).async {
+                    tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
+                        return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)
+                    })
+                    DispatchQueue.main.async {
+                        stop()
+                        self.allEvents = tmp
+                        self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
+                        self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+                    }
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
 
                 DispatchQueue.main.async {
+                    stop()
                     self.emptyLabel.text = SERVER_ERROR
                 }
                 
@@ -250,10 +273,6 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filteredEvents.count
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -320,9 +339,11 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
 
 extension EventViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .default).async {
             self.updateFiltered()
-            self.eventCatalog.reloadData()
+            DispatchQueue.main.async {
+                self.eventCatalog.reloadData()
+            }
         }
     }
     

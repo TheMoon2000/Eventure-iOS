@@ -247,26 +247,40 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
 
 extension OrganizationsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.main.async {
-            self.updateFiltered()
-            self.orgTable.reloadData()
-        }
+        self.updateFiltered()
     }
     
     private func updateFiltered() {
         let searchText = searchController.searchBar.text!.lowercased()
-        filteredOrgs = organizations.filter { (org: Organization) -> Bool in
-            let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
-            var condition = true
-            if tabName == "Recommended" {
-                condition = !org.tags.intersection(User.current!.tags).isEmpty
-            } else if tabName == "Subscribed" {
-                // TODO: detect subscription
+        let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
+        DispatchQueue.global(qos: .default).async {
+            self.filteredOrgs = self.organizations.filter { (org: Organization) -> Bool in
+                
+                var contains = false
+                
+                for target in [org.title, org.orgDescription] {
+                    if target.lowercased().contains(searchText) {
+                        contains = true
+                    }
+                }
+                
+                if !contains && !searchText.isEmpty { return false }
+                
+                if tabName == "Recommended" {
+                    return !org.tags.intersection(User.current!.tags).isEmpty
+                } else if tabName == "Subscribed" {
+                    return User.current?.subscriptions.contains(org.id) ?? false
+                }
+                
+                return true
             }
             
-            return condition && (searchText.isEmpty || org.title.lowercased().contains(searchText))
+            self.filteredOrgs.sort(by: { $0.title < $1.title })
+            
+            DispatchQueue.main.async {
+                self.orgTable.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
+            }
         }
         
-        filteredOrgs.sort(by: { $0.title < $1.title })
     }
 }

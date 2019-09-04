@@ -19,6 +19,8 @@ class MainTabBarController: UITabBarController {
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
         view.tintColor = MAIN_TINT
+        
+        self.restorationIdentifier = "main tab"
     }
     
     func loadSupportedCampuses() {
@@ -76,8 +78,13 @@ class MainTabBarController: UITabBarController {
         tab3.tabBarItem = UITabBarItem(title: "Me", image: #imageLiteral(resourceName: "home"), tag: 2)
         
         
-        viewControllers = [tab1, tab2, tab3].map {
-            let nav = UINavigationController(rootViewController: $0)
+        viewControllers = [tab1, tab2, tab3].map { vc in
+            let nav: UINavigationController
+            if vc is AccountViewController {
+                nav = ConstrainedNavController(rootViewController: vc)
+            } else {
+                nav = UINavigationController(rootViewController: vc)
+            }
             
             /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
@@ -157,4 +164,11 @@ class MainTabBarController: UITabBarController {
      }
      */
     
+}
+
+
+class ConstrainedNavController: UINavigationController {
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
 }

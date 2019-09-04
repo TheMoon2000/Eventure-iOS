@@ -28,6 +28,13 @@ class Event {
         return formatter
     }()
     
+    let todayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "'Today' @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
     var uuid: String
     var title: String
     var location: String
@@ -54,8 +61,10 @@ class Event {
         if startTime != nil {
             if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: startTime!) {
                 return readableFormatter.string(from: startTime!)
-            } else {
+            } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: startTime!) {
                 return shortFormatter.string(from: startTime!)
+            } else {
+                return todayFormatter.string(from: startTime!)
             }
         } else {
             return "Unspecified"
