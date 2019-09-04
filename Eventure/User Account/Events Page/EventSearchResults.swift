@@ -10,8 +10,15 @@ import UIKit
 
 class EventSearchResults: UITableViewController, UISearchResultsUpdating {
     
+    private var parentVC: EventViewController!
     var allEvents = [Event]()
     var filteredEvents = [Event]()
+    
+    required init(parentVC: EventViewController) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.parentVC = parentVC
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,10 +72,23 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
                 return false
             }
             DispatchQueue.main.async {
-                print("\(self.filteredEvents.count) / \(self.allEvents.count) displayed")
+//                print("\(self.filteredEvents.count) / \(self.allEvents.count) displayed")
                 self.tableView.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
             }
         }
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        let detailPage = EventDetailPage()
+        detailPage.hidesBottomBarWhenPushed = true
+        detailPage.event = filteredEvents[indexPath.row]
+        parentVC.navigationController?.pushViewController(detailPage, animated: true)
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }

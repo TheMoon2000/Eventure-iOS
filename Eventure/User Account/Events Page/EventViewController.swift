@@ -16,7 +16,7 @@ class EventViewController: UIViewController {
     }
     
     // The search bar
-    private let searchResultTable = EventSearchResults()
+    private var searchResultTable: EventSearchResults!
     private var searchController: UISearchController!
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
@@ -43,6 +43,8 @@ class EventViewController: UIViewController {
         
         view.backgroundColor = .white
         title = "Events"
+        
+        searchResultTable = EventSearchResults(parentVC: self)
         
         // Search bar setup
                 
