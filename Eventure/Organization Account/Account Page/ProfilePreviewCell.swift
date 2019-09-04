@@ -20,7 +20,7 @@ class ProfilePreviewCell: UITableViewCell {
         
         icon = {
             let iv = UIImageView()
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = MAIN_DISABLED
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.layer.masksToBounds = true
             iv.layer.cornerRadius = 10

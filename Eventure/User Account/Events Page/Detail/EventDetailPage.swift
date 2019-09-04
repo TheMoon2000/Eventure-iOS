@@ -311,13 +311,12 @@ class EventDetailPage: UIViewController {
             self.openEditor()
         }))
         
-        alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
-            let checkin = EventCheckinOverview()
-            checkin.event = self.event
-            self.navigationController?.pushViewController(checkin, animated: true)
-        }))
-        
         if self.event.published {
+            alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
+                let checkin = EventCheckinOverview()
+                checkin.event = self.event
+                self.navigationController?.pushViewController(checkin, animated: true)
+            }))
             alert.addAction(.init(title: "Remove Event", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to permanently remove this published event. There is no going back.", preferredStyle: .alert)
                 warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
