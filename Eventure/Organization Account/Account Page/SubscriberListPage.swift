@@ -12,10 +12,7 @@ import SwiftyJSON
 
 class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    //number of rows in the only section: number of subscribers
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.subscriberDictionaryList.count
-    }
+    
     
     
     //define variables that stores all the subscribers of the club
@@ -136,7 +133,12 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {return 1}
+    //number of rows in the only section: number of subscribers
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.subscriberDictionaryList.count
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {return 2}
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {return 50}
