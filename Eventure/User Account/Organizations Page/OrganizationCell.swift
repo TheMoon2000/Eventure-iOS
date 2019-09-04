@@ -20,6 +20,7 @@ class OrganizationCell: UITableViewCell {
         
         logoImage = {
             let iv = UIImageView()
+            iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
@@ -51,16 +52,15 @@ class OrganizationCell: UITableViewCell {
     func setup(with org: Organization) {
         
         orgTitle.text = org.title
-        logoImage.image = org.logoImage
         
         if org.logoImage == nil {
+            // Set logo to default placeholder
+            logoImage.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             org.getLogoImage { orgWithLogo in
                 self.setup(with: orgWithLogo)
             }
-            // Set logo to default placeholder
-            logoImage.backgroundColor = LINE_TINT
         } else {
-            logoImage.backgroundColor = .clear
+            logoImage.image = org.logoImage
         }
     }
     

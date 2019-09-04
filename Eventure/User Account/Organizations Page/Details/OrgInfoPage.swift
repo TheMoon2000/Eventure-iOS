@@ -46,6 +46,10 @@ class OrgInfoPage: UIViewController {
         
         logoImage = {
             let iv = UIImageView(image: organization.logoImage)
+            if iv.image == nil {
+                iv.image = #imageLiteral(resourceName: "unknown").withRenderingMode(.alwaysTemplate)
+            }
+            iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
             iv.isHidden = UIScreen.main.bounds.width > UIScreen.main.bounds.height

@@ -1054,7 +1054,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.caalph.eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1077,7 +1077,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.caalph.eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_VERSION = 4.2;

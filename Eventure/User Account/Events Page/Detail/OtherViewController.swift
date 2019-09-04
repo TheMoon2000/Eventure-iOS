@@ -14,6 +14,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     var event: Event!
     var detailPage: EventDetailPage!
     
+    private var canvas: UIView!
+    
     private var hostLabel: UILabel!
     private var hostLink: UIButton!
     
@@ -25,6 +27,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     
     private var interestedLabel: UILabel!
     private var interestedText: UILabel!
+    
+    var heightConstraint: NSLayoutConstraint?
 
     required init(detailPage: EventDetailPage) {
         super.init(nibName: nil, bundle: nil)
@@ -37,14 +41,12 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             print(org)
         }
         
-        /*
+        
         canvas = {
-            let canvas = UIScrollView()
-            canvas.isScrollEnabled = false
-            
-            canvas.contentInsetAdjustmentBehavior = .always
+            let canvas = UIView()
             canvas.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(canvas)
+            canvas.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
             
             canvas.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             canvas.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
@@ -52,17 +54,17 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
             return canvas
-        }()*/
+        }()
         
         hostLabel = {
             let label = UILabel()
             label.text = "Host: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 35).isActive = true
+            label.leftAnchor.constraint(equalTo: canvas.leftAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 35).isActive = true
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
             
@@ -78,10 +80,10 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             button.setTitleColor(LINK_COLOR, for: .normal)
             button.contentHorizontalAlignment = .right
             button.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(button)
+            canvas.addSubview(button)
             
             button.leftAnchor.constraint(equalTo: hostLabel.rightAnchor, constant: 15).isActive = true
-            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            button.rightAnchor.constraint(equalTo: canvas.rightAnchor, constant: -30).isActive = true
             button.titleLabel?.topAnchor.constraint(equalTo: hostLabel.topAnchor).isActive = true
             
             button.addTarget(self, action: #selector(openOrganization), for: .touchUpInside)
@@ -95,10 +97,10 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.text = "Location: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: hostLink.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: hostLink.titleLabel!.bottomAnchor, constant: 15).isActive = true
             
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
@@ -114,7 +116,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: locationLabel.topAnchor).isActive = true
@@ -123,12 +125,13 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             return label
         }()
         
+        
         dateLabel = {
             let label = UILabel()
             label.text = "Start time: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: 15).isActive = true
@@ -147,7 +150,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: dateLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: dateLabel.topAnchor).isActive = true
@@ -162,7 +165,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.text = "Interested: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.topAnchor.constraint(equalTo: dateText.bottomAnchor, constant: 15).isActive = true
@@ -181,7 +184,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: interestedLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: interestedLabel.topAnchor).isActive = true
@@ -190,13 +193,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             return label
         }()
         
-        interestedText.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
-        
-        view.layoutIfNeeded()
-        view.layer.borderWidth = 1
-        
-        print(view.frame, view.preferredHeight(width: view.frame.width))
-        
+        interestedText.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20).isActive = true
     }
     
     @objc private func openOrganization() {
@@ -216,10 +213,28 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         super.init(coder: aDecoder)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        if heightConstraint == nil {
+            heightConstraint = detailPage.invisible.view.heightAnchor.constraint(greaterThanOrEqualToConstant: canvas.preferredHeight(width: view.frame.width))
+        } else {
+            heightConstraint?.constant = canvas.preferredHeight(width: view.frame.width)
+        }
+        heightConstraint?.isActive = true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        heightConstraint?.isActive = false
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         
+        coordinator.animate(alongsideTransition: { _ in
+            self.heightConstraint?.constant = self.canvas.preferredHeight(width: size.width)
+        }, completion: nil)
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {

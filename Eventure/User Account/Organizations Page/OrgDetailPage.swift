@@ -79,8 +79,9 @@ class OrgDetailPage: UIViewController {
             thumbNail.contentMode = .scaleAspectFit
             if thumbNail.image == nil {
                 // TODO: Replace with default logo image
-                thumbNail.backgroundColor = LINE_TINT
+                thumbNail.image = #imageLiteral(resourceName: "unknown").withRenderingMode(.alwaysTemplate)
             }
+            thumbNail.tintColor = MAIN_DISABLED
             thumbNail.translatesAutoresizingMaskIntoConstraints = false
             previewContainer.addSubview(thumbNail)
             

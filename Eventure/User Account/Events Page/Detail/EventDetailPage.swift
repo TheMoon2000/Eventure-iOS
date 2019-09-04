@@ -161,15 +161,6 @@ class EventDetailPage: UIViewController {
         view.layoutIfNeeded()
         
         tabStrip = {
-            let tabStrip = EventDetailTabStrip(detailPage: self)
-            tabStrip.view.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(tabStrip.view)
-            
-            tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-            tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
-            
-            tabStrip.view.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
             
             let vc = AboutViewController(detailPage: self)
             vc.view.isHidden = true
@@ -179,6 +170,16 @@ class EventDetailPage: UIViewController {
             vc.view.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
             
             invisible = vc
+            
+            let tabStrip = EventDetailTabStrip(detailPage: self)
+            tabStrip.view.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(tabStrip.view)
+            
+            tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
+            
+            tabStrip.view.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
             
             tabStrip.view.heightAnchor.constraint(equalTo: vc.view.heightAnchor, constant: 70).isActive = true
             

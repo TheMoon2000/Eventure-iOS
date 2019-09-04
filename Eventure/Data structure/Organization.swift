@@ -39,7 +39,7 @@ class Organization: CustomStringConvertible {
     var contactEmail: String { didSet { save() } }
     var orgDescription: String { didSet { save() } }
     
-    var saveEnabled = false
+    var saveEnabled: Bool = false
     
     static var empty: Organization {
         return Organization(title: "")
@@ -156,6 +156,7 @@ class Organization: CustomStringConvertible {
     /// Short-cut for writeToFile().
     func save() {
         if !saveEnabled { return }
+        if self.id != Organization.current?.id { return }
         
         Organization.needsUpload = true
         
