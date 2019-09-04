@@ -218,8 +218,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-
-    
     //create a cell for each table view row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -229,6 +227,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         case (0, 0):
             let profileCell = ProfilePreviewCell()
+            profileCell.icon.isUserInteractionEnabled = true
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
             if let count = User.current?.numberOfAttendedEvents {
                 let noun = count == 1 ? "event" : "events"
@@ -336,7 +336,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //full screen profile picture when tapped
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
-        let fullScreen = ImageFullScreenPage(image: profilePicture)
+        let fullScreen = ImageFullScreenPage(image: User.current!.profilePicture!)
         present(fullScreen, animated: true, completion: nil)
     }
     
