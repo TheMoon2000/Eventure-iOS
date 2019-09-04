@@ -29,6 +29,9 @@ class ProfilePreviewCell: UITableViewCell {
             iv.widthAnchor.constraint(equalToConstant: 60).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            iv.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 15).isActive = true
+            iv.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -15).isActive = true
+            
             
             return iv
         }()

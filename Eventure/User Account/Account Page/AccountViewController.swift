@@ -224,7 +224,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         case (0, 0):
             let profileCell = ProfilePreviewCell()
             profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
-            profileCell.subtitleLabel.text = User.current!.email
+            if let count = User.current?.numberOfAttendedEvents {
+                let noun = count == 1 ? "event" : "events"
+                profileCell.subtitleLabel.text = "\(count) " + noun + " attended"
+            } else {
+                profileCell.subtitleLabel.text = "Log in to access more features."
+            }
             if let image = User.current?.profilePicture {
                 profileCell.icon.image = image
             } else {
