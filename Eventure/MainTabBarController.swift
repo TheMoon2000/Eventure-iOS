@@ -137,6 +137,7 @@ class MainTabBarController: UITabBarController {
         checkForNotices()
         
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
+            print(type)
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
                 Organization.current = current
                 if Organization.current != nil { Organization.syncFromServer() }
@@ -147,6 +148,8 @@ class MainTabBarController: UITabBarController {
                 if User.current != nil { User.syncFromServer() }
                 Organization.current = nil
                 openScreen(isUserAccount: true)
+            } else {
+                openScreen()
             }
         } else {
             // Login as guest
