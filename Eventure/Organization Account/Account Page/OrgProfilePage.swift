@@ -22,6 +22,9 @@ class OrgProfilePage: UITableViewController {
         super.viewDidLoad()
         
         title = "Organization Profile"
+        
+        navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
+        
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInset.top = 5
@@ -74,8 +77,7 @@ class OrgProfilePage: UITableViewController {
             
             let emailCell = TextFieldCell(parentVC: self)
             emailCell.textfield.placeholder = "Contact Email"
-            emailCell.icon.image = #imageLiteral(resourceName: "back")
-            emailCell.linkDetectionEnabled = true
+            emailCell.icon.image = #imageLiteral(resourceName: "email")
             emailCell.textfield.keyboardType = .emailAddress
             emailCell.textfield.autocapitalizationType = .none
             emailCell.textfield.enablesReturnKeyAutomatically = true
@@ -125,7 +127,7 @@ class OrgProfilePage: UITableViewController {
         let section3: [UITableViewCell] = {
             var section = [UITableViewCell]()
             let descriptionCell = SettingsItemCell()
-            descriptionCell.icon.image = #imageLiteral(resourceName: "qq")
+            descriptionCell.icon.image = #imageLiteral(resourceName: "edit")
             descriptionCell.titleLabel.text = "Organization Description"
             
             section.append(descriptionCell)
@@ -205,7 +207,7 @@ class OrgProfilePage: UITableViewController {
                     print("place2")
                 }
             } else {
-                let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your profile information could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
+                let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your organization's settings could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
                 alert.addAction(.init(title: "I Understand", style: .cancel))
                 print("place3")
                 DispatchQueue.main.async {
@@ -291,9 +293,10 @@ class OrgProfilePage: UITableViewController {
         case [2, 0]:
             //This is the case when you hit Tags cell: org changing their tags
             let tagPicker = TagPickerView()
-            tagPicker.customTitle = "Tags that describes your organization"
-            tagPicker.customSubtitle = "Pick 1-3 tags"
+            tagPicker.customTitle = "Choose 1 - 3 tags that best describe your organization."
+            tagPicker.customSubtitle = ""
             tagPicker.maxPicks = 3
+            tagPicker.selectedTags = Organization.current!.tags
             tagPicker.customButtonTitle = "Done"
             
             tagPicker.customContinueMethod = { tagPicker in
@@ -325,16 +328,65 @@ class OrgProfilePage: UITableViewController {
                 tagPicker.spinner.startAnimating()
                 
                 Organization.current!.tags = tagPicker.selectedTags
-                
+                self.uploadTags()
             }
+            
+            tagPicker.customDisappearHandler = { tags in
+                Organization.current!.tags = tags
+                self.uploadTags()
+            }
+            
             //push the TagPicker Page
             tagPicker.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(tagPicker, animated: true)
             
         default:
             break
+        }
     }
-}
+        
+        
+    func uploadTags() {
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/UpdateOrgInfo",
+                           parameters: ["id": Organization.current!.id])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        request.httpMethod = "POST"
+        
+        request.httpBody = try? JSON(dictionaryLiteral: ("Tags", Organization.current!.tags.description)).rawData()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                print("tags were successfully uploaded")
+                break
+            default:
+                let alert = UIAlertController(title: "Could not update tags", message: msg, preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .cancel))
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+        
+        task.resume()
+    }
     
     
     

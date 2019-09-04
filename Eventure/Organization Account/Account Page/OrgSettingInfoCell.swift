@@ -63,7 +63,7 @@ class OrgSettingInfoCell: UITableViewCell {
             label.textAlignment = .right
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo:function.rightAnchor, constant: 100).isActive = true
+            label.leftAnchor.constraint(equalTo: function.rightAnchor, constant: 100).isActive = true
             label.rightAnchor.constraint(equalTo: rightAnchor, constant: -40).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor,constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
@@ -77,14 +77,14 @@ class OrgSettingInfoCell: UITableViewCell {
         switch (sectionNum, rowNum) {
         case (0, 0):
             functionImage.image = #imageLiteral(resourceName: "windmill")
-            sideLabel.text = Organization.current?.title
+            sideLabel.text = ""
             function.text = "Organization Title"
         case (0, 1):
             functionImage.image = #imageLiteral(resourceName: "mac")
             function.text = "Password"
-            sideLabel.text = "•••••••"
+            sideLabel.text = "••••••••"
         case (0, 2):
-            functionImage.image = #imageLiteral(resourceName: "comments")
+            functionImage.image = #imageLiteral(resourceName: "email")
             function.text = "Contact Email"
         default:
             print(IndexPath())

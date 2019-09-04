@@ -12,14 +12,6 @@ import UIKit
 
 class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    //return cell
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell") as! OrgSettingInfoCell
-        
-        cell.setup(sectionNum: indexPath.section, rowNum: indexPath.row, type: "")
-        return cell
-    }
-    
     
     private var myTableView: UITableView!
     private var spinner: UIActivityIndicatorView!
@@ -33,7 +25,7 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
         title = "Manage Account"
         
         myTableView = UITableView()
-        //TODO:
+        myTableView.contentInset.top = 10
         myTableView.register(OrgSettingInfoCell.classForCoder(), forCellReuseIdentifier: "MyCell")
         myTableView.dataSource = self
         myTableView.delegate = self
@@ -77,15 +69,27 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
         }()
 
     
-}
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         myTableView.reloadData()
-}
+    }
+    
+    
+    // MARK: - Table view setup
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
-}
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell") as! OrgSettingInfoCell
+        
+        cell.setup(sectionNum: indexPath.section, rowNum: indexPath.row, type: "")
+        return cell
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 { //if the user tries to change the name
@@ -112,11 +116,12 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
         } else if indexPath.row == 2 {
             pushToModifyPage(type: .contactEmail)
         }
-}
+    }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 55.0
-}
+    }
+    
     func pushToModifyPage(type: Types) {
         let modifyAccount: GenericOneFieldPage
         if type == .title {
@@ -133,7 +138,7 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
             let url = URL.with(base: API_BASE_URL,
                                API_Name: "account/UpdateOrgInfo",
                                parameters: [
-                                "id": String(Organization.current!.id)
+                                "id": Organization.current!.id
                 ])!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"

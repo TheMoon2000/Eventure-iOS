@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     private var myTableView: UITableView!
     
@@ -20,7 +20,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         
         //Do any additional setup after loading the view.
-        title = Organization.waitingForSync ? "Syncing..." : "Org Settings"
+        title = Organization.waitingForSync ? "Syncing..." : "Dashboard"
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         myTableView = UITableView(frame: .zero, style: .grouped)
@@ -57,10 +57,10 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     /// New account data has been synced from the server and are reflected in the new `Organization.current` instance. Make appropriate changes to the dashboard page accordingly, e.g. reload certain row cells.
     @objc private func orgUpdated() {
         DispatchQueue.main.async {
-            self.title = "Org Settings"
-            self.navigationController?.navigationBar.setNeedsDisplay()
+            self.navigationItem.title = "Dashboard"
+            self.myTableView.reloadData()
             UIView.performWithoutAnimation {
-                print("function incomplete")
+                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
             }
         }
     }
@@ -73,27 +73,30 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         //Write for cases for all cells on the page
         switch (indexPath.section, indexPath.row) {
             
+        case (0, 0):
+            let image = UIImagePickerController()
+            image.delegate = self
+            image.sourceType = .photoLibrary
+            image.allowsEditing = true
+            self.present(image, animated: true)
+            
         case (1,0): //if the user tries to change account information
             let orgInfo = OrgSettingInfoPage()
             orgInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgInfo, animated: true)
         case (1,1):
-            print(indexPath)
-
             let orgProfile = OrgProfilePage()
             orgProfile.parentVC = self
             orgProfile.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgProfile, animated: true)
         case (2, 0):
-            let orgEvent = OrgEventBriefPage()
-            orgEvent.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(orgEvent, animated: true)
+            let alert = UIAlertController(title: "Feature unavailable", message: "We are still working on this feature. Please wait a few weeks for our next release.", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            present(alert, animated: true)
         case (2, 1):
-            print(indexPath)
-            //commented for TEST
-//            let subscriber = SubscriberListPage()
-//            subscriber.hidesBottomBarWhenPushed = true
-//            navigationController?.pushViewController(subscriber, animated:true)
+            let subscriber = SubscriberListPage()
+            subscriber.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(subscriber, animated:true)
         case(3, 0):
             let aboutPage = AboutEventure()
             aboutPage.hidesBottomBarWhenPushed = true
@@ -124,31 +127,35 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         let cell = SettingsItemCell()
         
         switch (indexPath.section, indexPath.row) {
-        
-        
-            
         case (0, 0):
-            cell.icon.image = Organization.current?.logoImage
-            if cell.icon.image == nil {
-                cell.icon.image = #imageLiteral(resourceName: "organization")
+            let profileCell = ProfilePreviewCell()
+            profileCell.titleLabel.text = Organization.current!.title
+            if let logo = Organization.current?.logoImage {
+                profileCell.icon.image = logo
+            } else {
+                profileCell.icon.image = #imageLiteral(resourceName: "organization")
+                Organization.current?.getLogoImage { orgWithImage in
+                    profileCell.icon.image = orgWithImage.logoImage
+                }
             }
-            cell.imageWidthConstraint.constant = 65
-            cell.heightConstraint.constant = 100
-            cell.spacingConstraint.constant = 18
-            cell.titleLabel.text = "Organization Logo"
+            let noun = Organization.current!.numberOfEvents == 1 ? "event" : "events"
+            profileCell.subtitleLabel.text = "\(Organization.current!.numberOfEvents) " + noun
+            
+            return profileCell
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "resume")
             cell.titleLabel.text = "Manage Account"
         case (1, 1):
-            cell.icon.image = #imageLiteral(resourceName: "name")
+            cell.icon.image = #imageLiteral(resourceName: "organization_profile")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
-            cell.icon.image = #imageLiteral(resourceName: "tag")
-            cell.titleLabel.text = "Our Events"
+            cell.icon.image = #imageLiteral(resourceName: "stats")
+            cell.titleLabel.text = "Event Statistics"
         case (2, 1):
-            cell.icon.image = #imageLiteral(resourceName: "surprised")
+            cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Our Subscribers"
+            cell.valueLabel.text = "\(Organization.current!.subscribers.count)"
         case(3, 0):
             let cell = UITableViewCell()
             cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
@@ -198,7 +205,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         return [
             "",
             "Organization Information",
-            "Event and Subscriptions",
+            "Events and Subscriptions",
             nil
             ][section]
     }
@@ -214,6 +221,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     //full screen profile picture when tapped
+    
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
         let fullScreen = ImageFullScreenPage(image: profilePicture)
         present(fullScreen, animated: true, completion: nil)
@@ -229,7 +237,57 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         return currentImageView
     }
     
-    
-    
-    
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            let url = URL(string: API_BASE_URL + "account/UpdateLogo")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = ["id": String(Organization.current!.id)]
+            
+            var fileData = [String : Data]()
+            fileData["logo"] = image.fixedOrientation().sizeDown().pngData()
+            
+            request.addMultipartBody(parameters: parameters as! [String : String],
+                                     files: fileData)
+            request.addAuthHeader()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self)
+                    }
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.myTableView.reloadData()
+                }
+                
+                let msg = String(data: data!, encoding: .utf8)!
+                switch msg {
+                case INTERNAL_ERROR:
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                    }
+                case "success":
+                    print("update successful")
+                    Organization.current!.logoImage = image
+                default:
+                    let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
+                    warning.message = msg
+                    DispatchQueue.main.async {
+                        self.present(warning, animated: true, completion: nil)
+                    }
+                }
+            }
+            
+            task.resume()
+        } else {
+            
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
 }

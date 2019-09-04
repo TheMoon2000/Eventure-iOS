@@ -21,22 +21,23 @@ class Organization: CustomStringConvertible {
         }
     }
     
-    var id: String
-    var title: String
-    var members = [Int: MemberRole]()
-    var password_MD5: String
-    var active: Bool
-    var dateRegistered: String
-    var logoImage: UIImage?
+    let id: String
+    var title: String { didSet { save() } }
+    var members = [Int: MemberRole]() { didSet { save() } }
+    var password_MD5: String { didSet { save() } }
+    var active: Bool { didSet { save() } }
+    var dateRegistered: String { didSet { save() } }
+    var logoImage: UIImage? { didSet { save() } }
     var hasLogo: Bool
-    var subscribers = Set<Int>()
+    var subscribers = Set<Int>() { didSet { save() } }
+    var numberOfEvents = 0
     
-    //Profile Information
-    var contactName: String
-    var tags = Set<String>()
-    var website: String
-    var contactEmail: String
-    var orgDescription: String
+    // Profile Information
+    var contactName: String { didSet { save() } }
+    var tags = Set<String>() { didSet { save() } }
+    var website: String { didSet { save() } }
+    var contactEmail: String { didSet { save() } }
+    var orgDescription: String { didSet { save() } }
     
     var saveEnabled = false
     
@@ -115,12 +116,15 @@ class Organization: CustomStringConvertible {
         active = (dictionary["Active"]?.int ?? 1) == 1
         dateRegistered = dictionary["Date registered"]?.string ?? ""
         hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
+        numberOfEvents = dictionary["# of events"]?.int ?? 0
         
         if let subscribers_raw = dictionary["Subscribers"]?.string {
             if let subArray = JSON(parseJSON: subscribers_raw).arrayObject as? [Int] {
                 subscribers = Set(subArray)
             }
         }
+        
+        saveEnabled = true
     }
     
     var description: String {
@@ -149,6 +153,19 @@ class Organization: CustomStringConvertible {
         return nil
     }
     
+    /// Short-cut for writeToFile().
+    func save() {
+        if !saveEnabled { return }
+        
+        Organization.needsUpload = true
+        
+        if writeToFile(path: CURRENT_USER_PATH) == false {
+            print("WARNING: cannot write organization to \(CURRENT_USER_PATH)")
+        } else {
+            print("successfully wrote organization to \(CURRENT_USER_PATH)")
+        }
+    }
+    
     func writeToFile(path: String) -> Bool {
         var json = JSON()
         json.dictionaryObject?["ID"] = self.id
@@ -171,6 +188,9 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Active"] = self.active ? 1 : 0
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
+        json.dictionaryObject?["# of events"] = self.numberOfEvents
+        json.dictionaryObject?["Subscribers"] = self.subscribers.description
+        
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         

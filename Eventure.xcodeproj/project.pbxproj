@@ -112,6 +112,8 @@
 		EB944582231F322E00631D8E /* OrgSettingInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */; };
 		EB944583231F322E00631D8E /* SubscriberListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457E231F322E00631D8E /* SubscriberListPage.swift */; };
 		EB944584231F322E00631D8E /* OrgEventBriefPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */; };
+		EB944586231F6E8F00631D8E /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB944585231F6E8F00631D8E /* SubscribersCell.swift */; };
+		EBE127E0231FB1DD006F7CFA /* ProfilePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE127DF231FB1DD006F7CFA /* ProfilePreviewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -240,6 +242,8 @@
 		EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgSettingInfoPage.swift; sourceTree = "<group>"; };
 		EB94457E231F322E00631D8E /* SubscriberListPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriberListPage.swift; sourceTree = "<group>"; };
 		EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgEventBriefPage.swift; sourceTree = "<group>"; };
+		EB944585231F6E8F00631D8E /* SubscribersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribersCell.swift; sourceTree = "<group>"; };
+		EBE127DF231FB1DD006F7CFA /* ProfilePreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePreviewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -505,8 +509,10 @@
 			isa = PBXGroup;
 			children = (
 				EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */,
+				EBE127DF231FB1DD006F7CFA /* ProfilePreviewCell.swift */,
 				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
 				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
+				EB944585231F6E8F00631D8E /* SubscribersCell.swift */,
 				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
 				CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */,
@@ -824,10 +830,12 @@
 				CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
+				EB944586231F6E8F00631D8E /* SubscribersCell.swift in Sources */,
 				677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */,
 				CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */,
 				CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */,
 				CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */,
+				EBE127E0231FB1DD006F7CFA /* ProfilePreviewCell.swift in Sources */,
 				677A8CAC231DA132007CB04F /* InterestedEvents.swift in Sources */,
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
