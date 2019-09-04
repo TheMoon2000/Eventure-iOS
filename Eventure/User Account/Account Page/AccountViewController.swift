@@ -9,7 +9,7 @@
 import SwiftyJSON
 import UIKit
 
-class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
     
     private var myTableView: UITableView!
     
@@ -77,6 +77,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         switch (indexPath.section, indexPath.row) {
+        case (0, 0):
+            let image = UIImagePickerController()
+            image.delegate = self
+            image.sourceType = .photoLibrary
+            image.allowsEditing = true
+            self.present(image, animated: true)
             
         case (1, 0): // if the user tries to change account information
             let personalInfo = PersonalInfoPage()
@@ -355,5 +361,57 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         alert.addAction(UIAlertAction(title: "No", style: .cancel))
         self.present(alert, animated: true)
     }
+    
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            let url = URL(string: API_BASE_URL + "account/UpdateProfilePicture")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = ["userId": String(User.current!.uuid)]
+            print(User.current!.uuid)
+            
+            var fileData = [String : Data]()
+            fileData["picture"] = image.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.6)
+            
+            request.addMultipartBody(parameters: parameters as! [String : String],
+                                     files: fileData)
+            request.addAuthHeader()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+            
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self)
+                    }
+                    return
+                }
+                
+                let msg = String(data: data!, encoding: .utf8)!
+                switch msg {
+                case INTERNAL_ERROR:
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                    }
+                case "success":
+                    print("update successful")
+                    User.current!.profilePicture = image
+                default:
+                    let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
+                    warning.message = msg
+                    DispatchQueue.main.async {
+                        self.present(warning, animated: true, completion: nil)
+                    }
+                }
+            }
+            
+            task.resume()
+        } else {
+            
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
+
     
 }
