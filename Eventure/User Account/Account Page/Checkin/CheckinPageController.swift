@@ -113,6 +113,7 @@ class CheckinPageController: UIPageViewController {
     
     func flipPage() {
         let vc = CheckinTable(event: event, sheet: sheetInfo!)
+        navigationItem.title = ""
         self.setViewControllers([vc], direction: .forward, animated: true)
     }
     

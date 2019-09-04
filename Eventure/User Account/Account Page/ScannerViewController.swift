@@ -38,6 +38,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         super.viewDidLoad()
         
         title = "Scan Code"
+        view.backgroundColor = .white
         navigationItem.rightBarButtonItem = .init(title: "Album", style: .plain, target: self, action: #selector(pickLocalImage))
         
         setupViews()

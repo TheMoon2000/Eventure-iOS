@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TOCropViewController
 
 class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -97,12 +98,12 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         }
         
         let picker = UIImagePickerController()
-        picker.sourceType = .savedPhotosAlbum
-        picker.allowsEditing = true
+        picker.sourceType = .photoLibrary
         picker.delegate = self
         parentVC.present(picker, animated: true, completion: nil)
     }
     
+    /*
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         logo.image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         logo.backgroundColor = nil
@@ -110,6 +111,20 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         logo.layer.borderWidth = 0
         chooseImageHandler?(logo.image?.fixedOrientation())
         picker.dismiss(animated: true, completion: nil)
+    }*/
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        
+        let cropper = TOCropViewController(image: image)
+        cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
+        cropper.aspectRatioPreset = .presetSquare
+        cropper.aspectRatioLockEnabled = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
     }
     
     @objc private func clearImage() {
@@ -143,4 +158,18 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         super.init(coder: aDecoder)
     }
 
+}
+
+
+extension ChooseImageCell: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        logo.image = image.fixedOrientation()
+        logo.backgroundColor = nil
+        clearButton.isHidden = false
+        logo.layer.borderWidth = 0
+        
+        chooseImageHandler?(logo.image!)
+        parentVC.dismiss(animated: true, completion: nil)
+    }
 }

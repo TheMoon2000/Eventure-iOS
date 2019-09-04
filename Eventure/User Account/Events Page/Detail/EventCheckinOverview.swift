@@ -15,6 +15,7 @@ class EventCheckinOverview: UIViewController {
     private var titleLabel: UILabel!
     private var subtitleLabel: UILabel!
     private var qrCode: UIImageView!
+    private var eventName: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,7 +63,7 @@ class EventCheckinOverview: UIViewController {
             let iv = UIImageView(image: generateQRCode(from: code))
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.isUserInteractionEnabled = true
-            iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))
+//            iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))
             view.addSubview(iv)
             
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
@@ -74,6 +75,22 @@ class EventCheckinOverview: UIViewController {
             
             
             return iv
+        }()
+        
+        eventName = {
+            let label = UILabel()
+            label.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: COMPACT_STYLE)
+            label.numberOfLines = 5
+            label.textColor = .init(white: 0.5, alpha: 1)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15).isActive = true
+            
+            return label
         }()
     }
     
@@ -139,6 +156,14 @@ class EventCheckinOverview: UIViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
     }
     
 }

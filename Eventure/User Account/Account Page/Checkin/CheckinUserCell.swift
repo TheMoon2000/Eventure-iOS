@@ -105,8 +105,9 @@ class CheckinUserCell: UITableViewCell {
     
     func setup(registrant: Registrant) {
         self.registrant = registrant
-        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + registrant.name : registrant.name
-        majorLabel.text = registrant.major
+        let name = registrant.name.isEmpty ? User.current!.displayedName : registrant.name
+        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + name : name
+        majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {

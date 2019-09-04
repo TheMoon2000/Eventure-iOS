@@ -8,6 +8,7 @@
 
 import SwiftyJSON
 import UIKit
+import TOCropViewController
 
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
     
@@ -72,17 +73,27 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         if indexPath.section != 4 {
             guard User.current != nil else {
                 popLoginReminder()
-                return
+            return
             }
         }
         
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
-            let image = UIImagePickerController()
-            image.delegate = self
-            image.sourceType = .photoLibrary
-            image.allowsEditing = true
-            self.present(image, animated: true)
+            let alert = UIAlertController(title: "Update Profile Picture", message: nil, preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .photoLibrary
+                self.present(picker, animated: true)
+            }))
+            alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .camera
+                self.present(picker, animated: true)
+            }))
+            present(alert, animated: true)
             
         case (1, 0): // if the user tries to change account information
             let personalInfo = PersonalInfoPage()
@@ -367,59 +378,40 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            let url = URL(string: API_BASE_URL + "account/UpdateProfilePicture")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            let parameters = ["userId": String(User.current!.uuid)]
-            print(User.current!.uuid)
-            
-            var fileData = [String : Data]()
-            fileData["picture"] = image.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.6)
-            
-            request.addMultipartBody(parameters: parameters as [String : String],
-                                     files: fileData)
-            request.addAuthHeader()
-            
-            let task = CUSTOM_SESSION.dataTask(with: request) {
-                data, response, error in
-            
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        internetUnavailableError(vc: self)
-                    }
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.myTableView.reloadData()
-                }
-                
-                let msg = String(data: data!, encoding: .utf8)!
-                switch msg {
-                case INTERNAL_ERROR:
-                    DispatchQueue.main.async {
-                        serverMaintenanceError(vc: self)
-                    }
-                case "success":
-                    print("update successful")
-                    User.current!.profilePicture = image
-                default:
-                    let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
-                    warning.message = msg
-                    DispatchQueue.main.async {
-                        self.present(warning, animated: true, completion: nil)
-                    }
-                }
-            }
-            
-            task.resume()
-        } else {
-            
+        
+        guard let original = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            self.dismiss(animated: true, completion: nil)
+            return
         }
-        self.dismiss(animated: true, completion: nil)
+        
+        let cropper = TOCropViewController(image: original)
+        cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
+        cropper.aspectRatioPreset = .presetSquare
+        cropper.aspectRatioLockEnabled = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
     }
-
     
 }
+
+extension AccountViewController: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        let formatted = image.fixedOrientation().sizeDown()
+
+        User.current?.uploadProfilePicture(new: formatted) { success in
+            if !success {
+                let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
+                self.present(warning, animated: true, completion: nil)
+            }
+            self.myTableView.reloadRows(at: [[0, 0]], with: .none)
+        }
+        
+        self.myTableView.reloadRows(at: [[0, 0]], with: .none)
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+

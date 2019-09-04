@@ -131,7 +131,7 @@ let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
     config.urlCache = nil
-    config.timeoutIntervalForRequest = 8.0
+    config.timeoutIntervalForRequest = 20.0
     return URLSession(configuration: config)
 }()
 

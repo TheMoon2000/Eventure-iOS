@@ -82,6 +82,8 @@ class OrganizationsViewController: UIViewController {
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
             
+            tab.addTarget(self, action: #selector(selectionChanged), for: .valueChanged)
+            
             return tab
         }()
         
@@ -149,6 +151,10 @@ class OrganizationsViewController: UIViewController {
         }()
         
         loadOrganizations()
+    }
+    
+    @objc private func selectionChanged() {
+        updateFiltered()
     }
     
     
