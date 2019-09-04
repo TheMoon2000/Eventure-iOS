@@ -8,6 +8,7 @@
 
 import UIKit
 import TTTAttributedLabel
+import SafariServices
 
 class OrgEventCell: UICollectionViewCell {
     
@@ -230,7 +231,8 @@ extension OrgEventCell: TTTAttributedLabelDelegate {
         let alert = UIAlertController(title: "Open Link?", message: "You will be redirected to " + url.absoluteString, preferredStyle: .alert)
         alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Go", style: .default, handler: { action in
-            UIApplication.shared.open(url, options: [:])
+            let vc = SFSafariViewController(url: url)
+            self.parentVC?.present(vc, animated: true)
         }))
         parentVC?.present(alert, animated: true, completion: nil)
     }

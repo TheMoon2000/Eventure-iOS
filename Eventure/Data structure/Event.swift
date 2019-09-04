@@ -24,8 +24,8 @@ class Event {
     var hasVisual = false
     var hostID: String
     var hostTitle: String
-    var interestedList = [Int]()
-    var favoriteList = [Int]()
+    var interested = Set<Int>()
+    var favorited = Set<Int>()
     var tags = Set<String>()
     var capacity = 0
     var lastModified: Date?
@@ -116,6 +116,18 @@ class Event {
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
         capacity = dictionary["Capacity"]?.int ?? 0
+        
+        if let int_raw = dictionary["Interested"]?.string {
+            if let intArray = JSON(parseJSON: int_raw).arrayObject as? [Int] {
+                interested = Set(intArray)
+            }
+        }
+        
+        if let fav_raw = dictionary["Favorites"]?.string {
+            if let favArray = JSON(parseJSON: fav_raw).arrayObject as? [Int] {
+                favorited = Set(favArray)
+            }
+        }
        
         if let dateString = dictionary["Last modified"]?.string {
             lastModified = DATE_FORMATTER.date(from: dateString)

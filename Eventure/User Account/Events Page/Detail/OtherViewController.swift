@@ -14,12 +14,17 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     var event: Event!
     var detailPage: EventDetailPage!
     
-    private var canvas: UIScrollView!
     private var hostLabel: UILabel!
     private var hostLink: UIButton!
     
     private var locationLabel: UILabel!
     private var locationText: UILabel!
+    
+    private var dateLabel: UILabel!
+    private var dateText: UILabel!
+    
+    private var interestedLabel: UILabel!
+    private var interestedText: UILabel!
 
     required init(detailPage: EventDetailPage) {
         super.init(nibName: nil, bundle: nil)
@@ -32,9 +37,11 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             print(org)
         }
         
+        /*
         canvas = {
             let canvas = UIScrollView()
-            canvas.alwaysBounceVertical = true
+            canvas.isScrollEnabled = false
+            
             canvas.contentInsetAdjustmentBehavior = .always
             canvas.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(canvas)
@@ -45,18 +52,19 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
             return canvas
-        }()
-        
+        }()*/
         
         hostLabel = {
             let label = UILabel()
             label.text = "Host: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(label)
+            view.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 35).isActive = true
+            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 35).isActive = true
+            label.layoutIfNeeded()
+            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
             
             return label
         }()
@@ -70,10 +78,10 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             button.setTitleColor(LINK_COLOR, for: .normal)
             button.contentHorizontalAlignment = .right
             button.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(button)
+            view.addSubview(button)
             
             button.leftAnchor.constraint(equalTo: hostLabel.rightAnchor, constant: 15).isActive = true
-            button.titleLabel?.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             button.titleLabel?.topAnchor.constraint(equalTo: hostLabel.topAnchor).isActive = true
             
             button.addTarget(self, action: #selector(openOrganization), for: .touchUpInside)
@@ -81,12 +89,13 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             return button
         }()
         
+        
         locationLabel = {
             let label = UILabel()
             label.text = "Location: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(label)
+            view.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.topAnchor.constraint(equalTo: hostLink.bottomAnchor, constant: 15).isActive = true
@@ -105,14 +114,88 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(label)
+            view.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: locationLabel.leftAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: locationLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: hostLink.titleLabel!.rightAnchor).isActive = true
             
             return label
         }()
+        
+        dateLabel = {
+            let label = UILabel()
+            label.text = "Start time: "
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: 15).isActive = true
+            
+            label.layoutIfNeeded()
+            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            
+            return label
+        }()
+        
+        dateText = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.numberOfLines = 0
+            label.text = event.startTime?.readableString()
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: dateLabel.rightAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: dateLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
+            
+            return label
+        }()
+        
+        
+        interestedLabel = {
+            let label = UILabel()
+            label.text = "Interested: "
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: dateText.bottomAnchor, constant: 15).isActive = true
+            
+            label.layoutIfNeeded()
+            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            
+            return label
+        }()
+        
+        interestedText = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.numberOfLines = 0
+            label.text = String(event.interested.count)
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: interestedLabel.rightAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: interestedLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: dateText.rightAnchor).isActive = true
+            
+            return label
+        }()
+        
+        interestedText.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+        
+        view.layoutIfNeeded()
+        view.layer.borderWidth = 1
+        
+        print(view.frame, view.preferredHeight(width: view.frame.width))
         
     }
     
