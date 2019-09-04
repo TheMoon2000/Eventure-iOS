@@ -21,20 +21,24 @@ class Organization: CustomStringConvertible {
         }
     }
     
-    var id: String
-    var title: String
-    var orgDescription: String
-    var website: String
-    var members = [Int: MemberRole]()
-    var password_MD5: String
-    var tags = Set<String>()
-    var contactName: String
-    var contactEmail: String
-    var active: Bool
-    var dateRegistered: String
-    var logoImage: UIImage?
+    let id: String
+    var title: String { didSet { save() } }
+    var members = [Int: MemberRole]() { didSet { save() } }
+    var password_MD5: String { didSet { save() } }
+    var active: Bool { didSet { save() } }
+    var dateRegistered: String { didSet { save() } }
+    var logoImage: UIImage? { didSet { save() } }
     var hasLogo: Bool
-    var subscribers = Set<Int>()
+    var subscribers = Set<Int>() { didSet { save() } }
+    
+    // Profile Information
+    var contactName: String { didSet { save() } }
+    var tags = Set<String>() { didSet { save() } }
+    var website: String { didSet { save() } }
+    var contactEmail: String { didSet { save() } }
+    var orgDescription: String { didSet { save() } }
+    
+    var saveEnabled = false
     
     static var empty: Organization {
         return Organization(title: "")
@@ -45,6 +49,29 @@ class Organization: CustomStringConvertible {
     
     /// Whether the changes made locally are yet to be uploaded.
     static var needsUpload = false
+    
+    var profileStatus: String {
+        var allEmpty = true
+        for item in [website, contactEmail, orgDescription, contactName] {
+            allEmpty = allEmpty && item.isEmpty
+        }
+        allEmpty = allEmpty && tags.isEmpty
+        
+        if allEmpty { return "Not Started" }
+        
+        var filledRequirements = true
+        for item in [contactName] {
+            filledRequirements = filledRequirements && !item.isEmpty
+        }
+        allEmpty = allEmpty && tags.isEmpty
+        
+        if filledRequirements {
+            return "Completed"
+        } else {
+            return "Incomplete"
+        }
+        
+    }
     
     init(title: String) {
         id = title
@@ -94,6 +121,8 @@ class Organization: CustomStringConvertible {
                 subscribers = Set(subArray)
             }
         }
+        
+        saveEnabled = true
     }
     
     var description: String {
@@ -122,6 +151,19 @@ class Organization: CustomStringConvertible {
         return nil
     }
     
+    /// Short-cut for writeToFile().
+    func save() {
+        if !saveEnabled { return }
+        
+        Organization.needsUpload = true
+        
+        if writeToFile(path: CURRENT_USER_PATH) == false {
+            print("WARNING: cannot write organization to \(CURRENT_USER_PATH)")
+        } else {
+            print("successfully wrote organization to \(CURRENT_USER_PATH)")
+        }
+    }
+    
     func writeToFile(path: String) -> Bool {
         var json = JSON()
         json.dictionaryObject?["ID"] = self.id
@@ -144,11 +186,39 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Active"] = self.active ? 1 : 0
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
+        json.dictionaryObject?["Subscribers"] = self.subscribers.description
+        
         
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
         let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
         return NSKeyedArchiver.archiveRootObject(encrypted, toFile: CURRENT_USER_PATH)
+    }
+    
+    /// Load the logo image for an organization.
+    func getLogoImage(_ handler: ((Organization) -> ())?) {
+        if !hasLogo || logoImage != nil { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetLogo",
+                           parameters: ["id": id])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.logoImage = UIImage(data: data!)
+            DispatchQueue.main.async {
+                handler?(self)
+            }
+        }
+        
+        task.resume()
     }
     
     
@@ -192,5 +262,16 @@ extension Organization {
     enum MemberRole: String {
         case member = "Member"
         case president = "President"
+    }
+}
+
+
+extension Organization: Hashable {
+    static func == (lhs: Organization, rhs: Organization) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

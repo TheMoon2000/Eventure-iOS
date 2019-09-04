@@ -7,6 +7,7 @@ target 'Eventure' do
   pod 'Down'
   pod 'XLPagerTabStrip'
   pod 'TTTAttributedLabel'
+  pod 'TOCropViewController'
 end
 
 target 'EventureAPITests' do

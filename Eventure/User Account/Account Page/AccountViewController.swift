@@ -255,10 +255,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"
         case (3, 1):
-            cell.icon.image = #imageLiteral(resourceName: "star_filled")
+            cell.icon.image = #imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = INTEREST_COLOR
             cell.titleLabel.text = "Interested Events"
         case (3, 2):
-            cell.icon.image = #imageLiteral(resourceName: "tag")
+            cell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = LINK_COLOR
             cell.titleLabel.text = "My Tags"
         case (4, 0):
             let cell = UITableViewCell()

@@ -23,6 +23,12 @@ class CheckinTable: UIViewController {
     private var checkinSubtitle: UILabel!
     private var checkinTable: UITableView!
     
+    private var bottomBanner: UIVisualEffectView!
+    private var orgLogo: UIImageView!
+    private var orgTitle: UILabel!
+    
+    private var orgInfo: Organization?
+    
     var sortedRegistrants = [Registrant]()
     
     required init(event: Event, sheet: SignupSheet) {
@@ -38,7 +44,7 @@ class CheckinTable: UIViewController {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.view.backgroundColor = .clear
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -56,11 +62,10 @@ class CheckinTable: UIViewController {
         
         checkinTitle = {
             let label = UILabel()
-            label.numberOfLines = 3
-            label.lineBreakMode = .byWordWrapping
-            label.text = "Online Check-in"
+            label.numberOfLines = 5
+            label.text = event.title
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 23, weight: .medium)
+            label.font = .systemFont(ofSize: 22, weight: .medium)
             label.textColor = .init(white: 0.1, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
@@ -74,18 +79,17 @@ class CheckinTable: UIViewController {
         
         checkinSubtitle = {
             let label = UILabel()
-            
+            label.text = "Loading..."
             label.numberOfLines = 5
-            label.lineBreakMode = .byWordWrapping
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 17)
+            label.font = .systemFont(ofSize: 16.5)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: banner.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: banner.rightAnchor, constant: -30).isActive = true
-            label.topAnchor.constraint(equalTo: checkinTitle.bottomAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: checkinTitle.bottomAnchor, constant: 8).isActive = true
             label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -15).isActive = true
             
             return label
@@ -126,10 +130,67 @@ class CheckinTable: UIViewController {
             return label
         }()
         
+        bottomBanner = {
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            v.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(v)
+            
+            v.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            v.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            v.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            v.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openOrgInfo)))
+            return v
+        }()
+        
+        orgLogo = {
+            let iv = UIImageView(image: #imageLiteral(resourceName: "unknown"))
+            iv.contentMode = .scaleAspectFit
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            bottomBanner.contentView.addSubview(iv)
+            
+            iv.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
+            iv.leftAnchor.constraint(greaterThanOrEqualTo: bottomBanner.leftAnchor, constant: 15).isActive = true
+            iv.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            iv.topAnchor.constraint(greaterThanOrEqualTo: bottomBanner.topAnchor, constant: 12).isActive = true
+            iv.bottomAnchor.constraint(lessThanOrEqualTo: bottomBanner.bottomAnchor, constant: -12).isActive = true
+            
+            return iv
+        }()
+        
+        orgTitle = {
+            let label = UILabel()
+            label.numberOfLines = 3
+            label.lineBreakMode = .byWordWrapping
+            label.text = event.hostTitle
+            label.font = .systemFont(ofSize: 17.5, weight: .medium)
+            label.textColor = .init(white: 0.1, alpha: 1)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            bottomBanner.contentView.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 10).isActive = true
+            label.rightAnchor.constraint(lessThanOrEqualTo: bottomBanner.rightAnchor, constant: -20).isActive = true
+            label.centerXAnchor.constraint(equalTo: bottomBanner.centerXAnchor, constant: 20).isActive = true
+            label.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            label.topAnchor.constraint(greaterThanOrEqualTo: bottomBanner.topAnchor, constant: 12).isActive = true
+            label.bottomAnchor.constraint(lessThanOrEqualTo: bottomBanner.bottomAnchor, constant: -12).isActive = true
+            
+            return label
+        }()
+        
         refreshRegistrants()
+        loadOrganizationInfo()
+        
+        banner.layoutIfNeeded()
         
         DispatchQueue.main.async {
-            self.checkinTable.contentInset.top = self.banner.frame.height - UIApplication.shared.statusBarFrame.height * 2
+            
+            let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
+            
+            
+
+            self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
             self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
         }
     }
@@ -202,6 +263,51 @@ class CheckinTable: UIViewController {
         }
         
         task.resume()
+    }
+
+    private func loadOrganizationInfo() {
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetOrgInfo",
+                           parameters: ["orgId": event.hostID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            if let orgInfo = try? JSON(data: data!) {
+                
+                self.orgInfo = Organization(orgInfo: orgInfo)
+                self.orgInfo?.getLogoImage { orgWithImage in
+                    self.orgLogo.image = orgWithImage.logoImage
+                }
+                
+                print("retrieved org info for <\(self.event.hostTitle)>")
+            } else {
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    @objc private func openOrgInfo() {
+        if orgInfo != nil {
+            let detailPage = OrgDetailPage(organization: orgInfo!)
+            navigationController?.pushViewController(detailPage, animated: true)
+        }
+        
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

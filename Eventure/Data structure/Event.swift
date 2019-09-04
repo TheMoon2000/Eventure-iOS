@@ -28,6 +28,13 @@ class Event {
         return formatter
     }()
     
+    let todayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "'Today' @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
     var uuid: String
     var title: String
     var location: String
@@ -42,6 +49,7 @@ class Event {
     var favoriteList = [Int]()
     var tags = Set<String>()
     var capacity = 0
+    var lastModified: Date?
     
     var published: Bool
     var active: Bool
@@ -53,8 +61,10 @@ class Event {
         if startTime != nil {
             if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: startTime!) {
                 return readableFormatter.string(from: startTime!)
-            } else {
+            } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: startTime!) {
                 return shortFormatter.string(from: startTime!)
+            } else {
+                return todayFormatter.string(from: startTime!)
             }
         } else {
             return "Unspecified"
@@ -134,6 +144,10 @@ class Event {
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
         capacity = dictionary["Capacity"]?.int ?? 0
+       
+        if let dateString = dictionary["Last modified"]?.string {
+            lastModified = DATE_FORMATTER.date(from: dateString)
+        }
     }
     
     static func readFromFile(path: String) -> [String: Set<Event>] {

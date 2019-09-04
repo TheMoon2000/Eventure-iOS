@@ -15,6 +15,8 @@ class CheckinOverview: UIViewController {
     private var event: Event!
     private var sheetInfo: SignupSheet!
     
+    private var canvas: UIScrollView!
+    
     private var orgLogo: UIImageView!
     private var orgTitle: UILabel!
     private var invitesTo: UILabel!
@@ -26,16 +28,9 @@ class CheckinOverview: UIViewController {
     private var checkboxLabel: UILabel!
     private var consentStack: UIStackView!
     
-    private var blocker: UIView!
-    private var spinner: UIActivityIndicatorView!
-    
     private var CHECK_IN = "Check In"
     private var LIST_FULL = "List is Full"
-    private var ALREADY_CHECKED_IN = "Already Checked In"
-    
-    private var readyToDisplay: Bool {
-        return orgLogo.image != nil && sheetInfo != nil
-    }
+    private var CHECKED_IN = "Checked In"
     
     required init(parentVC: CheckinPageController, event: Event!, sheetInfo: SignupSheet) {
         super.init(nibName: nil, bundle: nil)
@@ -50,16 +45,46 @@ class CheckinOverview: UIViewController {
         
         view.backgroundColor = .white
         
+        canvas = {
+            let canvas = UIScrollView()
+            canvas.alwaysBounceVertical = true
+            canvas.contentInsetAdjustmentBehavior = .always
+            canvas.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(canvas)
+            
+            canvas.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            canvas.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            canvas.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            return canvas
+        }()
+        
+        let _: UIView = {
+            let bg = UIView()
+            bg.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(bg)
+            
+            bg.topAnchor.constraint(equalTo: canvas.topAnchor).isActive = true
+            bg.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
+            bg.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            bg.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            bg.heightAnchor.constraint(greaterThanOrEqualTo: canvas.safeAreaLayoutGuide.heightAnchor).isActive = true
+            
+            return bg
+        }()
+        
         orgLogo = {
             let iv = UIImageView()
+            iv.backgroundColor = .init(white: 0.95, alpha: 1)
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(iv)
+            canvas.addSubview(iv)
             
             iv.widthAnchor.constraint(equalToConstant: 110).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            iv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 35).isActive = true
+            iv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 35).isActive = true
             
             return iv
         }()
@@ -70,7 +95,7 @@ class CheckinOverview: UIViewController {
             label.font = .systemFont(ofSize: 22, weight: .medium)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
@@ -87,7 +112,7 @@ class CheckinOverview: UIViewController {
             label.font = .systemFont(ofSize: 17.5)
             
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.centerXAnchor.constraint(equalTo: orgTitle.centerXAnchor).isActive = true
             label.topAnchor.constraint(equalTo: orgTitle.bottomAnchor, constant: 10).isActive = true
@@ -98,10 +123,12 @@ class CheckinOverview: UIViewController {
         eventTitle = {
             let label = UILabel()
             label.text = event.title
+            label.numberOfLines = 0
+            label.lineBreakMode = .byWordWrapping
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 25, weight: .semibold)
+            label.font = .systemFont(ofSize: 24, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
@@ -120,10 +147,9 @@ class CheckinOverview: UIViewController {
             button.titleEdgeInsets.left = 20
             button.titleEdgeInsets.right = 20
             button.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(button)
+            canvas.addSubview(button)
             
             button.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70).isActive = true
             button.widthAnchor.constraint(greaterThanOrEqualToConstant: 220).isActive = true
             button.heightAnchor.constraint(equalToConstant: 53).isActive = true
             
@@ -134,7 +160,8 @@ class CheckinOverview: UIViewController {
         
         captionLabel = {
             let label = UILabel()
-            label.numberOfLines = 2
+            label.numberOfLines = 3
+            label.textColor = .gray
             label.lineBreakMode = .byWordWrapping
             if event.capacity == 0 {
                 label.text = "This check-in form has no capacity limit."
@@ -144,11 +171,12 @@ class CheckinOverview: UIViewController {
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 15)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 40).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -40).isActive = true
             label.topAnchor.constraint(equalTo: checkinButton.bottomAnchor, constant: 20).isActive = true
+            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -40).isActive = true
             
             return label
         }()
@@ -171,6 +199,7 @@ class CheckinOverview: UIViewController {
         checkboxLabel = {
             let label = UILabel()
             label.attributedText = "Allow **\(event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
+            label.textColor = .init(white: 0.1, alpha: 1)
             label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 2
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -182,39 +211,12 @@ class CheckinOverview: UIViewController {
             label.topAnchor.constraint(equalTo: checkbox.topAnchor).isActive = true
             label.bottomAnchor.constraint(equalTo: checkinButton.topAnchor, constant: -20).isActive = true
             
+            label.topAnchor.constraint(greaterThanOrEqualTo: eventTitle.bottomAnchor, constant: 50).isActive = true
             
             return label
         }()
         
-        
-        blocker = {
-            let blocker = UIView()
-            blocker.backgroundColor = .white
-            blocker.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(blocker)
-            
-            blocker.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-            blocker.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            blocker.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            blocker.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-            
-            return blocker
-        }()
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.startAnimating()
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            blocker.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: blocker.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: blocker.centerYAnchor).isActive = true
-            
-            return spinner
-        }()
-        
+        loadLogoImage()
     }
     
     @objc private func check() {
@@ -222,9 +224,8 @@ class CheckinOverview: UIViewController {
     }
     
     func showUI() {
-        if self.readyToDisplay {
-            self.spinner.stopAnimating()
-            self.blocker.isHidden = true
+        if orgLogo.image != nil {
+            orgLogo.backgroundColor = nil
             if event.capacity != 0 {
                 self.captionLabel.text = "\(sheetInfo!.currentOccupied) / \(event.capacity) spots currently filled"
             }
@@ -235,7 +236,7 @@ class CheckinOverview: UIViewController {
             } else if sheetInfo!.currentUserCheckedIn {
                 self.checkinButton.isUserInteractionEnabled = false
                 self.checkinButton.alpha = DISABLED_ALPHA
-                self.checkinButton.setTitle(ALREADY_CHECKED_IN, for: .normal)
+                self.checkinButton.setTitle(CHECKED_IN, for: .normal)
             }
         }
     }
@@ -258,7 +259,10 @@ class CheckinOverview: UIViewController {
             }
             
             DispatchQueue.main.async {
-                self.orgLogo.image = UIImage(data: data!) ?? #imageLiteral(resourceName: "unknown")
+                if self.orgLogo.image == nil {
+                    self.orgLogo.backgroundColor = nil
+                    self.orgLogo.image = UIImage(data: data!) ?? #imageLiteral(resourceName: "unknown")
+                }
                 self.showUI()
             }
     
@@ -310,7 +314,11 @@ class CheckinOverview: UIViewController {
                 }
                 return
             case "success":
-                self.sheetInfo.currentOccupied += 1
+                DispatchQueue.main.async {
+                    self.sheetInfo.currentOccupied += 1
+                    self.sheetInfo.currentUserCheckedIn = true
+                    self.showUI()
+                }
                 alert = UIAlertController(title: "Successfully checked in!", message: "You name is now on the list!", preferredStyle: .alert)
                 alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)

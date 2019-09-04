@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TOCropViewController
 
 class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -120,15 +121,34 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        previewImage.image = (info[UIImagePickerController.InfoKey.originalImage] as? UIImage)?.sizeDown()
-        previewImage.backgroundColor = nil
-        chooseImageLabel.isHidden = true
-        updateImageHandler?(previewImage.image)
-        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        
+        let cropper = TOCropViewController(image: image)
+        cropper.rotateButtonsHidden = true
+        cropper.aspectRatioPreset = .preset3x2
+        cropper.aspectRatioLockEnabled = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.preset3x2.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
+//        picker.dismiss(animated: true, completion: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
+}
+
+
+extension EventImagePreviewCell: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        previewImage.image = image.sizeDown()
+        previewImage.backgroundColor = nil
+        chooseImageLabel.isHidden = true
+        updateImageHandler?(previewImage.image)
+
+        parentVC.dismiss(animated: true, completion: nil)
+    }
 }

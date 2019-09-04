@@ -125,11 +125,36 @@ class EventDetailPage: UIViewController {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: coverImage.bottomAnchor, constant: 25).isActive = true
 //            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -300).isActive = true
 
             return label
+        }()
+        
+        interestedButton = {
+            let button = UIButton(type: .system)
+            button.tintColor = INTEREST_COLOR
+            button.isHidden = Organization.current != nil
+            button.isEnabled = User.current != nil
+            button.imageView?.contentMode = .scaleAspectFit
+            button.tintColor = MAIN_TINT
+            if User.current?.interestedEvents.contains(event.uuid) ?? false {
+                button.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
+            } else {
+                button.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+            }
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
+            
+            button.centerYAnchor.constraint(equalTo: eventTitle.centerYAnchor).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 35).isActive = true
+            button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+            button.leftAnchor.constraint(equalTo: eventTitle.rightAnchor, constant: 15).isActive = true
+            button.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+            
+            button.addTarget(self, action: #selector(interestedAction), for: .touchUpInside)
+            
+            return button
         }()
         
         
@@ -259,25 +284,24 @@ class EventDetailPage: UIViewController {
         self.orgEventView?.eventCatalog?.reloadData()
     }
     
-    
-    @objc private func goingAction() {
-        if goingButton.currentImage == #imageLiteral(resourceName: "star_empty") {
-            goingButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
-            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
-        } else {
-            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
-        }
-        
-    }
-    
     @objc private func interestedAction() {
-        if interestedButton.currentImage == #imageLiteral(resourceName: "cross") {
-            interestedButton.setImage(#imageLiteral(resourceName: "check"), for: .normal)
-            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        UISelectionFeedbackGenerator().selectionChanged()
+        let status: Bool
+        if User.current!.interestedEvents.contains(event.uuid) {
+            interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+            User.current?.interestedEvents.remove(event.uuid)
+            status = false
         } else {
-            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+            interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+            User.current?.interestedEvents.insert(event.uuid)
+            status = true
         }
         
+        User.current?.syncInterested(interested: status, for: event) { success in
+            if !success {
+                internetUnavailableError(vc: self)
+            }
+        }
     }
 
     @objc private func moreActions() {
