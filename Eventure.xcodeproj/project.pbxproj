@@ -114,6 +114,7 @@
 		EB944584231F322E00631D8E /* OrgEventBriefPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */; };
 		EB944586231F6E8F00631D8E /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB944585231F6E8F00631D8E /* SubscribersCell.swift */; };
 		EBE127E0231FB1DD006F7CFA /* ProfilePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE127DF231FB1DD006F7CFA /* ProfilePreviewCell.swift */; };
+		EBE127E223205A64006F7CFA /* DescriptionEditPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE127E123205A64006F7CFA /* DescriptionEditPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -244,6 +245,7 @@
 		EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgEventBriefPage.swift; sourceTree = "<group>"; };
 		EB944585231F6E8F00631D8E /* SubscribersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribersCell.swift; sourceTree = "<group>"; };
 		EBE127DF231FB1DD006F7CFA /* ProfilePreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfilePreviewCell.swift; sourceTree = "<group>"; };
+		EBE127E123205A64006F7CFA /* DescriptionEditPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionEditPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -509,6 +511,7 @@
 			isa = PBXGroup;
 			children = (
 				EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */,
+				EBE127E123205A64006F7CFA /* DescriptionEditPage.swift */,
 				EBE127DF231FB1DD006F7CFA /* ProfilePreviewCell.swift */,
 				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
 				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
@@ -846,6 +849,7 @@
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
 				67017DB3231F132F006321F6 /* AboutEventure.swift in Sources */,
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
+				EBE127E223205A64006F7CFA /* DescriptionEditPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
