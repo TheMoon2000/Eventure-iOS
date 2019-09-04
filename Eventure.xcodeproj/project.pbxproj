@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -108,6 +108,11 @@
 		DD1BB0D32310B1C40082C4EE /* EventDetailTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */; };
 		DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D52310B2350082C4EE /* AboutViewController.swift */; };
 		DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1BB0D72310B3560082C4EE /* OtherViewController.swift */; };
+		EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457B231F322E00631D8E /* OrgProfilePage.swift */; };
+		EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */; };
+		EB944582231F322E00631D8E /* OrgSettingInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */; };
+		EB944583231F322E00631D8E /* SubscriberListPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457E231F322E00631D8E /* SubscriberListPage.swift */; };
+		EB944584231F322E00631D8E /* OrgEventBriefPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -232,6 +237,11 @@
 		DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventDetailTabStrip.swift; path = "Eventure/User Account/Events Page/Detail/EventDetailTabStrip.swift"; sourceTree = SOURCE_ROOT; };
 		DD1BB0D52310B2350082C4EE /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		DD1BB0D72310B3560082C4EE /* OtherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherViewController.swift; sourceTree = "<group>"; };
+		EB94457B231F322E00631D8E /* OrgProfilePage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgProfilePage.swift; sourceTree = "<group>"; };
+		EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgSettingInfoCell.swift; sourceTree = "<group>"; };
+		EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgSettingInfoPage.swift; sourceTree = "<group>"; };
+		EB94457E231F322E00631D8E /* SubscriberListPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriberListPage.swift; sourceTree = "<group>"; };
+		EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrgEventBriefPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -497,6 +507,11 @@
 		CCA6CF76231A6889005D8BB2 /* Account Page */ = {
 			isa = PBXGroup;
 			children = (
+				EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */,
+				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
+				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
+				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
+				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
 				CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */,
 			);
 			path = "Account Page";
@@ -700,28 +715,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework",
-				"${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework",
-				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
-				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TOCropViewController.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6F5EBFF09B0E344434C85222 /* [CP] Embed Pods Frameworks */ = {
@@ -730,20 +732,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS12.2/SwiftyJSON.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D218590EFDC7D3125452E53A /* [CP] Check Pods Manifest.lock */ = {
@@ -800,6 +797,7 @@
 				CCE214272314ED4500E9B137 /* GenericTextCell.swift in Sources */,
 				D5216649231D828600A54F21 /* FilterDateTableViewController.swift in Sources */,
 				CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */,
+				EB944582231F322E00631D8E /* OrgSettingInfoPage.swift in Sources */,
 				CCA3EB302317A352008538A6 /* SettingsItemCell.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */,
@@ -823,6 +821,7 @@
 				CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */,
 				CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */,
 				CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */,
+				EB944583231F322E00631D8E /* SubscriberListPage.swift in Sources */,
 				CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */,
 				CC2167BE231B0C46003B8DE7 /* GraduationYearChooser.swift in Sources */,
 				CC3D87602318DC4000F1F1E7 /* EmailCell.swift in Sources */,
@@ -845,10 +844,13 @@
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
+				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
+				EB944584231F322E00631D8E /* OrgEventBriefPage.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
+				EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */,
 				D560A305231A180E00062912 /* FilterTagViewController.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,

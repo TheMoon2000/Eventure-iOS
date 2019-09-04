@@ -23,18 +23,22 @@ class Organization: CustomStringConvertible {
     
     var id: String
     var title: String
-    var orgDescription: String
-    var website: String
     var members = [Int: MemberRole]()
     var password_MD5: String
-    var tags = Set<String>()
-    var contactName: String
-    var contactEmail: String
     var active: Bool
     var dateRegistered: String
     var logoImage: UIImage?
     var hasLogo: Bool
     var subscribers = Set<Int>()
+    
+    //Profile Information
+    var contactName: String
+    var tags = Set<String>()
+    var website: String
+    var contactEmail: String
+    var orgDescription: String
+    
+    var saveEnabled = false
     
     static var empty: Organization {
         return Organization(title: "")
@@ -45,6 +49,29 @@ class Organization: CustomStringConvertible {
     
     /// Whether the changes made locally are yet to be uploaded.
     static var needsUpload = false
+    
+    var profileStatus: String {
+        var allEmpty = true
+        for item in [website, contactEmail, orgDescription, contactName] {
+            allEmpty = allEmpty && item.isEmpty
+        }
+        allEmpty = allEmpty && tags.isEmpty
+        
+        if allEmpty { return "Not Started" }
+        
+        var filledRequirements = true
+        for item in [contactName] {
+            filledRequirements = filledRequirements && !item.isEmpty
+        }
+        allEmpty = allEmpty && tags.isEmpty
+        
+        if filledRequirements {
+            return "Completed"
+        } else {
+            return "Incomplete"
+        }
+        
+    }
     
     init(title: String) {
         id = title
