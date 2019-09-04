@@ -278,7 +278,7 @@ class TagPickerView: UIViewController {
                           completion: nil)
     }
     
-    @objc private func completePickingTags() {
+    @objc func completePickingTags() {
         if customContinueMethod != nil {
             customContinueMethod?(self)
             return

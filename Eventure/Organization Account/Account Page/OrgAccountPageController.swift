@@ -130,7 +130,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         case (0, 0):
             cell.icon.image = Organization.current?.logoImage
             if cell.icon.image == nil {
-                cell.icon.image = #imageLiteral(resourceName: "organization")
+                cell.icon.image = #imageLiteral(resourceName: "group")
             }
             cell.imageWidthConstraint.constant = 65
             cell.heightConstraint.constant = 100
@@ -140,7 +140,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.icon.image = #imageLiteral(resourceName: "resume")
             cell.titleLabel.text = "Manage Account"
         case (1, 1):
-            cell.icon.image = #imageLiteral(resourceName: "name")
+            cell.icon.image = #imageLiteral(resourceName: "organization_profile")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
