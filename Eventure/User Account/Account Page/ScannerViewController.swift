@@ -65,7 +65,14 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         device = newDevice
         setCamera(device: device)
     }
-        
+    
+    override func viewWillAppear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
+    }
     /// We need to make four views that block the area that is NOT part of the active scanning area.
     private func setupViews() {
         
