@@ -11,7 +11,7 @@ import UIKit
 class CheckinUserCell: UITableViewCell {
     
     private var bgView: UIView!
-    private var profilePicture: UIImageView!
+    private(set) var profilePicture: UIImageView!
     private var nameLabel: UILabel!
     private var majorLabel: UILabel!
     private var registrant: Registrant?
@@ -47,7 +47,7 @@ class CheckinUserCell: UITableViewCell {
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 24).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 25).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
@@ -105,16 +105,13 @@ class CheckinUserCell: UITableViewCell {
     
     func setup(registrant: Registrant) {
         self.registrant = registrant
-        let name = registrant.name.isEmpty ? User.current!.displayedName : registrant.name
-        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + name : name
+        nameLabel.text = registrant.name
+        if nameLabel.text!.isEmpty { nameLabel.text = registrant.email }
         majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {
             profilePicture.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
-            registrant.getProfilePicture { registrantWithProfile in
-                self.profilePicture.image = registrantWithProfile.profilePicture
-            }
         }
     }
     

@@ -1,20 +1,19 @@
 //
-//  CheckinTable.swift
+//  CheckinResults.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/9/2.
+//  Created by Jia Rui Shan on 2019/9/4.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 import SwiftyJSON
 
-class CheckinTable: UIViewController {
-    
+class CheckinResults: UIViewController {
+
     private let refreshControl = UIRefreshControl()
     
     private var event: Event!
-    private var sheetInfo: SignupSheet!
     private var banner: UIVisualEffectView!
     
     private var emptyLabel: UILabel!
@@ -28,17 +27,16 @@ class CheckinTable: UIViewController {
     private var orgTitle: UILabel!
     
     private var orgInfo: Organization?
-    private var registrantProfiles = [Int: UIImage]()
     
     var sortedRegistrants = [Registrant]()
+    var registrantPictures = [Int: UIImage]()
     
-    required init(event: Event, sheet: SignupSheet) {
+    required init(event: Event) {
         super.init(nibName: nil, bundle: nil)
         
         self.event = event
-        self.sheetInfo = sheet
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,6 +44,8 @@ class CheckinTable: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.view.backgroundColor = .clear
         view.backgroundColor = .init(white: 0.92, alpha: 1)
+        
+        navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -70,7 +70,7 @@ class CheckinTable: UIViewController {
             label.textColor = .init(white: 0.1, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
-
+            
             label.leftAnchor.constraint(equalTo: banner.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: banner.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: banner.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -113,7 +113,7 @@ class CheckinTable: UIViewController {
             
             return tv
         }()
-
+        
         emptyLabel = {
             let label = UILabel()
             label.isHidden = true
@@ -140,12 +140,11 @@ class CheckinTable: UIViewController {
             v.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             v.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             
-            v.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openOrgInfo)))
             return v
         }()
         
         orgLogo = {
-            let iv = UIImageView(image: #imageLiteral(resourceName: "unknown"))
+            let iv = UIImageView(image: Organization.current?.logoImage ?? #imageLiteral(resourceName: "unknown"))
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(iv)
@@ -181,7 +180,6 @@ class CheckinTable: UIViewController {
         }()
         
         refreshRegistrants()
-        loadOrganizationInfo()
         
         banner.layoutIfNeeded()
         
@@ -190,7 +188,6 @@ class CheckinTable: UIViewController {
             let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
             
             
-
             self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
             self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
         }
@@ -198,12 +195,18 @@ class CheckinTable: UIViewController {
     
     
     private func reloadStats() {
-        let word = sheetInfo.currentOccupied == 1 ? "person" : "people"
-        if sheetInfo.capacity == 0 {
-            checkinSubtitle.text = "\(sheetInfo.currentOccupied) \(word) checked in"
+        
+        let word = sortedRegistrants.count == 1 ? "person" : "people"
+        if event.capacity == 0 {
+            checkinSubtitle.text = "\(sortedRegistrants.count) \(word) checked in"
         } else {
-            checkinSubtitle.text = "\(sheetInfo.currentOccupied) / \(sheetInfo.capacity) \(word) checked in."
+            checkinSubtitle.text = "\(sortedRegistrants.count) / \(event.capacity) \(word) checked in."
         }
+    }
+    
+    
+    @objc private func closeSheet() {
+        dismiss(animated: true, completion: nil)
     }
     
     @objc private func refreshRegistrants() {
@@ -235,26 +238,27 @@ class CheckinTable: UIViewController {
             }
             
             if let json = try? JSON(data: data!).arrayValue {
-                var tmp = Set<Registrant>()
-                for registrantData in json {
-                    let registrant = Registrant(json: registrantData)
-                    registrant.profilePicture = self.registrantProfiles[registrant.userID]
-                    tmp.insert(registrant)
-                }
-                self.sheetInfo.currentOccupied = tmp.count
-                
-                self.sortedRegistrants = tmp.sorted { r1, r2 in
-                    r1.checkedInDate.timeIntervalSince(r1.checkedInDate) <= 0
-                }
-                
-                DispatchQueue.main.async {
-                    if tmp.count == 0 {
-                        self.emptyLabel.text = "No one checked in yet. Be the first!"
-                    } else {
-                        self.emptyLabel.text = ""
+                DispatchQueue.global(qos: .default).async {
+                    var tmp = [Registrant]()
+                    for registrantData in json {
+                        let registrant = Registrant(json: registrantData)
+                        registrant.profilePicture = self.registrantPictures[registrant.userID]
+                        tmp.append(registrant)
                     }
-                    self.reloadStats()
-                    self.checkinTable.reloadSections([0], with: .none)
+                    
+                    self.sortedRegistrants = tmp.sorted { r1, r2 in
+                        r1.checkedInDate < r2.checkedInDate
+                    }
+                    
+                    DispatchQueue.main.async {
+                        if tmp.count == 0 {
+                            self.emptyLabel.text = "No one checked in yet. Be the first!"
+                        } else {
+                            self.emptyLabel.text = ""
+                        }
+                        self.reloadStats()
+                        self.checkinTable.reloadSections([0], with: .none)
+                    }
                 }
             } else {
                 DispatchQueue.main.async {
@@ -267,51 +271,6 @@ class CheckinTable: UIViewController {
         
         task.resume()
     }
-
-    private func loadOrganizationInfo() {
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/GetOrgInfo",
-                           parameters: ["orgId": event.hostID])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self)
-                }
-                return
-            }
-            
-            if let orgInfo = try? JSON(data: data!) {
-                
-                self.orgInfo = Organization(orgInfo: orgInfo)
-                self.orgInfo?.getLogoImage { orgWithImage in
-                    self.orgLogo.image = orgWithImage.logoImage
-                }
-                
-                print("retrieved org info for <\(self.event.hostTitle)>")
-            } else {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
-                }
-            }
-        }
-        
-        task.resume()
-    }
-    
-    
-    @objc private func openOrgInfo() {
-        if orgInfo != nil {
-            let detailPage = OrgDetailPage(organization: orgInfo!)
-            navigationController?.pushViewController(detailPage, animated: true)
-        }
-        
-    }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -322,7 +281,8 @@ class CheckinTable: UIViewController {
     }
 }
 
-extension CheckinTable: UITableViewDataSource {
+
+extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -336,14 +296,20 @@ extension CheckinTable: UITableViewDataSource {
         let current = sortedRegistrants[indexPath.row]
         if current.profilePicture == nil {
             current.getProfilePicture { new in
-                current.profilePicture = new.profilePicture
-                self.registrantProfiles[new.userID] = new.profilePicture
+                cell.profilePicture.image = new.profilePicture
+                self.registrantPictures[new.userID] = new.profilePicture
             }
         }
         cell.setup(registrant: current)
         cell.placeLabel.text = String(indexPath.row + 1)
         
         return cell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let registrant = sortedRegistrants[indexPath.row]
+        print(registrant.name)
     }
 
 }

@@ -114,8 +114,8 @@ class MainTabBarController: UITabBarController {
         if isUserAccount {
             print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
             setupUserTabs()
+            selectedIndex = 0
             if User.current != nil {
-                selectedIndex = 0
                 UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
             } else {
                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)

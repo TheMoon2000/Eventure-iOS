@@ -22,6 +22,7 @@ class EventCheckinOverview: UIViewController {
         
         view.backgroundColor = .white
         navigationController?.navigationBar.shadowImage = UIImage()
+        navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "checkin_result"), style: .plain, target: self, action: #selector(viewResults))
         
         let encrypted = NSString(string: event.uuid).aes256Encrypt(withKey: AES_KEY)
         let code = URL_PREFIX + encrypted!
@@ -164,6 +165,12 @@ class EventCheckinOverview: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
+    }
+    
+    @objc private func viewResults() {
+        let checkinResults = CheckinResults(event: event)
+        let nav = CheckinNavigationController(rootViewController: checkinResults)
+        present(nav, animated: true, completion: nil)
     }
     
 }

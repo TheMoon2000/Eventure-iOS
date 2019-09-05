@@ -284,7 +284,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
             self.filteredOrgs.sort(by: { $0.title < $1.title })
             
             DispatchQueue.main.async {
-                self.orgTable.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
+                self.orgTable.reloadSections([0], with: .none)
             }
         }
         

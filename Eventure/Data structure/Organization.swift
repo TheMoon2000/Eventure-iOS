@@ -18,6 +18,7 @@ class Organization: CustomStringConvertible {
             } else {
                 print("successfully wrote user data to \(CURRENT_USER_PATH)")
             }
+            current?.getLogoImage(nil)
         }
     }
     

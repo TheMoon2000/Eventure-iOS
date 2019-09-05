@@ -19,6 +19,7 @@ class Registrant: Hashable {
     let orgID: String
     let name: String
     let major: String
+    let email: String
     
     let graduationYear: Int?
     let graduationSeason: User.GraduationSeason?
@@ -39,6 +40,7 @@ class Registrant: Hashable {
         userID = dictionary["User ID"]?.int ?? -1
         orgID = dictionary["Organization"]?.string ?? "Unknown Organization"
         name = dictionary["Full name"]?.string ?? "<No Name>"
+        email = dictionary["Email"]?.string ?? "No email provided"
         major = dictionary["Major"]?.string ?? "Undecided"
         graduationYear = dictionary["Graduation year"]?.int
         graduationSeason = User.GraduationSeason(rawValue: dictionary["Graduation season"]?.string ?? "")

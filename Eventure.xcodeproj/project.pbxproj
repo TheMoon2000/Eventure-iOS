@@ -62,6 +62,7 @@
 		CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC405DC92307F11D00B85BEC /* OrgDescriptionText.swift */; };
 		CC405DCC2307F32C00B85BEC /* OrgInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC405DCB2307F32C00B85BEC /* OrgInfoPage.swift */; };
 		CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC405DCD2307F47000B85BEC /* OrgInfoTabStrip.swift */; };
+		CC426CB02320828500BB3CA4 /* CheckinResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC426CAF2320828500BB3CA4 /* CheckinResults.swift */; };
 		CC46772D2319956600A9FF18 /* Campus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC46772C2319956600A9FF18 /* Campus.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4ACC3722EA47EE002297EF /* Example file.pdf in Resources */ = {isa = PBXBuildFile; fileRef = CCF8CF16229E398300F3C6B8 /* Example file.pdf */; };
@@ -191,6 +192,7 @@
 		CC405DC92307F11D00B85BEC /* OrgDescriptionText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgDescriptionText.swift; sourceTree = "<group>"; };
 		CC405DCB2307F32C00B85BEC /* OrgInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgInfoPage.swift; sourceTree = "<group>"; };
 		CC405DCD2307F47000B85BEC /* OrgInfoTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgInfoTabStrip.swift; sourceTree = "<group>"; };
+		CC426CAF2320828500BB3CA4 /* CheckinResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinResults.swift; sourceTree = "<group>"; };
 		CC46772C2319956600A9FF18 /* Campus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campus.swift; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationCell.swift; sourceTree = "<group>"; };
@@ -580,6 +582,7 @@
 			children = (
 				CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */,
 				CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */,
+				CC426CAF2320828500BB3CA4 /* CheckinResults.swift */,
 				DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */,
 				DD1BB0D52310B2350082C4EE /* AboutViewController.swift */,
 				DD1BB0D72310B3560082C4EE /* OtherViewController.swift */,
@@ -819,6 +822,7 @@
 				CCD65519231F4A3400088646 /* EventSearchResults.swift in Sources */,
 				CC2EB24D231F9E68004245F8 /* CheckinRecord.swift in Sources */,
 				CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */,
+				CC426CB02320828500BB3CA4 /* CheckinResults.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */,
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
