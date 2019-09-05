@@ -116,7 +116,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         let eventUUID = displayedRecords[indexPath.section][indexPath.row].sheetID
         
         spinner.startAnimating()
-        spinnerLabel.text = "Retrieving..ad"
+        spinnerLabel.text = "Retrieving..."
         spinnerLabel.isHidden = false
         
         var parameters = [String : String]()
@@ -132,8 +132,6 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             
             guard error == nil else {
                 DispatchQueue.main.async {
-                    self.spinner.stopAnimating()
-                    self.spinnerLabel.isHidden = true
                     internetUnavailableError(vc: self)
                     self.navigationController?.popViewController(animated: true)
                 }
@@ -144,6 +142,8 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
                 let event = Event(eventInfo: eventDictionary)
                 
                 event.getCover { eventWithImage in
+                    self.spinner.stopAnimating()
+                    self.spinnerLabel.isHidden = true
                     let detailPage = EventDetailPage()
                     detailPage.hidesBottomBarWhenPushed = true
                     detailPage.event = eventWithImage
