@@ -122,10 +122,12 @@ class DescriptionEditPage: UIViewController {
         
         updateWordCount()
         
+        
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
         
     }
+    
     
     deinit {
         NotificationCenter.default.removeObserver(self)
