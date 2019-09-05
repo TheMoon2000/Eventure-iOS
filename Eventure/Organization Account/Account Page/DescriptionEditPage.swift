@@ -103,7 +103,7 @@ class DescriptionEditPage: UIViewController {
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.textColor = .init(white: 0.8, alpha: 1)
-            label.isHidden = true //Fix Me
+            label.isHidden = !Organization.current!.orgDescription.isEmpty //Fix Me
             label.text = "Please give a brief description of your club within \(descriptionMaxLength) characters."
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.insertSubview(label, belowSubview: descriptionText)
