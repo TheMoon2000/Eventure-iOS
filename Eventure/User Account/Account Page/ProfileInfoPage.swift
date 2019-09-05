@@ -424,7 +424,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if cellsEditable { return }
+        if !cellsEditable { return }
         switch indexPath {
         case [0, 2]:
             view.endEditing(true)
