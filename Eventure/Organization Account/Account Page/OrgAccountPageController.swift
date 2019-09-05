@@ -146,11 +146,11 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.icon.image = #imageLiteral(resourceName: "key")
             cell.titleLabel.text = "Manage Account"
         case (1, 1):
-            cell.icon.image = #imageLiteral(resourceName: "windmill")
+            cell.icon.image = #imageLiteral(resourceName: "paper_plane")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
-            cell.icon.image = #imageLiteral(resourceName: "user_default")
+            cell.icon.image = #imageLiteral(resourceName: "stats")
             cell.titleLabel.text = "Event Statistics"
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)

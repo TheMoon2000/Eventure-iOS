@@ -519,12 +519,12 @@
 			isa = PBXGroup;
 			children = (
 				CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */,
-				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */,
 				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
 				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
 				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
+				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
 				CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */,
 			);

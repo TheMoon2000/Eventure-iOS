@@ -12,11 +12,8 @@ import SwiftyJSON
 
 class DescriptionEditPage: UIViewController {
     
-    private var descriptionMaxLength = 500
+    private var descriptionMaxLength = 1000
     private var canvas: UIScrollView!
-    private var titleText: UITextView!
-    private var titlePlaceholder: UILabel!
-    private var separatorLine: UIView!
     private var buttonStack: UIStackView!
     private var editButton: UIButton!
     private var previewButton: UIButton!
@@ -34,6 +31,12 @@ class DescriptionEditPage: UIViewController {
         view.tintColor = MAIN_TINT
         
         title = "Organization Description"
+        
+        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
+        navigationItem.rightBarButtonItem = saveBarButton
+        
+        navigationItem.hidesBackButton = true
+        navigationItem.leftBarButtonItem = .init(title: "Back", style: .plain, target: self, action: #selector(closeEditor))
         
         // Check
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -59,6 +62,49 @@ class DescriptionEditPage: UIViewController {
         
         view.layoutIfNeeded()
         
+        editButton = {
+            let button = UIButton(type: .system)
+            button.setTitleColor(MAIN_TINT, for: .normal)
+            button.setTitle("Edit", for: .normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            
+            button.addTarget(self, action: #selector(editButtonPressed), for: .touchUpInside)
+            
+            return button
+        }()
+        
+        previewButton = {
+            let button = UIButton(type: .system)
+            button.setTitleColor(.darkGray, for: .normal)
+            button.setTitle("Preview", for: .normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            
+            button.addTarget(self, action: #selector(previewButtonPressed), for: .touchUpInside)
+            
+            return button
+        }()
+        
+        buttonStack = {
+            
+            let verticalLine = UIView()
+            verticalLine.backgroundColor = LINE_TINT
+            verticalLine.translatesAutoresizingMaskIntoConstraints = false
+            verticalLine.widthAnchor.constraint(equalToConstant: 1).isActive = true
+            verticalLine.heightAnchor.constraint(equalToConstant: 20).isActive = true
+            
+            let stack = UIStackView(arrangedSubviews: [editButton, verticalLine, previewButton])
+            stack.spacing = 20
+            stack.alignment = .center
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(stack)
+            
+            stack.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
+            stack.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 15).isActive = true
+            stack.heightAnchor.constraint(equalToConstant: 40).isActive = true
+            
+            return stack
+        }()
+        
         descriptionText = {
             let tv = UITextView()
             tv.backgroundColor = nil
@@ -78,10 +124,27 @@ class DescriptionEditPage: UIViewController {
             
             tv.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
             tv.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
-            tv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 10).isActive = true
+            tv.topAnchor.constraint(equalTo: buttonStack.bottomAnchor, constant: 10).isActive = true
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
             
             return tv
+        }()
+        
+        descriptionPlaceholder = {
+            let label = UILabel()
+            label.numberOfLines = 0
+            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.textColor = .init(white: 0.8, alpha: 1)
+            label.isHidden = !Organization.current!.orgDescription.isEmpty //Fix Me
+            label.text = "Please give a brief description of your club within \(descriptionMaxLength) characters."
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.insertSubview(label, belowSubview: descriptionText)
+            
+            label.leftAnchor.constraint(equalTo: descriptionText.leftAnchor, constant: 5).isActive = true
+            label.topAnchor.constraint(equalTo: descriptionText.topAnchor, constant: descriptionText.textContainerInset.top).isActive = true
+            label.rightAnchor.constraint(equalTo: descriptionText.rightAnchor).isActive = true
+            
+            return label
         }()
         
         charCount = {
@@ -98,34 +161,33 @@ class DescriptionEditPage: UIViewController {
             return label
         }()
         
-        descriptionPlaceholder = {
-            let label = UILabel()
-            label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 18, weight: .medium)
-            label.textColor = .init(white: 0.8, alpha: 1)
-            label.isHidden = !Organization.current!.orgDescription.isEmpty //Fix Me
-            label.text = "Please give a brief description of your club within \(descriptionMaxLength) characters."
-            label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.insertSubview(label, belowSubview: descriptionText)
+        previewText = {
+            let tv = UITextView()
+            tv.isHidden = true
+            tv.backgroundColor = nil
+            tv.isEditable = false
+            tv.isScrollEnabled = false
+            tv.textColor = .gray
+            tv.font = .systemFont(ofSize: 17)
+            tv.dataDetectorTypes = [.link, .phoneNumber]
+            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(tv)
             
-            label.leftAnchor.constraint(equalTo: descriptionText.leftAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: descriptionText.topAnchor, constant: descriptionText.textContainerInset.top).isActive = true
-            label.rightAnchor.constraint(equalTo: descriptionText.rightAnchor).isActive = true
+            tv.leftAnchor.constraint(equalTo: descriptionText.leftAnchor).isActive = true
+            tv.rightAnchor.constraint(equalTo: descriptionText.rightAnchor).isActive = true
+            tv.topAnchor.constraint(equalTo: descriptionText.topAnchor).isActive = true
+            tv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -30).isActive = true
+            tv.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -30).isActive = true
             
-            return label
+            return tv
         }()
-        
-        view.bringSubviewToFront(descriptionPlaceholder)
-        
-        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
-        navigationItem.rightBarButtonItem = saveBarButton
         
         updateWordCount()
         
         
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
-        
     }
     
     
@@ -137,6 +199,21 @@ class DescriptionEditPage: UIViewController {
         view.endEditing(true)
     }
     
+    @objc private func closeEditor() {
+        let alert = UIAlertController(title: "Caution", message: "You have unsaved changes", preferredStyle: .alert)
+        alert.addAction(.init(title: "Save", style: .default, handler: { _ in
+            self.save(disappearing: false) {
+                self.navigationController?.popViewController(animated: true)
+            }
+        }))
+        alert.addAction(.init(title: "Discard", style: .destructive, handler: {
+            _ in
+            self.navigationController?.popViewController(animated: true)
+        }))
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        self.present(alert, animated: true)
+    }
+    
 //    override func viewWillDisappear(_ animated: Bool) {
 //        super.viewWillDisappear(animated)
 //
@@ -145,7 +222,34 @@ class DescriptionEditPage: UIViewController {
 //        }
 //    }
     
-    @objc private func save(disappearing: Bool = false) {
+    @objc private func editButtonPressed() {
+        editButton.setTitleColor(MAIN_TINT, for: .normal)
+        previewButton.setTitleColor(.darkGray, for: .normal)
+        previewText.isHidden = true
+        descriptionText.isHidden = false
+        textViewDidChange(descriptionText)
+        charCount.isHidden = false
+    }
+    
+    @objc private func previewButtonPressed() {
+        
+        view.endEditing(true)
+        charCount.isHidden = true
+        
+        if descriptionText.text.isEmpty {
+            previewText.text = "No content."
+        } else {
+            previewText.attributedText = descriptionText.text.attributedText()
+        }
+        
+        editButton.setTitleColor(.darkGray, for: .normal)
+        previewButton.setTitleColor(MAIN_TINT, for: .normal)
+        descriptionText.isHidden = true
+        previewText.isHidden = false
+        descriptionPlaceholder.isHidden = true
+    }
+    
+    @objc private func save(disappearing: Bool = false, handler: (() -> ())? = nil) {
         guard let org = Organization.current else {
             return
         }
@@ -198,6 +302,9 @@ class DescriptionEditPage: UIViewController {
                 }
             case "success":
                 print("success")
+                DispatchQueue.main.async {
+                    handler?()
+                }
             default:
                 print(msg!)
                 print("place4")

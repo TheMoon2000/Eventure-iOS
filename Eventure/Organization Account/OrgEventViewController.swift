@@ -451,9 +451,11 @@ extension OrgEventViewController {
 
 extension OrgEventViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.main.async {
+        DispatchQueue.global(qos: .default).async {
             self.updateFiltered()
-            self.eventCatalog.reloadData()
+            DispatchQueue.main.async {
+                self.eventCatalog.reloadData()
+            }
         }
     }
     

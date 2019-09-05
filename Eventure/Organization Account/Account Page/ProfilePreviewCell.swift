@@ -13,6 +13,7 @@ class ProfilePreviewCell: UITableViewCell {
     private(set) var icon: UIImageView!
     private(set) var titleLabel: UILabel!
     private(set) var subtitleLabel: UILabel!
+    private var stack: UIStackView!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -20,7 +21,7 @@ class ProfilePreviewCell: UITableViewCell {
         
         icon = {
             let iv = UIImageView()
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
@@ -42,12 +43,7 @@ class ProfilePreviewCell: UITableViewCell {
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 15).isActive = true
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
-            label.rightAnchor.constraint(equalTo: rightAnchor, constant: -30).isActive = true
-            
+
             return label
         }()
         
@@ -57,15 +53,27 @@ class ProfilePreviewCell: UITableViewCell {
             label.font = .systemFont(ofSize: 16)
             label.textColor = UIColor.gray
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 15).isActive = true
-            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5).isActive = true
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
-            label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
             
             return label
-        } ()
+        }()
+        
+        stack = {
+            let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+            stack.axis = .vertical
+            stack.spacing = 5
+            stack.alignment = .leading
+            stack.distribution = .fillProportionally
+            stack.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(stack)
+            
+            stack.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 15).isActive = true
+            stack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -15).isActive = true
+            stack.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            stack.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 15).isActive = true
+            stack.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            
+            return stack
+        }()
     }
     
     required init?(coder aDecoder: NSCoder) {

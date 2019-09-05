@@ -46,8 +46,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewWillAppear(animated)
         
         UIView.performWithoutAnimation {
-            self.myTableView.beginUpdates()
-            self.myTableView.endUpdates()
+            self.myTableView.reloadSections([0], with: .none)
         }
     }
     

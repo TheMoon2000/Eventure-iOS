@@ -141,11 +141,6 @@ class FinishRegistration: UIViewController {
     
     private func createAccount() {
         
-        // Add `displayedName` parameter if it's initially empty
-        if registrationData.displayName.isEmpty {
-            registrationData.displayName = registrationData.email
-        }
-        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/Register",
                            parameters: registrationData.parameters)!

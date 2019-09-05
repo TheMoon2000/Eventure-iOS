@@ -114,19 +114,30 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let subscriber = self.subscriberDictionaryList[indexPath.row]
+        
         let cell = SubscribersCell()
-        cell.titleLabel.text = subscriber.displayedName //FIXME: wait for jerry
+        cell.titleLabel.text = subscriber.displayedName.isEmpty ? subscriber.displayedName : subscriber.fullName
+        if cell.titleLabel.text!.isEmpty {
+            cell.titleLabel.text = "User #\(subscriber.userID)"
+        }
+        cell.subtitleLabel.text = subscriber.email
+        if cell.subtitleLabel.text!.isEmpty {
+            cell.subtitleLabel.text = "Email not provided"
+        }
         
         if subscriber.profilePicture != nil {
             cell.icon.image = subscriber.profilePicture
         } else {
-            //fixme: change profile picture based on gender
-            cell.icon.image = #imageLiteral(resourceName: "icons8-gender_neutral_user.png")
+            cell.icon.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
+            subscriber.getProfilePicture { withProfile in
+                cell.icon.image = withProfile.profilePicture
+            }
         }
         
         return cell
@@ -136,8 +147,6 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.subscriberDictionaryList.count
     }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {return 2}
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {return 50}
@@ -185,12 +194,12 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
                     print(subscriber.displayedName)
                     self.subscriberCount += 1
                 }
-                //Don't need to group events
                 
                 DispatchQueue.main.async {
                     if (self.subscriberDictionaryList.count == 0) {
                         self.backGroundLabel.isHidden = false
                     }
+                    self.myTableView.reloadData()
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")

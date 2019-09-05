@@ -26,6 +26,12 @@ class User: Profile {
     var email: String { didSet { save() } }
     var password_MD5: String { didSet { save() } }
     var displayedName: String { didSet { save() } }
+    var username: String {
+        if !displayedName.isEmpty { return displayedName }
+        if !name.isEmpty { return name }
+        return email
+    }
+    
     var gender: Gender { didSet { save() } }
     var profilePicture: UIImage? { didSet { save() } }
     var numberOfAttendedEvents = 0 { didSet { save() } }
@@ -48,7 +54,10 @@ class User: Profile {
     
     // MARK: - Profile information
     var fullName: String { didSet { save() } }
+    
+    /// Alias of full name.
     var name: String { return fullName }
+    
     var major: String { didSet { save() } }
     var interests: String { didSet { save() } }
     var resume: String { didSet { save() } }

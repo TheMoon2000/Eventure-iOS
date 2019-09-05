@@ -416,7 +416,7 @@ class RegisterTableController: UITableViewController {
     // Helper methods
     
     @objc private func showDisplayNameHelp() {
-        let alert = UIAlertController(title: "Display Name", message: "This is the name that other users will see from you. It doesn't need to be unique. If you leave this field blank, your email address will be used instead.", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Display Name", message: "This is the name that other users will see from you. It doesn't need to be unique, and it's recommended that you provide one. If you leave this field blank, your email address or your system-generated ID will be displayed instead.", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
