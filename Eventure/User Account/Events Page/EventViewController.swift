@@ -32,7 +32,7 @@ class EventViewController: UIViewController {
     
     private(set) var allEvents = [Event]() {
         didSet {
-            updateFiltered()
+            refilter()
         }
     }
     
@@ -188,7 +188,6 @@ class EventViewController: UIViewController {
         spinner.startAnimating()
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
-        allEvents.removeAll()
         filteredEvents.removeAll()
         self.eventCatalog.reloadData()
         
@@ -232,8 +231,6 @@ class EventViewController: UIViewController {
                     })
                     DispatchQueue.main.async {
                         self.allEvents = tmp
-                        self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
-                        self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
                         stop()
                     }
                 }
@@ -359,9 +356,11 @@ extension EventViewController {
         self.emptyLabel.text = ""
         self.updateFiltered {
             self.spinner.startAnimating()
+            self.spinnerLabel.isHidden = false
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.eventCatalog.reloadSections([0])
                 self.spinner.stopAnimating()
+                self.spinnerLabel.isHidden = true
                 self.emptyLabel.text = self.filteredEvents.isEmpty ? "No Events" : ""
             }
         }
