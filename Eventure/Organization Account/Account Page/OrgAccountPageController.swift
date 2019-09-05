@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
     
     private var myTableView: UITableView!
     
@@ -45,7 +45,8 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         super.viewWillAppear(animated)
         
         UIView.performWithoutAnimation {
-            self.myTableView.reloadData()
+            self.myTableView.beginUpdates()
+            self.myTableView.endUpdates()
         }
     }
     
@@ -58,6 +59,9 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         DispatchQueue.main.async {
             self.navigationItem.title = "Dashboard"
             self.myTableView.reloadData()
+            UIView.performWithoutAnimation {
+                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
+            }
         }
     }
     
@@ -69,13 +73,18 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         //Write for cases for all cells on the page
         switch (indexPath.section, indexPath.row) {
             
+        case (0, 0):
+            let image = UIImagePickerController()
+            image.delegate = self
+            image.sourceType = .photoLibrary
+            image.allowsEditing = true
+            self.present(image, animated: true)
+            
         case (1,0): //if the user tries to change account information
             let orgInfo = OrgSettingInfoPage()
             orgInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgInfo, animated: true)
         case (1,1):
-            print(indexPath)
-
             let orgProfile = OrgProfilePage()
             orgProfile.parentVC = self
             orgProfile.hidesBottomBarWhenPushed = true
@@ -85,13 +94,11 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             alert.addAction(.init(title: "OK", style: .cancel))
             present(alert, animated: true)
         case (2, 1):
-            print(indexPath)
-            //commented for TEST
-//            let subscriber = SubscriberListPage()
-//            subscriber.hidesBottomBarWhenPushed = true
-//            navigationController?.pushViewController(subscriber, animated:true)
+            let subscriber = SubscriberListPage()
+            subscriber.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(subscriber, animated:true)
         case(3, 0):
-            let aboutPage = AboutPage()
+            let aboutPage = AboutEventure()
             aboutPage.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(aboutPage, animated: true)
         case (3,1):
@@ -126,7 +133,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             if let logo = Organization.current?.logoImage {
                 profileCell.icon.image = logo
             } else {
-                profileCell.icon.image = #imageLiteral(resourceName: "group")
+                profileCell.icon.image = #imageLiteral(resourceName: "organization")
                 Organization.current?.getLogoImage { orgWithImage in
                     profileCell.icon.image = orgWithImage.logoImage
                 }
@@ -136,14 +143,14 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             
             return profileCell
         case (1, 0):
-            cell.icon.image = #imageLiteral(resourceName: "resume")
+            cell.icon.image = #imageLiteral(resourceName: "key")
             cell.titleLabel.text = "Manage Account"
         case (1, 1):
-            cell.icon.image = #imageLiteral(resourceName: "organization_profile")
+            cell.icon.image = #imageLiteral(resourceName: "windmill")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
-            cell.icon.image = #imageLiteral(resourceName: "stats")
+            cell.icon.image = #imageLiteral(resourceName: "user_default")
             cell.titleLabel.text = "Event Statistics"
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
@@ -230,4 +237,57 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         return currentImageView
     }
     
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            let url = URL(string: API_BASE_URL + "account/UpdateLogo")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            
+            let parameters = ["id": String(Organization.current!.id)]
+            
+            var fileData = [String : Data]()
+            fileData["logo"] = image.fixedOrientation().sizeDown().pngData()
+            
+            request.addMultipartBody(parameters: parameters as! [String : String],
+                                     files: fileData)
+            request.addAuthHeader()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self)
+                    }
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.myTableView.reloadData()
+                }
+                
+                let msg = String(data: data!, encoding: .utf8)!
+                switch msg {
+                case INTERNAL_ERROR:
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                    }
+                case "success":
+                    print("update successful")
+                    Organization.current!.logoImage = image
+                default:
+                    let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
+                    warning.message = msg
+                    DispatchQueue.main.async {
+                        self.present(warning, animated: true, completion: nil)
+                    }
+                }
+            }
+            
+            task.resume()
+        } else {
+            
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
 }
