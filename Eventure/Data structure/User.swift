@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class User {
+class User: Profile {
     
     /// The current user, if the app is logged in.
     static var current: User? {
@@ -17,9 +17,12 @@ class User {
             current?.save()
         }
     }
+    
+    var editable: Bool { return true }
         
     /// The UUID of the user.
     let uuid: Int
+    var userID: Int { return uuid }
     var email: String { didSet { save() } }
     var password_MD5: String { didSet { save() } }
     var displayedName: String { didSet { save() } }
@@ -45,20 +48,15 @@ class User {
     
     // MARK: - Profile information
     var fullName: String { didSet { save() } }
+    var name: String { return fullName }
     var major: String { didSet { save() } }
     var interests: String { didSet { save() } }
     var resume: String { didSet { save() } }
     var linkedIn: String { didSet { save() } }
     var github: String { didSet { save() } }
-    var yearOfGraduation: Int? { didSet { save() } }
-    var seasonOfGraduation: GraduationSeason? { didSet { save() } }
+    var graduationYear: Int? { didSet { save() } }
+    var graduationSeason: GraduationSeason? { didSet { save() } }
     var comments: String { didSet { save() } }
-    var graduation: String {
-        if yearOfGraduation == nil || seasonOfGraduation == nil {
-            return ""
-        }
-        return seasonOfGraduation!.rawValue + " \(yearOfGraduation!)"
-    }
     
     var profileStatus: String {
         var allEmpty = true
@@ -119,9 +117,9 @@ class User {
         
         fullName = dictionary["Full name"]?.string ?? ""
         major = dictionary["Major"]?.string ?? ""
-        yearOfGraduation = dictionary["Graduation year"]?.int
+        graduationYear = dictionary["Graduation year"]?.int
         if let tmp = dictionary["Graduation season"]?.string {
-            seasonOfGraduation = User.GraduationSeason(rawValue: tmp)
+            graduationSeason = User.GraduationSeason(rawValue: tmp)
         }
         resume = dictionary["Resume"]?.string ?? ""
         linkedIn = dictionary["LinkedIn"]?.string ?? ""
@@ -173,10 +171,12 @@ class User {
         
         User.needsUpload = true
         
-        if writeToFile(path: CURRENT_USER_PATH) == false {
-            print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
-        } else {
-            print("successfully wrote user data to \(CURRENT_USER_PATH)")
+        DispatchQueue.global(qos: .background).async {
+            if self.writeToFile(path: CURRENT_USER_PATH) == false {
+                print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
+            } else {
+                print("successfully wrote user data to \(CURRENT_USER_PATH)")
+            }
         }
     }
     
@@ -196,8 +196,8 @@ class User {
         
         json.dictionaryObject?["Full name"] = self.fullName
         json.dictionaryObject?["Major"] = self.major
-        json.dictionaryObject?["Graduation year"] = self.yearOfGraduation
-        json.dictionaryObject?["Graduation season"] = self.seasonOfGraduation?.rawValue
+        json.dictionaryObject?["Graduation year"] = self.graduationYear
+        json.dictionaryObject?["Graduation season"] = self.graduationSeason?.rawValue
         json.dictionaryObject?["Resume"] = self.resume
         json.dictionaryObject?["GitHub"] = self.github
         json.dictionaryObject?["LinkedIn"] = self.linkedIn
@@ -318,7 +318,7 @@ class User {
     
     func uploadProfilePicture(new: UIImage, _ handler: ((Bool) -> ())?) {
         
-        var original = profilePicture
+        let original = profilePicture
         profilePicture = new
         
         let url = URL(string: API_BASE_URL + "account/UpdateProfilePicture")!

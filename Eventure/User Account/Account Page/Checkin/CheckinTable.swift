@@ -14,7 +14,6 @@ class CheckinTable: UIViewController {
     private let refreshControl = UIRefreshControl()
     
     private var event: Event!
-    private var sheetInfo: SignupSheet!
     private var banner: UIVisualEffectView!
     
     private var emptyLabel: UILabel!
@@ -32,19 +31,32 @@ class CheckinTable: UIViewController {
     
     var sortedRegistrants = [Registrant]()
     
-    required init(event: Event, sheet: SignupSheet) {
+    required init(event: Event) {
         super.init(nibName: nil, bundle: nil)
         
         self.event = event
-        self.sheetInfo = sheet
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.view.backgroundColor = .clear
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        navigationController?.navigationBar.shadowImage = nil
+        navigationController?.view.backgroundColor = nil
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.view.backgroundColor = .clear
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
@@ -198,11 +210,11 @@ class CheckinTable: UIViewController {
     
     
     private func reloadStats() {
-        let word = sheetInfo.currentOccupied == 1 ? "person" : "people"
-        if sheetInfo.capacity == 0 {
-            checkinSubtitle.text = "\(sheetInfo.currentOccupied) \(word) checked in"
+        let word = sortedRegistrants.count == 1 ? "person" : "people"
+        if event.capacity == 0 {
+            checkinSubtitle.text = "\(sortedRegistrants.count) \(word) checked in"
         } else {
-            checkinSubtitle.text = "\(sheetInfo.currentOccupied) / \(sheetInfo.capacity) \(word) checked in."
+            checkinSubtitle.text = "\(sortedRegistrants) / \(event.capacity) \(word) checked in."
         }
     }
     
@@ -241,7 +253,6 @@ class CheckinTable: UIViewController {
                     registrant.profilePicture = self.registrantProfiles[registrant.userID]
                     tmp.insert(registrant)
                 }
-                self.sheetInfo.currentOccupied = tmp.count
                 
                 self.sortedRegistrants = tmp.sorted { r1, r2 in
                     r1.checkedInDate.timeIntervalSince(r1.checkedInDate) <= 0

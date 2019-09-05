@@ -10,13 +10,15 @@ import Foundation
 import UIKit
 import SwiftyJSON
 
-class OrgProfilePage: UITableViewController {
+class OrgProfilePage: UITableViewController, EditableInfoProvider {
     
     var parentVC: OrgAccountPageController?
     
     private var contentCells = [[UITableViewCell]]()
     private var saveBarButton: UIBarButtonItem!
     private var spinner: UIActivityIndicatorView!
+    
+    var cellsEditable: Bool { return true }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -391,5 +393,5 @@ class OrgProfilePage: UITableViewController {
     
     
     
-}//class ends here
+}
 

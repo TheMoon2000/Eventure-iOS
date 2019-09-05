@@ -28,6 +28,7 @@ class EventDetailPage: UIViewController {
     /// The event which the current view controller displays.
     var event: Event!
     
+    var interestedStatusChanged: ((Bool) -> ())?
     var orgEventView: OrgEventViewController?
     
     private var hideBlankImages = true
@@ -291,18 +292,27 @@ class EventDetailPage: UIViewController {
         if User.current!.interestedEvents.contains(event.uuid) {
             interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
             User.current?.interestedEvents.remove(event.uuid)
+            event.interested.remove(User.current!.uuid)
             status = false
         } else {
-            interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+            self.interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
             User.current?.interestedEvents.insert(event.uuid)
+            event.interested.insert(User.current!.uuid)
             status = true
         }
         
+        if let v = tabStrip.viewControllers.last as? OtherViewController {
+            v.interestedText.text = String(event.interested.count ?? 0)
+        }
+        
+        interestedStatusChanged?(status)
+    
         User.current?.syncInterested(interested: status, for: event) { success in
             if !success {
                 internetUnavailableError(vc: self)
             }
         }
+        
     }
 
     @objc private func moreActions() {

@@ -351,6 +351,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         lastReturnDate = thisDate
         
         if let eventID = filtered.first {
+            UISelectionFeedbackGenerator().selectionChanged()
             presentCheckinForm(eventID: eventID)
         } else {
             cameraPrompt.text = INVALID_CODE

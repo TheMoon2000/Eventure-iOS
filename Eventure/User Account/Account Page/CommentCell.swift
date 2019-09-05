@@ -70,7 +70,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
         
         placeholder = {
             let label = UILabel()
-            label.text = "Comments and thoughts..."
+            label.text = "Additional information"
             label.textColor = .init(white: 0.79, alpha: 1)
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false

@@ -40,9 +40,6 @@ class CheckinResults: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.view.backgroundColor = .clear
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
@@ -99,6 +96,7 @@ class CheckinResults: UIViewController {
         checkinTable = {
             let tv = UITableView()
             tv.dataSource = self
+            tv.delegate = self
             tv.tableFooterView = UIView()
             tv.separatorStyle = .none
             tv.backgroundColor = .clear
@@ -309,7 +307,26 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let registrant = sortedRegistrants[indexPath.row]
-        print(registrant.name)
+        let profilePage = ProfileInfoPage(profile: registrant)
+        
+        self.navigationController?.pushViewController(profilePage, animated: true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.view.backgroundColor = .clear
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        navigationController?.navigationBar.shadowImage = nil
+        navigationController?.view.backgroundColor = nil
     }
 
 }

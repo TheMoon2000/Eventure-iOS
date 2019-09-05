@@ -125,7 +125,8 @@ class OrgDetailPage: UIViewController {
                 label.font = .systemFont(ofSize: 16.5)
                 label.textColor = .lightGray
                 label.text = "Loading member info..."
-                label.text = "Active Members: \(organization.members.count)"
+                let noun = organization.numberOfEvents == 1 ? "Event" : "Events"
+                label.text = "\(organization.subscribers.count) " + noun
                 label.textColor = .gray
 
                 label.translatesAutoresizingMaskIntoConstraints = false
@@ -249,10 +250,6 @@ class OrgDetailPage: UIViewController {
                     serverMaintenanceError(vc: self) {
                         toggle(false) // Toggle back to the original state
                     }
-                }
-            } else if msg != "success" {
-                DispatchQueue.main.async {
-                    toggle(false)
                 }
             }
         }

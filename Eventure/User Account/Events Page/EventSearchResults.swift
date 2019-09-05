@@ -11,7 +11,9 @@ import UIKit
 class EventSearchResults: UITableViewController, UISearchResultsUpdating {
     
     private var parentVC: EventViewController!
-    var allEvents = [Event]()
+    var allEvents: [Event] {
+        return parentVC.filteredEvents
+    }
     var filteredEvents = [Event]()
     
     required init(parentVC: EventViewController) {
@@ -44,6 +46,7 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
         if let cover = thisEvent.eventVisual {
             cell.icon.image = cover
         } else {
+            cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
             thisEvent.getCover { eventWithVisual in
                 cell.icon.image = eventWithVisual.eventVisual
             }

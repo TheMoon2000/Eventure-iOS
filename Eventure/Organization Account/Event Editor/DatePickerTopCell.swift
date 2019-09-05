@@ -27,7 +27,7 @@ class DatePickerTopCell: UITableViewCell {
     private var bgView: UIView!
     private var leftLabel: UILabel!
     private var indicator: UIView!
-    private var rightLabel: UILabel!
+    private(set) var rightLabel: UILabel!
     
     var displayedDate = Date() {
         didSet {
@@ -97,7 +97,7 @@ class DatePickerTopCell: UITableViewCell {
         rightLabel = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.text = "Any time"
+            label.text = "No time selected"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
             label.textColor = MAIN_TINT

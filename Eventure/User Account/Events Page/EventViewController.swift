@@ -25,18 +25,18 @@ class EventViewController: UIViewController {
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
     
-    private var shouldFilter: Bool = false
+//    private var shouldFilter: Bool = false
     public static var chosenTags = Set<String>()
-    public static var start = Date.distantPast
-    public static var end = Date.distantFuture
+    public static var start: Date?
+    public static var end: Date?
     
     private(set) var allEvents = [Event]() {
         didSet {
             updateFiltered()
-            searchResultTable.allEvents = allEvents
         }
     }
-    private var filteredEvents = [Event]()
+    
+    private(set) var filteredEvents = [Event]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,8 +88,8 @@ class EventViewController: UIViewController {
         
         topTab = {
             let tab = UISegmentedControl(items: ["All Events", "Trending", "Recommended"])
+            tab.setEnabled(false, forSegmentAt: 1)
             if User.current == nil {
-                tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
             tab.tintColor = MAIN_TINT
@@ -171,11 +171,11 @@ class EventViewController: UIViewController {
         }()
         
         updateEvents()
-        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
     }
     
     @objc private func filteredByUser() {
-        shouldFilter = true
+//        shouldFilter = true
         self.updateEvents()
     }
 
@@ -231,10 +231,10 @@ class EventViewController: UIViewController {
                         return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)
                     })
                     DispatchQueue.main.async {
-                        stop()
                         self.allEvents = tmp
                         self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
                         self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+                        stop()
                     }
                 }
             } else {
@@ -258,12 +258,18 @@ class EventViewController: UIViewController {
     
     @objc private func openOptions() {
         // TODO: filtering options here
+        /*
         let filter = FilterPageViewController()
         let nav = UINavigationController(rootViewController: filter)
         nav.navigationBar.tintColor = MAIN_TINT
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
+        */
+        let filterTable = FilterDateTableViewController(parentVC: self)
+        let nav = CheckinNavigationController(rootViewController:
+            filterTable)
+        present(nav, animated: true)
     }
     
 
@@ -287,7 +293,15 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailPage = EventDetailPage()
-        detailPage.hidesBottomBarWhenPushed = true
+        detailPage.interestedStatusChanged = { status in
+            if let cell = collectionView.cellForItem(at: indexPath) as? EventCell {
+                if status {
+                    cell.interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+                } else {
+                    cell.interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+                }
+            }
+        }
         detailPage.event = filteredEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
     }
@@ -339,51 +353,57 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
 }
 
 
-extension EventViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.global(qos: .default).async {
-            self.updateFiltered()
-            DispatchQueue.main.async {
-                self.eventCatalog.reloadData()
+extension EventViewController {
+    
+    func refilter() {
+        self.emptyLabel.text = ""
+        self.updateFiltered {
+            self.spinner.startAnimating()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.eventCatalog.reloadSections([0])
+                self.spinner.stopAnimating()
+                self.emptyLabel.text = self.filteredEvents.isEmpty ? "No Events" : ""
             }
         }
     }
     
-    private func updateFiltered() {
-        let searchText = searchController.searchBar.text!.lowercased()
-        var cnt = 0
-        filteredEvents = allEvents.filter { (event: Event) -> Bool in
-            let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
-            var condition = true
-            if tabName == "All Events" {
-                if (shouldFilter) {
-                    if (EventViewController.chosenTags.count > 0) {
-                        print(EventViewController.chosenTags)
-                        condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
-                    }
-                    condition = condition && event.startTime! >= EventViewController.start
-                    condition = condition && event.endTime! <= EventViewController.end
-                    cnt += 1
-                    if (cnt == allEvents.count) {
-                        EventViewController.chosenTags.removeAll()
-                        EventViewController.start = Date.distantPast
-                        EventViewController.end = Date.distantFuture
-                        shouldFilter = false
-                    }
+    func updateFiltered(handler: (() -> ())? = nil) {
+//        var cnt = 0
+        let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
+        DispatchQueue.global(qos: .default).async {
+            self.filteredEvents = self.allEvents.filter { (event: Event) -> Bool in
+                
+                if event.startTime == nil || event.endTime == nil { return false }
+                if event.startTime! < (EventViewController.start ?? Date()) {
+                    return false
                 }
+                
+                if let end = EventViewController.end, event.endTime! > end {
+                    return false
+                }
+                
+                if !EventViewController.chosenTags.isEmpty && event.tags.intersection(EventViewController.chosenTags).isEmpty {
+                    return false
+                }
+                
+                if tabName == "Recommended" {
+                    // If the current tab is 'Recommended', the current user must be logged in
+                    if event.tags.intersection(User.current!.tags).isEmpty {
+                        return false
+                    }
+                } else if tabName == "Trending" {
+                    // TODO: Replace with code to filter out non-trending events
+                }
+
+                return true
             }
-            else if tabName == "Recommended" {
-                // If the current tab is 'Recommended', the current user must be logged in
-                condition = !event.tags.intersection(User.current!.tags).isEmpty
-            } else if tabName == "Trending" {
-                // TODO: Replace with code to filter out non-trending events
+            print("\(self.allEvents.count) events, \(self.filteredEvents.count) visible")
+            // TODO: Apply sorting algorithm depending on user settings
+            self.filteredEvents.sort(by: { $0.startTime! < $1.startTime! })
+            DispatchQueue.main.async {
+                handler?()
             }
-            condition = condition && Date() <= event.startTime!
-            return condition && (searchText.isEmpty || event.title.lowercased().contains(searchText) || event.eventDescription.lowercased().contains(searchText))
         }
-        print("\(allEvents.count) events, \(filteredEvents.count) visible")
-        // TODO: Apply sorting algorithm depending on user settings
-        filteredEvents.sort(by: { $0.startTime as Date! < $1.startTime as Date! })
     }
     
    

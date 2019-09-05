@@ -100,8 +100,8 @@ class CheckinPageController: UIPageViewController {
             navigationItem.title = "Checkin Overview"
             vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
         } else {
-            navigationItem.title = nil
-            vc = CheckinTable(event: event, sheet: self.sheetInfo!)
+            navigationItem.title = ""
+            vc = CheckinTable(event: event)
         }
         spinner.stopAnimating()
         self.setViewControllers([vc], direction: .forward, animated: true)
@@ -112,7 +112,7 @@ class CheckinPageController: UIPageViewController {
     }
     
     func flipPage() {
-        let vc = CheckinTable(event: event, sheet: sheetInfo!)
+        let vc = CheckinTable(event: event)
         navigationItem.title = ""
         self.setViewControllers([vc], direction: .forward, animated: true)
     }

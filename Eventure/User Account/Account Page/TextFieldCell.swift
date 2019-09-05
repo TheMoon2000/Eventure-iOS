@@ -11,7 +11,7 @@ import SafariServices
 
 class TextFieldCell: UITableViewCell, UITextFieldDelegate {
 
-    private var parentVC: UIViewController!
+    private var parentVC: EditableInfoProvider!
     
     var icon: UIImageView!
     var linkButton: UIButton!
@@ -33,7 +33,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
     }
     private var linkButtonWidth: NSLayoutConstraint!
     
-    required init(parentVC: UIViewController) {
+    required init(parentVC: EditableInfoProvider) {
         super.init(style: .default, reuseIdentifier: nil)
         
         self.parentVC = parentVC
@@ -127,6 +127,10 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         } else {
             print(currentLink! + " cannot be opened")
         }
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return parentVC.cellsEditable
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {

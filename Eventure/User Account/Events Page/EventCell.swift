@@ -17,7 +17,7 @@ class EventCell: UICollectionViewCell {
     private var card: UIView!
     private var cover: UIImageView!
     private var interestBG: UIView!
-    private var interestedButton: UIButton!
+    private(set) var interestedButton: UIButton!
     
     private var timeLabel: UILabel!
     private var locationLabel: UILabel!
@@ -91,7 +91,7 @@ class EventCell: UICollectionViewCell {
         
         interestBG = {
             let view = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-            view.alpha = 0.6
+            view.alpha = 0.7
             view.isHidden = User.current == nil
             view.layer.cornerRadius = 5
             view.layer.masksToBounds = true

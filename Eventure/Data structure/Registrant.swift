@@ -10,16 +10,16 @@ import UIKit
 import SwiftyJSON
 
 /// An overview of a user's professional profile.
-class Registrant: Hashable {
+class Registrant: Hashable, Profile {
     
     let showProfile: Bool
     let checkedInDate: Date
 
-    let userID: Int
-    let orgID: String
-    let name: String
-    let major: String
-    let email: String
+    var userID: Int
+    var orgID: String
+    var name: String
+    var major: String
+    var email: String
     
     let graduationYear: Int?
     let graduationSeason: User.GraduationSeason?
@@ -32,6 +32,8 @@ class Registrant: Hashable {
     let comments: String
     
     var profilePicture: UIImage?
+    
+    var editable: Bool { return false }
     
     init(json: JSON) {
         let dictionary = json.dictionaryValue

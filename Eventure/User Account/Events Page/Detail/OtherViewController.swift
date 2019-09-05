@@ -20,13 +20,13 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     private var hostLink: UIButton!
     
     private var locationLabel: UILabel!
-    private var locationText: UILabel!
+    private(set) var locationText: UILabel!
     
     private var dateLabel: UILabel!
-    private var dateText: UILabel!
+    private(set) var dateText: UILabel!
     
     private var interestedLabel: UILabel!
-    private var interestedText: UILabel!
+    private(set) var interestedText: UILabel!
     
     var heightConstraint: NSLayoutConstraint?
 
@@ -183,7 +183,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = String(event.interested.count)
+            label.text = String(event.interested.count ?? 0)
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
