@@ -73,6 +73,8 @@
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
 		CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69A08D22F699F500C9920E /* SeparatorView.swift */; };
 		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
+		CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */; };
+		CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */; };
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
 		CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */; };
 		CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469C6230FDB9B004E7B9D /* EventDraft.swift */; };
@@ -201,6 +203,8 @@
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
 		CC69A08D22F699F500C9920E /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
 		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
+		CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscribersCell.swift; path = "Eventure/Organization Account/Account Page/SubscribersCell.swift"; sourceTree = SOURCE_ROOT; };
+		CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DescriptionEditPage.swift; path = "Eventure/Organization Account/Account Page/DescriptionEditPage.swift"; sourceTree = SOURCE_ROOT; };
 		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
 		CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgContactInfo.swift; sourceTree = "<group>"; };
 		CC8469C6230FDB9B004E7B9D /* EventDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDraft.swift; sourceTree = "<group>"; };
@@ -514,6 +518,8 @@
 		CCA6CF76231A6889005D8BB2 /* Account Page */ = {
 			isa = PBXGroup;
 			children = (
+				CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */,
+				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				EB94457F231F322E00631D8E /* OrgEventBriefPage.swift */,
 				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
 				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
@@ -808,6 +814,7 @@
 				CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */,
 				EB944582231F322E00631D8E /* OrgSettingInfoPage.swift in Sources */,
 				CCA3EB302317A352008538A6 /* SettingsItemCell.swift in Sources */,
+				CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */,
 				67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */,
@@ -839,6 +846,7 @@
 				CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
+				CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */,
 				677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */,
 				CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */,
 				CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */,
