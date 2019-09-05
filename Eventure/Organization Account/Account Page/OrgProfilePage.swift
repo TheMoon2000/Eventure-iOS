@@ -292,6 +292,11 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         tableView.deselectRow(at: indexPath, animated: true)
         
         switch indexPath {
+        case [3, 0]:
+            let editPage = DescriptionEditPage()
+            editPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(editPage, animated: true)
+            
         case [2, 0]:
             //This is the case when you hit Tags cell: org changing their tags
             let tagPicker = TagPickerView()
@@ -341,7 +346,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             //push the TagPicker Page
             tagPicker.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(tagPicker, animated: true)
-            
+        
         default:
             break
         }
