@@ -20,16 +20,10 @@ class ProfilePreviewCell: UITableViewCell {
         
         icon = {
             let iv = UIImageView()
-<<<<<<< HEAD
             iv.tintColor = MAIN_DISABLED
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.layer.masksToBounds = true
             iv.layer.cornerRadius = 10
-=======
-            iv.tintColor = MAIN_TINT
-            iv.contentMode = .scaleAspectFit
-            iv.translatesAutoresizingMaskIntoConstraints = false
->>>>>>> origin/prince_new
             addSubview(iv)
             
             iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 18).isActive = true
@@ -78,9 +72,6 @@ class ProfilePreviewCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-<<<<<<< HEAD
     
 
-=======
->>>>>>> origin/prince_new
 }
