@@ -113,6 +113,60 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let eventUUID = displayedRecords[indexPath.section][indexPath.row].sheetID
+        
+        spinner.startAnimating()
+        spinnerLabel.text = "Retrieving..ad"
+        spinnerLabel.isHidden = false
+        
+        var parameters = [String : String]()
+        parameters["uuid"] = eventUUID
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEvent", parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    self.spinner.stopAnimating()
+                    self.spinnerLabel.isHidden = true
+                    internetUnavailableError(vc: self)
+                    self.navigationController?.popViewController(animated: true)
+                }
+                return
+            }
+            
+            if let eventDictionary = try? JSON(data: data!){
+                let event = Event(eventInfo: eventDictionary)
+                
+                event.getCover { eventWithImage in
+                    let detailPage = EventDetailPage()
+                    detailPage.hidesBottomBarWhenPushed = true
+                    detailPage.event = eventWithImage
+                    self.navigationController?.pushViewController(detailPage, animated: true)
+                }
+                
+                DispatchQueue.main.async {
+                    
+                }
+                
+                
+            } else {
+                print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
+                if String(data: data!, encoding: .utf8) == INTERNAL_ERROR {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self)
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
+            }
+        }
+        
+        task.resume()
         
         print(indexPath.row)
     }
