@@ -305,9 +305,62 @@ class User {
                 return // Don't display any alert here
             }
             
-            self.profilePicture = UIImage(data: data!) ?? #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
-            DispatchQueue.main.async {
-                handler?(self)
+            self.profilePicture = UIImage(data: data!)
+            if self.profilePicture != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func uploadProfilePicture(new: UIImage, _ handler: ((Bool) -> ())?) {
+        
+        var original = profilePicture
+        profilePicture = new
+        
+        let url = URL(string: API_BASE_URL + "account/UpdateProfilePicture")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let parameters = ["userId": String(uuid)]
+        
+        var fileData = [String : Data]()
+        fileData["picture"] = new.pngData()
+        
+        request.addMultipartBody(parameters: parameters as [String : String],
+                                 files: fileData)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                self.profilePicture = original
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+
+            let msg = String(data: data!, encoding: .utf8)!
+            switch msg {
+            case INTERNAL_ERROR:
+                self.profilePicture = original
+                handler?(false)
+            case "success":
+                print("User profile updated")
+                self.profilePicture = new
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+            default:
+                self.profilePicture = original
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
             }
         }
         

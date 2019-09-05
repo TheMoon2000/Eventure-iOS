@@ -69,7 +69,7 @@ class AboutPage: UIViewController {
             let tv = UITextView()
             tv.isEditable = false
             tv.isScrollEnabled = false
-            tv.attributedText = "Eventure is a mobile app developed by a group of students from UC Berkeley (**Calpha Dev**) as a platform dedicated to college students for event exploration and promotion.".attributedText()
+            tv.attributedText = "Eventure is a mobile app developed by a group of students from UC Berkeley (**Calpha Dev**) as a platform dedicated to college students for on-campus event exploration and promotion.".attributedText()
             tv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(tv)
             

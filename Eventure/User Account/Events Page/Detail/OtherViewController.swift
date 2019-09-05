@@ -39,6 +39,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         
         event.fetchHostInfo { org in
             print(org)
+            self.hostLink.isUserInteractionEnabled = true
+            self.hostLink.setTitleColor(LINK_COLOR, for: .normal)
         }
         
         
@@ -77,7 +79,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             button.titleLabel?.numberOfLines = 0
             button.titleLabel?.textAlignment = .right
             button.setTitle(event.hostTitle, for: .normal)
-            button.setTitleColor(LINK_COLOR, for: .normal)
+            button.setTitleColor(.darkGray, for: .normal)
+            button.isUserInteractionEnabled = false
             button.contentHorizontalAlignment = .right
             button.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(button)

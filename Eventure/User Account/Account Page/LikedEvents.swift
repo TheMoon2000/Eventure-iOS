@@ -38,7 +38,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "My Favorite Events"
+        title = "Favorites"
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)

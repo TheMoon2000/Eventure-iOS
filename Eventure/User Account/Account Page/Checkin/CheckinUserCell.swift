@@ -43,7 +43,7 @@ class CheckinUserCell: UITableViewCell {
         
         profilePicture = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = MAIN_DISABLED
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -105,11 +105,13 @@ class CheckinUserCell: UITableViewCell {
     
     func setup(registrant: Registrant) {
         self.registrant = registrant
-        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + registrant.name : registrant.name
-        majorLabel.text = registrant.major
+        let name = registrant.name.isEmpty ? User.current!.displayedName : registrant.name
+        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + name : name
+        majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {
+            profilePicture.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
             registrant.getProfilePicture { registrantWithProfile in
                 self.profilePicture.image = registrantWithProfile.profilePicture
             }
