@@ -280,12 +280,6 @@ class EventDetailPage: UIViewController {
         }
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        self.orgEventView?.eventCatalog?.reloadData()
-    }
-    
     @objc private func interestedAction() {
         UISelectionFeedbackGenerator().selectionChanged()
         let status: Bool

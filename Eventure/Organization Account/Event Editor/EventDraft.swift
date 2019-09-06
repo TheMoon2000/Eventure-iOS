@@ -270,11 +270,12 @@ class EventDraft: UIPageViewController {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                self.navigationItem.rightBarButtonItem = doneButton
-            }
+            
             
             guard error == nil else {
+                DispatchQueue.main.async {
+                    self.navigationItem.rightBarButtonItem = doneButton
+                }
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self)
                 }
@@ -285,6 +286,7 @@ class EventDraft: UIPageViewController {
             switch msg {
             case INTERNAL_ERROR:
                 DispatchQueue.main.async {
+                    self.navigationItem.rightBarButtonItem = doneButton
                     serverMaintenanceError(vc: self)
                 }
             case "success":
@@ -300,7 +302,8 @@ class EventDraft: UIPageViewController {
                         self.detailPage?.event = self.draft
                         self.orgEventView?.allEvents = published
                         self.orgEventView?.allDrafts = remaining
-                        self.orgEventView?.eventCatalog.reloadData()
+                        self.orgEventView?.eventCatalog.reloadSections([0])
+                        self.navigationItem.rightBarButtonItem = doneButton
                         self.dismiss(animated: true, completion: nil)
                     }
                 }
@@ -308,6 +311,7 @@ class EventDraft: UIPageViewController {
             default:
                 warning.message = msg
                 DispatchQueue.main.async {
+                    self.navigationItem.rightBarButtonItem = doneButton
                     self.present(warning, animated: true, completion: nil)
                 }
             }
