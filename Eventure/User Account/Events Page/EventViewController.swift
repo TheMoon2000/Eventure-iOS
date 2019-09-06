@@ -174,12 +174,6 @@ class EventViewController: UIViewController {
 //        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
     }
     
-    @objc private func filteredByUser() {
-//        shouldFilter = true
-        self.updateEvents()
-    }
-
-    
     @objc private func updateEvents() {
         //shouldFilter = false
         
@@ -221,11 +215,11 @@ class EventViewController: UIViewController {
             }
             
             if let eventsList = try? JSON(data: data!).arrayValue {
-                var tmp = [Event]()
-                for event in eventsList {
-                    tmp.append(Event(eventInfo: event))
-                }
                 DispatchQueue.global(qos: .default).async {
+                    var tmp = [Event]()
+                    for event in eventsList {
+                        tmp.append(Event(eventInfo: event))
+                    }
                     tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
                         return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)
                     })
@@ -327,8 +321,15 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        guard indexPath.row < filteredEvents.count else {
+            return CGSize(width: 340, height: 500)
+        }
+        
+        let event = filteredEvents[indexPath.row]
+        
         let cell = EventCell()
-        cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
+        cell.setupCellWithEvent(event: event)
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
     }
@@ -347,6 +348,14 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
                             bottom: equalSpacing,
                             right: 8)
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            self.eventCatalog.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
+    }
 }
 
 
@@ -357,19 +366,17 @@ extension EventViewController {
         self.updateFiltered {
             self.spinner.startAnimating()
             self.spinnerLabel.isHidden = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.eventCatalog.reloadSections([0])
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
-                self.emptyLabel.text = self.filteredEvents.isEmpty ? "No Events" : ""
-            }
+            self.eventCatalog.reloadSections([0])
+            self.spinner.stopAnimating()
+            self.spinnerLabel.isHidden = true
+            self.emptyLabel.text = self.filteredEvents.isEmpty ? "No Events" : ""
         }
     }
     
     func updateFiltered(handler: (() -> ())? = nil) {
 //        var cnt = 0
         let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
-        DispatchQueue.global(qos: .default).async {
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + 0.1) {
             self.filteredEvents = self.allEvents.filter { (event: Event) -> Bool in
                 
                 if event.startTime == nil || event.endTime == nil { return false }

@@ -118,7 +118,7 @@ class MainTabBarController: UITabBarController {
         } else {
             print("Logged in as organization '\(Organization.current?.title ?? "unknown")'")
             setupOrganizationTabs()
-            Organization.current?.save()
+            Organization.current?.save(requireReupload: false)
             Organization.current?.getLogoImage(nil)
         }
         selectedIndex = page

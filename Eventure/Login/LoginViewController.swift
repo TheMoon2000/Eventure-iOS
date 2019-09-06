@@ -175,7 +175,12 @@ class LoginViewController: UIViewController {
             usr.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(usr)
             
-            usr.widthAnchor.constraint(equalToConstant: 240).isActive = true
+            usr.widthAnchor.constraint(lessThanOrEqualToConstant: 280).isActive = true
+            let w = usr.widthAnchor.constraint(equalToConstant: 260)
+            w.priority = .defaultHigh
+            w.isActive = true
+            usr.widthAnchor.constraint(greaterThanOrEqualToConstant: 220).isActive = true
+            usr.leftAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leftAnchor, constant: 65).isActive = true
             usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
             usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             usr.topAnchor.constraint(equalTo: logo.bottomAnchor,
@@ -224,7 +229,7 @@ class LoginViewController: UIViewController {
             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
             button.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             button.topAnchor.constraint(lessThanOrEqualTo: pswd.bottomAnchor, constant: 32).isActive = true
-            button.topAnchor.constraint(greaterThanOrEqualTo: pswd.bottomAnchor, constant: 20).isActive = true
+            button.topAnchor.constraint(greaterThanOrEqualTo: pswd.bottomAnchor, constant: 18).isActive = true
             
             // Actions
             button.addTarget(self,
@@ -451,7 +456,7 @@ class LoginViewController: UIViewController {
         
         func handleOrgLogin(org: Organization) {
             Organization.current = org
-            Organization.current?.save()
+            Organization.current?.save(requireReupload: false)
             MainTabBarController.current.openScreen(isUserAccount: false)
         }
         

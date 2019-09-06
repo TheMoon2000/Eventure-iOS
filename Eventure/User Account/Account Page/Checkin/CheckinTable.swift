@@ -162,7 +162,7 @@ class CheckinTable: UIViewController {
             iv.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 35).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.leftAnchor.constraint(greaterThanOrEqualTo: bottomBanner.leftAnchor, constant: 15).isActive = true
             iv.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -347,8 +347,8 @@ extension CheckinTable: UITableViewDataSource {
         let current = sortedRegistrants[indexPath.row]
         if current.profilePicture == nil {
             current.getProfilePicture { new in
-                current.profilePicture = new.profilePicture
                 self.registrantProfiles[new.userID] = new.profilePicture
+                cell.profilePicture.image = new.profilePicture
             }
         }
         cell.setup(registrant: current)

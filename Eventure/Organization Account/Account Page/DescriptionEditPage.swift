@@ -22,7 +22,10 @@ class DescriptionEditPage: UIViewController {
     private var previewText: UITextView!
     private var charCount: UILabel!
     private var spinner: UIActivityIndicatorView!
+    private var spinnerBarItem: UIBarButtonItem!
     private var saveBarButton: UIBarButtonItem!
+    
+    var edited = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -188,6 +191,7 @@ class DescriptionEditPage: UIViewController {
         
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
+        spinnerBarItem = .init(customView: spinner)
     }
     
     
@@ -200,18 +204,22 @@ class DescriptionEditPage: UIViewController {
     }
     
     @objc private func closeEditor() {
-        let alert = UIAlertController(title: "Caution", message: "You have unsaved changes", preferredStyle: .alert)
-        alert.addAction(.init(title: "Save", style: .default, handler: { _ in
-            self.save() {
+        if edited {
+            let alert = UIAlertController(title: "Caution", message: "You have unsaved changes", preferredStyle: .alert)
+            alert.addAction(.init(title: "Save", style: .default, handler: { _ in
+                self.saveWithHandler {
+                    self.navigationController?.popViewController(animated: true)
+                }
+            }))
+            alert.addAction(.init(title: "Discard", style: .destructive, handler: {
+                _ in
                 self.navigationController?.popViewController(animated: true)
-            }
-        }))
-        alert.addAction(.init(title: "Discard", style: .destructive, handler: {
-            _ in
+            }))
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            self.present(alert, animated: true)
+        } else {
             self.navigationController?.popViewController(animated: true)
-        }))
-        alert.addAction(.init(title: "Cancel", style: .cancel))
-        self.present(alert, animated: true)
+        }
     }
     
 //    override func viewWillDisappear(_ animated: Bool) {
@@ -249,22 +257,29 @@ class DescriptionEditPage: UIViewController {
         descriptionPlaceholder.isHidden = true
     }
     
-    @objc private func save(handler: (() -> ())? = nil) {
+    @objc private func saveWithHandler(_ handler: (() -> ())?) {
         guard let org = Organization.current else {
             return
         }
         
         org.orgDescription = descriptionText.text
-        navigationItem.rightBarButtonItem = .init(customView: spinner)
-
+        navigationItem.rightBarButtonItem = spinnerBarItem
+            
         org.pushToServer { success in
+            self.edited = false
             self.navigationItem.rightBarButtonItem = self.saveBarButton
             if !success {
                 let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your organization's settings could not be automatically, either due to poor internet connection or an unknown server error. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten. If this is a recurring problem, please email us at support@eventure-app.com.", preferredStyle: .alert)
                 alert.addAction(.init(title: "I Understand", style: .cancel))
                 self.present(alert, animated: true, completion: nil)
+            } else {
+                handler?()
             }
         }
+    }
+    
+    @objc private func save() {
+        saveWithHandler(nil)
     }
 }
     
@@ -283,6 +298,7 @@ extension DescriptionEditPage: UITextViewDelegate {
         descriptionPlaceholder.isHidden = !textView.text.isEmpty
         updateWordCount()
         scrollToCursor()
+        edited = true
     }
     
     func textViewDidChangeSelection(_ textView: UITextView) {

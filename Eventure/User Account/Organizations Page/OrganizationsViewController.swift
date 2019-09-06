@@ -281,7 +281,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
                 return true
             }
             
-            self.filteredOrgs.sort(by: { $0.title < $1.title })
+            self.filteredOrgs.sort(by: { $0.title.lowercased() < $1.title.lowercased() })
             
             DispatchQueue.main.async {
                 self.orgTable.reloadSections([0], with: .none)

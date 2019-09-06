@@ -8,6 +8,7 @@
 
 import UIKit
 import XLPagerTabStrip
+import SafariServices
 
 class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
     
@@ -26,6 +27,7 @@ class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
             tv.isEditable = false
+            tv.delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(tv)
             
@@ -50,3 +52,12 @@ class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
         super.init(coder: aDecoder)
     }
 }
+
+extension OrgDescriptionText: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        let vc = SFSafariViewController(url: URL)
+        present(vc, animated: true)
+        return false
+    }
+}
+

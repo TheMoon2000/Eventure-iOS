@@ -288,17 +288,18 @@ class EventDraft: UIPageViewController {
                     serverMaintenanceError(vc: self)
                 }
             case "success":
+                self.draft.published = true
                 self.draft.lastModified = Date()
                 EventDraft.removeDraft(uuid: self.draft.uuid) { remaining in
+
                     var published: Set<Event> = self.orgEventView?.allEvents ?? []
+                    published.remove(self.draft)
                     published.insert(self.draft)
                     
-                    self.detailPage?.event = self.draft
-                    
                     DispatchQueue.main.async {
+                        self.detailPage?.event = self.draft
                         self.orgEventView?.allEvents = published
                         self.orgEventView?.allDrafts = remaining
-                        self.orgEventView?.updateFiltered()
                         self.orgEventView?.eventCatalog.reloadData()
                         self.dismiss(animated: true, completion: nil)
                     }

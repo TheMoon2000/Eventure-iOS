@@ -14,12 +14,6 @@ class FilterDateTableViewController: UITableViewController {
     
     var contentCells = [UITableViewCell]()
     
-    private(set) var tags = Set<String>() {
-        didSet {
-            self.updateEventVC()
-        }
-    }
-    
     var startTimeExpanded = false
     var endTimeExpanded = false
     
@@ -44,6 +38,7 @@ class FilterDateTableViewController: UITableViewController {
         tableView.contentInset.top = 8
         tableView.tintColor = MAIN_TINT
         
+        navigationItem.leftBarButtonItem = .init(title: "Reset", style: .plain, target: self, action: #selector(reset))
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(close))
         
         let startTopCell = DatePickerTopCell(title: "Start time:")
@@ -101,7 +96,8 @@ class FilterDateTableViewController: UITableViewController {
         contentCells.append(endBottomCell)
         
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
-        tagPickerCell.reloadTagPrompt(tags: self.tags)
+        tagPickerCell.maxPicks = 10
+        tagPickerCell.reloadTagPrompt(tags: EventViewController.chosenTags)
         contentCells.append(tagPickerCell)
     }
     
@@ -114,8 +110,12 @@ class FilterDateTableViewController: UITableViewController {
         self.dismiss(animated: true)
     }
     
-    private func updateEventVC() {
-        EventViewController.chosenTags = tags
+    @objc private func reset() {
+        EventViewController.chosenTags.removeAll()
+        EventViewController.start = nil
+        EventViewController.end = nil
+        self.dismiss(animated: true)
+        parentVC.refilter()
     }
     
     // MARK: - Table view data source & delegate
@@ -183,8 +183,8 @@ class FilterDateTableViewController: UITableViewController {
             tableView.endUpdates()
         case 4:
             let tagPicker = TagPickerView()
-            tagPicker.customTitle = "Pick 1 ~ 3 tags to find your favorite events!"
-            tagPicker.customSubtitle = ""
+            tagPicker.customTitle = "Filter events by tags"
+            tagPicker.customSubtitle = "Only events that match at least one of your selected tags will be shown."
             tagPicker.maxPicks = 3
             tagPicker.customButtonTitle = "Done"
             tagPicker.customContinueMethod = { tagPicker in
@@ -193,7 +193,7 @@ class FilterDateTableViewController: UITableViewController {
             }
             
             tagPicker.customDisappearHandler = { [ weak self ] tags in
-                self?.tags = tagPicker.selectedTags
+                EventViewController.chosenTags = tagPicker.selectedTags
                 if let tagCell = (self?.contentCells.last as? ChooseTagCell) {
                     tagCell.reloadTagPrompt(tags: tags)
                 }
@@ -203,7 +203,7 @@ class FilterDateTableViewController: UITableViewController {
                 self.navigationController?.popViewController(animated: true)
             }
             
-            tagPicker.selectedTags = self.tags
+            tagPicker.selectedTags = EventViewController.chosenTags
             
             navigationController?.pushViewController(tagPicker, animated: true)
         default:

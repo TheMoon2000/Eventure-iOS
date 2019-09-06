@@ -68,6 +68,7 @@ class OrgEventViewController: UIViewController {
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Your Events"
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
@@ -221,6 +222,7 @@ class OrgEventViewController: UIViewController {
             spinner.startAnimating()
             spinnerLabel.isHidden = false
             allEvents.removeAll()
+            filteredEvents.removeAll()
             eventCatalog.reloadData()
             refreshControl.isEnabled = false
             refreshControl.isHidden = true
@@ -390,6 +392,11 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cell = OrgEventCell()
+        
+        guard indexPath.row < filteredEvents.count else {
+            return CGSize(width: 350, height: 550) // Arbitrary size
+        }
+        
         cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
@@ -455,7 +462,7 @@ extension OrgEventViewController: UISearchResultsUpdating {
         self.eventCatalog.reloadData()
     }
     
-    func updateFiltered( ) {
+    func updateFiltered() {
         if topTab.selectedSegmentIndex == 0 {
             filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
             . sorted(by: { sortFunction(event1: $0, event2: $1) })

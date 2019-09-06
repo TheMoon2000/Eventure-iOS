@@ -80,12 +80,11 @@ class TagPickerView: UIViewController {
                 let label = UILabel()
                 label.text = customTitle ?? "What Interests You?"
                 label.textAlignment = .center
-                label.lineBreakMode = .byWordWrapping
                 label.numberOfLines = 0
                 if customSubtitle == "" {
                     label.font = .systemFont(ofSize: 23, weight: .medium)
                 } else {
-                    label.font = .systemFont(ofSize: 26, weight: .semibold)
+                    label.font = .systemFont(ofSize: 25, weight: .semibold)
                 }
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
@@ -101,13 +100,15 @@ class TagPickerView: UIViewController {
             subtitleLabel = {
                 let label = UILabel()
                 label.text = customSubtitle ?? "Pick at least one. The more the better!"
+                label.textAlignment = .center
                 label.numberOfLines = 0
                 label.font = .systemFont(ofSize: 16)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
                 
                 label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
-                label.centerXAnchor.constraint(equalTo: banner.centerXAnchor).isActive = true
+                label.leftAnchor.constraint(equalTo: titleLabel.leftAnchor).isActive = true
+                label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
                 
                 if label.text!.isEmpty {
                     label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -20).isActive = true

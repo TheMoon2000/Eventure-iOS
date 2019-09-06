@@ -27,7 +27,7 @@ class Organization: CustomStringConvertible {
     var password_MD5: String { didSet { save() } }
     var active: Bool { didSet { save() } }
     var dateRegistered: String { didSet { save() } }
-    var logoImage: UIImage? { didSet { save() } }
+    var logoImage: UIImage? { didSet { save(requireReupload: false) } }
     var hasLogo: Bool
     var subscribers = Set<Int>() { didSet { save() } }
     var numberOfEvents = 0
@@ -49,7 +49,11 @@ class Organization: CustomStringConvertible {
     static var waitingForSync = false
 
     /// Whether the changes made locally are yet to be uploaded.
-    static var needsUpload = false
+    static var needsUpload = false {
+        didSet {
+            print("org needs upload = \(needsUpload)")
+        }
+    }
 
     var profileStatus: String {
         var allEmpty = true
@@ -172,11 +176,13 @@ class Organization: CustomStringConvertible {
     }
 
     /// Short-cut for writeToFile().
-    func save() {
+    func save(requireReupload: Bool = true) {
         if !saveEnabled { return }
         if self.id != Organization.current?.id { return }
 
-        Organization.needsUpload = true
+        if requireReupload {
+            Organization.needsUpload = true
+        }
         
         if writeToFile(path: CURRENT_USER_PATH) == false {
             print("WARNING: cannot write organization to \(CURRENT_USER_PATH)")

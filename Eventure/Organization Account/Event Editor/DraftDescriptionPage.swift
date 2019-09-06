@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class DraftDescriptionPage: UIViewController {
     
@@ -225,6 +226,7 @@ class DraftDescriptionPage: UIViewController {
             tv.isHidden = true
             tv.backgroundColor = nil
             tv.isEditable = false
+            tv.delegate = self
             tv.isScrollEnabled = false
             tv.textColor = .gray
             tv.font = .systemFont(ofSize: 17)
@@ -355,6 +357,13 @@ extension DraftDescriptionPage: UITextViewDelegate {
         }
         return true
     }
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        let vc = SFSafariViewController(url: URL)
+        draftPage.present(vc, animated: true)
+        return false
+    }
+
 }
 
 

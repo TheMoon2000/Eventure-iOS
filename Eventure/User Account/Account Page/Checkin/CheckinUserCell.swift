@@ -44,6 +44,8 @@ class CheckinUserCell: UITableViewCell {
         profilePicture = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate))
             iv.tintColor = MAIN_DISABLED
+            iv.layer.cornerRadius = 2
+            iv.layer.masksToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -105,7 +107,11 @@ class CheckinUserCell: UITableViewCell {
     
     func setup(registrant: Registrant) {
         self.registrant = registrant
-        nameLabel.text = registrant.name
+        if User.current?.userID == registrant.userID {
+            nameLabel.text = "(You) " + registrant.name
+        } else {
+            nameLabel.text = registrant.name
+        }
         if nameLabel.text!.isEmpty { nameLabel.text = registrant.email }
         majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
         if registrant.profilePicture != nil {
