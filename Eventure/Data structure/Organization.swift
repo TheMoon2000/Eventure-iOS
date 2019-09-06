@@ -277,6 +277,57 @@ class Organization: CustomStringConvertible {
 
         task.resume()
     }
+    
+    func uploadLogo(new: UIImage, _ handler: ((Bool) -> ())?) {
+        
+        let original = logoImage
+        logoImage = new
+        
+        let url = URL(string: API_BASE_URL + "account/UpdateLogo")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        
+        let parameters = ["id": String(id)]
+        
+        var fileData = [String : Data]()
+        fileData["logo"] = new.pngData()
+        
+        request.addMultipartBody(parameters: parameters as [String : String],
+                                 files: fileData)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                self.logoImage = original
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)!
+            switch msg {
+            case INTERNAL_ERROR:
+                self.logoImage = original
+                handler?(false)
+            case "success":
+                print("Your logo updated")
+                self.logoImage = new
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+            default:
+                self.logoImage = original
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+            }
+        }
+        
+        task.resume()
+    }
 
 }
 

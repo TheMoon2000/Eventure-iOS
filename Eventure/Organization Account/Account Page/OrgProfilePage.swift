@@ -39,7 +39,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             
             let websiteCell = TextFieldCell(parentVC: self)
             websiteCell.textfield.placeholder = "Link to website"
-            websiteCell.icon.image = #imageLiteral(resourceName: "flower")
+            websiteCell.icon.image = UIImage(named: "link")
             websiteCell.linkDetectionEnabled = true
             websiteCell.textfield.keyboardType = .URL
             websiteCell.textfield.autocapitalizationType = .none
@@ -79,7 +79,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             
             let emailCell = TextFieldCell(parentVC: self)
             emailCell.textfield.placeholder = "Contact Email"
-            emailCell.icon.image = #imageLiteral(resourceName: "email")
+            emailCell.icon.image = UIImage(named: "email")
             emailCell.textfield.keyboardType = .emailAddress
             emailCell.textfield.autocapitalizationType = .none
             emailCell.textfield.enablesReturnKeyAutomatically = true
@@ -116,7 +116,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         let section2: [UITableViewCell] = {
             var section = [UITableViewCell]()
             let tagCell = SettingsItemCell()
-            tagCell.icon.image = #imageLiteral(resourceName: "linkedin")
+            tagCell.icon.image = UIImage(named: "tag")
             tagCell.titleLabel.text = "Manage Tags"
             
             section.append(tagCell)
@@ -129,7 +129,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         let section3: [UITableViewCell] = {
             var section = [UITableViewCell]()
             let descriptionCell = SettingsItemCell()
-            descriptionCell.icon.image = #imageLiteral(resourceName: "edit")
+            descriptionCell.icon.image = UIImage(named: "comments")
             descriptionCell.titleLabel.text = "Organization Description"
             
             section.append(descriptionCell)
