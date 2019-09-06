@@ -75,23 +75,7 @@ class AccountCell: UITableViewCell {
     
     func setup(sectionNum: Int, rowNum: Int, type: String) {
         if type == "Account" {
-            if (sectionNum == 0 && rowNum == 0) {
-                functionImage = {
-                    let iv = UIImageView()
-                    iv.translatesAutoresizingMaskIntoConstraints = false
-                    iv.layer.cornerRadius = 20
-                    iv.clipsToBounds = true
-                    addSubview(iv)
-                    
-                    iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-                    iv.widthAnchor.constraint(equalToConstant: 80).isActive = true
-                    iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
-                    iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-                    return iv
-                }()
-                functionImage.image = UIImage(named: "random")
-                function.text = ""
-            } else if (sectionNum == 1 && rowNum == 0) {
+            if (sectionNum == 1 && rowNum == 0) {
                 functionImage.image = UIImage(named: "write")
                 function.text = "Manage Account"
             } else if (sectionNum == 2 && rowNum == 0) {

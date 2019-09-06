@@ -62,7 +62,7 @@ class OrganizationsViewController: UIViewController {
             ev.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             ev.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             ev.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-            ev.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            ev.heightAnchor.constraint(equalToConstant: 50).isActive = true
             
             return ev
         }()

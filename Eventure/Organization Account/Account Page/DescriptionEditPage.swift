@@ -202,7 +202,7 @@ class DescriptionEditPage: UIViewController {
     @objc private func closeEditor() {
         let alert = UIAlertController(title: "Caution", message: "You have unsaved changes", preferredStyle: .alert)
         alert.addAction(.init(title: "Save", style: .default, handler: { _ in
-            self.save(disappearing: false) {
+            self.save() {
                 self.navigationController?.popViewController(animated: true)
             }
         }))
@@ -249,78 +249,23 @@ class DescriptionEditPage: UIViewController {
         descriptionPlaceholder.isHidden = true
     }
     
-    @objc private func save(disappearing: Bool = false, handler: (() -> ())? = nil) {
+    @objc private func save(handler: (() -> ())? = nil) {
         guard let org = Organization.current else {
             return
         }
         
+        org.orgDescription = descriptionText.text
         navigationItem.rightBarButtonItem = .init(customView: spinner)
-        
-        let url = URL.with(base: API_BASE_URL, API_Name: "account/UpdateOrgInfo", parameters: ["id": String(org.id)])!
-        
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        request.httpMethod = "POST"
-        
-        var body = JSON()
-        Organization.current!.orgDescription = descriptionText.text
-        body.dictionaryObject?["Description"] = Organization.current!.orgDescription
-        
-        print(descriptionText.text)
-        print(Organization.current!.orgDescription)
-        
-        request.httpBody = try? body.rawData()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            DispatchQueue.main.async {
-                self.navigationItem.rightBarButtonItem = self.saveBarButton
-            }
-            
-            guard error == nil else {
-                if !disappearing {
-                    DispatchQueue.main.async {
-                        internetUnavailableError(vc: self)
-                    }
-                } else {
-                    let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your organization's settings could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
-                    alert.addAction(.init(title: "I Understand", style: .cancel))
-                    DispatchQueue.main.async {
-                        self.parent?.present(alert, animated: true, completion: nil)
-                    }
-                }
-                return
-            }
-            
-            
-            let msg = String(data: data!, encoding: .utf8)
-            switch msg {
-            case INTERNAL_ERROR:
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
-                }
-            case "success":
-                print("success")
-                DispatchQueue.main.async {
-                    handler?()
-                }
-            default:
-                print(msg!)
-                print("place4")
+
+        org.pushToServer { success in
+            self.navigationItem.rightBarButtonItem = self.saveBarButton
+            if !success {
+                let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your organization's settings could not be automatically, either due to poor internet connection or an unknown server error. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten. If this is a recurring problem, please email us at support@eventure-app.com.", preferredStyle: .alert)
+                alert.addAction(.init(title: "I Understand", style: .cancel))
+                self.present(alert, animated: true, completion: nil)
             }
         }
-        task.resume()
     }
-        
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        if Organization.needsUpload {
-            save(disappearing: true)
-        }
-    }
-    
 }
     
     

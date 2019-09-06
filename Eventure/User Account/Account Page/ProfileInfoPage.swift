@@ -43,6 +43,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         tableView.contentInset.bottom = 10
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
+        tableView.tintColor = MAIN_TINT
         tableView.allowsSelection = cellsEditable
         
         let section0: [UITableViewCell] = {
@@ -67,10 +68,19 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             }
             
             nameCell.returnHandler = { textfield in
-                (self.contentCells[0][1] as! TextFieldCell).textfield.becomeFirstResponder()
+                (self.contentCells[0][2] as! TextFieldCell).textfield.becomeFirstResponder()
             }
             
             section.append(nameCell)
+            
+            if !cellsEditable {
+                let emailCell = EmailProfileCell(parentVC: self)
+                emailCell.emailLabel.text = userProfile.email
+                section.append(emailCell)
+            } else {
+                section.append(UITableViewCell())
+            }
+            
             
             let majorCell = TextFieldCell(parentVC: self)
             majorCell.icon.image = #imageLiteral(resourceName: "major")
@@ -100,7 +110,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             
             section.append(majorCell)
             
-            let gradCell = SettingsItemCell()
+            let gradCell = cellsEditable ? SettingsItemCell() : SettingsItemCell(withAccessory: false)
             gradCell.icon.image = #imageLiteral(resourceName: "graduation")
             gradCell.titleLabel.text = "Year of Graduation:"
             gradCell.valueLabel.text = userProfile.graduation
@@ -291,8 +301,10 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
         
-        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
-        navigationItem.rightBarButtonItem = saveBarButton
+        if cellsEditable {
+            saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
+            navigationItem.rightBarButtonItem = saveBarButton
+        }
     }
     
     @objc private func save(disappearing: Bool = false) {
@@ -401,7 +413,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         
         return header
     }
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return contentCells.count
@@ -413,8 +425,10 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath == [0, 3] {
+        if indexPath == [0, 4] {
             return graduationCellExpanded ? 220 : 0
+        } else if indexPath == [0, 1] {
+            return cellsEditable ? 0 : 55
         }
         return super.tableView(tableView, heightForRowAt: indexPath)
     }
@@ -428,7 +442,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
-        case [0, 2]:
+        case [0, 3]:
             view.endEditing(true)
             graduationCellExpanded.toggle()
             refreshGradCell()
@@ -438,7 +452,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     }
     
     private func refreshGradCell() {
-        let chooserCell = contentCells[0][3] as! GraduationYearChooser
+        let chooserCell = contentCells[0][4] as! GraduationYearChooser
         chooserCell.picker.isUserInteractionEnabled = graduationCellExpanded
         
         UIView.animate(withDuration: 0.2) {

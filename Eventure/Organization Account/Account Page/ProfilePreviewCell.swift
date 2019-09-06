@@ -23,6 +23,8 @@ class ProfilePreviewCell: UITableViewCell {
             let iv = UIImageView()
             iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
+            iv.layer.cornerRadius = 5
+            iv.layer.masksToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -31,7 +33,9 @@ class ProfilePreviewCell: UITableViewCell {
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             iv.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 15).isActive = true
-            iv.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -15).isActive = true
+            let b = iv.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -15)
+            b.priority = .defaultHigh
+            b.isActive = true
             
             
             return iv
@@ -41,7 +45,7 @@ class ProfilePreviewCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .systemFont(ofSize: 18, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
 
             return label
@@ -69,7 +73,7 @@ class ProfilePreviewCell: UITableViewCell {
             stack.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 15).isActive = true
             stack.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -15).isActive = true
             stack.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            stack.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 15).isActive = true
+            stack.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 18).isActive = true
             stack.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             
             return stack

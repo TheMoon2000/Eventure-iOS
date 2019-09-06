@@ -14,7 +14,11 @@ class User: Profile {
     /// The current user, if the app is logged in.
     static var current: User? {
         didSet {
-            current?.save()
+            if current != nil {
+                UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
+            } else {
+                UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
+            }
         }
     }
     
@@ -28,7 +32,7 @@ class User: Profile {
     var displayedName: String { didSet { save() } }
     var username: String {
         if !displayedName.isEmpty { return displayedName }
-        if !name.isEmpty { return name }
+        if !fullName.isEmpty { return fullName }
         return email
     }
     
@@ -176,9 +180,9 @@ class User: Profile {
     
     /// Short-cut for writeToFile().
     func save() {
-        if !saveEnabled { return }
-        
         User.needsUpload = true
+
+        if !saveEnabled { return }
         
         DispatchQueue.global(qos: .background).async {
             if self.writeToFile(path: CURRENT_USER_PATH) == false {

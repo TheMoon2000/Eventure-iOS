@@ -19,9 +19,9 @@ class OrgEventViewController: UIViewController {
         return Organization.current?.id
     }
     
-    var useRefreshControl: Bool {
-        return false
-    }
+    var useRefreshControl: Bool { return false }
+    
+    var EMPTY_STRING: String { return "No published events." }
     
     private let refreshControl = UIRefreshControl()
     private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
@@ -270,7 +270,7 @@ class OrgEventViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.allEvents = tmp
                     self.eventCatalog.reloadData()
-                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Published Events" : ""
+                    self.publishedLabel.text = self.allEvents.isEmpty ? self.EMPTY_STRING : ""
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -336,7 +336,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         let count = filteredEvents.count
         
         if topTab.selectedSegmentIndex == 0 {
-            publishedLabel.text = count == 0 && !spinner.isAnimating ? "No Published Events" : ""
+            publishedLabel.text = count == 0 && !spinner.isAnimating ? EMPTY_STRING : ""
         } else if topTab.selectedSegmentIndex == 1 {
             draftLabel.text = count == 0 ? "No Drafts" : ""
         }
@@ -451,15 +451,11 @@ extension OrgEventViewController {
 
 extension OrgEventViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.global(qos: .default).async {
-            self.updateFiltered()
-            DispatchQueue.main.async {
-                self.eventCatalog.reloadData()
-            }
-        }
+        self.updateFiltered()
+        self.eventCatalog.reloadData()
     }
     
-    func updateFiltered() {
+    func updateFiltered( ) {
         if topTab.selectedSegmentIndex == 0 {
             filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
             . sorted(by: { sortFunction(event1: $0, event2: $1) })

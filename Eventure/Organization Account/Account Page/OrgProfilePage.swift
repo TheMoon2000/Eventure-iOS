@@ -39,7 +39,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             
             let websiteCell = TextFieldCell(parentVC: self)
             websiteCell.textfield.placeholder = "Link to website"
-            websiteCell.icon.image = UIImage(named: "link")
+            websiteCell.icon.image = #imageLiteral(resourceName: "browser")
             websiteCell.linkDetectionEnabled = true
             websiteCell.textfield.keyboardType = .URL
             websiteCell.textfield.autocapitalizationType = .none
@@ -58,7 +58,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             }
             
             websiteCell.returnHandler = { textfield in
-                (self.contentCells[2][0] as! TextFieldCell).textfield.becomeFirstResponder()
+                (self.contentCells[1][0] as! TextFieldCell).textfield.becomeFirstResponder()
             }
             //FIXME:闪退
             
@@ -129,7 +129,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         let section3: [UITableViewCell] = {
             var section = [UITableViewCell]()
             let descriptionCell = SettingsItemCell()
-            descriptionCell.icon.image = UIImage(named: "comments")
+            descriptionCell.icon.image = #imageLiteral(resourceName: "edit").withRenderingMode(.alwaysTemplate)
             descriptionCell.titleLabel.text = "Organization Description"
             
             section.append(descriptionCell)
@@ -274,12 +274,10 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
     
     //number of sections
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return contentCells.count
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return contentCells[section].count
     }
     
@@ -335,12 +333,12 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
                 tagPicker.spinner.startAnimating()
                 
                 Organization.current!.tags = tagPicker.selectedTags
-                self.uploadTags()
+                Organization.current?.pushToServer(nil)
             }
             
             tagPicker.customDisappearHandler = { tags in
-                Organization.current!.tags = tags
-                self.uploadTags()
+                Organization.current?.tags = tags
+                Organization.current?.pushToServer(nil)
             }
             
             //push the TagPicker Page
@@ -351,50 +349,6 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             break
         }
     }
-        
-        
-    func uploadTags() {
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/UpdateOrgInfo",
-                           parameters: ["id": Organization.current!.id])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        request.httpMethod = "POST"
-        
-        request.httpBody = try? JSON(dictionaryLiteral: ("Tags", Organization.current!.tags.description)).rawData()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self)
-                }
-                return
-            }
-            
-            let msg = String(data: data!, encoding: .utf8)
-            
-            switch msg {
-            case INTERNAL_ERROR:
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
-                }
-            case "success":
-                print("tags were successfully uploaded")
-                break
-            default:
-                let alert = UIAlertController(title: "Could not update tags", message: msg, preferredStyle: .alert)
-                alert.addAction(.init(title: "OK", style: .cancel))
-                DispatchQueue.main.async {
-                    self.present(alert, animated: true)
-                }
-            }
-        }
-        
-        task.resume()
-    }
-    
     
     
     

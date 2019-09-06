@@ -45,9 +45,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIView.performWithoutAnimation {
-            self.myTableView.reloadSections([0], with: .none)
-        }
+        self.myTableView.reloadData()
     }
     
     deinit {
@@ -218,7 +216,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
                     UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                     User.current = nil
-                    MainTabBarController.current.openScreen()
+                    MainTabBarController.current.openScreen(page: 2)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 self.present(alert, animated: true)
@@ -410,6 +408,10 @@ extension AccountViewController: TOCropViewControllerDelegate {
         
         self.myTableView.reloadRows(at: [[0, 0]], with: .none)
         
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
         self.dismiss(animated: true, completion: nil)
     }
 }

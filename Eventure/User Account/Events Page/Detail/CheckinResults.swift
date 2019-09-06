@@ -307,9 +307,11 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let registrant = sortedRegistrants[indexPath.row]
-        let profilePage = ProfileInfoPage(profile: registrant)
         
-        self.navigationController?.pushViewController(profilePage, animated: true)
+        if registrant.showProfile {
+            let profilePage = ProfileInfoPage(profile: registrant)
+            self.navigationController?.pushViewController(profilePage, animated: true)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

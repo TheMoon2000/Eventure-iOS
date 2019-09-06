@@ -13,15 +13,16 @@ class SettingsItemCell: UITableViewCell {
     private(set) var icon: UIImageView!
     private(set) var titleLabel: UILabel!
     private(set) var valueLabel: UILabel!
-    private(set) var imageWidthConstraint: NSLayoutConstraint!
     private(set) var heightConstraint: NSLayoutConstraint!
     private(set) var spacingConstraint: NSLayoutConstraint!
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    required init(withAccessory: Bool = true) {
+        super.init(style: .default, reuseIdentifier: nil)
         
         //add arrow to each cell
-        accessoryType = .disclosureIndicator
+        if withAccessory {
+            accessoryType = .disclosureIndicator
+        }
         
         heightConstraint = heightAnchor.constraint(equalToConstant: 55)
         heightConstraint.priority = .defaultHigh
@@ -35,8 +36,7 @@ class SettingsItemCell: UITableViewCell {
             addSubview(iv)
             
             iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 18).isActive = true
-            imageWidthConstraint = iv.widthAnchor.constraint(equalToConstant: 28)
-            imageWidthConstraint.isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 28).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
@@ -69,7 +69,8 @@ class SettingsItemCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(greaterThanOrEqualTo: titleLabel.leftAnchor, constant: 20).isActive = true
-            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -38).isActive = true
+            let constant: CGFloat = withAccessory ? -38 : -20
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: constant).isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return label

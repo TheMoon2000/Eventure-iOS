@@ -110,22 +110,18 @@ class MainTabBarController: UITabBarController {
     }
     
     /// Should be called when user finished login.
-    func openScreen(isUserAccount: Bool = true) {
+    func openScreen(isUserAccount: Bool = true, page: Int = 0) {
         if isUserAccount {
             print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
             setupUserTabs()
-            selectedIndex = 0
-            if User.current != nil {
-                UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
-            } else {
-                UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
-            }
+            User.current?.getProfilePicture(nil)
         } else {
             print("Logged in as organization '\(Organization.current?.title ?? "unknown")'")
-            selectedIndex = 0
             setupOrganizationTabs()
-            UserDefaults.standard.set(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
+            Organization.current?.save()
+            Organization.current?.getLogoImage(nil)
         }
+        selectedIndex = page
         dismiss(animated: true, completion: nil)
     }
     
@@ -135,7 +131,6 @@ class MainTabBarController: UITabBarController {
         checkForNotices()
         
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
-            print(type)
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {
                 Organization.current = current
                 if Organization.current != nil { Organization.syncFromServer() }

@@ -13,12 +13,11 @@ class Organization: CustomStringConvertible {
 
     static var current: Organization? {
         didSet {
-            if current?.writeToFile(path: CURRENT_USER_PATH) == false {
-                print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
+            if current != nil {
+                UserDefaults.standard.setValue(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
             } else {
-                print("successfully wrote user data to \(CURRENT_USER_PATH)")
+                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
             }
-            current?.getLogoImage(nil)
         }
     }
 
@@ -158,9 +157,15 @@ class Organization: CustomStringConvertible {
         }
         
         let newOrg = Organization(orgInfo: json)
+        guard !newOrg.title.isEmpty else {
+            print("WARNING: Damaged data was read from cache!")
+            return nil
+        }
         
         if let image = fileData["logo"] as? UIImage {
             newOrg.logoImage = image
+        } else {
+            print("WARNING: No org logo image found or cannot be read")
         }
         
         return newOrg
@@ -179,26 +184,60 @@ class Organization: CustomStringConvertible {
             print("successfully wrote organization to \(CURRENT_USER_PATH)")
         }
     }
-
     
-    func writeToFile(path: String) -> Bool {
+    /// Handler will be called on main thread, and its parameter represents whether the upload had been successful.
+    func pushToServer(_ handler: ((Bool) -> ())?) {
+                
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/UpdateOrgInfo",
+                           parameters: ["id": id])!
         
-        var fileData = [String: Any]()
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        request.httpMethod = "POST"
+        request.httpBody = try? encodedJSON().rawData()
         
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+            
+            if String(data: data!, encoding: .utf8) == "success" {
+                Organization.needsUpload = false
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    private func encodedJSON() -> JSON {
         var json = JSON()
         json.dictionaryObject?["ID"] = self.id
         json.dictionaryObject?["Title"] = self.title
         json.dictionaryObject?["Description"] = self.orgDescription
         json.dictionaryObject?["Website"] = self.website
-
+        
         var membersMap = [String : String]()
         for (key, value) in members {
             membersMap[String(key)] = value.rawValue
         }
-
+        
         let membersEncoded = JSON(membersMap)
         json.dictionaryObject?["Members"] = membersEncoded.description
-
+        
         json.dictionaryObject?["Tags"] = self.tags.description
         json.dictionaryObject?["Password MD5"] = self.password_MD5
         json.dictionaryObject?["Contact name"] = self.contactName
@@ -206,10 +245,18 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Active"] = self.active ? 1 : 0
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
-        json.dictionaryObject?["# of events"] = self.numberOfEvents
         json.dictionaryObject?["Subscribers"] = self.subscribers.description
+        
+        return json
+    }
+    
+    func writeToFile(path: String) -> Bool {
+        
+        var fileData = [String: Any]()
 
-
+        var json = encodedJSON()
+        json.dictionaryObject?["# of events"] = self.numberOfEvents
+        
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
 
         fileData["main"] = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
@@ -220,7 +267,7 @@ class Organization: CustomStringConvertible {
 
     /// Load the logo image for an organization.
     func getLogoImage(_ handler: ((Organization) -> ())?) {
-        if !hasLogo || logoImage != nil { return }
+        if !hasLogo { return }
 
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetLogo",
@@ -235,9 +282,11 @@ class Organization: CustomStringConvertible {
                 print("WARNING: Get logo image returned error for organization!")
                 return // Don't display any alert here
             }
-            self.logoImage = UIImage(data: data!)
-            DispatchQueue.main.async {
-                handler?(self)
+            if let newLogo = UIImage(data: data!), self.logoImage != newLogo {
+                self.logoImage = newLogo
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
             }
         }
 
@@ -251,7 +300,7 @@ class Organization: CustomStringConvertible {
         Organization.waitingForSync = true
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetOrgInfo",
-                           parameters: ["orgId": String(Organization.current!.id)])!
+                           parameters: ["orgId": Organization.current!.id])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
 
@@ -259,7 +308,7 @@ class Organization: CustomStringConvertible {
             data, response, error in
 
             Organization.waitingForSync = false
-
+            
             guard error == nil else {
                 print(error!)
                 NotificationCenter.default.post(name: ORG_SYNC_FAILED, object: nil)
@@ -267,7 +316,9 @@ class Organization: CustomStringConvertible {
             }
 
             if let json = try? JSON(data: data!) {
+                let currentLogo = Organization.current?.logoImage
                 Organization.current = Organization(orgInfo: json)
+                Organization.current?.logoImage = currentLogo
                 NotificationCenter.default.post(name: ORG_SYNC_SUCCESS, object: nil)
             } else {
                 print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -313,7 +364,7 @@ class Organization: CustomStringConvertible {
                 self.logoImage = original
                 handler?(false)
             case "success":
-                print("Your logo updated")
+                print("Org logo updated")
                 self.logoImage = new
                 DispatchQueue.main.async {
                     handler?(true)

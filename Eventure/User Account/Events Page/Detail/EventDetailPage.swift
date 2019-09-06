@@ -302,7 +302,7 @@ class EventDetailPage: UIViewController {
         }
         
         if let v = tabStrip.viewControllers.last as? OtherViewController {
-            v.interestedText.text = String(event.interested.count ?? 0)
+            v.interestedText.text = String(event.interested.count)
         }
         
         interestedStatusChanged?(status)

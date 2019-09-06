@@ -15,6 +15,14 @@ class UpcomingEvents: OrgEventViewController, IndicatorInfoProvider {
     
     override var showTopTab: Bool { return false }
     
+    override var useRefreshControl: Bool {
+        return true
+    }
+    
+    override var EMPTY_STRING: String {
+        return "No upcoming events."
+    }
+    
     /// By providing the current organization's ID, the API only returns events that the current organization hosts.
     override var orgID: String? {
         return detailPage.organization.id

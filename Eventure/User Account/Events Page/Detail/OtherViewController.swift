@@ -38,7 +38,6 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         view.backgroundColor = detailPage.view.backgroundColor
         
         event.fetchHostInfo { org in
-            print(org)
             self.hostLink.isUserInteractionEnabled = true
             self.hostLink.setTitleColor(LINK_COLOR, for: .normal)
         }
@@ -115,7 +114,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = event.location
+            label.text = event.location.isEmpty ? "TBA" : event.location
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -150,6 +149,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.textAlignment = .right
             label.numberOfLines = 0
             label.text = event.startTime?.readableString()
+            if (label.text?.isEmpty ?? true) { label.text = "Unspecified" }
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -183,7 +183,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = String(event.interested.count ?? 0)
+            label.text = String(event.interested.count)
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false

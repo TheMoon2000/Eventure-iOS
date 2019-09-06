@@ -111,6 +111,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
             label.textAlignment = .right
             label.numberOfLines = 5
             label.text = organization.contactName
+            if label.text!.isEmpty { label.text = "None" }
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -162,7 +163,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
     
     @objc private func loadWebsite() {
         var link = organization.website.lowercased()
-        if !link.hasPrefix("http://") || !link.hasPrefix("https://") {
+        if !link.hasPrefix("http://") && !link.hasPrefix("https://") {
             link = "https://" + link
         }
         if let url = URL(string: link) {

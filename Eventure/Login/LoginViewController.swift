@@ -447,13 +447,11 @@ class LoginViewController: UIViewController {
             } else {
                 MainTabBarController.current.openScreen()
             }
-            
-            UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)
-            UserDefaults.standard.synchronize()
         }
         
         func handleOrgLogin(org: Organization) {
             Organization.current = org
+            Organization.current?.save()
             MainTabBarController.current.openScreen(isUserAccount: false)
         }
         

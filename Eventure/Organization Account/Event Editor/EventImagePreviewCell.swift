@@ -114,10 +114,23 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
     }
     
     @objc private func chooseImage() {
-        let picker = UIImagePickerController()
-        picker.sourceType = .savedPhotosAlbum
-        picker.delegate = self
-        parentVC.present(picker, animated: true, completion: nil)
+        
+        let alert = UIAlertController(title: "Update Event Cover Picture", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
+            let picker = UIImagePickerController()
+            picker.delegate = self
+            picker.sourceType = .photoLibrary
+            self.parentVC.present(picker, animated: true)
+        }))
+        alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
+            let picker = UIImagePickerController()
+            picker.delegate = self
+            picker.sourceType = .camera
+            self.parentVC.present(picker, animated: true)
+        }))
+        parentVC.present(alert, animated: true)
+        
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -126,8 +139,10 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
         
         let cropper = TOCropViewController(image: image)
         cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
         cropper.aspectRatioPreset = .preset3x2
         cropper.aspectRatioLockEnabled = true
+        cropper.aspectRatioPickerButtonHidden = true
         cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.preset3x2.rawValue as NSNumber]
         cropper.delegate = self
         picker.present(cropper, animated: true)
@@ -149,6 +164,10 @@ extension EventImagePreviewCell: TOCropViewControllerDelegate {
         chooseImageLabel.isHidden = true
         updateImageHandler?(previewImage.image)
 
+        parentVC.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
         parentVC.dismiss(animated: true, completion: nil)
     }
 }

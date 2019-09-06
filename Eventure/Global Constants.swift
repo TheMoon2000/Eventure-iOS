@@ -28,7 +28,6 @@ let INTERNAL_ERROR = "internal error"
 let CONNECTION_ERROR = "Connection Error"
 let SERVER_ERROR = "Server Error"
 
-let USER_DEFAULT_CRED = "CREDENTIAL"
 let KEY_ACCOUNT_TYPE = "Account Type"
 let ACCOUNT_TYPE_USER = "User"
 let ACCOUNT_TYPE_ORG = "Org"
@@ -63,9 +62,13 @@ let PLAIN_STYLE =  """
         font-size: 17px;
         line-height: 1.5;
         letter-spacing: 1.5%;
-        color: #5A5A5A;
-        margin-bottom: 10px;
+        color: #565656;
+        margin-bottom: 5px;
     }
+
+p {
+margin-bottom: 15px;
+}
 
     h1, h2, h3, h4, h5, h6 {
         font-family: -apple-system;
@@ -76,24 +79,30 @@ let PLAIN_STYLE =  """
 
     h1 {
         font-size: 23px;
+        margin-bottom: 16px;
     }
 
     h2 {
         font-size: 22px;
+        margin-bottom: 15px;
     }
 
     h3 {
         font-size: 21px;
+        margin-bottom: 14px;
     }
 
     h4 {
         font-size: 20px;
+        margin-bottom: 13px;
     }
 
     h5 {
         font-size: 19px;
+        margin-bottom: 12px;
     }
     h6 {
+        margin-bottom: 11px;
         font-size: 18px;
     }
 
@@ -108,7 +117,7 @@ let COMPACT_STYLE = """
         font-size: 16px;
         line-height: 1.25;
         letter-spacing: 1%;
-        color: #5A5A5A;
+        color: #565656;
         margin-bottom: 10px;
     }
 """

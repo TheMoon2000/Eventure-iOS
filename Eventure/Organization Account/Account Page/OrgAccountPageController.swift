@@ -18,7 +18,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         //Do any additional setup after loading the view.
         title = Organization.waitingForSync ? "Syncing..." : "Dashboard"
         view.backgroundColor = .init(white: 0.92, alpha: 1)
@@ -44,10 +44,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIView.performWithoutAnimation {
-            self.myTableView.beginUpdates()
-            self.myTableView.endUpdates()
-        }
+        self.myTableView.reloadData()
     }
     
     deinit {
@@ -74,7 +71,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         switch (indexPath.section, indexPath.row) {
             
         case (0, 0):
-            let alert = UIAlertController(title: "Update Profile Picture", message: nil, preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "Update Organization Logo", message: nil, preferredStyle: .actionSheet)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
                 let picker = UIImagePickerController()
@@ -107,11 +104,11 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             let subscriber = SubscriberListPage()
             subscriber.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(subscriber, animated:true)
-        case(3, 0):
-            let aboutPage = AboutEventure()
+        case (3, 0):
+            let aboutPage = AboutPage()
             aboutPage.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(aboutPage, animated: true)
-        case (3,1):
+        case (3, 1):
             //if the log out/sign in button is clicked
             //Note: Do not need to imeplement the case where Organization.current == nil
             //because we have already logged in for Org
@@ -139,6 +136,8 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
             let profileCell = ProfilePreviewCell()
+            profileCell.icon.isUserInteractionEnabled = true
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             profileCell.titleLabel.text = Organization.current!.title
             if let logo = Organization.current?.logoImage {
                 profileCell.icon.image = logo
@@ -153,10 +152,10 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             
             return profileCell
         case (1, 0):
-            cell.icon.image = UIImage(named: "organization_profile")
+            cell.icon.image = #imageLiteral(resourceName: "windmill")
             cell.titleLabel.text = "Manage Account"
         case (1, 1):
-            cell.icon.image = UIImage(named: "organization_profile")
+            cell.icon.image = #imageLiteral(resourceName: "paper_plane")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
@@ -168,7 +167,9 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.valueLabel.text = "\(Organization.current!.subscribers.count)"
         case(3, 0):
             let cell = UITableViewCell()
-            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            let h = cell.heightAnchor.constraint(equalToConstant: 50)
+            h.priority = .defaultHigh
+            h.isActive = true
             
             let label = UILabel()
             label.text = "About Eventure"
@@ -233,8 +234,10 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     //full screen profile picture when tapped
     
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
-        let fullScreen = ImageFullScreenPage(image: profilePicture)
-        present(fullScreen, animated: true, completion: nil)
+        if let logo = Organization.current?.logoImage {
+            let fullScreen = ImageFullScreenPage(image: logo)
+            present(fullScreen, animated: false)
+        }
     }
     
     @objc func dismissFullscreenImage(_ sender: UITapGestureRecognizer) {
@@ -282,6 +285,10 @@ extension OrgAccountPageController: TOCropViewControllerDelegate {
         
         self.myTableView.reloadRows(at: [[0, 0]], with: .none)
         
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
         self.dismiss(animated: true, completion: nil)
     }
 }

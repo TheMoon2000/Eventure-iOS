@@ -125,7 +125,7 @@ class OrgDetailPage: UIViewController {
                 label.font = .systemFont(ofSize: 16.5)
                 label.textColor = .lightGray
                 label.text = "Loading member info..."
-                let noun = organization.numberOfEvents == 1 ? "Event" : "Events"
+                let noun = organization.numberOfEvents == 1 ? "Subscriber" : "Subscribers"
                 label.text = "\(organization.subscribers.count) " + noun
                 label.textColor = .gray
 
