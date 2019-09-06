@@ -5,7 +5,7 @@
 //  Created by Prince Wang on 2019/8/31.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
-
+import TOCropViewController
 import UIKit
 
 class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
@@ -74,11 +74,21 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         switch (indexPath.section, indexPath.row) {
             
         case (0, 0):
-            let image = UIImagePickerController()
-            image.delegate = self
-            image.sourceType = .photoLibrary
-            image.allowsEditing = true
-            self.present(image, animated: true)
+            let alert = UIAlertController(title: "Update Profile Picture", message: nil, preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .photoLibrary
+                self.present(picker, animated: true)
+            }))
+            alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .camera
+                self.present(picker, animated: true)
+            }))
+            present(alert, animated: true)
             
         case (1,0): //if the user tries to change account information
             let orgInfo = OrgSettingInfoPage()
@@ -143,10 +153,10 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             
             return profileCell
         case (1, 0):
-            cell.icon.image = #imageLiteral(resourceName: "key")
+            cell.icon.image = UIImage(named: "organization_profile")
             cell.titleLabel.text = "Manage Account"
         case (1, 1):
-            cell.icon.image = #imageLiteral(resourceName: "paper_plane")
+            cell.icon.image = UIImage(named: "organization_profile")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
@@ -238,56 +248,40 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-            let url = URL(string: API_BASE_URL + "account/UpdateLogo")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            
-            let parameters = ["id": String(Organization.current!.id)]
-            
-            var fileData = [String : Data]()
-            fileData["logo"] = image.fixedOrientation().sizeDown().pngData()
-            
-            request.addMultipartBody(parameters: parameters as! [String : String],
-                                     files: fileData)
-            request.addAuthHeader()
-            
-            let task = CUSTOM_SESSION.dataTask(with: request) {
-                data, response, error in
-                
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        internetUnavailableError(vc: self)
-                    }
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    self.myTableView.reloadData()
-                }
-                
-                let msg = String(data: data!, encoding: .utf8)!
-                switch msg {
-                case INTERNAL_ERROR:
-                    DispatchQueue.main.async {
-                        serverMaintenanceError(vc: self)
-                    }
-                case "success":
-                    print("update successful")
-                    Organization.current!.logoImage = image
-                default:
-                    let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
-                    warning.message = msg
-                    DispatchQueue.main.async {
-                        self.present(warning, animated: true, completion: nil)
-                    }
-                }
-            }
-            
-            task.resume()
-        } else {
-            
+        
+        guard let original = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            self.dismiss(animated: true, completion: nil)
+            return
         }
+        
+        let cropper = TOCropViewController(image: original)
+        cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
+        cropper.aspectRatioPreset = .presetSquare
+        cropper.aspectRatioLockEnabled = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
+    }
+    
+    
+}
+
+extension OrgAccountPageController: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        let formatted = image.fixedOrientation().sizeDown()
+        
+        Organization.current?.uploadLogo(new: formatted) { success in
+            if !success {
+                let warning = UIAlertController(title: "Unable to Update Logo", message: nil, preferredStyle: .alert)
+                self.present(warning, animated: true, completion: nil)
+            }
+            self.myTableView.reloadRows(at: [[0, 0]], with: .none)
+        }
+        
+        self.myTableView.reloadRows(at: [[0, 0]], with: .none)
+        
         self.dismiss(animated: true, completion: nil)
     }
 }
