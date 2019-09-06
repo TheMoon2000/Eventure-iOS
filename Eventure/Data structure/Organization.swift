@@ -140,18 +140,30 @@ class Organization: CustomStringConvertible {
     }
 
     static func cachedOrgAccount(at path: String) -> Organization? {
-        if let data = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? Data {
-            guard let decrypted = NSData(data: data).aes256Decrypt(withKey: AES_KEY) else {
-                print("WARNING: Cannot decrypt cached organization account data!")
-                return nil
-            }
-
-            if let json = try? JSON(data: decrypted) {
-                return Organization(orgInfo: json)
-            }
+        guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: path) as? [String: Any] else { return nil }
+        
+        guard let mainData = fileData["main"] as? Data else {
+            print("WARNING: Key `main` not found for cached organization account!")
+            return nil
         }
-
-        return nil
+        
+        guard let decryptedMain = NSData(data: mainData).aes256Decrypt(withKey: AES_KEY) else {
+            print("WARNING: Unable to decrypt organization from main cache!")
+            return nil
+        }
+        
+        guard let json = try? JSON(data: decryptedMain) else {
+            print("WARNING: Cannot read main cache as JSON!")
+            return nil
+        }
+        
+        let newOrg = Organization(orgInfo: json)
+        
+        if let image = fileData["logo"] as? UIImage {
+            newOrg.logoImage = image
+        }
+        
+        return newOrg
     }
 
     /// Short-cut for writeToFile().
@@ -168,7 +180,11 @@ class Organization: CustomStringConvertible {
         }
     }
 
+    
     func writeToFile(path: String) -> Bool {
+        
+        var fileData = [String: Any]()
+        
         var json = JSON()
         json.dictionaryObject?["ID"] = self.id
         json.dictionaryObject?["Title"] = self.title
@@ -196,8 +212,10 @@ class Organization: CustomStringConvertible {
 
         try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
 
-        let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
-        return NSKeyedArchiver.archiveRootObject(encrypted, toFile: CURRENT_USER_PATH)
+        fileData["main"] = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
+        fileData["logo"] = logoImage
+        
+        return NSKeyedArchiver.archiveRootObject(fileData, toFile: CURRENT_USER_PATH)
     }
 
     /// Load the logo image for an organization.
@@ -214,9 +232,9 @@ class Organization: CustomStringConvertible {
             data, response, error in
 
             guard error == nil else {
+                print("WARNING: Get logo image returned error for organization!")
                 return // Don't display any alert here
             }
-
             self.logoImage = UIImage(data: data!)
             DispatchQueue.main.async {
                 handler?(self)

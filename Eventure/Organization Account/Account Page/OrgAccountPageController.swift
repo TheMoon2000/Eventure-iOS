@@ -133,7 +133,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             if let logo = Organization.current?.logoImage {
                 profileCell.icon.image = logo
             } else {
-                profileCell.icon.image = #imageLiteral(resourceName: "organization")
+                profileCell.icon.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
                 Organization.current?.getLogoImage { orgWithImage in
                     profileCell.icon.image = orgWithImage.logoImage
                 }
@@ -248,7 +248,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             var fileData = [String : Data]()
             fileData["logo"] = image.fixedOrientation().sizeDown().pngData()
             
-            request.addMultipartBody(parameters: parameters as! [String : String],
+            request.addMultipartBody(parameters: parameters,
                                      files: fileData)
             request.addAuthHeader()
             

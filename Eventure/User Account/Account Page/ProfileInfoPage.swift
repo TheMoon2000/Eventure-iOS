@@ -36,13 +36,14 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "My Profile"
+        title = cellsEditable ? "My Profile" : "Registrant Profile"
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInset.top = 5
         tableView.contentInset.bottom = 10
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
+        tableView.allowsSelection = cellsEditable
         
         let section0: [UITableViewCell] = {
             var section = [UITableViewCell]()
@@ -380,6 +381,8 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         
         if section != 0 { return nil }
         
+        if !cellsEditable { return nil }
+        
         let header = UIView()
         
         let title = UILabel()
@@ -424,7 +427,6 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if !cellsEditable { return }
         switch indexPath {
         case [0, 2]:
             view.endEditing(true)
