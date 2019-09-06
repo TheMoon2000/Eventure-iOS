@@ -71,7 +71,9 @@ class AboutPage: UIViewController {
             tv.delegate = self
             tv.isEditable = false
             tv.isScrollEnabled = false
-            tv.attributedText = "Eventure is a mobile app developed by a group of students from UC Berkeley (**Calpha Dev**) as a platform dedicated to college students for on-campus event exploration and promotion.\n\n See our [privacy policy](https://eventure.calpha.dev/privacy) for details.".attributedText()
+            tv.attributedText = "Eventure is a mobile app developed by a group of students from UC Berkeley (**Calpha Dev**) as a platform dedicated to college students for on-campus event exploration and promotion. See our [privacy policy](https://eventure.calpha.dev/privacy) for details.\n\n If you have any questions or concerns, please email us at support@eventure-app.com.".attributedText()
+            tv.dataDetectorTypes = [.link]
+            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
             tv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(tv)
             
@@ -90,8 +92,12 @@ class AboutPage: UIViewController {
 
 extension AboutPage: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        let vc = SFSafariViewController(url: URL)
-        present(vc, animated: true)
-        return false
+        if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            self.present(vc, animated: true)
+            return false
+        }
+        
+        return true
     }
 }

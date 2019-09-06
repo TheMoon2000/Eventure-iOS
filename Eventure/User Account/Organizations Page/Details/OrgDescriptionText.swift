@@ -55,9 +55,13 @@ class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
 
 extension OrgDescriptionText: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        let vc = SFSafariViewController(url: URL)
-        present(vc, animated: true)
-        return false
+        if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            self.present(vc, animated: true)
+            return false
+        }
+        
+        return true
     }
 }
 

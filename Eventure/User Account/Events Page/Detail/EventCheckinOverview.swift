@@ -82,14 +82,13 @@ class EventCheckinOverview: UIViewController {
             let label = UILabel()
             label.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: COMPACT_STYLE)
             label.numberOfLines = 5
-            label.textColor = .init(white: 0.5, alpha: 1)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -18).isActive = true
+            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
             
             return label
         }()

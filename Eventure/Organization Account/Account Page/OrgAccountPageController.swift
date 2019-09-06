@@ -163,7 +163,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.titleLabel.text = "Event Statistics"
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Our Subscribers"
+            cell.titleLabel.text = "Subscribers"
             cell.valueLabel.text = "\(Organization.current!.subscribers.count)"
         case(3, 0):
             let cell = UITableViewCell()
@@ -260,6 +260,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         let cropper = TOCropViewController(image: original)
         cropper.rotateButtonsHidden = true
         cropper.resetButtonHidden = true
+        cropper.aspectRatioPickerButtonHidden = true
         cropper.aspectRatioPreset = .presetSquare
         cropper.aspectRatioLockEnabled = true
         cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
@@ -277,7 +278,8 @@ extension OrgAccountPageController: TOCropViewControllerDelegate {
         
         Organization.current?.uploadLogo(new: formatted) { success in
             if !success {
-                let warning = UIAlertController(title: "Unable to Update Logo", message: nil, preferredStyle: .alert)
+                let warning = UIAlertController(title: "Unable to update logo", message: nil, preferredStyle: .alert)
+                warning.addAction(.init(title: "Dismiss", style: .cancel))
                 self.present(warning, animated: true, completion: nil)
             }
             self.myTableView.reloadRows(at: [[0, 0]], with: .none)

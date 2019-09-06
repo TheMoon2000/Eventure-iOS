@@ -228,6 +228,17 @@ class OrgEventViewController: UIViewController {
             refreshControl.isHidden = true
         }
         
+        func endRefreshing() {
+            if !pulled {
+                self.spinner.stopAnimating()
+                self.spinnerLabel.isHidden = true
+                self.refreshControl.isEnabled = true
+                self.refreshControl.isHidden = false
+            } else {
+                self.refreshControl.endRefreshing()
+            }
+        }
+        
         var parameters = [String : String]()
         parameters["id"] = orgID
         
@@ -239,19 +250,9 @@ class OrgEventViewController: UIViewController {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                if !pulled {
-                    self.spinner.stopAnimating()
-                    self.spinnerLabel.isHidden = true
-                    self.refreshControl.isEnabled = true
-                    self.refreshControl.isHidden = false
-                } else {
-                    self.refreshControl.endRefreshing()
-                }
-            }
-            
             guard error == nil else {
                 DispatchQueue.main.async {
+                    endRefreshing()
                     if self.allEvents.isEmpty {
                         self.publishedLabel.text = CONNECTION_ERROR
                     } else {
@@ -272,9 +273,11 @@ class OrgEventViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.allEvents = tmp
                     self.eventCatalog.reloadData()
+                    endRefreshing()
                     self.publishedLabel.text = self.allEvents.isEmpty ? self.EMPTY_STRING : ""
                 }
             } else {
+                endRefreshing()
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
                 
                 DispatchQueue.main.async {

@@ -57,23 +57,28 @@ Ac dolor ac adipiscing amet bibendum nullam, lacus molestie ut libero nec, diam 
 """
 
 let PLAIN_STYLE =  """
-    body {
+    p {
         font-family: -apple-system;
         font-size: 17px;
         line-height: 1.5;
         letter-spacing: 1.5%;
         color: #565656;
-        margin-bottom: 5px;
+        margin-bottom: 12px;
     }
 
-p {
-margin-bottom: 15px;
-}
+    strong, em {
+        color: #4E4E4E;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
 
     h1, h2, h3, h4, h5, h6 {
         font-family: -apple-system;
         font-weight: 600;
-        letter-spacing: 1%;
+        letter-spacing: 1.5%;
         color: rgb(255, 120, 104);
     }
 
@@ -112,13 +117,17 @@ margin-bottom: 15px;
 """
 
 let COMPACT_STYLE = """
-    body {
+    p {
         font-family: -apple-system;
         font-size: 16px;
         line-height: 1.25;
         letter-spacing: 1%;
-        color: #565656;
+        color: #6A6A6A;
         margin-bottom: 10px;
+    }
+
+    strong, em {
+        color: rgb(80, 80, 80);
     }
 """
 
@@ -193,7 +202,6 @@ extension String {
     /// Markdown-formatted text.
     func attributedText(style: String = PLAIN_STYLE) -> NSAttributedString {
         if isEmpty { return NSAttributedString() }
-        
         if let d = try? Down(markdownString: self).toAttributedString(.default, stylesheet: style) {
             if d.string.isEmpty {
                 return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)

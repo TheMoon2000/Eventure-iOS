@@ -280,6 +280,8 @@ class DraftDescriptionPage: UIViewController {
     
     @objc private func previewButtonPressed() {
         
+        print(try? descriptionText.text.toHTML())
+        
         view.endEditing(true)
         charCount.isHidden = true
         
@@ -359,9 +361,13 @@ extension DraftDescriptionPage: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        let vc = SFSafariViewController(url: URL)
-        draftPage.present(vc, animated: true)
-        return false
+            if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            draftPage.present(vc, animated: true)
+            return false
+        }
+        
+        return true
     }
 
 }

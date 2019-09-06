@@ -340,11 +340,11 @@ class Organization: CustomStringConvertible {
         let original = logoImage
         logoImage = new
         
-        let url = URL(string: API_BASE_URL + "account/UpdateLogo")!
+        let url = URL(string: API_BASE_URL + "account/UploadLogo")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
-        let parameters = ["id": String(id)]
+        let parameters = ["id": id]
         
         var fileData = [String : Data]()
         fileData["logo"] = new.pngData()
@@ -377,6 +377,7 @@ class Organization: CustomStringConvertible {
                 }
             default:
                 self.logoImage = original
+                print(msg)
                 DispatchQueue.main.async {
                     handler?(false)
                 }
