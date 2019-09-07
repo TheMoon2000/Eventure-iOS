@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class OrgEventViewController: UIViewController {
+class OrgEventViewController: UIViewController, EventProvider {
     
     var showTopTab: Bool {
         return true
@@ -33,7 +33,8 @@ class OrgEventViewController: UIViewController {
     var lowerBound: Date?
     var upperBound: Date?
     
-    private let searchController = UISearchController(searchResultsController: nil)
+    private var searchController: UISearchController!
+    private var searchResults: EventSearchResults!
     
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
@@ -45,9 +46,12 @@ class OrgEventViewController: UIViewController {
     
     var allEvents = Set<Event>() {
         didSet {
-            updateFiltered()
+            if !self.allEvents.isEmpty {
+                Organization.current?.numberOfEvents = self.allEvents.count
+            }
         }
     }
+    
     var allDrafts = Set<Event>() {
         didSet {
             updateFiltered()
@@ -57,6 +61,10 @@ class OrgEventViewController: UIViewController {
     /// An ordered list of events that should be shown.
     var filteredEvents = [Event]()
     
+    var eventsForSearch: [Event] {
+        return filteredEvents
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,8 +72,9 @@ class OrgEventViewController: UIViewController {
         title = "Event Posts"
         
         // Search bar setup
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
+        searchResults = EventSearchResults(parentVC: self)
+        searchController = UISearchController(searchResultsController: searchResults)
+        searchController.searchResultsUpdater = searchResults
         searchController.searchBar.tintColor = MAIN_TINT
         searchController.searchBar.placeholder = "Search Your Events"
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -240,10 +249,11 @@ class OrgEventViewController: UIViewController {
         }
         
         var parameters = [String : String]()
-        parameters["id"] = orgID
+        parameters["orgId"] = orgID
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: parameters)!
+                           API_Name: "events/List",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -269,11 +279,12 @@ class OrgEventViewController: UIViewController {
                     let event = Event(eventInfo: eventJSON)
                     tmp.insert(event)
                 }
-                
                 DispatchQueue.main.async {
                     self.allEvents = tmp
-                    self.eventCatalog.reloadData()
-                    endRefreshing()
+                    self.updateFiltered {
+                        self.eventCatalog.reloadData()
+                        endRefreshing()
+                    }
                     self.publishedLabel.text = self.allEvents.isEmpty ? self.EMPTY_STRING : ""
                 }
             } else {
@@ -300,8 +311,6 @@ class OrgEventViewController: UIViewController {
     }
     
     @objc private func changedTab() {
-        eventCatalog.reloadData()
-        
         let isDraftMode = topTab.selectedSegmentIndex == 1
         publishedLabel.isHidden = isDraftMode
         draftLabel.isHidden = !isDraftMode
@@ -316,7 +325,9 @@ class OrgEventViewController: UIViewController {
             spinnerLabel.alpha = 1.0
         }
         
-        updateFiltered()
+        updateFiltered {
+            self.eventCatalog.reloadData()
+        }
     }
     
     @objc private func createNewEvent() {
@@ -459,25 +470,24 @@ extension OrgEventViewController {
 }
 
 
-extension OrgEventViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        self.updateFiltered()
-        self.eventCatalog.reloadData()
-    }
-    
-    func updateFiltered() {
-        if topTab.selectedSegmentIndex == 0 {
-            filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
-            . sorted(by: { sortFunction(event1: $0, event2: $1) })
-        } else {
-            filteredEvents = allDrafts.filter { searchFilter(event: $0) }
-            . sorted(by: { sortFunction(event1: $0, event2: $1) })
+extension OrgEventViewController {
+
+    func updateFiltered(_ handler: (() -> ())? = nil) {
+        let tab = topTab.selectedSegmentIndex
+        DispatchQueue.global(qos: .default).async {
+            if tab == 0 {
+                self.filteredEvents = self.allEvents.filter { self.filterFunction($0)
+                }
+                . sorted { self.sortFunction(event1: $0, event2: $1) }
+            } else {
+                self.filteredEvents = self.allDrafts.filter { self.filterFunction($0)
+                }
+                . sorted { self.sortFunction(event1: $0, event2: $1) }
+            }
+            DispatchQueue.main.async {
+                handler?()
+            }
         }
         
-    }
-    
-    func searchFilter(event: Event) -> Bool {
-        let searchString = searchController.searchBar.text!
-        return searchString.isEmpty || event.title.lowercased().contains(searchString.lowercased()) || event.eventDescription.lowercased().contains(searchString.lowercased())
     }
 }

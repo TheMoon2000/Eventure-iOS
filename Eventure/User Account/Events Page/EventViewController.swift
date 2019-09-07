@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class EventViewController: UIViewController {
+class EventViewController: UIViewController, EventProvider {
     
     private var isFiltering: Bool {
         return searchController.isActive && !searchController.searchBar.text!.isEmpty
@@ -25,18 +25,32 @@ class EventViewController: UIViewController {
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
     
-//    private var shouldFilter: Bool = false
+    private static var upToDate: Bool = false
     public static var chosenTags = Set<String>()
-    public static var start: Date?
-    public static var end: Date?
     
-    private(set) var allEvents = [Event]() {
-        didSet {
-            refilter()
+    public static var start: Date? {
+        didSet (oldValue) {
+            let originalBound = oldValue ?? Date()
+            let newBound = start ?? Date()
+            upToDate = upToDate && newBound >= originalBound
         }
     }
     
+    public static var end: Date? {
+        didSet (oldValue) {
+            let originalBound = oldValue ?? .distantFuture
+            let newBound = end ?? .distantFuture
+            upToDate = upToDate && newBound <= originalBound
+        }
+    }
+    
+    private(set) var allEvents = [Event]()
+    
     private(set) var filteredEvents = [Event]()
+   
+    var eventsForSearch: [Event] {
+        return filteredEvents
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -174,6 +188,15 @@ class EventViewController: UIViewController {
 //        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
     }
     
+    /// Refreshes the displayed events, fetching data from the server if needed.
+    func fetchEventsIfNeeded() {
+        if !EventViewController.upToDate {
+            updateEvents()
+        } else {
+            refilter()
+        }
+    }
+    
     @objc private func updateEvents() {
         //shouldFilter = false
         
@@ -190,9 +213,20 @@ class EventViewController: UIViewController {
             parameters["userId"] = String(User.current!.uuid)
             parameters["userEmail"] = User.current!.email
         }
+        if let start = EventViewController.start {
+            parameters["lowerBound"] = DATE_FORMATTER.string(from: start)
+        } else {
+            parameters["lowerBound"] = DATE_FORMATTER.string(from: Date())
+        }
+        if let end = EventViewController.end {
+            parameters["upperBound"] = DATE_FORMATTER.string(from: end)
+        } else {
+            parameters["upperBound"] = DATE_FORMATTER.string(from: .distantFuture)
+        }
             
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: parameters)!
+                           API_Name: "events/List",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -223,9 +257,13 @@ class EventViewController: UIViewController {
                     tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
                         return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)
                     })
+                    EventViewController.upToDate = true
+                    self.allEvents = tmp
                     DispatchQueue.main.async {
-                        self.allEvents = tmp
-                        stop()
+                        self.updateFiltered() {
+                            self.eventCatalog.reloadSections([0])
+                            stop()
+                        }
                     }
                 }
             } else {

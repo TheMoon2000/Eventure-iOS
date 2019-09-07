@@ -96,7 +96,7 @@ class FilterDateTableViewController: UITableViewController {
         contentCells.append(endBottomCell)
         
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
-        tagPickerCell.maxPicks = 10
+        tagPickerCell.maxPicks = nil
         tagPickerCell.reloadTagPrompt(tags: EventViewController.chosenTags)
         contentCells.append(tagPickerCell)
     }
@@ -106,7 +106,7 @@ class FilterDateTableViewController: UITableViewController {
     }
     
     @objc private func close() {
-        parentVC.refilter()
+        parentVC.fetchEventsIfNeeded()
         self.dismiss(animated: true)
     }
     
@@ -115,7 +115,7 @@ class FilterDateTableViewController: UITableViewController {
         EventViewController.start = nil
         EventViewController.end = nil
         self.dismiss(animated: true)
-        parentVC.refilter()
+        parentVC.fetchEventsIfNeeded()
     }
     
     // MARK: - Table view data source & delegate
@@ -185,7 +185,7 @@ class FilterDateTableViewController: UITableViewController {
             let tagPicker = TagPickerView()
             tagPicker.customTitle = "Filter events by tags"
             tagPicker.customSubtitle = "Only events that match at least one of your selected tags will be shown."
-            tagPicker.maxPicks = 3
+            tagPicker.maxPicks = nil
             tagPicker.customButtonTitle = "Done"
             tagPicker.customContinueMethod = { tagPicker in
                 (self.contentCells.last as! ChooseTagCell).status = .done

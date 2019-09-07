@@ -10,16 +10,33 @@ import UIKit
 
 class EventSearchResults: UITableViewController, UISearchResultsUpdating {
     
-    private var parentVC: EventViewController!
+    private var parentVC: EventProvider!
     var allEvents: [Event] {
-        return parentVC.filteredEvents
+        return parentVC.eventsForSearch
     }
     var filteredEvents = [Event]()
     
-    required init(parentVC: EventViewController) {
+    private var emptyLabel: UILabel!
+    
+    required init(parentVC: EventProvider) {
         super.init(nibName: nil, bundle: nil)
         
         self.parentVC = parentVC
+        
+        emptyLabel = {
+            let label = UILabel()
+            label.isHidden = true
+            label.text = "No search results."
+            label.textAlignment = .center
+            label.textColor = .init(white: 0.5, alpha: 1)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            return label
+        }()
     }
 
     override func viewDidLoad() {
@@ -32,6 +49,9 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        emptyLabel?.isHidden = !filteredEvents.isEmpty
+        
         return filteredEvents.count
     }
     
@@ -87,6 +107,9 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
         let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
         detailPage.event = filteredEvents[indexPath.row]
+        if let oe = parentVC as? OrgEventViewController {
+            detailPage.orgEventView = oe
+        }
         parentVC.navigationController?.pushViewController(detailPage, animated: true)
     }
     

@@ -55,6 +55,7 @@
 		CC3760AC231F864800051C06 /* ProfilePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */; };
 		CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = CC39763A231025E3000CC35D /* NSString+AESCrypt.m */; };
 		CC39763F231025E3000CC35D /* NSData+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = CC39763B231025E3000CC35D /* NSData+AESCrypt.m */; };
+		CC3A3ED423235F3000D16A8C /* EventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3A3ED323235F3000D16A8C /* EventProvider.swift */; };
 		CC3D875C231848B800F1F1E7 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */; };
 		CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */; };
 		CC3D87602318DC4000F1F1E7 /* EmailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875F2318DC4000F1F1E7 /* EmailCell.swift */; };
@@ -186,6 +187,7 @@
 		CC39763B231025E3000CC35D /* NSData+AESCrypt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+AESCrypt.m"; sourceTree = "<group>"; };
 		CC39763C231025E3000CC35D /* NSString+AESCrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+AESCrypt.h"; sourceTree = "<group>"; };
 		CC39763D231025E3000CC35D /* NSData+AESCrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AESCrypt.h"; sourceTree = "<group>"; };
+		CC3A3ED323235F3000D16A8C /* EventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProvider.swift; sourceTree = "<group>"; };
 		CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCheckinOverview.swift; sourceTree = "<group>"; };
 		CC3D875F2318DC4000F1F1E7 /* EmailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailCell.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				CCD65518231F4A3400088646 /* EventSearchResults.swift */,
 				D5216648231D828600A54F21 /* FilterDateTableViewController.swift */,
 				CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */,
+				CC3A3ED323235F3000D16A8C /* EventProvider.swift */,
 				DD1BB0D22310B1BC0082C4EE /* Detail */,
 			);
 			path = "Events Page";
@@ -820,6 +823,7 @@
 				67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */,
 				CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */,
 				CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */,
+				CC3A3ED423235F3000D16A8C /* EventProvider.swift in Sources */,
 				CCED539522F7DC16007ADC46 /* UserRegistrationData.swift in Sources */,
 				CC405DCC2307F32C00B85BEC /* OrgInfoPage.swift in Sources */,
 				CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */,

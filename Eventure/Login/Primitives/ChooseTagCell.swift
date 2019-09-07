@@ -11,7 +11,7 @@ import UIKit
 class ChooseTagCell: UITableViewCell {
 
     private(set) var parentVC: UIViewController!
-    var maxPicks = 3
+    var maxPicks: Int? = 3
     
     var status: Status = .none {
         didSet {
@@ -121,7 +121,7 @@ class ChooseTagCell: UITableViewCell {
     }
     
     func reloadTagPrompt(tags: Set<String>) {
-        if tags.count >= 1 && tags.count <= maxPicks {
+        if tags.count >= 1 && (maxPicks == nil || tags.count <= maxPicks!) {
             status = .done
             let tagword = tags.count == 1 ? "tag" : "tags"
             rightLabel.text = "\(tags.count) \(tagword) selected"
