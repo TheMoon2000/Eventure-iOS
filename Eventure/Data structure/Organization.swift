@@ -338,7 +338,7 @@ class Organization: CustomStringConvertible {
     func uploadLogo(new: UIImage, _ handler: ((Bool) -> ())?) {
         
         let original = logoImage
-        logoImage = new
+        logoImage = new.sizeDown(maxWidth: 500)
         
         let url = URL(string: API_BASE_URL + "account/UploadLogo")!
         var request = URLRequest(url: url)
@@ -347,7 +347,7 @@ class Organization: CustomStringConvertible {
         let parameters = ["id": id]
         
         var fileData = [String : Data]()
-        fileData["logo"] = new.pngData()
+        fileData["logo"] = new.sizeDownData(maxWidth: 500)
         
         request.addMultipartBody(parameters: parameters as [String : String],
                                  files: fileData)

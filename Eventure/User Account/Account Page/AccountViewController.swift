@@ -405,9 +405,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
 extension AccountViewController: TOCropViewControllerDelegate {
     func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
         
-        let formatted = image.fixedOrientation().sizeDown()
-
-        User.current?.uploadProfilePicture(new: formatted) { success in
+        User.current?.uploadProfilePicture(new: image) { success in
             if !success {
                 let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
                 self.present(warning, animated: true, completion: nil)

@@ -425,10 +425,10 @@ extension UIImage {
         return UIImage(cgImage: cgImage)
     }
     
-    
-    func sizeDown(maxWidth: CGFloat = 400.0) -> UIImage {
+    func sizeDownData(maxWidth: CGFloat = 400.0) -> Data {
         
         var imageToResize = self
+        let originalSize = imageToResize.pngData()?.count
         
         if size.width > maxWidth {
             let newSize = CGSize(width: maxWidth, height: maxWidth / size.width * size.height)
@@ -441,12 +441,18 @@ extension UIImage {
         var currentQuality: CGFloat = 1.0
         var currentData = imageToResize.jpegData(compressionQuality: 1.0)
         
-        while (currentData?.count ?? 0) > 300000 && currentQuality > 0.05 {
+        while (currentData?.count ?? 0) > 500000 && currentQuality > 0.05 {
             currentQuality *= 0.75
             currentData = imageToResize.jpegData(compressionQuality: currentQuality)
         }
         
-        return UIImage(data: currentData!) ?? imageToResize
+        print("Image reduced from \(originalSize) to \(currentData?.count)")
+        
+        return currentData!
+    }
+    
+    func sizeDown(maxWidth: CGFloat = 400.0) -> UIImage {
+        return UIImage(data: sizeDownData(maxWidth: maxWidth), scale: 0.8)!
     }
 }
 

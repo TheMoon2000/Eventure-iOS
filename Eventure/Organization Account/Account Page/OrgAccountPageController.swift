@@ -283,9 +283,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
 extension OrgAccountPageController: TOCropViewControllerDelegate {
     func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
         
-        let formatted = image.fixedOrientation().sizeDown()
-        
-        Organization.current?.uploadLogo(new: formatted) { success in
+        Organization.current?.uploadLogo(new: image) { success in
             if !success {
                 let warning = UIAlertController(title: "Unable to update logo", message: nil, preferredStyle: .alert)
                 warning.addAction(.init(title: "Dismiss", style: .cancel))

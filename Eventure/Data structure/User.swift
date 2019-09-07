@@ -334,7 +334,7 @@ class User: Profile {
     func uploadProfilePicture(new: UIImage, _ handler: ((Bool) -> ())?) {
         
         let original = profilePicture
-        profilePicture = new
+        profilePicture = new.sizeDown()
         
         let url = URL(string: API_BASE_URL + "account/UpdateProfilePicture")!
         var request = URLRequest(url: url)
@@ -343,7 +343,7 @@ class User: Profile {
         let parameters = ["userId": String(uuid)]
         
         var fileData = [String : Data]()
-        fileData["picture"] = new.pngData()
+        fileData["picture"] = new.sizeDownData()
         
         request.addMultipartBody(parameters: parameters as [String : String],
                                  files: fileData)
@@ -367,7 +367,6 @@ class User: Profile {
                 handler?(false)
             case "success":
                 print("User profile updated")
-                self.profilePicture = new
                 DispatchQueue.main.async {
                     handler?(true)
                 }
