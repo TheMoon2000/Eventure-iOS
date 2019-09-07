@@ -279,9 +279,6 @@ class DraftDescriptionPage: UIViewController {
     }
     
     @objc private func previewButtonPressed() {
-        
-        print(try? descriptionText.text.toHTML())
-        
         view.endEditing(true)
         charCount.isHidden = true
         

@@ -151,7 +151,7 @@ class EventDetailPage: UIViewController {
             button.widthAnchor.constraint(equalToConstant: 35).isActive = true
             button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
             button.leftAnchor.constraint(equalTo: eventTitle.rightAnchor, constant: 15).isActive = true
-            button.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
             
             button.addTarget(self, action: #selector(interestedAction), for: .touchUpInside)
             

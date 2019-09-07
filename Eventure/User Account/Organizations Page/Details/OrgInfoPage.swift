@@ -78,8 +78,8 @@ class OrgInfoPage: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: logoImage.bottomAnchor, constant: 20).isActive = true
             
             return label

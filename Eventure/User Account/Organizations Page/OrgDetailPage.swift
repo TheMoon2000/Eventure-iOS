@@ -75,7 +75,8 @@ class OrgDetailPage: UIViewController {
                     self.thumbNail.image = orgWithImage.logoImage
                 }
             }
-            
+            thumbNail.layer.cornerRadius = 5
+            thumbNail.layer.masksToBounds = true
             thumbNail.contentMode = .scaleAspectFit
             if thumbNail.image == nil {
                 // TODO: Replace with default logo image

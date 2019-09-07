@@ -16,7 +16,6 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     
     
     //define variables that stores all the subscribers of the club
-    
     static var changed: Bool = false
     
     //counts the number of subscribers
@@ -26,20 +25,16 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     private var spinnerLabel: UILabel!
     private var backGroundLabel: UILabel!
     
-    private var displayedUsers = [[User]]()
-    private var labels = [String]()
-    private var sections = 0
-    private var rowsForSection = [Int]()
     
-    
-    private var subscriberDictionaryList = [User]()
+    private var subscriberDictionaryList = Set<User>()
+    private var sortedSubscribers = [User]()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Subscribers"
         
-        title = String(Organization.current!.subscribers.count) + " Subscribers"
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
             spinner.color = .lightGray
@@ -70,9 +65,7 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         
         backGroundLabel = {
             let label = UILabel()
-            label.text = "no subscribers yet"
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -104,22 +97,14 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         self.view.bringSubviewToFront(backGroundLabel)
         
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        if SubscriberListPage.changed {
-            clearAll()
-            viewDidLoad()
-            SubscriberListPage.changed = false
-        }
-    }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let subscriber = self.subscriberDictionaryList[indexPath.row]
+        let subscriber = self.sortedSubscribers[indexPath.row]
         
         let cell = SubscribersCell()
         cell.titleLabel.text = subscriber.displayedName.isEmpty ? subscriber.displayedName : subscriber.fullName
@@ -160,8 +145,9 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     func retreiveSubscribers() {
         spinner.startAnimating()
         spinnerLabel.isHidden = false
+        backGroundLabel.text = ""
         
-        var parameters = [String: String] ()
+        var parameters = [String: String]()
         parameters["orgId"] = String(Organization.current!.id)
         
         let url = URL.with(base: API_BASE_URL, API_Name: "account/ListSubscribers", parameters: parameters)!
@@ -180,6 +166,7 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
             
             guard error == nil else {
                 DispatchQueue.main.async {
+                    self.backGroundLabel.text = "Bad internet connection"
                     internetUnavailableError(vc: self)
                     self.navigationController?.popViewController(animated: true)
                 }
@@ -190,16 +177,21 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
                 for subscriberData in subscriberList {
                     let subscriber = User(userInfo: subscriberData)
                     //store this User
-                    self.subscriberDictionaryList.append(subscriber)
-                    print(subscriber.displayedName)
-                    self.subscriberCount += 1
+                    self.subscriberDictionaryList.insert(subscriber)
+                }
+                
+                self.sortedSubscribers = self.subscriberDictionaryList.sorted {
+                    (user1, user2) -> Bool in
+                    user1.username.lowercased() < user2.username.lowercased()
                 }
                 
                 DispatchQueue.main.async {
                     if (self.subscriberDictionaryList.count == 0) {
-                        self.backGroundLabel.isHidden = false
+                        self.backGroundLabel.text = "No subscribers"
+                    } else {
+                        self.backGroundLabel.text = ""
                     }
-                    self.myTableView.reloadData()
+                    self.myTableView.reloadSections([0], with: .none)
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -216,13 +208,5 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         task.resume()
     } //function ends here
     
-    func clearAll() {
-        
-        sections = 0
-        labels.removeAll()
-        rowsForSection.removeAll()
-        
-        subscriberDictionaryList.removeAll()
-    }
     
 }

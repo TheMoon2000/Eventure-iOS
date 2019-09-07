@@ -99,7 +99,7 @@ class MainTabBarController: UITabBarController {
         tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
         
         let tab2 = OrgAccountPageController()
-        tab2.tabBarItem = UITabBarItem(title: "Org Settings", image: #imageLiteral(resourceName: "dashboard"), tag: 1)
+        tab2.tabBarItem = UITabBarItem(title: "Dashboard", image: #imageLiteral(resourceName: "dashboard"), tag: 1)
     
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)

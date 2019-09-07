@@ -399,7 +399,7 @@ extension User {
 }
 
 
-extension User: CustomStringConvertible {
+extension User: CustomStringConvertible, Hashable {
     
     var description: String {
         var str = "User <\(displayedName)>:\n"
@@ -412,6 +412,14 @@ extension User: CustomStringConvertible {
         str += "  dateRegistered = \(dateRegistered)"
         
         return str
+    }
+    
+    static func ==(lhs: User, rhs: User) -> Bool {
+        return lhs.userID == rhs.userID
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(userID)
     }
     
 }

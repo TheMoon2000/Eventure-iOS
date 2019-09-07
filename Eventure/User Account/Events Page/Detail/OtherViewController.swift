@@ -136,7 +136,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(greaterThanOrEqualTo: locationText.bottomAnchor, constant: 15).isActive = true
             
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
@@ -171,7 +171,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: dateText.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(greaterThanOrEqualTo: dateLabel.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(greaterThanOrEqualTo: dateText.bottomAnchor, constant: 15).isActive = true
             
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
