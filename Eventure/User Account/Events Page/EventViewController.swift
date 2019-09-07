@@ -44,8 +44,9 @@ class EventViewController: UIViewController, EventProvider {
         }
     }
     
-    private(set) var allEvents = [Event]()
+    private var NO_EVENT = "No events to show."
     
+    private(set) var allEvents = [Event]()
     private(set) var filteredEvents = [Event]()
    
     var eventsForSearch: [Event] {
@@ -263,6 +264,9 @@ class EventViewController: UIViewController, EventProvider {
                         self.updateFiltered() {
                             self.eventCatalog.reloadSections([0])
                             stop()
+                            if tmp.isEmpty {
+                                self.emptyLabel.text = self.NO_EVENT
+                            }
                         }
                     }
                 }
@@ -408,7 +412,7 @@ extension EventViewController {
             self.eventCatalog.reloadSections([0])
             self.spinner.stopAnimating()
             self.spinnerLabel.isHidden = true
-            self.emptyLabel.text = self.filteredEvents.isEmpty ? "No Events" : ""
+            self.emptyLabel.text = self.filteredEvents.isEmpty ? self.NO_EVENT : ""
         }
     }
     

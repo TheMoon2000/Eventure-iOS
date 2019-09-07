@@ -85,8 +85,16 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             region.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(region)
             
-            region.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 50).isActive = true
-            region.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -50).isActive = true
+            let left = region.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 50)
+            left.priority = .defaultHigh
+            left.isActive = true
+            
+            let right = region.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -50)
+            right.priority = .defaultHigh
+            right.isActive = true
+            
+            region.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            region.widthAnchor.constraint(lessThanOrEqualToConstant: 400).isActive = true
             region.widthAnchor.constraint(equalTo: region.heightAnchor).isActive = true
             region.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
             
@@ -451,11 +459,15 @@ extension ScannerViewController: UIImagePickerControllerDelegate, UINavigationCo
         if let message = detectQRCode(image), let eventUUID = decryptDataString(message) {
             picker.dismiss(animated: true)
             presentCheckinForm(eventID: eventUUID)
+        } else {
+            let alert = UIAlertController(title: "This is not an Eventure event code!", message: "Please try a different image.", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            picker.present(alert, animated: true, completion: nil)
         }
     }
     
     func detectQRCode(_ image: UIImage?) -> String? {
-        if let image = image, let ciImage = CIImage.init(image: image){
+        if let image = image, let ciImage = CIImage.init(image: image) {
             var options: [String: Any]
             let context = CIContext()
             options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]

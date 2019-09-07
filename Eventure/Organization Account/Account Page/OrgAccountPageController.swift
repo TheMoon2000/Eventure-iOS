@@ -85,6 +85,14 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
                 picker.sourceType = .camera
                 self.present(picker, animated: true)
             }))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = tableView
+                let cellRect = tableView.rectForRow(at: indexPath)
+                popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = [.left, .up]
+            }
+            
             present(alert, animated: true)
             
         case (1,0): //if the user tries to change account information
@@ -112,13 +120,14 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             //if the log out/sign in button is clicked
             //Note: Do not need to imeplement the case where Organization.current == nil
             //because we have already logged in for Org
-            let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                 Organization.current = nil
                 MainTabBarController.current.openScreen()
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            
             self.present(alert, animated: true)
         default:
             break

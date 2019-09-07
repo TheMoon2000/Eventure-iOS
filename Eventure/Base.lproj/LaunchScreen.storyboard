@@ -21,7 +21,7 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" insetsLayoutMarginsFromSafeArea="NO" image="launch" translatesAutoresizingMaskIntoConstraints="NO" id="eJQ-ED-gR8">
                                 <rect key="frame" x="40" y="112.5" width="295" height="442.5"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="520" id="XZ4-wC-GBO"/>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="480" id="XZ4-wC-GBO"/>
                                     <constraint firstAttribute="width" secondItem="eJQ-ED-gR8" secondAttribute="height" multiplier="2:3" id="ZEr-JH-lhn"/>
                                 </constraints>
                             </imageView>
@@ -32,7 +32,7 @@
                             <constraint firstItem="eJQ-ED-gR8" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="JOP-Vn-YSO"/>
                             <constraint firstItem="eJQ-ED-gR8" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Jl8-Cd-c9R"/>
                             <constraint firstItem="eJQ-ED-gR8" firstAttribute="top" relation="greaterThanOrEqual" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Q4l-uK-R0n"/>
-                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.49" priority="750" id="ssi-Mq-rMB"/>
+                            <constraint firstItem="eJQ-ED-gR8" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.48" priority="750" id="ssi-Mq-rMB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>

@@ -90,6 +90,14 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 picker.sourceType = .camera
                 self.present(picker, animated: true)
             }))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = tableView
+                let cellRect = tableView.rectForRow(at: indexPath)
+                popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = .up
+            }
+            
             present(alert, animated: true)
             
         case (1, 0): // if the user tries to change account information
@@ -212,7 +220,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 present(nvc, animated: true, completion: nil)
             } else {
                 //pop out an alert window
-                let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
                     UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                     User.current = nil
@@ -384,6 +392,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         let cropper = TOCropViewController(image: original)
         cropper.rotateButtonsHidden = true
         cropper.resetButtonHidden = true
+        cropper.aspectRatioPickerButtonHidden = true
         cropper.aspectRatioPreset = .presetSquare
         cropper.aspectRatioLockEnabled = true
         cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]

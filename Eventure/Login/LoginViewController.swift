@@ -484,6 +484,12 @@ class LoginViewController: UIViewController {
             
             alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
             
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = loginButton
+                popoverController.sourceRect = CGRect(x: loginButton.bounds.midX, y: loginButton.bounds.maxY + 5, width: 0, height: 0)
+                popoverController.permittedArrowDirections = .up
+            }
+            
             self.present(alert, animated: true, completion: nil)
         }
         
@@ -510,6 +516,11 @@ class LoginViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "User Account", style: .default, handler: handler))
         alert.addAction(UIAlertAction(title: "Organization Account", style: .default, handler: handler))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = registerButton
+            popoverController.sourceRect = CGRect(x: registerButton.frame.midX, y: registerButton.frame.minY, width: 0, height: 0)
+        }
         
         present(alert, animated: true, completion: nil)
         

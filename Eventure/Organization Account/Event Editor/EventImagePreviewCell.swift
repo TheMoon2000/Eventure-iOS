@@ -11,7 +11,7 @@ import TOCropViewController
 
 class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    private(set) var parentVC: UIViewController!
+    private(set) var parentVC: DraftOtherInfoPage!
     
     private var bgView: UIView!
     private(set) var previewImage: UIImageView!
@@ -20,7 +20,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
     
     var updateImageHandler: ((UIImage?) -> ())?
     
-    init(parentVC: UIViewController) {
+    init(parentVC: DraftOtherInfoPage) {
         super.init(style: .default, reuseIdentifier: nil)
         
         self.parentVC = parentVC
@@ -129,8 +129,15 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
             picker.sourceType = .camera
             self.parentVC.present(picker, animated: true)
         }))
-        parentVC.present(alert, animated: true)
         
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = parentVC.tableView
+            let cellRect = parentVC.tableView.rectForRow(at: parentVC.tableView.indexPath(for: self)!)
+            popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = [.down, .up]
+        }
+        
+        parentVC.present(alert, animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {

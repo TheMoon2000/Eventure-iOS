@@ -315,6 +315,10 @@ class EventDetailPage: UIViewController {
             self.openEditor()
         }))
         
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.barButtonItem = rightButton
+        }
+        
         if self.event.published {
             alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
                 let checkin = EventCheckinOverview()

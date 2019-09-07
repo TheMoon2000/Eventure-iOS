@@ -426,26 +426,27 @@ extension UIImage {
     }
     
     
-    func sizeDown(maxWidth: CGFloat = 500.0) -> UIImage {
+    func sizeDown(maxWidth: CGFloat = 400.0) -> UIImage {
         
-        /*
-        var currentQuality: CGFloat = 1.0
-        var currentData = jpegData(compressionQuality: 1.0)
-        
-        while (currentData?.count ?? 0 && currentQuality > 0.01) > 200000 {
-            currentQuality *= 0.85
-            currentData = jpegData(compressionQuality: currentQuality)
-        }*/
+        var imageToResize = self
         
         if size.width > maxWidth {
             let newSize = CGSize(width: maxWidth, height: maxWidth / size.width * size.height)
             let renderer = UIGraphicsImageRenderer(size: newSize)
-            return renderer.image { context in
+            imageToResize = renderer.image { context in
                 self.draw(in: CGRect(origin: .zero, size: newSize))
             }
         }
         
-        return self
+        var currentQuality: CGFloat = 1.0
+        var currentData = imageToResize.jpegData(compressionQuality: 1.0)
+        
+        while (currentData?.count ?? 0) > 300000 && currentQuality > 0.05 {
+            currentQuality *= 0.75
+            currentData = imageToResize.jpegData(compressionQuality: currentQuality)
+        }
+        
+        return UIImage(data: currentData!) ?? imageToResize
     }
 }
 

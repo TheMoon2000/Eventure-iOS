@@ -60,7 +60,7 @@ struct OrganizationRegistrationData {
     }
     
     var fileData: [String: Data] {
-        if let pngData = logo?.sizeDown(maxWidth: 1000).jpegData(compressionQuality: 0.6) {
+        if let pngData = logo?.sizeDown().pngData() {
             return ["logo": pngData]
         } else {
             return [:]
