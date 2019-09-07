@@ -486,7 +486,7 @@ class LoginViewController: UIViewController {
             
             if let popoverController = alert.popoverPresentationController {
                 popoverController.sourceView = loginButton
-                popoverController.sourceRect = CGRect(x: loginButton.bounds.midX, y: loginButton.bounds.maxY + 5, width: 0, height: 0)
+                popoverController.sourceRect = CGRect(x: loginButton.bounds.midX, y: loginButton.bounds.midY, width: 0, height: 0)
                 popoverController.permittedArrowDirections = .up
             }
             

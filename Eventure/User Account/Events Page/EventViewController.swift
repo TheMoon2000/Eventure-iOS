@@ -224,7 +224,10 @@ class EventViewController: UIViewController, EventProvider {
         } else {
             parameters["upperBound"] = DATE_FORMATTER.string(from: .distantFuture)
         }
-            
+        
+        print(parameters["lowerBound"]!, parameters["upperBound"]!)
+        
+        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/List",
                            parameters: parameters)!

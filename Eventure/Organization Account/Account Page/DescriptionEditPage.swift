@@ -51,6 +51,7 @@ class DescriptionEditPage: UIViewController {
             let sv = UIScrollView()
             sv.alwaysBounceVertical = true
             sv.addGestureRecognizer(tap)
+            sv.keyboardDismissMode = .interactive
             sv.contentInsetAdjustmentBehavior = .always
             sv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(sv)
@@ -110,16 +111,11 @@ class DescriptionEditPage: UIViewController {
         
         descriptionText = {
             let tv = UITextView()
-            tv.backgroundColor = nil
             tv.isScrollEnabled = false
-            tv.keyboardDismissMode = .onDrag
-            tv.font = .systemFont(ofSize: 18)
             tv.textColor = .darkGray
-            tv.allowsEditingTextAttributes = false
             
-            let pStyle = NSMutableParagraphStyle()
-            pStyle.lineSpacing = 2
-            tv.typingAttributes[NSAttributedString.Key.paragraphStyle] = pStyle
+            textViewFormatter(tv: tv)
+            
             tv.insertText(Organization.current!.orgDescription)
             tv.delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -194,6 +190,15 @@ class DescriptionEditPage: UIViewController {
         spinnerBarItem = .init(customView: spinner)
     }
     
+    func textViewFormatter(tv: UITextView) {
+        tv.backgroundColor = nil
+        tv.font = .systemFont(ofSize: 18)
+        tv.allowsEditingTextAttributes = false
+        
+        let pStyle = NSMutableParagraphStyle()
+        pStyle.lineSpacing = 2
+        tv.typingAttributes[NSAttributedString.Key.paragraphStyle] = pStyle
+    }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -301,24 +306,20 @@ extension DescriptionEditPage: UITextViewDelegate {
         edited = true
     }
     
-    func textViewDidChangeSelection(_ textView: UITextView) {
-        scrollToCursor()
-
-    }
-    
     func textViewDidBeginEditing(_ textView: UITextView) {
-        scrollToCursor()
+        DispatchQueue.main.async {
+            self.scrollToCursor()
+        }
     }
     
     func scrollToCursor() {
         var range = NSRange()
         range.location = descriptionText.selectedRange.location
-        range.length = descriptionText.text.count - descriptionText.selectedRange.location
+        range.length = descriptionText.text.count -  descriptionText.selectedRange.upperBound
         let front = NSString(string: descriptionText.text).replacingCharacters(in: range, with: "")
         let imaginary = UITextView(frame: descriptionText.bounds)
-        imaginary.font = .systemFont(ofSize: 18)
-        imaginary.text = front
-        imaginary.textContainer.lineFragmentPadding = 0
+        textViewFormatter(tv: imaginary)
+        imaginary.attributedText = NSAttributedString(string: front, attributes: imaginary.typingAttributes)
         
         let required = descriptionText.frame.origin.y + imaginary.contentSize.height + 10
         let displayHeight = canvas.contentOffset.y + canvas.frame.height - canvas.contentInset.bottom

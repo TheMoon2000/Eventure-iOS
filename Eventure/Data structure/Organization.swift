@@ -37,7 +37,7 @@ class Organization: CustomStringConvertible {
     var tags = Set<String>() { didSet { save() } }
     var website: String { didSet { save() } }
     var contactEmail: String { didSet { save() } }
-    var orgDescription: String { didSet { save() } }
+    var orgDescription: String { didSet { save(requireReupload: false) } }
 
     var saveEnabled: Bool = false
 
