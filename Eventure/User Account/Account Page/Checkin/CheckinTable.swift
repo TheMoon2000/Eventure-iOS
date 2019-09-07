@@ -41,7 +41,6 @@ class CheckinTable: UIViewController {
         super.viewWillAppear(animated)
         
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.view.backgroundColor = .clear
         
     }
@@ -50,7 +49,6 @@ class CheckinTable: UIViewController {
         super.viewWillDisappear(animated)
         
         navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
-        navigationController?.navigationBar.shadowImage = nil
         navigationController?.view.backgroundColor = nil
     }
 
@@ -58,6 +56,7 @@ class CheckinTable: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .init(white: 0.92, alpha: 1)
+        navigationController?.navigationBar.shadowImage = UIImage()
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         

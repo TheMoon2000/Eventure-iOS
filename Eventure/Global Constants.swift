@@ -442,7 +442,7 @@ extension UIImage {
         var currentData = imageToResize.jpegData(compressionQuality: 1.0)
         
         while (currentData?.count ?? 0) > 500000 && currentQuality > 0.05 {
-            currentQuality *= 0.75
+            currentQuality *= 0.8
             currentData = imageToResize.jpegData(compressionQuality: currentQuality)
         }
         
