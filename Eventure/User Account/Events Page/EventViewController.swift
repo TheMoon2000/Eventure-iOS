@@ -294,6 +294,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
             }
         }
         detailPage.event = filteredEvents[indexPath.row]
+        detailPage.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailPage, animated: true)
     }
 }

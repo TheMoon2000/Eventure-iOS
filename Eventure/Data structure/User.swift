@@ -255,7 +255,9 @@ class User: Profile {
             }
             
             if let json = try? JSON(data: data!) {
+                let currentImage = User.current?.profilePicture
                 User.current = User(userInfo: json)
+                User.current?.profilePicture = currentImage
                 NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
             } else {
                 print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'")

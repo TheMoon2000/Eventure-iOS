@@ -8,6 +8,7 @@
 
 import UIKit
 import XLPagerTabStrip
+import SafariServices
 
 class AboutViewController: UIViewController, IndicatorInfoProvider {
 
@@ -27,6 +28,7 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
             tv.attributedText = event.eventDescription.attributedText()
             tv.contentInset.top = 20
             tv.contentInset.bottom = 20
+            tv.delegate = self
             tv.scrollIndicatorInsets = .init(top: 20, left: 0, bottom: 20, right: 0)
             tv.backgroundColor = .clear
             tv.dataDetectorTypes = [.link, .phoneNumber]
@@ -77,4 +79,17 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
     }
     */
 
+}
+
+
+extension AboutViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            self.present(vc, animated: true)
+            return false
+        }
+        
+        return true
+    }
 }
