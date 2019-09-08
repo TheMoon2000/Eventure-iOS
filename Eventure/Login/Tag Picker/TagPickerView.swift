@@ -26,6 +26,7 @@ class TagPickerView: UIViewController {
     var customTitle: String?
     var customSubtitle: String?
     var customButtonTitle: String?
+    var minPicks = 1
     var maxPicks: Int?
     
     var tagPicker: UICollectionView!
@@ -42,7 +43,7 @@ class TagPickerView: UIViewController {
     var customDisappearHandler: ((Set<String>) -> ())?
     
     private func updateUI() {
-        if selectedTags.isEmpty || maxPicks != nil && maxPicks! < selectedTags.count {
+        if minPicks > selectedTags.count || maxPicks != nil && maxPicks! < selectedTags.count {
             continueButton.isUserInteractionEnabled = false
             UIView.animate(withDuration: 0.15) {
                 self.continueButton.backgroundColor = MAIN_DISABLED

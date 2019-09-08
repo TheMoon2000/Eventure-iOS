@@ -199,6 +199,7 @@ class FilterDateTableViewController: UITableViewController {
             tagPicker.customTitle = "Filter events by tags"
             tagPicker.customSubtitle = "Only events that match at least one of your selected tags will be shown."
             tagPicker.maxPicks = nil
+            tagPicker.minPicks = 0
             tagPicker.customButtonTitle = "Done"
             tagPicker.customContinueMethod = { tagPicker in
                 (self.contentCells.last as! ChooseTagCell).status = .done
