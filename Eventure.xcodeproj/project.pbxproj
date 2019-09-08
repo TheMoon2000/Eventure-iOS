@@ -51,6 +51,7 @@
 		CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6EE230706FC0044C6ED /* PastEvents.swift */; };
 		CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */; };
 		CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6F2230709450044C6ED /* OrgEventsTabStrip.swift */; };
+		CC2F308E2324631A00AF5F8E /* OrgSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2F308D2324631A00AF5F8E /* OrgSplitViewController.swift */; };
 		CC3312822322121C00DC03D2 /* AboutPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3312812322121C00DC03D2 /* AboutPage.swift */; };
 		CC3760AC231F864800051C06 /* ProfilePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */; };
 		CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = CC39763A231025E3000CC35D /* NSString+AESCrypt.m */; };
@@ -179,6 +180,7 @@
 		CC2EE6EE230706FC0044C6ED /* PastEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PastEvents.swift; sourceTree = "<group>"; };
 		CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingEvents.swift; sourceTree = "<group>"; };
 		CC2EE6F2230709450044C6ED /* OrgEventsTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventsTabStrip.swift; sourceTree = "<group>"; };
+		CC2F308D2324631A00AF5F8E /* OrgSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgSplitViewController.swift; sourceTree = "<group>"; };
 		CC3312812322121C00DC03D2 /* AboutPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPage.swift; sourceTree = "<group>"; };
 		CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePreviewCell.swift; sourceTree = "<group>"; };
 		CC377C572310223A0098219B /* EventureAPITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EventureAPITests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 		CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgAccountPageController.swift; sourceTree = "<group>"; };
 		CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinOverview.swift; sourceTree = "<group>"; };
 		CCAFC82623127899005FC231 /* DraftLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftLocationCell.swift; sourceTree = "<group>"; };
+		CCB533DB23245B370058C125 /* Eventure.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Eventure.entitlements; sourceTree = "<group>"; };
 		CCC4A0AE22F24EA000AB9557 /* TagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCell.swift; sourceTree = "<group>"; };
 		CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalTextCell.swift; sourceTree = "<group>"; };
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
@@ -356,6 +359,7 @@
 		CC18F54D229AD4EB008FABEA /* Eventure */ = {
 			isa = PBXGroup;
 			children = (
+				CCB533DB23245B370058C125 /* Eventure.entitlements */,
 				CC18F54E229AD4EB008FABEA /* AppDelegate.swift */,
 				CC1AF7A4229B732C003471F2 /* Global Constants.swift */,
 				CC18F563229AD518008FABEA /* MainTabBarController.swift */,
@@ -405,6 +409,7 @@
 			isa = PBXGroup;
 			children = (
 				CC18F567229AD535008FABEA /* OrganizationsViewController.swift */,
+				CC2F308D2324631A00AF5F8E /* OrgSplitViewController.swift */,
 				CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */,
 				CC2EE6EA2306F9750044C6ED /* OrgDetailPage.swift */,
 				CCB064762307F09900BB22E1 /* Events */,
@@ -655,6 +660,9 @@
 							com.apple.Keychain = {
 								enabled = 0;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
 						};
 					};
 					CCFB7A1C229FA6810082FEC6 = {
@@ -857,6 +865,7 @@
 				CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */,
 				CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */,
 				CC3760AC231F864800051C06 /* ProfilePreviewCell.swift in Sources */,
+				CC2F308E2324631A00AF5F8E /* OrgSplitViewController.swift in Sources */,
 				677A8CAC231DA132007CB04F /* InterestedEvents.swift in Sources */,
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
@@ -1058,6 +1067,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
@@ -1066,8 +1077,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -1081,6 +1093,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
@@ -1089,8 +1103,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.eventure;
+				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

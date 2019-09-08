@@ -12,7 +12,11 @@ import SwiftyJSON
 
 class OrgDetailPage: UIViewController {
     
-    var organization: Organization!
+    var organization: Organization! {
+        didSet {
+            blockBG?.isHidden = !organization.title.isEmpty
+        }
+    }
     
     private var previewContainer: UIView!
     private var thumbNail: UIImageView!
@@ -24,8 +28,11 @@ class OrgDetailPage: UIViewController {
     private var expandButton: UIButton!
     private var disclosureIndicator: UIImageView!
     
-    private var tabStrip: ButtonBarPagerTabStripViewController!
+    private(set) var tabStrip: ButtonBarPagerTabStripViewController!
     private var tabTopConstraint: NSLayoutConstraint!
+    
+    private var blockBG: UIView!
+    private var blockText: UILabel!
     
     required init(organization: Organization) {
         super.init(nibName: nil, bundle: nil)
@@ -43,7 +50,9 @@ class OrgDetailPage: UIViewController {
         if User.current != nil && organization.subscribers.contains(User.current!.uuid) {
             favImage = #imageLiteral(resourceName: "heart")
         }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(subscribe(_:)))
+        
+        let rightButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(subscribe(_:)))
+        navigationItem.rightBarButtonItem = rightButton
         navigationItem.rightBarButtonItem?.isEnabled = User.current != nil
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
         
@@ -125,7 +134,6 @@ class OrgDetailPage: UIViewController {
                 let label = UILabel()
                 label.font = .systemFont(ofSize: 16.5)
                 label.textColor = .lightGray
-                label.text = "Loading member info..."
                 let noun = organization.subscribers.count == 1 ? "Subscriber" : "Subscribers"
                 label.text = "\(organization.subscribers.count) " + noun
                 label.textColor = .gray
@@ -188,6 +196,34 @@ class OrgDetailPage: UIViewController {
             tabStrip.didMove(toParent: self)
             
             return tabStrip
+        }()
+        
+        blockBG = {
+            let b = UIView()
+            b.backgroundColor = EventDraft.backgroundColor
+            b.translatesAutoresizingMaskIntoConstraints = false
+            b.isHidden = !organization.title.isEmpty
+            view.addSubview(b)
+            
+            b.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            b.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            b.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            b.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            return b
+        }()
+        
+        blockText = {
+            let label = UILabel()
+            label.text = "Nothing to show."
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            blockBG.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: blockBG.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: blockBG.centerYAnchor).isActive = true
+            
+            return label
         }()
     }
     
@@ -257,7 +293,6 @@ class OrgDetailPage: UIViewController {
         
         task.resume()
     }
-    
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)

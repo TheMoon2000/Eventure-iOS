@@ -35,11 +35,11 @@ class TagCell: UICollectionViewCell {
         
         tagLabel = {
             let label = UILabel()
-            label.lineBreakMode = .byWordWrapping
+            label.lineBreakMode = .byCharWrapping
             label.adjustsFontSizeToFitWidth = true
             label.textAlignment = .center
             label.textColor = .white
-            label.numberOfLines = 0
+            label.numberOfLines = 3
             label.font = .systemFont(ofSize: 16, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

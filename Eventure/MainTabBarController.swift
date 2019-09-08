@@ -69,7 +69,12 @@ class MainTabBarController: UITabBarController {
         let tab1 = EventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
 
-        let tab2 = OrganizationsViewController()
+        let tab2: UIViewController
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            tab2 = OrgSplitViewController()
+        } else {
+            tab2 = OrganizationsViewController()
+        }
         tab2.tabBarItem = UITabBarItem(title: "Organizations", image: #imageLiteral(resourceName: "organization"), tag: 1)
         
         let tab3 = AccountViewController()
@@ -77,18 +82,18 @@ class MainTabBarController: UITabBarController {
         
         
         viewControllers = [tab1, tab2, tab3].map { vc in
-            let nav: UINavigationController
-            if vc is AccountViewController {
-                nav = ConstrainedNavController(rootViewController: vc)
-            } else {
-                nav = UINavigationController(rootViewController: vc)
+            if vc is OrgSplitViewController {
+                return vc
             }
+            
+            let nav = UINavigationController(rootViewController: vc)
             
             /// REPLACE
             nav.navigationBar.barTintColor = NAVBAR_TINT
          
             return nav
         }
+        
     }
     
     private func setupOrganizationTabs() {
@@ -160,11 +165,4 @@ class MainTabBarController: UITabBarController {
      }
      */
     
-}
-
-
-class ConstrainedNavController: UINavigationController {
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
 }

@@ -23,6 +23,8 @@ class LoginViewController: UIViewController {
     
     var navBar: UINavigationController?
     
+    private var MIN_HEIGHT: CGFloat = 450
+    
     // Make the status bar white
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -91,7 +93,7 @@ class LoginViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         rotated(frame: CGRect(origin: .zero, size: size))
         coordinator.animate(alongsideTransition: { context in
-            self.loginAsGuest.isHidden = size.height < 500
+            self.loginAsGuest.isHidden = size.height < self.MIN_HEIGHT
         }, completion: nil)
     }
     
@@ -137,6 +139,8 @@ class LoginViewController: UIViewController {
     /// Set up the UI elements from top to bottom.
     
     private func setupLogins() {
+        
+        view.layoutIfNeeded()
         
         // Logo image
         
@@ -246,6 +250,7 @@ class LoginViewController: UIViewController {
         
         loginAsGuest = {
             let button = UIButton(type: .system)
+            button.isHidden = view.frame.height < MIN_HEIGHT
             button.setTitle("Continue as Guest", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
             button.tintColor = .init(white: 1, alpha: 0.95)

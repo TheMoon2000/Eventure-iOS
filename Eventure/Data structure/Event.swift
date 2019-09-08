@@ -47,7 +47,7 @@ class Event {
     var duration: String {
         let dc = DateComponentsFormatter()
         dc.allowedUnits = [.month, .weekOfMonth, .day, .hour, .minute]
-        dc.zeroFormattingBehavior = .dropLeading
+        dc.zeroFormattingBehavior = [.dropLeading, .dropTrailing]
         dc.maximumUnitCount = 2
         dc.unitsStyle = .full
         

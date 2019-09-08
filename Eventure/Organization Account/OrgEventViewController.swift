@@ -117,7 +117,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         topTabBg.isHidden = !showTopTab
         
         eventCatalog = {
-            let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+            let ec = UICollectionView(frame: .zero, collectionViewLayout: TopAlignedCollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
             if useRefreshControl {
@@ -382,6 +382,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         navigationController?.pushViewController(detailPage, animated: true)
     }
 }
+
 
 // MARK: - Extension on flow layout
 extension OrgEventViewController: UICollectionViewDelegateFlowLayout {

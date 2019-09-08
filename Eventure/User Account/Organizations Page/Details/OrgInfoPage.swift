@@ -47,12 +47,12 @@ class OrgInfoPage: UIViewController {
         logoImage = {
             let iv = UIImageView(image: organization.logoImage)
             if iv.image == nil {
-                iv.image = #imageLiteral(resourceName: "unknown").withRenderingMode(.alwaysTemplate)
+                iv.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             }
             iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
-            iv.isHidden = UIScreen.main.bounds.width > UIScreen.main.bounds.height
+            iv.isHidden = view.frame.height <= 500
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
             
@@ -74,7 +74,7 @@ class OrgInfoPage: UIViewController {
             label.text = organization.title
             label.textColor = .init(white: 0.1, alpha: 1)
             label.font = .systemFont(ofSize: 21, weight: .semibold)
-            label.isHidden = UIScreen.main.bounds.width > UIScreen.main.bounds.height
+            label.isHidden = view.frame.height >= 500
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             

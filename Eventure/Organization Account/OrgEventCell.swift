@@ -206,8 +206,10 @@ class OrgEventCell: UICollectionViewCell {
         titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
         locationText.text = event.location.isEmpty ? "TBA" : event.location
-        self.descriptionText.setText(event.eventDescription.attributedText())
-        
+        descriptionText.setText(event.eventDescription.attributedText())
+        if event.eventDescription.isEmpty {
+            descriptionText.setText("No description.".attributedText())
+        }
         if event.eventVisual == nil {
             if withImage {
                 event.getCover { eventWithCover in
@@ -244,13 +246,8 @@ extension OrgEventCell: TTTAttributedLabelDelegate {
         
         switch result.resultType {
         case NSTextCheckingResult.CheckingType.phoneNumber:
-            alert.title = "Make a call?"
-            alert.message = result.phoneNumber
             let url = URL(string: "tel://" + result.phoneNumber!)!
-            alert.addAction(.init(title: "Call", style: .default, handler: {
-                action in
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            }))
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         default:
             break
         }

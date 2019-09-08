@@ -22,8 +22,11 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     private var locationLabel: UILabel!
     private(set) var locationText: UILabel!
     
-    private var dateLabel: UILabel!
-    private(set) var dateText: UILabel!
+    private var startLabel: UILabel!
+    private(set) var startDate: UILabel!
+    
+    private var endLabel: UILabel!
+    private(set) var endDate: UILabel!
     
     private var interestedLabel: UILabel!
     private(set) var interestedText: UILabel!
@@ -128,7 +131,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         }()
         
         
-        dateLabel = {
+        startLabel = {
             let label = UILabel()
             label.text = "Start time: "
             label.font = .systemFont(ofSize: 17, weight: .semibold)
@@ -136,7 +139,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(greaterThanOrEqualTo: locationText.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: 15).isActive = true
             
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
@@ -144,19 +147,51 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             return label
         }()
         
-        dateText = {
+        startDate = {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = event.startTime?.readableString()
-            if (label.text?.isEmpty ?? true) { label.text = "Unspecified" }
+            label.text = event.startTime?.readableString() ?? "Unspecified"
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: dateLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: dateLabel.topAnchor).isActive = true
+            label.leftAnchor.constraint(equalTo: startLabel.rightAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: startLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
+            
+            return label
+        }()
+        
+        endLabel = {
+            let label = UILabel()
+            label.text = "Duration: "
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: startDate.bottomAnchor, constant: 15).isActive = true
+            
+            label.layoutIfNeeded()
+            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            
+            return label
+        }()
+        
+        endDate = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.numberOfLines = 0
+            label.text = event.duration
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: endLabel.rightAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: endLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
             
             return label
@@ -171,8 +206,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(greaterThanOrEqualTo: dateLabel.bottomAnchor, constant: 15).isActive = true
-            label.topAnchor.constraint(greaterThanOrEqualTo: dateText.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: endDate.bottomAnchor, constant: 15).isActive = true
             
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
@@ -192,7 +226,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             
             label.leftAnchor.constraint(equalTo: interestedLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: interestedLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: dateText.rightAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: endDate.rightAnchor).isActive = true
             
             return label
         }()

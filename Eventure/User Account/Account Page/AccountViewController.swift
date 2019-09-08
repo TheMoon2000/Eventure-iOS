@@ -354,7 +354,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
         if let profile = User.current?.profilePicture {
             let fullScreen = ImageFullScreenPage(image: profile)
-            present(fullScreen, animated: true, completion: nil)
+            present(fullScreen, animated: false)
         }
     }
     

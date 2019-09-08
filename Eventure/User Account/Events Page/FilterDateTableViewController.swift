@@ -59,11 +59,6 @@ class FilterDateTableViewController: UITableViewController {
                 cell.datePicker.date = rounded
             }
             
-            cell.dateChangedHandler = { newDate in
-                startTopCell.displayedDate = newDate
-                EventViewController.start = newDate
-            }
-            
             return cell
         }()
         
@@ -85,13 +80,31 @@ class FilterDateTableViewController: UITableViewController {
                 cell.datePicker.date = rounded
             }
             
-            cell.dateChangedHandler = { date in
-                endTopCell.displayedDate = date
-                EventViewController.end = date
-            }
             
             return cell
         }()
+        
+        startBottomCell.dateChangedHandler = { newDate in
+            startTopCell.displayedDate = newDate
+            EventViewController.start = newDate
+            let minimumUpperbound = newDate.addingTimeInterval(3600)
+            let currentUpperbound = EventViewController.end ?? .distantFuture
+            if currentUpperbound < newDate {
+                endBottomCell.datePicker.setDate(minimumUpperbound, animated: true)
+                endBottomCell.dateChangedHandler?(minimumUpperbound)
+            }
+        }
+        
+        endBottomCell.dateChangedHandler = { date in
+            endTopCell.displayedDate = date
+            EventViewController.end = date
+            let maximumLowerbound = date.addingTimeInterval(-3600)
+            let currentLowerbound = EventViewController.start ?? Date()
+            if currentLowerbound > date {
+                startBottomCell.datePicker.setDate(maximumLowerbound, animated: true)
+                startBottomCell.dateChangedHandler?(maximumLowerbound)
+            }
+        }
         
         contentCells.append(endBottomCell)
         

@@ -82,10 +82,6 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
             self.filteredEvents = self.allEvents.filter { event in
                 if searchString.isEmpty { return true }
                 
-                if let end = event.endTime, Date().timeIntervalSince(end) > 0 {
-                    return false
-                }
-                
                 for target in [event.title, event.eventDescription, event.hostTitle, event.location] {
                     if target.lowercased().contains(searchString) {
                         return true

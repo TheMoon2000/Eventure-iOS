@@ -25,6 +25,8 @@ class OrganizationsViewController: UIViewController {
         }
     }
     
+    var customPushHandler: ((Organization) -> ())?
+    
     private var filteredOrgs = [Organization]()
     
     private var isFiltering: Bool {
@@ -244,10 +246,14 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.row])
-        orgDetail.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(orgDetail, animated: true)
+        if customPushHandler != nil {
+            customPushHandler?(filteredOrgs[indexPath.row])
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.row])
+            orgDetail.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(orgDetail, animated: true)
+        }
     }
 }
 

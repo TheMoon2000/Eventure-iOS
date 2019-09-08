@@ -57,7 +57,7 @@ Ac dolor ac adipiscing amet bibendum nullam, lacus molestie ut libero nec, diam 
 """
 
 let PLAIN_STYLE =  """
-    p {
+    body {
         font-family: -apple-system;
         font-size: 17px;
         line-height: 1.5;
@@ -117,7 +117,7 @@ let PLAIN_STYLE =  """
 """
 
 let COMPACT_STYLE = """
-    p {
+    body {
         font-family: -apple-system;
         font-size: 16px;
         line-height: 1.25;
@@ -327,6 +327,31 @@ extension URLRequest {
         // Begin mutating the request
         self.addValue("multipart/form-data; charset=utf-8; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         self.httpBody = data
+    }
+}
+
+class TopAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let attributes = super.layoutAttributesForElements(in: rect)?
+            .map { $0.copy() } as? [UICollectionViewLayoutAttributes]
+        
+        attributes?
+            .reduce([CGFloat: (CGFloat, [UICollectionViewLayoutAttributes])]()) {
+                guard $1.representedElementCategory == .cell else { return $0 }
+                return $0.merging([ceil($1.center.y): ($1.frame.origin.y, [$1])]) {
+                    ($0.0 < $1.0 ? $0.0 : $1.0, $0.1 + $1.1)
+                }
+            }
+            .values.forEach { minY, line in
+                line.forEach {
+                    $0.frame = $0.frame.offsetBy(
+                        dx: 0,
+                        dy: minY - $0.frame.origin.y
+                    )
+                }
+        }
+        
+        return attributes
     }
 }
 

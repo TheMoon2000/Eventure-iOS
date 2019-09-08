@@ -123,7 +123,7 @@ class EventViewController: UIViewController, EventProvider {
         topTabBg.layoutIfNeeded()
         
         eventCatalog = {
-           let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+           let ec = UICollectionView(frame: .zero, collectionViewLayout: TopAlignedCollectionViewFlowLayout())
             ec.delegate = self
             ec.dataSource = self
             ec.contentInset.top = topTabBg.frame.height + 8
@@ -303,8 +303,10 @@ class EventViewController: UIViewController, EventProvider {
         present(nav, animated: true, completion: nil)
         */
         let filterTable = FilterDateTableViewController(parentVC: self)
-        let nav = CheckinNavigationController(rootViewController:
+        let nav = UINavigationController(rootViewController:
             filterTable)
+        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.tintColor = MAIN_TINT
         present(nav, animated: true)
     }
     
@@ -321,6 +323,10 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: indexPath) as! EventCell
+        guard indexPath.row < filteredEvents.count else {
+            return UICollectionViewCell()
+        }
+        
         cell.setupCellWithEvent(event: filteredEvents[indexPath.row], withImage: true)
         
         return cell

@@ -39,11 +39,11 @@ class OrganizationCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17)
             label.numberOfLines = 3
-            label.lineBreakMode = .byTruncatingTail
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: logoImage.rightAnchor, constant: 20).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
             
