@@ -32,6 +32,9 @@ class GenericOneFieldPage: UITableViewController {
             textCell.inputField.keyboardType = .emailAddress
             textCell.inputField.textContentType = .emailAddress
             textCell.inputField.autocapitalizationType = .none
+        } else if type == .displayedName {
+            textCell.inputField.textContentType = .name
+            textCell.inputField.autocapitalizationType = .words
         }
         textCell.submitAction = submitAction
     }

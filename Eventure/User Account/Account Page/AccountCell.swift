@@ -78,15 +78,9 @@ class AccountCell: UITableViewCell {
             if (sectionNum == 1 && rowNum == 0) {
                 functionImage.image = UIImage(named: "write")
                 function.text = "Manage Account"
-            } else if (sectionNum == 2 && rowNum == 0) {
-                functionImage.image = UIImage(named: "heart")
-                function.text = "Favorite Events"
             } else if (sectionNum == 2 && rowNum == 1) {
                 functionImage.image = UIImage(named: "done")
                 function.text = "Going"
-            } else if (sectionNum == 2 && rowNum == 2) {
-                functionImage.image = UIImage(named: "subscribe")
-                function.text = "Subscriptions"
             } else if (sectionNum == 2 && rowNum == 3) {
                 functionImage.image = UIImage(named: "tag")
                 function.text = "My Tags"

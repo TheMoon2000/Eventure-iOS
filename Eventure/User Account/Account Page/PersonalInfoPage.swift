@@ -122,9 +122,9 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     func pushToModifyPage(type: Types) {
         let modifyAccount: GenericOneFieldPage
         if type == .displayedName {
-            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName)
+            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName, type: .displayedName)
         } else {
-            modifyAccount = .init(fieldName: "Email Address", fieldDefault: User.current!.email)
+            modifyAccount = .init(fieldName: "Email Address", fieldDefault: User.current!.email, type: .email)
         }
         
         modifyAccount.submitAction = { inputField, spinner in

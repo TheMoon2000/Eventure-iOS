@@ -69,12 +69,12 @@ class OrgInfoPage: UIViewController {
         
         titleLabel = {
             let label = UILabel()
-            label.numberOfLines = 3
+            label.numberOfLines = 5
             label.textAlignment = .center
             label.text = organization.title
             label.textColor = .init(white: 0.1, alpha: 1)
             label.font = .systemFont(ofSize: 21, weight: .semibold)
-            label.isHidden = view.frame.height >= 500
+            label.isHidden = view.frame.height < 500
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             

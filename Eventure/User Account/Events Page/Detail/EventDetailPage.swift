@@ -119,7 +119,6 @@ class EventDetailPage: UIViewController {
         eventTitle = {
             let label = UILabel()
             label.numberOfLines = 10
-            label.lineBreakMode = .byWordWrapping
             label.text = event.title
             label.font = .systemFont(ofSize: 20, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
