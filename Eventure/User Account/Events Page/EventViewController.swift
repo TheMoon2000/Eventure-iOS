@@ -116,7 +116,7 @@ class EventViewController: UIViewController, EventProvider {
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
             
-            tab.addTarget(self, action: #selector(updateEvents), for: .valueChanged)
+            tab.addTarget(self, action: #selector(refilter), for: .valueChanged)
             return tab
         }()
         
@@ -413,7 +413,7 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
 
 extension EventViewController {
     
-    func refilter() {
+    @objc func refilter() {
         self.emptyLabel.text = ""
         self.updateFiltered {
             self.spinner.startAnimating()

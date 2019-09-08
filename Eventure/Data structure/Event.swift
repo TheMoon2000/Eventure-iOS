@@ -52,9 +52,12 @@ class Event {
         dc.unitsStyle = .full
         
         if startTime != nil && endTime != nil {
+            if endTime == startTime {
+                return "Unspecified"
+            }
             return dc.string(from: endTime!.timeIntervalSince(startTime!))!
         } else {
-            return "TBA"
+            return "Unspecified"
         }
     }
     

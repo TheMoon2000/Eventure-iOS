@@ -270,19 +270,20 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             commentCell.commentText.insertText(userProfile.comments)
             commentCell.commentText.returnKeyType = .default
             commentCell.commentText.isEditable = cellsEditable
-            commentCell.textChangeHandler = { textView in
+            commentCell.textChangeHandler = { [weak self] textView in
                 
                 User.current?.saveEnabled = false
                 User.current?.comments = textView.text
                 User.current?.saveEnabled = true
                 
                 UIView.performWithoutAnimation {
-                    self.tableView.beginUpdates()
-                    self.tableView.endUpdates()
+                    self?.tableView.beginUpdates()
+                    self?.tableView.endUpdates()
                 }
                 
+                
                 if textView.selectedRange.location == textView.text.count {
-                    self.tableView.scrollToRow(at: [3, 1], at: .bottom, animated: false)
+                    self?.tableView.scrollToRow(at: [3, 1], at: .bottom, animated: false)
                 }
             }
             

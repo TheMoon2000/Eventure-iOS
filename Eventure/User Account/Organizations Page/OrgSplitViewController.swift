@@ -31,7 +31,7 @@ class OrgSplitViewController: UISplitViewController, UISplitViewControllerDelega
         preferredPrimaryColumnWidthFraction = 0.35
         preferredDisplayMode = .allVisible
         minimumPrimaryColumnWidth = 300
-        maximumPrimaryColumnWidth = 390
+        maximumPrimaryColumnWidth = 400
         
         orgList.customPushHandler = { org in
             self.orgDetail = OrgDetailPage(organization: org)
