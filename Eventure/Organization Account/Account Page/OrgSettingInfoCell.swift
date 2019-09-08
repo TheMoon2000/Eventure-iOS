@@ -76,11 +76,11 @@ class OrgSettingInfoCell: UITableViewCell {
     func setup(sectionNum: Int, rowNum: Int, type: String) {
         switch (sectionNum, rowNum) {
         case (0, 0):
-            functionImage.image = #imageLiteral(resourceName: "windmill")
-            sideLabel.text = ""
+            functionImage.image = UIImage(named: "name")
+            sideLabel.text = Organization.current!.title
             function.text = "Organization Title"
         case (0, 1):
-            functionImage.image = #imageLiteral(resourceName: "mac")
+            functionImage.image = UIImage(named: "password")
             function.text = "Password"
             sideLabel.text = "••••••••"
         case (0, 2):
