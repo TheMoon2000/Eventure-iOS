@@ -36,6 +36,13 @@ class MainTabBarController: UITabBarController {
                 return
             }
             
+            if String(data: data!, encoding: .utf8) == "unauthorized" {
+                DispatchQueue.main.async {
+                    authorizationError(vc: self)
+                }
+                return
+            }
+            
             if let allCampuses = try? JSON(data: data!).arrayValue {
                 for campus in allCampuses {
                     if campus.dictionary != nil {
@@ -79,7 +86,6 @@ class MainTabBarController: UITabBarController {
         
         let tab3 = AccountViewController()
         tab3.tabBarItem = UITabBarItem(title: "Me", image: #imageLiteral(resourceName: "home"), tag: 2)
-        
         
         viewControllers = [tab1, tab2, tab3].map { vc in
             if vc is OrgSplitViewController {

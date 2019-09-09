@@ -515,6 +515,13 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
     vc.present(alert, animated: true, completion: nil)
 }
 
+func authorizationError(vc: UIViewController, handler: (() -> ())? = nil) {
+    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
+    alert.title = "This app version is outdated"
+    alert.message = "Please update to the latest version of Eventure from the app store."
+    vc.present(alert, animated: true, completion: nil)
+}
+
 // MARK: - Notifications
 let USER_SYNC_SUCCESS = Notification.Name("user sync success")
 let USER_SYNC_FAILED = Notification.Name("user sync failed")
