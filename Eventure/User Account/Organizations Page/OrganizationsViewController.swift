@@ -165,8 +165,8 @@ class OrganizationsViewController: UIViewController {
         spinner.startAnimating()
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
-        organizations.removeAll()
-        self.orgTable.reloadData()
+        filteredOrgs.removeAll()
+        orgTable.reloadData()
         
         navigationItem.rightBarButtonItem?.isEnabled = false
         

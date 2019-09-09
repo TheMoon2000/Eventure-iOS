@@ -405,7 +405,7 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
         super.viewWillTransition(to: size, with: coordinator)
         
         coordinator.animate(alongsideTransition: { context in
-            self.eventCatalog.collectionViewLayout.invalidateLayout()
+            self.eventCatalog?.collectionViewLayout.invalidateLayout()
         }, completion: nil)
     }
 }

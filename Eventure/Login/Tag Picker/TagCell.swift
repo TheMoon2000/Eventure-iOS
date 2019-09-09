@@ -37,6 +37,7 @@ class TagCell: UICollectionViewCell {
             let label = UILabel()
             label.lineBreakMode = .byCharWrapping
             label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 13
             label.textAlignment = .center
             label.textColor = .white
             label.numberOfLines = 3

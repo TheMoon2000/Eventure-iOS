@@ -49,11 +49,7 @@ class Organization: CustomStringConvertible {
     static var waitingForSync = false
 
     /// Whether the changes made locally are yet to be uploaded.
-    static var needsUpload = false {
-        didSet {
-            print("org needs upload = \(needsUpload)")
-        }
-    }
+    static var needsUpload = false
 
     var profileStatus: String {
         var allEmpty = true

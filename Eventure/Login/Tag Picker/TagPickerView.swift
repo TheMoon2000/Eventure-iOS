@@ -370,20 +370,28 @@ extension TagPickerView: UICollectionViewDelegate {
 
 extension TagPickerView: UICollectionViewDelegateFlowLayout {
     
-    static let width: CGFloat = 120
+    var tagWidth: CGFloat {
+        if usableWidth < 150 {
+            return usableWidth - 8
+        } else {
+            let numFit = floor(usableWidth / 120)
+            return ((usableWidth - 4) / numFit) - 4
+        }
+    }
     
     var usableWidth: CGFloat {
         return tagPicker.safeAreaLayoutGuide.layoutFrame.width
     }
     
     var equalSpacing: CGFloat {
-        let rowCount = floor(usableWidth / TagPickerView.width)
-        let extraSpace = usableWidth - rowCount * TagPickerView.width
-        return extraSpace / (rowCount + 1)
+        let rowCount = floor(usableWidth / tagWidth)
+        let extraSpace = usableWidth - rowCount * tagWidth
+        
+        return (extraSpace - 1) / (rowCount + 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: TagPickerView.width, height: TagPickerView.width)
+        return CGSize(width: tagWidth, height: tagWidth)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
