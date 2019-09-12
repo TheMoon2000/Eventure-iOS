@@ -1,5 +1,5 @@
 //
-//  SortAscendingSwitch.swift
+//  SettingsSwitchCell.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/9/11.
@@ -8,16 +8,16 @@
 
 import UIKit
 
-class SortAscendingSwitch: UITableViewCell {
+class SettingsSwitchCell: UITableViewCell {
     
     private var bgView: UIView!
     private var titleLabel: UILabel!
     
     var switchHandler: ((Bool) -> ())?
     
-    var ascending = true {
+    var enabled = true {
         didSet {
-            switchItem.isOn = ascending
+            switchItem.isOn = enabled
         }
     }
     private var switchItem: UISwitch!
@@ -37,7 +37,7 @@ class SortAscendingSwitch: UITableViewCell {
             addSubview(view)
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
-            view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
+            view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
             view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
             
             view.heightAnchor.constraint(equalToConstant: 55).isActive = true

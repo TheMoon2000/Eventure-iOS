@@ -75,7 +75,7 @@
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
 		CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */; };
 		CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */; };
-		CC66A5C02329F530002DA953 /* SortAscendingSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BF2329F530002DA953 /* SortAscendingSwitch.swift */; };
+		CC66A5C02329F530002DA953 /* SettingsSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */; };
 		CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69A08D22F699F500C9920E /* SeparatorView.swift */; };
 		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
 		CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */; };
@@ -95,6 +95,7 @@
 		CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */; };
 		CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */; };
 		CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAFC82623127899005FC231 /* DraftLocationCell.swift */; };
+		CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */; };
 		CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
 		CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */; };
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
@@ -234,7 +235,7 @@
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
 		CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinSortSettings.swift; sourceTree = "<group>"; };
 		CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSettingsCell.swift; sourceTree = "<group>"; };
-		CC66A5BF2329F530002DA953 /* SortAscendingSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortAscendingSwitch.swift; sourceTree = "<group>"; };
+		CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSwitchCell.swift; sourceTree = "<group>"; };
 		CC69A08D22F699F500C9920E /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
 		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscribersCell.swift; path = "Eventure/Organization Account/Account Page/SubscribersCell.swift"; sourceTree = SOURCE_ROOT; };
@@ -255,6 +256,7 @@
 		CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinOverview.swift; sourceTree = "<group>"; };
 		CCAFC82623127899005FC231 /* DraftLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftLocationCell.swift; sourceTree = "<group>"; };
 		CCB533DB23245B370058C125 /* Eventure.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Eventure.entitlements; sourceTree = "<group>"; };
+		CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFooterView.swift; sourceTree = "<group>"; };
 		CCC4A0AE22F24EA000AB9557 /* TagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCell.swift; sourceTree = "<group>"; };
 		CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalTextCell.swift; sourceTree = "<group>"; };
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
@@ -462,6 +464,7 @@
 			isa = PBXGroup;
 			children = (
 				CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */,
+				CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */,
 				CCD65518231F4A3400088646 /* EventSearchResults.swift */,
 				D5216648231D828600A54F21 /* FilterDateTableViewController.swift */,
 				CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */,
@@ -536,7 +539,7 @@
 			isa = PBXGroup;
 			children = (
 				CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */,
-				CC66A5BF2329F530002DA953 /* SortAscendingSwitch.swift */,
+				CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */,
 			);
 			path = "Sorting cells";
 			sourceTree = "<group>";
@@ -961,7 +964,7 @@
 				CC3760AC231F864800051C06 /* ProfilePreviewCell.swift in Sources */,
 				CC2F308E2324631A00AF5F8E /* OrgSplitViewController.swift in Sources */,
 				677A8CAC231DA132007CB04F /* InterestedEvents.swift in Sources */,
-				CC66A5C02329F530002DA953 /* SortAscendingSwitch.swift in Sources */,
+				CC66A5C02329F530002DA953 /* SettingsSwitchCell.swift in Sources */,
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
@@ -979,6 +982,7 @@
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
+				CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */,
 				EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,

@@ -50,8 +50,8 @@ class CheckinSortSettings: UITableViewController {
         sortByName.checked = checkinTableVC.sortMethod == .name
         contentCells.append(sortByName)
         
-        let ascendingSwitch = SortAscendingSwitch()
-        ascendingSwitch.ascending = checkinTableVC.sortAscending
+        let ascendingSwitch = SettingsSwitchCell()
+        ascendingSwitch.enabled = checkinTableVC.sortAscending
         ascendingSwitch.switchHandler = { ascending in
             self.checkinTableVC.sortAscending = ascending
             self.edited = true

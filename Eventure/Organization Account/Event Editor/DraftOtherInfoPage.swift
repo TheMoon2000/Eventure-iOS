@@ -35,6 +35,12 @@ class DraftOtherInfoPage: UITableViewController {
         }
         contentCells.append(capacityCell)
         
+        let secureCell = SettingsSwitchCell()
+        secureCell.enabled = false
+        secureCell.switchHandler = { on in
+            self.draftPage.draft.secureCheckin = on
+        }
+        contentCells.append(secureCell)
         
         let imagePickerCell = EventImagePickerCell()
         imagePickerCell.backgroundColor = EventDraft.backgroundColor
@@ -96,8 +102,19 @@ class DraftOtherInfoPage: UITableViewController {
             }
             
             tagPicker.selectedTags = draftPage.draft.tags
-            
             navigationController?.pushViewController(tagPicker, animated: true)
+            
+        } else if indexPath == [0, 2] {
+            let alert = UIAlertController(title: "Secure Check-in", message: "This feature is intended for event that place restrictions / requirements on who can attend (e.g. tickets), so that you have the ability to decide who can attend the event. When secure check-in is on, users must obtain a verification code that will be sent to you during online check-in.", preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Dismiss", style: .cancel))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = tableView
+                let cellRect = tableView.rectForRow(at: indexPath)
+                popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+            }
+            
+            present(alert, animated: true)
         }
     }
 

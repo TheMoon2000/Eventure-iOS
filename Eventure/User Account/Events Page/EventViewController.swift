@@ -24,6 +24,8 @@ class EventViewController: UIViewController, EventProvider {
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
+    private var loadMoreLabel: UILabel!
+    private var shouldLoadMore = false
     
     private static var upToDate: Bool = false
     public static var chosenTags = Set<String>()
@@ -48,6 +50,7 @@ class EventViewController: UIViewController, EventProvider {
     
     private(set) var allEvents = [Event]()
     private(set) var filteredEvents = [Event]()
+    private(set) var eventsDisplayed = 20
    
     var eventsForSearch: [Event] {
         return filteredEvents
@@ -123,12 +126,15 @@ class EventViewController: UIViewController, EventProvider {
         topTabBg.layoutIfNeeded()
         
         eventCatalog = {
-           let ec = UICollectionView(frame: .zero, collectionViewLayout: TopAlignedCollectionViewFlowLayout())
+            let layout = TopAlignedCollectionViewFlowLayout()
+            layout.footerReferenceSize = CGSize(width: 300, height: 50)
+            let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
             ec.contentInset.top = topTabBg.frame.height + 8
-            ec.contentInset.bottom = 8
+            ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
             ec.scrollIndicatorInsets.top = topTabBg.frame.height
+            ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
             ec.backgroundColor = .init(white: 0.92, alpha: 1)
             ec.register(EventCell.classForCoder(), forCellWithReuseIdentifier: "event")
             ec.contentInsetAdjustmentBehavior = .always
@@ -318,7 +324,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredEvents.count
+        return min(filteredEvents.count, eventsDisplayed)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -401,6 +407,14 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
                             right: 8)
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let v = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath)
+            return v
+        }
+        return UICollectionReusableView()
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -465,4 +479,34 @@ extension EventViewController {
     }
     
    
+}
+
+
+extension EventViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.contentSize.height
+        let scrolled = scrollView.frame.height + scrollView.contentOffset.y - topTab.frame.height - 8
+        if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
+            footer.textLabel.alpha = (scrolled - height) / 70
+            if eventsDisplayed < filteredEvents.count {
+                if footer.textLabel.alpha >= 1 {
+                    footer.textLabel.text = "Release to load more"
+                    shouldLoadMore = true
+                } else {
+                    footer.textLabel.text = "Load more..."
+                    shouldLoadMore = false
+                }
+            } else {
+                footer.textLabel.text = "No more events to load"
+            }
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if shouldLoadMore {
+            shouldLoadMore = false
+            eventsDisplayed += 20
+            eventCatalog.reloadSections([0])
+        }
+    }
 }
