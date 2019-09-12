@@ -162,6 +162,8 @@ strip_invalid_archs() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Down/Down.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SwiftCSVExport/SwiftCSVExport.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SwiftLoggly/SwiftLoggly.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
@@ -169,6 +171,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Down/Down.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SwiftCSVExport/SwiftCSVExport.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SwiftLoggly/SwiftLoggly.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SwiftyJSON-iOS11.0/SwiftyJSON.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
