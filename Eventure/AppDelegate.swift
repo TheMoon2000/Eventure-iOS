@@ -35,9 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         registerForPushNotifications()
         
         if let notification = launchOptions?[.remoteNotification] as? [String: Any], let aps = notification["aps"] {
-            let alert = UIAlertController(title: "Notification", message: JSON(aps).description, preferredStyle: .alert)
-            alert.addAction(.init(title: "Dismiss", style: .cancel))
-            entrypoint.present(alert, animated: true, completion: nil)
+            handleAPSPacket(packet: JSON(aps))
         }
         
         return true
@@ -152,7 +150,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         guard userInfo["aps"] != nil else { return }
         
-        let info = JSON(userInfo["aps"]!).dictionaryValue
+        handleAPSPacket(packet: JSON(userInfo["aps"]!))
+    }
+    
+    func handleAPSPacket(packet: JSON) {
+        let info = packet.dictionaryValue
+        
         guard let keyType = NotificationKeys(rawValue: info["type"]!.stringValue) else {
             print("WARNING: type '\(info["type"]!.stringValue)' is unrecognized")
             return
@@ -173,9 +176,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             alert.addAction(.init(title: "Done", style: .cancel))
             MainTabBarController.current.present(alert, animated: true, completion: nil)
         }
-        
-        
-        
     }
     
 }

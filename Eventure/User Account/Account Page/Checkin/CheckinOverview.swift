@@ -203,7 +203,7 @@ class CheckinOverview: UIViewController {
         checkboxLabel = {
             let label = UILabel()
             label.attributedText = "Allow **\(event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = .init(white: 0.2, alpha: 1)
             label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 2
             label.translatesAutoresizingMaskIntoConstraints = false
