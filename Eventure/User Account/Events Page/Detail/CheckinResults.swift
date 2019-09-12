@@ -213,13 +213,13 @@ class CheckinResults: UIViewController {
         let data : NSMutableArray  = NSMutableArray()
         for r in sortedRegistrants {
             let registrant:NSMutableDictionary = NSMutableDictionary()
-            if (r.name == "") {
+            if (r.displayedName == "") {
                 registrant.setObject("incognito", forKey: "name" as NSCopying)
             } else {
-                registrant.setObject(r.name, forKey: "name" as NSCopying)
+                registrant.setObject(r.displayedName, forKey: "name" as NSCopying)
             }
             registrant.setObject(r.email, forKey: "email" as NSCopying)
-            print(r.name)
+            print(r.displayedName)
             print(r.email)
             data.add(registrant)
         }

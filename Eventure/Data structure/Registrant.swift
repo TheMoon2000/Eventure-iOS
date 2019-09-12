@@ -18,6 +18,7 @@ class Registrant: Hashable, Profile {
     var userID: Int
     var orgID: String
     var name: String
+    var displayedName: String
     var major: String
     var email: String
     var order = -1
@@ -42,8 +43,9 @@ class Registrant: Hashable, Profile {
         showProfile = (dictionary["Show profile"]?.int ?? 1) == 1
         userID = dictionary["User ID"]?.int ?? -1
         orgID = dictionary["Organization"]?.string ?? "Unknown Organization"
-        name = dictionary["Full name"]?.string ?? "<No Name>"
+        name = dictionary["Full name"]?.string ?? ""
         email = dictionary["Email"]?.string ?? "No email provided"
+        displayedName = dictionary["Displayed name"]?.string ?? ""
         major = dictionary["Major"]?.string ?? "Undecided"
         graduationYear = dictionary["Graduation year"]?.int
         graduationSeason = User.GraduationSeason(rawValue: dictionary["Graduation season"]?.string ?? "")
