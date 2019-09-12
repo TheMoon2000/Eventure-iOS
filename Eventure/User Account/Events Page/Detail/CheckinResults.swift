@@ -8,6 +8,9 @@
 
 import UIKit
 import SwiftyJSON
+import SwiftCSVExport
+import SwiftLoggly
+
 
 class CheckinResults: UIViewController {
 
@@ -33,6 +36,8 @@ class CheckinResults: UIViewController {
     var sortMethod: Sort = .date
     var sortAscending = true
     
+    private var doc: UIDocumentInteractionController!
+    
     required init(event: Event) {
         super.init(nibName: nil, bundle: nil)
         
@@ -45,7 +50,7 @@ class CheckinResults: UIViewController {
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
-        navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openSortMenu))
+        navigationItem.leftBarButtonItem = .init(title: "Export", style: .done, target: self, action: #selector(exportDoc(_:)))
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -204,9 +209,53 @@ class CheckinResults: UIViewController {
         }
     }
     
+    @objc private func exportDoc(_ sender: UIBarButtonItem) {
+        let data : NSMutableArray  = NSMutableArray()
+        for r in sortedRegistrants {
+            let registrant:NSMutableDictionary = NSMutableDictionary()
+            if (r.name == "") {
+                registrant.setObject("incognito", forKey: "name" as NSCopying)
+            } else {
+                registrant.setObject(r.name, forKey: "name" as NSCopying)
+            }
+            registrant.setObject(r.email, forKey: "email" as NSCopying)
+            print(r.name)
+            print(r.email)
+            data.add(registrant)
+        }
+        let header = ["name","email"]
+        let csv = CSV()
+        csv.rows = data
+        csv.delimiter = DividerType.comma.rawValue
+        csv.fields = header as NSArray
+        csv.name = "Checked In Spreadsheet"
+        let result = CSVExport.export(csv)
+        if result.result == .valid {
+            guard let filePath =  result.filePath else {
+                print("Export Error: \(String(describing: result.message))")
+                return
+            }
+            // Read File and convert as CSV class object
+            print(filePath)
+            let log = CSVExport.readCSVObject(filePath);
+            
+            // Use 'SwiftLoggly' pod framework to print the Dictionary
+            loggly(LogType.Info, text: log.name)
+            
+            let exp = UIActivityViewController(activityItems: [filePath], applicationActivities: [])
+            
+            doc = UIDocumentInteractionController(url: NSURL.fileURL(withPath: filePath))
+            doc.presentOptionsMenu(from: sender, animated: true)
+        } else {
+            print("Export Error: \(String(describing: result.message))")
+        }
+        
+        
+        
+    }
     
-    @objc private func closeSheet() {
-        dismiss(animated: true, completion: nil)
+    @objc private func closeSheet(_ sender: UIBarButtonItem) {
+       dismiss(animated: true, completion: nil)
     }
     
     @objc private func refreshRegistrants() {

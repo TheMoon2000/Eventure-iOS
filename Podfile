@@ -8,6 +8,8 @@ target 'Eventure' do
   pod 'XLPagerTabStrip'
   pod 'TTTAttributedLabel'
   pod 'TOCropViewController'
+  pod 'SwiftCSVExport'
+  pod 'SwiftLoggly', '~> 1.0'
 end
 
 target 'EventureAPITests' do
