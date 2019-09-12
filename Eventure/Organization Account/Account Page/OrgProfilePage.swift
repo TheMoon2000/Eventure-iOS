@@ -332,8 +332,17 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
                 
                 tagPicker.spinner.startAnimating()
                 
-                Organization.current!.tags = tagPicker.selectedTags
-                Organization.current?.pushToServer(nil)
+                Organization.current?.pushToServer { success in
+                    tagPicker.spinner.stopAnimating()
+                    label.removeFromSuperview()
+                    loadingView.removeFromSuperview()
+                    if success {
+                        Organization.current!.tags = tagPicker.selectedTags
+                        self.navigationController?.popViewController(animated: true)
+                    } else {
+                        internetUnavailableError(vc: self)
+                    }
+                }
             }
             
             tagPicker.customDisappearHandler = { tags in

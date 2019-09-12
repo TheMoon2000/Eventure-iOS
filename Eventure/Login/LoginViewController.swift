@@ -382,10 +382,12 @@ class LoginViewController: UIViewController {
         //loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
         
         // Construct the URL parameters to be delivered
-        let loginParameters = [
+        var loginParameters = [
             "login": username,
             "password": password
         ]
+        
+        loginParameters["token"] = User.token
         
         // Make the URL and URL request
         let apiURL = URL.with(base: API_BASE_URL,
@@ -438,7 +440,7 @@ class LoginViewController: UIViewController {
                     }
                 }
             } catch {
-                print("error parsing")
+                print("error parsing: " + String(data: data!, encoding: .utf8)!)
             }
         }
         task.resume()
@@ -456,6 +458,7 @@ class LoginViewController: UIViewController {
                 present(nextVC, animated: true, completion: nil)
             } else {
                 MainTabBarController.current.openScreen()
+                dismiss(animated: true, completion: nil)
             }
         }
         
@@ -463,6 +466,7 @@ class LoginViewController: UIViewController {
             Organization.current = org
             Organization.current?.save(requireReupload: false)
             MainTabBarController.current.openScreen(isUserAccount: false)
+            dismiss(animated: true, completion: nil)
         }
         
         if user == nil {

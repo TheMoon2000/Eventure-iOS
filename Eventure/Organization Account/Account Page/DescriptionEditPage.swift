@@ -121,8 +121,8 @@ class DescriptionEditPage: UIViewController {
             tv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(tv)
             
-            tv.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
-            tv.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
+            tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tv.topAnchor.constraint(equalTo: buttonStack.bottomAnchor, constant: 10).isActive = true
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
             

@@ -22,6 +22,12 @@ class User: Profile {
         }
     }
     
+    static var token: String? {
+        didSet {
+            MainTabBarController.current.loginSetup()
+        }
+    }
+    
     var editable: Bool { return true }
         
     /// The UUID of the user.
@@ -170,6 +176,7 @@ class User: Profile {
         
         if let json = try? JSON(data: decrypted) {
             user = User(userInfo: json)
+            if user!.uuid == -1 { return nil }
             user?.profilePicture = UIImage(data: cache["profile"] ?? Data())
         } else {
             print("WARNING: Decrypted user data is not a valid JSON!")
@@ -236,10 +243,15 @@ class User: Profile {
     /// Sync the local user data with the server's.
     static func syncFromServer() {
         if User.current == nil { return }
+        
+        var parameters = ["uuid": String(User.current!.uuid)]
+        parameters["token"] = User.token
+            
+            
         User.waitingForSync = true
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetUserInfo",
-                           parameters: ["uuid": String(User.current!.uuid)])!
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         

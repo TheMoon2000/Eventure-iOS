@@ -23,7 +23,7 @@ class Organization: CustomStringConvertible {
 
     let id: String
     var title: String { didSet { save() } }
-    var members = [Int: MemberRole]() { didSet { save() } }
+    var members: [Int: MemberRole]? { didSet { save() } }
     var password_MD5: String { didSet { save() } }
     var active: Bool { didSet { save() } }
     var dateRegistered: String { didSet { save() } }
@@ -79,7 +79,6 @@ class Organization: CustomStringConvertible {
         self.title = title
         orgDescription = ""
         website = ""
-        members = [:]
         password_MD5 = ""
         tags = []
         contactName = ""
@@ -97,11 +96,12 @@ class Organization: CustomStringConvertible {
         orgDescription = dictionary["Description"]?.string ?? ""
         website = dictionary["Website"]?.string ?? ""
 
+        /*
         if let members_raw = dictionary["Members"]?.string {
             for pair in JSON(parseJSON: members_raw).dictionaryValue {
                 members[Int(pair.key)!] = MemberRole(rawValue: pair.value.stringValue)
             }
-        }
+        }*/
 
         if let tags_raw = dictionary["Tags"]?.string {
             let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
@@ -232,13 +232,17 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Description"] = self.orgDescription
         json.dictionaryObject?["Website"] = self.website
         
+        /*
         var membersMap = [String : String]()
         for (key, value) in members {
             membersMap[String(key)] = value.rawValue
         }
         
+        
         let membersEncoded = JSON(membersMap)
-        json.dictionaryObject?["Members"] = membersEncoded.description
+        */
+        
+        json.dictionaryObject?["# of members"] = members?.count
         
         json.dictionaryObject?["Tags"] = self.tags.description
         json.dictionaryObject?["Password MD5"] = self.password_MD5
@@ -299,10 +303,14 @@ class Organization: CustomStringConvertible {
     /// Sync the local organization account data with the server's.
     static func syncFromServer() {
         if Organization.current == nil { return }
+        
+        var parameters = ["orgId": Organization.current!.id]
+        parameters["token"] = User.token
+                
         Organization.waitingForSync = true
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetOrgInfo",
-                           parameters: ["orgId": Organization.current!.id])!
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
 

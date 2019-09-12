@@ -14,10 +14,11 @@ class OrgInfoPage: UIViewController {
     var detailPage: OrgDetailPage!
     var organization: Organization!
     
-    private var altLogoStack: UIStackView!
-    
     private var logoImage: UIImageView!
     private var titleLabel: UILabel!
+    private var altLogo: UIImageView!
+    private var altTitle: UILabel!
+    
     private var canvas: UIScrollView!
     private var line: UIView!
     private var tabStrip: ButtonBarPagerTabStripViewController!
@@ -85,32 +86,40 @@ class OrgInfoPage: UIViewController {
             return label
         }()
         
-        altLogoStack = {
-            let iv = UIImageView(image: organization.logoImage)
-            iv.translatesAutoresizingMaskIntoConstraints = false
-            iv.widthAnchor.constraint(equalToConstant: 75).isActive = true
-            iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
-            
+        altTitle = {
             let label = UILabel()
+            label.isHidden = true
+            label.numberOfLines = 3
             label.text = organization.title
             label.textColor = .init(white: 0.1, alpha: 1)
             label.font = .systemFont(ofSize: 21, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
             
-            let stack = UIStackView(arrangedSubviews: [iv, label])
-            stack.isHidden = view.frame.height >= 500
-            stack.spacing = 20
-            stack.alignment = .center
-            stack.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(stack)
+            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor, constant: 55).isActive = true
+            label.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             
-            stack.leftAnchor.constraint(greaterThanOrEqualTo: canvas.leftAnchor, constant: 20).isActive = true
-            stack.rightAnchor.constraint(lessThanOrEqualTo: canvas.rightAnchor, constant: -20).isActive = true
-            stack.centerXAnchor.constraint(equalTo: canvas.centerXAnchor, constant: -1).isActive = true
-            stack.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 20).isActive = true
-            
-            return stack
+            return label
         }()
+        
+        altLogo = {
+            let iv = UIImageView(image: organization.logoImage ?? #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
+            iv.isHidden = true
+            iv.contentMode = .scaleAspectFit
+            iv.tintColor = MAIN_DISABLED
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            iv.widthAnchor.constraint(equalToConstant: 75).isActive = true
+            iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
+            canvas.addSubview(iv)
+            
+            iv.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
+            iv.leftAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            iv.rightAnchor.constraint(equalTo: altTitle.leftAnchor, constant: -20).isActive = true
+            iv.centerYAnchor.constraint(equalTo: altTitle.centerYAnchor).isActive = true
+            
+            return iv
+        }()
+        
         
         line = {
             let line = UIView()
@@ -123,7 +132,7 @@ class OrgInfoPage: UIViewController {
             line.heightAnchor.constraint(equalToConstant: 1).isActive = true
             
             if logoImage.isHidden {
-                lineTopConstraint = line.topAnchor.constraint(equalTo: altLogoStack.bottomAnchor, constant: 30)
+                lineTopConstraint = line.topAnchor.constraint(equalTo: altLogo.bottomAnchor, constant: 30)
             } else {
                 lineTopConstraint = line.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30)
             }
@@ -163,12 +172,14 @@ class OrgInfoPage: UIViewController {
         coordinator.animate(alongsideTransition: { context in
             self.view.removeConstraint(self.lineTopConstraint)
             if size.height < 500 {
-                self.altLogoStack.isHidden = false
+                self.altLogo.isHidden = false
+                self.altTitle.isHidden = false
                 self.logoImage.isHidden = true
                 self.titleLabel.isHidden = true
-                self.lineTopConstraint = self.line.topAnchor.constraint(equalTo: self.altLogoStack.bottomAnchor, constant: 20)
+                self.lineTopConstraint = self.line.topAnchor.constraint(equalTo: self.altLogo.bottomAnchor, constant: 20)
             } else {
-                self.altLogoStack.isHidden = true
+                self.altLogo.isHidden = true
+                self.altTitle.isHidden = true
                 self.logoImage.isHidden = false
                 self.titleLabel.isHidden = false
                 self.lineTopConstraint = self.line.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 30)

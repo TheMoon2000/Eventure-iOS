@@ -176,7 +176,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         let chooseAction: ((UIAlertAction) -> ()) = { action in
             self.addressButton.setTitle(
-                "@" + Campus.supported[action.title!]!.fullName,
+                "@" + Campus.supported[action.title!]!.emailSuffix,
                 for: .normal)
         }
         

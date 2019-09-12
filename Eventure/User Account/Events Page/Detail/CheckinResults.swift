@@ -30,6 +30,8 @@ class CheckinResults: UIViewController {
     
     var sortedRegistrants = [Registrant]()
     var registrantPictures = [Int: UIImage]()
+    var sortMethod: Sort = .date
+    var sortAscending = true
     
     required init(event: Event) {
         super.init(nibName: nil, bundle: nil)
@@ -43,6 +45,7 @@ class CheckinResults: UIViewController {
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
+        navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openSortMenu))
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -114,7 +117,6 @@ class CheckinResults: UIViewController {
         
         emptyLabel = {
             let label = UILabel()
-            label.isHidden = true
             label.text = "Loading registrants..."
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
@@ -124,7 +126,7 @@ class CheckinResults: UIViewController {
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 20).isActive = true
             
             return label
         }()
@@ -242,20 +244,19 @@ class CheckinResults: UIViewController {
                         let registrant = Registrant(json: registrantData)
                         registrant.profilePicture = self.registrantPictures[registrant.userID]
                         tmp.append(registrant)
+                        registrant.order = tmp.count
                     }
                     
-                    self.sortedRegistrants = tmp.sorted { r1, r2 in
-                        r1.checkedInDate < r2.checkedInDate
-                    }
+                    self.sortedRegistrants = tmp
                     
                     DispatchQueue.main.async {
                         if tmp.count == 0 {
-                            self.emptyLabel.text = "No one checked in yet. Be the first!"
+                            self.emptyLabel.text = "Nothing to display."
                         } else {
                             self.emptyLabel.text = ""
                         }
                         self.reloadStats()
-                        self.checkinTable.reloadSections([0], with: .none)
+                        self.resortRegistrants()
                     }
                 }
             } else {
@@ -268,6 +269,32 @@ class CheckinResults: UIViewController {
         }
         
         task.resume()
+    }
+    
+    // Update the sorted list based on the given algorithm
+    func resortRegistrants() {
+        DispatchQueue.global(qos: .default).async {
+            self.sortedRegistrants.sort { r1, r2 in
+                let sortResult: Bool
+                if self.sortMethod == .date {
+                    sortResult = r1.checkedInDate.timeIntervalSince(r2.checkedInDate) < 0
+                } else {
+                    sortResult = r1.name.lowercased() < r2.name.lowercased()
+                }
+                return self.sortAscending ? sortResult : !sortResult
+            }
+            DispatchQueue.main.async {
+                self.checkinTable.reloadSections([0], with: .automatic)
+            }
+        }
+    }
+    
+    @objc private func openSortMenu() {
+        let menu = CheckinSortSettings(parentVC: self)
+        let nav = UINavigationController(rootViewController: menu)
+        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.barTintColor = NAVBAR_TINT
+        present(nav, animated: true, completion: nil)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -299,7 +326,6 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
             }
         }
         cell.setup(registrant: current)
-        cell.placeLabel.text = String(indexPath.row + 1)
         
         return cell
     }
@@ -331,4 +357,11 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
         navigationController?.view.backgroundColor = nil
     }
 
+}
+
+
+extension CheckinResults {
+    enum Sort: Int {
+        case date = 0, name = 1
+    }
 }

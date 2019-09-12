@@ -246,6 +246,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             profileCell.icon.isUserInteractionEnabled = true
             profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
+            if profileCell.titleLabel.text!.isEmpty {
+                profileCell.titleLabel.text = User.current!.email
+            }
             if let count = User.current?.numberOfAttendedEvents {
                 let noun = count == 1 ? "event" : "events"
                 profileCell.subtitleLabel.text = "\(count) " + noun + " attended"

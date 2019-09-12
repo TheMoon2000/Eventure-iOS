@@ -20,6 +20,7 @@ class Registrant: Hashable, Profile {
     var name: String
     var major: String
     var email: String
+    var order = -1
     
     let graduationYear: Int?
     let graduationSeason: User.GraduationSeason?

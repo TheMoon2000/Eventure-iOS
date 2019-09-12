@@ -27,6 +27,7 @@ class Event {
     var interested = Set<Int>()
     var favorited = Set<Int>()
     var tags = Set<String>()
+    var membersOnly = false
     var capacity = 0
     var lastModified: Date?
     

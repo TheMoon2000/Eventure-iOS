@@ -119,7 +119,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
             label.leftAnchor.constraint(equalTo: contactNameLabel.rightAnchor, constant: 15).isActive = true
             label.rightAnchor.constraint(equalTo: websiteLink.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: contactNameLabel.topAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: websiteLink.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: websiteLink.titleLabel!.bottomAnchor, constant: 15).isActive = true
             
             return label
         }()

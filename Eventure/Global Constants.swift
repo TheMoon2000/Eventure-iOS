@@ -25,6 +25,7 @@ let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
+let UNAUTHORIZED_ERROR = "unauthorized"
 let CONNECTION_ERROR = "Connection Error"
 let SERVER_ERROR = "Server Error"
 
@@ -33,6 +34,11 @@ let ACCOUNT_TYPE_USER = "User"
 let ACCOUNT_TYPE_ORG = "Org"
 
 let URL_PREFIX = "eventure://"
+
+/// Notification types
+enum NotificationKeys: String {
+    case oneTimeCode = "one-time code"
+}
 
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
@@ -491,7 +497,7 @@ let CACHES = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask
 // MARK: - Standard alerts
 
 func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
-    let alert = UIAlertController(title: "Expected Error", message: "Oops, looks like our server is unavailable or under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
+    let alert = UIAlertController(title: "Expected Error", message: "Oops, looks like the feature you tried to access is unavailable or is currently under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
         action in
         DispatchQueue.main.async {

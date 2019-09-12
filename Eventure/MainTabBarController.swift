@@ -33,10 +33,14 @@ class MainTabBarController: UITabBarController {
             data, response, error in
             
             guard error == nil else {
+                print("Failed to connect to the server. Retrying in 10 seconds...")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                    self.loadSupportedCampuses()
+                }
                 return
             }
             
-            if String(data: data!, encoding: .utf8) == "unauthorized" {
+            if String(data: data!, encoding: .utf8) == UNAUTHORIZED_ERROR {
                 DispatchQueue.main.async {
                     authorizationError(vc: self)
                 }
@@ -133,7 +137,6 @@ class MainTabBarController: UITabBarController {
             Organization.current?.getLogoImage(nil)
         }
         selectedIndex = page
-        dismiss(animated: true, completion: nil)
     }
     
     func loginSetup() {

@@ -28,6 +28,10 @@ class CheckinOverview: UIViewController {
     private var checkboxLabel: UILabel!
     private var consentStack: UIStackView!
     
+    private var loadingBG: UIVisualEffectView!
+    private var spinner: UIActivityIndicatorView!
+    private var spinnerLabel: UILabel!
+    
     private var CHECK_IN = "Check In"
     private var LIST_FULL = "List is Full"
     private var CHECKED_IN = "Checked In"
@@ -216,6 +220,49 @@ class CheckinOverview: UIViewController {
             return label
         }()
         
+        loadingBG = {
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            v.isHidden = true
+            v.layer.cornerRadius = 12
+            v.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(v)
+            
+            v.widthAnchor.constraint(equalToConstant: 90).isActive = true
+            v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
+            v.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            v.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            return v
+        }()
+        
+        spinner = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.color = .gray
+            spinner.startAnimating()
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor, constant: -10).isActive = true
+            
+            return spinner
+        }()
+        
+        spinnerLabel = {
+            let label = UILabel()
+            label.text = "Loading..."
+            label.textAlignment = .center
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
         loadLogoImage()
     }
     
@@ -280,13 +327,20 @@ class CheckinOverview: UIViewController {
         }
     }
     
-    private func sendCheckinRequest() {
-        let parameters: [String: String] = [
+    private func sendCheckinRequest(code: String? = nil) {
+        
+        spinnerLabel.text = "Loading..."
+        loadingBG.isHidden = false
+        
+        var parameters: [String: String] = [
             "userId": String(User.current!.uuid),
             "orgId": event.hostID,
             "sheetId": event.uuid,
-            "showProfile": checkbox.isChecked ? "1" : "0"
+            "showProfile": checkbox.isChecked ? "1" : "0",
         ]
+        
+        parameters["code"] = code
+        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/Checkin",
                            parameters: parameters)!
@@ -295,6 +349,10 @@ class CheckinOverview: UIViewController {
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+            }
             
             guard error == nil else {
                 DispatchQueue.main.async {
@@ -331,11 +389,35 @@ class CheckinOverview: UIViewController {
                 alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)
                 }))
-            default:
-                alert = UIAlertController(title: "Failed to check in :(", message: "For some weird server-side problem, we were unable to get your name onto the checkin list. Be sure to email us at support@eventure-app.com and we'll fix this bug as soon as possible.", preferredStyle: .alert)
+            case "incorrect":
+                alert = UIAlertController(title: "Incorrect code", message: "Please confirm your check-in code with the event organizer.", preferredStyle: .alert)
                 alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)
                 }))
+            case "wait":
+                alert = UIAlertController(title: "Check-in request already sent", message: "You have already initiated a check-in request within the last 3 minutes. Please contact '\(self.event.hostTitle)' for your verification code.", preferredStyle: .alert)
+                alert.addAction(.init(title: "Dismiss", style: .cancel))
+            case "auth":
+                alert = UIAlertController(title: "Enter one-time code to check-in", message: "The event has been configured to require check-in verification. Please contact '\(self.event.hostTitle)' for your 6-digit code.", preferredStyle: .alert)
+                
+                let proceed = UIAlertAction(title: "Check in", style: .default) {
+                    _ in
+                    self.authenticateCheckin(code: alert.textFields![0].text ?? "")
+                }
+                
+                alert.addAction(.init(title: "Cancel", style: .cancel))
+                alert.addAction(proceed)
+                
+                alert.addTextField { textfield in
+                    textfield.placeholder = "6-digit code"
+                    textfield.keyboardType = .numberPad
+                    textfield.autocorrectionType = .no
+                    textfield.enablesReturnKeyAutomatically = true
+                }
+            default:
+                print(msg!)
+                alert = UIAlertController(title: "Unable to check in", message: "An unknown error has occurred.", preferredStyle: .alert)
+                alert.addAction(.init(title: "Dismiss", style: .cancel))
             }
             DispatchQueue.main.async {
                 self.present(alert, animated: true, completion: nil)
@@ -345,10 +427,16 @@ class CheckinOverview: UIViewController {
         task.resume()
     }
     
+    private func authenticateCheckin(code: String) {
+        spinnerLabel.text = "Verifying..."
+        loadingBG.isHidden = false
+        sendCheckinRequest(code: code)
+    }
+    
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
 
 }
 

@@ -212,8 +212,10 @@ class OrgEventCell: UICollectionViewCell {
         }
         if event.eventVisual == nil {
             if withImage {
-                event.getCover { eventWithCover in
-                    self.setupCellWithEvent(event: eventWithCover)
+                event.getCover { [weak self] eventWithCover in
+                    if let image = eventWithCover.eventVisual {
+                        self?.cover.image = image
+                    }
                 }
             }
             cover.image = #imageLiteral(resourceName: "cover_placeholder")

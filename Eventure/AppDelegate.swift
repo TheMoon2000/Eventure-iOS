@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import UserNotifications
+import SwiftyJSON
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,18 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return self.orientationLock
     }
-    struct AppUtility {
-        static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
-            if let delegate = UIApplication.shared.delegate as? AppDelegate {
-                delegate.orientationLock = orientation
-            }
-        }
-        
-        static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
-            self.lockOrientation(orientation)
-            UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
-        }
-    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -41,12 +31,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = entrypoint
         
         window?.makeKeyAndVisible()
-                
-        //entry view first presents the nav controller rooted at loginviewcontroller, later it will be dismissed upon successful login
-        //DO NOT move this before makeKeyAndVisible(), otheriwse entrypoint would not be recognized as rootview and unable to push
-        entrypoint.loginSetup()
+        
+        registerForPushNotifications()
+        
+        if let notification = launchOptions?[.remoteNotification] as? [String: Any], let aps = notification["aps"] {
+            let alert = UIAlertController(title: "Notification", message: JSON(aps).description, preferredStyle: .alert)
+            alert.addAction(.init(title: "Dismiss", style: .cancel))
+            entrypoint.present(alert, animated: true, completion: nil)
+        }
+        
         return true
     }
+    
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -117,5 +113,85 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    func registerForPushNotifications() {
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
+            (granted, error) in
+            
+            guard granted else { return }
+            // 2. Attempt registration for remote notifications on the main thread
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
+        // 1. Convert device token to string
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+        let token = tokenParts.joined()
+        // 2. Print device token to use for PNs payloads
+        print("Device Token: \(token)")
+        User.token = token
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        // 1. Print out error if PNs registration not successful
+        print("Failed to register for remote notifications with error: \(error)")
+        User.token = "no token"
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        guard userInfo["aps"] != nil else { return }
+        
+        let info = JSON(userInfo["aps"]!).dictionaryValue
+        guard let keyType = NotificationKeys(rawValue: info["type"]!.stringValue) else {
+            print("WARNING: type '\(info["type"]!.stringValue)' is unrecognized")
+            return
+        }
+        
+        switch keyType {
+        case .oneTimeCode:
+            guard let code = info["code"]?.string else { return }
+            guard let username = info["name"]?.string else { return }
+            guard let title_base64 = info["list name"]?.string, let titleData = Data(base64Encoded: title_base64) else {
+                print("WARNING: Cannot parse APS packet: \(info)")
+                return
+            }
+            
+            guard let title = String(data: titleData, encoding: .utf8) else { return }
+            
+            let alert = UIAlertController(title: "New check-in request", message: "User '\(username)' would like to check-in for '\(title)'. The 6-digit verification code is \(code).", preferredStyle: .alert)
+            alert.addAction(.init(title: "Done", style: .cancel))
+            MainTabBarController.current.present(alert, animated: true, completion: nil)
+        }
+        
+        
+        
+    }
+    
+}
+
+extension AppDelegate {
+    struct AppUtility {
+        static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
+            if let delegate = UIApplication.shared.delegate as? AppDelegate {
+                delegate.orientationLock = orientation
+            }
+        }
+        
+        static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
+            self.lockOrientation(orientation)
+            UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
+        }
+    }
 }
 

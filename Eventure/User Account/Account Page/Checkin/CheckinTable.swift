@@ -232,7 +232,9 @@ class CheckinTable: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                self.checkinTable.refreshControl = self.refreshControl
+                if self.checkinTable.refreshControl == nil {
+                    self.checkinTable.refreshControl = self.refreshControl
+                }
                 self.refreshControl.endRefreshing()
             }
             
