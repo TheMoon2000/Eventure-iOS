@@ -254,6 +254,7 @@ class EventDraft: UIPageViewController {
             "title": draft.title,
             "description": draft.eventDescription,
             "location": draft.location,
+            "checkinTime": String(draft.checkinTime),
             "startTime": DATE_FORMATTER.string(from: draft.startTime!),
             "endTime": DATE_FORMATTER.string(from: draft.endTime!),
             "public": "1",

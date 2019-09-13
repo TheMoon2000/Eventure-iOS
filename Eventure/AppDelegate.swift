@@ -15,6 +15,7 @@ import SwiftyJSON
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    static var suppressNotifications = false
     
     var orientationLock = UIInterfaceOrientationMask.all
     
@@ -154,6 +155,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
     
     func handleAPSPacket(packet: JSON) {
+        
+        if AppDelegate.suppressNotifications { return }
+        
         let info = packet.dictionaryValue
         
         guard let keyType = NotificationKeys(rawValue: info["type"]!.stringValue) else {

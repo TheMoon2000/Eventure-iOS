@@ -421,6 +421,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             
             if let json = try? JSON(data: data!) {
                 let event = Event(eventInfo: json)
+                event.getCover(nil)
                 let checkinForm = CheckinPageController(event: event)
                 DispatchQueue.main.async {
                     self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true) {

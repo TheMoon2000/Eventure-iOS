@@ -219,7 +219,7 @@ class CheckinTable: UIViewController {
         }
     }
     
-    @objc private func refreshRegistrants() {
+    @objc private func refreshRegistrants(stealth: Bool = false) {
         let parameters = [
             "sheetId": event.uuid,
             "orgId": event.hostID
@@ -241,9 +241,11 @@ class CheckinTable: UIViewController {
             }
             
             guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self) {
-                        self.dismiss(animated: true)
+                if !stealth {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self) {
+                            self.dismiss(animated: true)
+                        }
                     }
                 }
                 return
@@ -254,11 +256,13 @@ class CheckinTable: UIViewController {
                 for registrantData in json {
                     let registrant = Registrant(json: registrantData)
                     registrant.profilePicture = self.registrantProfiles[registrant.userID]
-                    tmp.insert(registrant)
+                    if registrant.currentCode == nil {
+                        tmp.insert(registrant)
+                    }
                 }
                 
                 self.sortedRegistrants = tmp.sorted { r1, r2 in
-                    r1.checkedInDate.timeIntervalSince(r1.checkedInDate) <= 0
+                    r1.checkedInDate.timeIntervalSince(r2.checkedInDate) <= 0
                 }
                 
                 DispatchQueue.main.async {
@@ -270,10 +274,16 @@ class CheckinTable: UIViewController {
                     self.reloadStats()
                     self.checkinTable.reloadSections([0], with: .none)
                 }
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                    self.refreshRegistrants(stealth: true)
+                }
             } else {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self) {
-                        self.dismiss(animated: true)
+                if !stealth {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self) {
+                            self.dismiss(animated: true)
+                        }
                     }
                 }
             }

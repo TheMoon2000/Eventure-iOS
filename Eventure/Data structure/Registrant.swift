@@ -21,7 +21,8 @@ class Registrant: Hashable, Profile {
     var displayedName: String
     var major: String
     var email: String
-    var order = -1
+    var order: Int?
+    var currentCode: String?
     
     let graduationYear: Int?
     let graduationSeason: User.GraduationSeason?
@@ -61,6 +62,9 @@ class Registrant: Hashable, Profile {
         } else {
             checkedInDate = Date.distantFuture
         }
+        
+        // Only pending registrants have a code
+        currentCode = dictionary["Code"]?.string
     }
     
     /// Load the profile picture for a user.

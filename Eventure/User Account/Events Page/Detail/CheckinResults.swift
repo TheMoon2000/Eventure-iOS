@@ -16,7 +16,7 @@ class CheckinResults: UIViewController {
 
     private let refreshControl = UIRefreshControl()
     
-    private var event: Event!
+    private(set) var event: Event!
     private var banner: UIVisualEffectView!
     
     private var emptyLabel: UILabel!
@@ -31,10 +31,24 @@ class CheckinResults: UIViewController {
     
     private var orgInfo: Organization?
     
-    var sortedRegistrants = [Registrant]()
+    var sortedRegistrants = [Registrant]() {
+        didSet {
+            filteredRegistrants = sortedRegistrants.filter { reg in
+                return reg.currentCode == nil
+            }
+        }
+    }
+    var filteredRegistrants = [Registrant]()
+    var displayedRegistrants: [Registrant] {
+        return showPending ? sortedRegistrants : filteredRegistrants
+    }
+    
     var registrantPictures = [Int: UIImage]()
     var sortMethod: Sort = .date
     var sortAscending = true
+    var showPending = false
+    
+    private var NOTHING = "Nothing to display."
     
     private var doc: UIDocumentInteractionController!
     
@@ -50,7 +64,7 @@ class CheckinResults: UIViewController {
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
-        navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(more))
+        navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "settings"), style: .plain, target: self, action: #selector(more))
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -185,28 +199,44 @@ class CheckinResults: UIViewController {
         }()
         
         refreshRegistrants()
+    }
+    
+    
+    private func layoutTableInset() {
         
-        banner.layoutIfNeeded()
+        let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
         
-        DispatchQueue.main.async {
-            
-            let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
-            
-            
-            self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
-            self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
-        }
+        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
+        
+        self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
     }
     
     
     private func reloadStats() {
         
-        let word = sortedRegistrants.count == 1 ? "person" : "people"
+        var textToDisplay = ""
+        
+        let word = filteredRegistrants.count == 1 ? "person" : "people"
         if event.capacity == 0 {
-            checkinSubtitle.text = "\(sortedRegistrants.count) \(word) checked in"
+            if filteredRegistrants.isEmpty {
+                textToDisplay = "No one checked in"
+            } else {
+                textToDisplay = "\(filteredRegistrants.count) \(word) checked in"
+            }
         } else {
-            checkinSubtitle.text = "\(sortedRegistrants.count) / \(event.capacity) \(word) checked in."
+            textToDisplay = "\(filteredRegistrants.count) / \(event.capacity) \(word) checked in"
         }
+        
+        if sortedRegistrants.count > filteredRegistrants.count {
+            textToDisplay += ", \(sortedRegistrants.count - filteredRegistrants.count) waiting for verification code."
+        } else {
+            textToDisplay += "."
+        }
+        
+        checkinSubtitle.text = textToDisplay
+        
+        view.layoutIfNeeded()
+        layoutTableInset()
     }
     
     @objc private func more() {
@@ -228,7 +258,7 @@ class CheckinResults: UIViewController {
     
     private func exportDoc() {
         let data : NSMutableArray  = NSMutableArray()
-        for r in sortedRegistrants {
+        for r in filteredRegistrants {
             let registrant:NSMutableDictionary = NSMutableDictionary()
             if (r.displayedName == "") {
                 registrant.setObject("incognito", forKey: "name" as NSCopying)
@@ -275,7 +305,7 @@ class CheckinResults: UIViewController {
        dismiss(animated: true, completion: nil)
     }
     
-    @objc private func refreshRegistrants() {
+    @objc private func refreshRegistrants(stealth: Bool = false) {
         let parameters = [
             "sheetId": event.uuid,
             "orgId": event.hostID
@@ -290,14 +320,18 @@ class CheckinResults: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                self.checkinTable.refreshControl = self.refreshControl
-                self.refreshControl.endRefreshing()
+                if !stealth {
+                    self.checkinTable.refreshControl = self.refreshControl
+                    self.refreshControl.endRefreshing()
+                }
             }
             
             guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self) {
-                        self.dismiss(animated: true)
+                if !stealth {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self) {
+                            self.dismiss(animated: true)
+                        }
                     }
                 }
                 return
@@ -306,29 +340,34 @@ class CheckinResults: UIViewController {
             if let json = try? JSON(data: data!).arrayValue {
                 DispatchQueue.global(qos: .default).async {
                     var tmp = [Registrant]()
+                    var orderedCount = 0
                     for registrantData in json {
                         let registrant = Registrant(json: registrantData)
                         registrant.profilePicture = self.registrantPictures[registrant.userID]
                         tmp.append(registrant)
-                        registrant.order = tmp.count
+                        if registrant.currentCode == nil {
+                            orderedCount += 1
+                            registrant.order = orderedCount
+                        }
                     }
                     
                     self.sortedRegistrants = tmp
                     
                     DispatchQueue.main.async {
-                        if tmp.count == 0 {
-                            self.emptyLabel.text = "Nothing to display."
-                        } else {
-                            self.emptyLabel.text = ""
-                        }
-                        self.reloadStats()
                         self.resortRegistrants()
+                        self.reloadStats()
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        self.refreshRegistrants(stealth: true)
                     }
                 }
             } else {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self) {
-                        self.dismiss(animated: true)
+                if !stealth {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self) {
+                            self.dismiss(animated: true)
+                        }
                     }
                 }
             }
@@ -343,6 +382,11 @@ class CheckinResults: UIViewController {
             self.sortedRegistrants.sort { r1, r2 in
                 let sortResult: Bool
                 if self.sortMethod == .date {
+                    if r1.currentCode != nil && r2.currentCode == nil {
+                        return true
+                    } else if r1.currentCode == nil && r2.currentCode != nil {
+                        return false
+                    }
                     sortResult = r1.checkedInDate.timeIntervalSince(r2.checkedInDate) < 0
                 } else {
                     sortResult = r1.name.lowercased() < r2.name.lowercased()
@@ -350,7 +394,8 @@ class CheckinResults: UIViewController {
                 return self.sortAscending ? sortResult : !sortResult
             }
             DispatchQueue.main.async {
-                self.checkinTable.reloadSections([0], with: .automatic)
+                self.emptyLabel.text = self.displayedRegistrants.isEmpty ? self.NOTHING : ""
+                self.checkinTable.reloadSections([0], with: .none)
             }
         }
     }
@@ -362,9 +407,13 @@ class CheckinResults: UIViewController {
         nav.navigationBar.barTintColor = NAVBAR_TINT
         present(nav, animated: true)
     }
-    
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { _ in
+            self.layoutTableInset()
+        }, completion: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -377,14 +426,14 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return sortedRegistrants.count
+        return displayedRegistrants.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "user") as! CheckinUserCell
         
-        let current = sortedRegistrants[indexPath.row]
+        let current = displayedRegistrants[indexPath.row]
         if current.profilePicture == nil {
             current.getProfilePicture { new in
                 cell.profilePicture.image = new.profilePicture
@@ -398,7 +447,7 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let registrant = sortedRegistrants[indexPath.row]
+        let registrant = displayedRegistrants[indexPath.row]
         
         if registrant.showProfile {
             let profilePage = ProfileInfoPage(profile: registrant)
@@ -412,7 +461,6 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.view.backgroundColor = .clear
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -421,6 +469,18 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
         navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         navigationController?.navigationBar.shadowImage = nil
         navigationController?.view.backgroundColor = nil
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        AppDelegate.suppressNotifications = true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        AppDelegate.suppressNotifications = false
     }
 
 }

@@ -58,6 +58,17 @@ class CheckinSortSettings: UITableViewController {
         }
         contentCells.append(ascendingSwitch)
         
+        if checkinTableVC.event.secureCheckin {
+            let pendingSwitch = SettingsSwitchCell()
+            pendingSwitch.titleLabel.text = "Show pending registrants"
+            pendingSwitch.enabled = checkinTableVC.showPending
+            pendingSwitch.switchHandler = { showPending in
+                self.checkinTableVC.showPending = showPending
+                self.edited = true
+            }
+            contentCells.append(pendingSwitch)
+        }
+        
     }
     
     @objc private func done() {

@@ -113,8 +113,18 @@ class CheckinUserCell: UITableViewCell {
             nameLabel.text = registrant.name
         }
         if nameLabel.text!.isEmpty { nameLabel.text = registrant.email }
-        self.placeLabel.text = String(registrant.order)
-        majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
+        if let order = registrant.order {
+            self.placeLabel.text = String(order)
+        } else {
+            self.placeLabel.text = "?"
+        }
+        if let code = registrant.currentCode {
+            majorLabel.text = "Check-in code: \(code)"
+            bgView.backgroundColor = PENDING_TINT
+        } else {
+            majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
+            bgView.backgroundColor = .white
+        }
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {

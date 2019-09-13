@@ -17,6 +17,7 @@ class Event {
     var uuid: String
     var title: String
     var location: String
+    var checkinTime: Int // How many seconds before event starts
     var startTime: Date?
     var endTime: Date?
     var eventDescription: String
@@ -79,6 +80,7 @@ class Event {
     init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
         self.uuid = uuid
         self.title = title
+        self.checkinTime = 3600
         self.startTime = DATE_FORMATTER.date(from: startTime)
         self.endTime = DATE_FORMATTER.date(from: endTime)
         self.location = location
@@ -97,6 +99,8 @@ class Event {
         title = dictionary["Title"]?.string ?? ""
         location = dictionary["Location"]?.string ?? "TBA"
         if location.isEmpty { location = "TBA" }
+        
+        checkinTime = dictionary["Check-in time"]?.int ?? 3600
         
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)
@@ -277,6 +281,8 @@ class Event {
         main.dictionaryObject?["uuid"] = uuid
         main.dictionaryObject?["Title"] = title
         main.dictionaryObject?["Location"] = location
+        
+        main.dictionaryObject?["Check-in time"] = checkinTime
         
         if startTime != nil {
             main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime!)

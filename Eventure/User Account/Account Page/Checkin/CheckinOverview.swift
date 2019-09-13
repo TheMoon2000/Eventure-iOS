@@ -49,6 +49,7 @@ class CheckinOverview: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .white
+        navigationItem.backBarButtonItem = .init(title: "Check-in", style: .plain, target: nil, action: nil)
         
         canvas = {
             let canvas = UIScrollView()
@@ -147,10 +148,11 @@ class CheckinOverview: UIViewController {
         checkinButton = {
             let button = UIButton(type: .system)
             button.tintColor = .white
-            if (event.startTime! <= Date()) {
-                button.setTitle(CHECK_IN, for: .normal)
-            } else {
-                button.setTitle(VIEW, for: .normal)
+            if let start = event.startTime, start.timeIntervalSinceNow > Double(event.checkinTime) {
+                Timer(fire: start.addingTimeInterval(Double(-event.checkinTime)), interval: 1.0, repeats: false) { [weak self] timer in
+                    self?.refreshUI()
+                    timer.invalidate()
+                } .fire()
             }
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
             button.backgroundColor = MAIN_TINT
@@ -165,6 +167,8 @@ class CheckinOverview: UIViewController {
             button.heightAnchor.constraint(equalToConstant: 53).isActive = true
             
             button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+            
+            button.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(longPressed)))
             
             return button
         }()
@@ -272,6 +276,7 @@ class CheckinOverview: UIViewController {
             return label
         }()
         
+        refreshUI()
         loadLogoImage()
     }
     
@@ -279,20 +284,26 @@ class CheckinOverview: UIViewController {
         UISelectionFeedbackGenerator().selectionChanged()
     }
     
-    func showUI() {
-        if orgLogo.image != nil {
-            if event.capacity != 0 {
-                self.captionLabel.text = "\(sheetInfo!.currentOccupied) / \(event.capacity) spots currently filled"
-            }
-            if event.capacity > 0 && event.capacity <= sheetInfo!.currentOccupied && !sheetInfo!.currentUserCheckedIn {
-                self.checkinButton.isUserInteractionEnabled = false
-                self.checkinButton.alpha = DISABLED_ALPHA
-                self.checkinButton.setTitle(LIST_FULL, for: .normal)
-            } else if sheetInfo!.currentUserCheckedIn {
-                self.checkinButton.isUserInteractionEnabled = false
-                self.checkinButton.alpha = DISABLED_ALPHA
-                self.checkinButton.setTitle(CHECKED_IN, for: .normal)
-            }
+    func refreshUI() {
+        if event.capacity != 0 {
+            self.captionLabel.text = "\(sheetInfo!.currentOccupied) / \(event.capacity) spots currently filled"
+        }
+        if let start = event.startTime, (start.timeIntervalSinceNow > Double(event.checkinTime)) {
+            self.checkinButton.isUserInteractionEnabled = true
+            self.checkinButton.alpha = 1.0
+            self.checkinButton.setTitle(VIEW, for: .normal)
+        } else if event.capacity > 0 && event.capacity <= sheetInfo!.currentOccupied && !sheetInfo!.currentUserCheckedIn {
+            self.checkinButton.isUserInteractionEnabled = false
+            self.checkinButton.alpha = DISABLED_ALPHA
+            self.checkinButton.setTitle(LIST_FULL, for: .normal)
+        } else if sheetInfo!.currentUserCheckedIn {
+            self.checkinButton.isUserInteractionEnabled = false
+            self.checkinButton.alpha = DISABLED_ALPHA
+            self.checkinButton.setTitle(CHECKED_IN, for: .normal)
+        } else {
+            self.checkinButton.isUserInteractionEnabled = true
+            self.checkinButton.alpha = 1.0
+            self.checkinButton.setTitle(CHECK_IN, for: .normal)
         }
     }
     
@@ -317,7 +328,6 @@ class CheckinOverview: UIViewController {
                 if let logo = UIImage(data: data!) {
                     self.orgLogo.image = logo
                 }
-                self.showUI()
             }
     
         }
@@ -336,6 +346,26 @@ class CheckinOverview: UIViewController {
         default:
             break
         }
+    }
+    
+    @objc private func longPressed() {
+        let alert = UIAlertController(title: "More actions", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Check in", style: .default, handler: { _ in
+            self.sendCheckinRequest()
+        }))
+        alert.addAction(.init(title: "View Event", style: .default, handler: { _ in
+            let eventpage = EventDetailPage()
+            eventpage.event = self.event
+            self.navigationController?.pushViewController(eventpage, animated: true)
+        }))
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = checkinButton
+            popoverController.sourceRect = CGRect(x: checkinButton.bounds.minX, y: checkinButton.bounds.minY + 2, width: 0, height: 0)
+        }
+        
+        self.present(alert, animated: true)
     }
     
     private func sendCheckinRequest(code: String? = nil) {
@@ -386,7 +416,7 @@ class CheckinOverview: UIViewController {
                 DispatchQueue.main.async {
                     self.sheetInfo.currentOccupied += 1
                     self.sheetInfo.currentUserCheckedIn = true
-                    self.showUI()
+                    self.refreshUI()
                 }
                 alert = UIAlertController(title: "Successfully checked in!", message: "You name is now on the list!", preferredStyle: .alert)
                 alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
@@ -405,10 +435,7 @@ class CheckinOverview: UIViewController {
                 alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
                     self.dismiss(animated: true, completion: nil)
                 }))
-            case "wait":
-                alert = UIAlertController(title: "Check-in request already sent", message: "You have already initiated a check-in request within the last 3 minutes. Please contact '\(self.event.hostTitle)' for your verification code.", preferredStyle: .alert)
-                alert.addAction(.init(title: "Dismiss", style: .cancel))
-            case "auth":
+            case "auth", "wait":
                 alert = UIAlertController(title: "Enter one-time code to check-in", message: "The event has been configured to require check-in verification. Please contact '\(self.event.hostTitle)' for your 6-digit code.", preferredStyle: .alert)
                 
                 let proceed = UIAlertAction(title: "Check in", style: .default) {
@@ -416,8 +443,8 @@ class CheckinOverview: UIViewController {
                     self.authenticateCheckin(code: alert.textFields![0].text ?? "")
                 }
                 
-                alert.addAction(.init(title: "Cancel", style: .cancel))
                 alert.addAction(proceed)
+                alert.addAction(.init(title: "Cancel", style: .cancel))
                 
                 alert.addTextField { textfield in
                     textfield.placeholder = "6-digit code"
@@ -442,6 +469,10 @@ class CheckinOverview: UIViewController {
         spinnerLabel.text = "Verifying..."
         loadingBG.isHidden = false
         sendCheckinRequest(code: code)
+    }
+    
+    private func resendCode() {
+        
     }
     
     
