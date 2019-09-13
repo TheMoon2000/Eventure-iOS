@@ -523,10 +523,8 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
 }
 
 func authorizationError(vc: UIViewController, handler: (() -> ())? = nil) {
-    let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
-    alert.title = "This app version is outdated"
-    alert.message = "Please update to the latest version of Eventure from the app store."
-    vc.present(alert, animated: true, completion: nil)
+    let noticeScreen = UpdateNotice()
+    vc.present(noticeScreen, animated: true)
 }
 
 // MARK: - Notifications
