@@ -97,8 +97,13 @@ class CheckinPageController: UIPageViewController {
         let vc: UIViewController
         
         if !sheetInfo!.currentUserCheckedIn {
-            navigationItem.title = "Checkin Overview"
-            vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+            if (event.startTime! > Date()) {
+                navigationItem.title = "Event Registration"
+                vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+            } else {
+                navigationItem.title = "Checkin Overview"
+                vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+            }
         } else {
             navigationItem.title = ""
             vc = CheckinTable(event: event)
