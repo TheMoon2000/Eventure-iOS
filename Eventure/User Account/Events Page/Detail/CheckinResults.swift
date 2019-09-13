@@ -50,7 +50,7 @@ class CheckinResults: UIViewController {
         view.backgroundColor = .init(white: 0.92, alpha: 1)
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
-        navigationItem.leftBarButtonItem = .init(title: "Export", style: .done, target: self, action: #selector(exportDoc(_:)))
+        navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(more))
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -209,7 +209,24 @@ class CheckinResults: UIViewController {
         }
     }
     
-    @objc private func exportDoc(_ sender: UIBarButtonItem) {
+    @objc private func more() {
+        let alert = UIAlertController(title: "More actions", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Sort Settings", style: .default, handler: { _ in
+            self.openSortMenu()
+        }))
+        alert.addAction(.init(title: "Export as CSV", style: .default, handler: { _ in
+            self.exportDoc()
+        }))
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.barButtonItem = navigationItem.leftBarButtonItem!
+        }
+        
+        present(alert, animated: true)
+    }
+    
+    private func exportDoc() {
         let data : NSMutableArray  = NSMutableArray()
         for r in sortedRegistrants {
             let registrant:NSMutableDictionary = NSMutableDictionary()
@@ -242,10 +259,10 @@ class CheckinResults: UIViewController {
             // Use 'SwiftLoggly' pod framework to print the Dictionary
             loggly(LogType.Info, text: log.name)
             
-            let exp = UIActivityViewController(activityItems: [filePath], applicationActivities: [])
+            let _ = UIActivityViewController(activityItems: [filePath], applicationActivities: [])
             
             doc = UIDocumentInteractionController(url: NSURL.fileURL(withPath: filePath))
-            doc.presentOptionsMenu(from: sender, animated: true)
+            doc.presentOptionsMenu(from: navigationItem.leftBarButtonItem!, animated: true)
         } else {
             print("Export Error: \(String(describing: result.message))")
         }
@@ -338,12 +355,12 @@ class CheckinResults: UIViewController {
         }
     }
     
-    @objc private func openSortMenu() {
+    func openSortMenu() {
         let menu = CheckinSortSettings(parentVC: self)
         let nav = UINavigationController(rootViewController: menu)
         nav.navigationBar.tintColor = MAIN_TINT
         nav.navigationBar.barTintColor = NAVBAR_TINT
-        present(nav, animated: true, completion: nil)
+        present(nav, animated: true)
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

@@ -20,12 +20,11 @@ class EventCheckinOverview: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = .init(white: 0.99, alpha: 1)
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "checkin_result"), style: .plain, target: self, action: #selector(viewResults))
         
-        let encrypted = NSString(string: event.uuid).aes256Encrypt(withKey: AES_KEY)
-        let code = URL_PREFIX + encrypted!
+        let code = APP_STORE_LINK + "?id=" + event.uuid
 
         titleLabel = {
             let label = UILabel()
@@ -64,7 +63,7 @@ class EventCheckinOverview: UIViewController {
             let iv = UIImageView(image: generateQRCode(from: code))
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.isUserInteractionEnabled = true
-//            iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))
+            iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))
             view.addSubview(iv)
             
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
@@ -98,16 +97,24 @@ class EventCheckinOverview: UIViewController {
     func generateQRCode(from string: String) -> UIImage? {
         let data = string.data(using: String.Encoding.ascii)
         
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            let transform = CGAffineTransform(scaleX: 3, y: 3)
-            
-            if let output = filter.outputImage?.transformed(by: transform) {
-                return UIImage(ciImage: output)
-            }
+        guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
+            print("WARNING: Unable to find QR Generator filter")
+            return nil
         }
         
-        return nil
+        filter.setValue(data, forKey: "inputMessage")
+        let transform = CGAffineTransform(scaleX: 10, y: 10)
+        
+        guard let output = filter.outputImage?.transformed(by: transform) else {
+            return nil
+        }
+
+        let context = CIContext()
+        guard let cg = context.createCGImage(output, from: output.extent) else {
+            return UIImage(ciImage: output)
+        }
+        
+        return UIImage(cgImage: cg)
     }
     
     @objc private func saveImage(_ gesture: UIGestureRecognizer) {

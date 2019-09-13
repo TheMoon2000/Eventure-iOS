@@ -106,8 +106,8 @@ class DatePickerTopCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: leftLabel.rightAnchor, constant: 8).isActive = true
             label.rightAnchor.constraint(equalTo: indicator.leftAnchor, constant: -5).isActive = true
-            label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
-            label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
+            label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 18).isActive = true
+            label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -18).isActive = true
             
             return label
         }()

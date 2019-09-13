@@ -27,7 +27,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         self.parentVC = parentVC
         
         selectionStyle = .none
-        heightAnchor.constraint(equalToConstant: 65).isActive = true
+        heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         overlay = {
             let overlay = UIView()

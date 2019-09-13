@@ -221,14 +221,14 @@ class CheckinOverview: UIViewController {
         }()
         
         loadingBG = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
             v.isHidden = true
             v.layer.cornerRadius = 12
             v.layer.masksToBounds = true
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             
-            v.widthAnchor.constraint(equalToConstant: 90).isActive = true
+            v.widthAnchor.constraint(equalToConstant: 110).isActive = true
             v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
             v.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
             v.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -253,13 +253,13 @@ class CheckinOverview: UIViewController {
             let label = UILabel()
             label.text = "Loading..."
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 15)
+            label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             loadingBG.contentView.addSubview(label)
             
             label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8).isActive = true
             
             return label
         }()

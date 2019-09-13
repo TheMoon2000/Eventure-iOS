@@ -28,6 +28,7 @@ let INTERNAL_ERROR = "internal error"
 let UNAUTHORIZED_ERROR = "unauthorized"
 let CONNECTION_ERROR = "Connection Error"
 let SERVER_ERROR = "Server Error"
+let APP_STORE_LINK = "https://apps.apple.com/app/id1478542362"
 
 let KEY_ACCOUNT_TYPE = "Account Type"
 let ACCOUNT_TYPE_USER = "User"

@@ -43,7 +43,9 @@ class ChooseTagCell: UITableViewCell {
         
         backgroundColor = .clear
         selectionStyle = .none
-        heightAnchor.constraint(equalToConstant: 60).isActive = true
+        let h = heightAnchor.constraint(equalToConstant: 70)
+        h.priority = .defaultHigh
+        h.isActive = true
         
         overlay = {
             let overlay = UIView()
@@ -55,8 +57,8 @@ class ChooseTagCell: UITableViewCell {
             
             overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: sideInset).isActive = true
             overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -sideInset).isActive = true
-            overlay.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            overlay.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            overlay.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+            overlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
             
             return overlay
         }()

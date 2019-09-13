@@ -22,6 +22,7 @@ class DraftOtherInfoPage: UITableViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.separatorStyle = .none
         tableView.contentInset.top = 10
+        tableView.contentInset.bottom = 10
         tableView.tableFooterView = UIView()
                 
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)

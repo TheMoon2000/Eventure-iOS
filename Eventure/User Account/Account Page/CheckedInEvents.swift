@@ -74,13 +74,13 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         }()
         
         loadingBG = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
             v.layer.cornerRadius = 12
             v.layer.masksToBounds = true
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             
-            v.widthAnchor.constraint(equalToConstant: 90).isActive = true
+            v.widthAnchor.constraint(equalToConstant: 110).isActive = true
             v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
             v.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
             v.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -105,13 +105,13 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             let label = UILabel()
             label.text = "Loading..."
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 15)
+            label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             loadingBG.contentView.addSubview(label)
             
             label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8).isActive = true
             
             return label
         }()
@@ -122,20 +122,24 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let eventUUID = displayedRecords[indexPath.section][indexPath.row].sheetID
-        
+        let currentRecord = displayedRecords[indexPath.section][indexPath.row]
         loadingBG.isHidden = false
         
         var parameters = [String : String]()
-        parameters["uuid"] = eventUUID
+        parameters["uuid"] = currentRecord.sheetID
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetEvent", parameters: parameters)!
+                           API_Name: "events/GetEvent",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+            }
             
             guard error == nil else {
                 DispatchQueue.main.async {
@@ -147,12 +151,14 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             
             if let eventDictionary = try? JSON(data: data!){
                 let event = Event(eventInfo: eventDictionary)
+                event.eventVisual = currentRecord.coverImage
+                event.hasVisual = currentRecord.hasCover
                 
-                event.getCover { eventWithImage in
-                    self.loadingBG.isHidden = true
-                    let detailPage = EventDetailPage()
-                    detailPage.hidesBottomBarWhenPushed = true
-                    detailPage.event = eventWithImage
+                let detailPage = EventDetailPage()
+                detailPage.hidesBottomBarWhenPushed = true
+                detailPage.event = event
+
+                DispatchQueue.main.async {
                     self.navigationController?.pushViewController(detailPage, animated: true)
                 }
                 
@@ -169,7 +175,6 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         
         task.resume()
         
-        print(indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -195,11 +200,13 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {return sections}
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {return labels[section]}
+    
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {return rowsForSection[section]}
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 {return 50}
-        return 30
+        return section == 0 ? 50 : 30
     }
     
     func retrieveEvents() {

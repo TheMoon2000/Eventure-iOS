@@ -22,6 +22,10 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
         backgroundColor = EventDraft.backgroundColor
         selectionStyle = .none
         
+        let h = heightAnchor.constraint(equalToConstant: 70)
+        h.priority = .defaultHigh
+        h.isActive = true
+        
         bgView = {
             let view = UIView()
             view.backgroundColor = .white
@@ -31,9 +35,9 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 6).isActive = true
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
             
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -6)
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -8)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
@@ -70,8 +74,6 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             textfield.leftAnchor.constraint(equalTo: leftLabel.rightAnchor, constant: 10).isActive = true
             textfield.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             textfield.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            textfield.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
-            textfield.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
             
             textfield.addTarget(self, action: #selector(capacityChanged), for: .editingChanged)
             
