@@ -19,7 +19,7 @@ class EventImagePickerCell: UITableViewCell {
         
         selectionStyle = .none
         
-        heightAnchor.constraint(equalToConstant: 75).isActive = true
+        heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         bgView = {
             let view = UIView()
