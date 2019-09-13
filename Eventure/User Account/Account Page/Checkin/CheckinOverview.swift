@@ -224,6 +224,7 @@ class CheckinOverview: UIViewController {
             let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
             v.isHidden = true
             v.layer.cornerRadius = 12
+            v.layer.masksToBounds = true
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             

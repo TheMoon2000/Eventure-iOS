@@ -156,12 +156,14 @@ class CheckinTable: UIViewController {
         }()
         
         orgLogo = {
-            let iv = UIImageView(image: #imageLiteral(resourceName: "unknown"))
+            let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
+            iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
+            iv.layer.cornerRadius = 5
             iv.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 35).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 32).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.leftAnchor.constraint(greaterThanOrEqualTo: bottomBanner.leftAnchor, constant: 15).isActive = true
             iv.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -181,9 +183,9 @@ class CheckinTable: UIViewController {
             label.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(lessThanOrEqualTo: bottomBanner.rightAnchor, constant: -20).isActive = true
-            label.centerXAnchor.constraint(equalTo: bottomBanner.centerXAnchor, constant: 20).isActive = true
+            label.centerXAnchor.constraint(equalTo: bottomBanner.centerXAnchor, constant: 22).isActive = true
             label.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
             label.topAnchor.constraint(greaterThanOrEqualTo: bottomBanner.topAnchor, constant: 12).isActive = true
             label.bottomAnchor.constraint(lessThanOrEqualTo: bottomBanner.bottomAnchor, constant: -12).isActive = true

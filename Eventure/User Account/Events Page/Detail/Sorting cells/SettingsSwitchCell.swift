@@ -11,7 +11,7 @@ import UIKit
 class SettingsSwitchCell: UITableViewCell {
     
     private var bgView: UIView!
-    private var titleLabel: UILabel!
+    private(set) var titleLabel: UILabel!
     
     var switchHandler: ((Bool) -> ())?
     

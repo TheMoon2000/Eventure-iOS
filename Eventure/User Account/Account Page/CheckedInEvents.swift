@@ -15,9 +15,10 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     private var myTableView: UITableView!
     
+    private var loadingBG: UIVisualEffectView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
-    
+
     private var backGroundLabel: UILabel!
     
     private var recordDictionaryList = [CheckinRecord]()
@@ -39,33 +40,22 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         super.viewDidLoad()
         
         title = "Events I Checked In"
+        view.backgroundColor = .white
         
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
+        myTableView = {
+            let tv = UITableView(frame: .zero, style: .grouped)
+            tv.dataSource = self
+            tv.delegate = self
+            tv.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+            view.addSubview(tv)
+            //set location constraints of the tableview
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            tv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            tv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -5).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Updating..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
+            return tv
         }()
         
         backGroundLabel = {
@@ -77,37 +67,56 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
+            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        loadingBG = {
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            v.layer.cornerRadius = 12
+            v.layer.masksToBounds = true
+            v.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(v)
+            
+            v.widthAnchor.constraint(equalToConstant: 90).isActive = true
+            v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
+            v.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            v.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            return v
+        }()
+        
+        spinner = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.color = .gray
+            spinner.startAnimating()
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor, constant: -10).isActive = true
+            
+            return spinner
+        }()
+        
+        spinnerLabel = {
+            let label = UILabel()
+            label.text = "Loading..."
+            label.textAlignment = .center
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(label)
+            
             label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
             label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
             
             return label
         }()
         
-        
         retrieveEvents()
-        
-        
-        // Do any additional setup after loading the view.
-        view.backgroundColor = .white
-        
-        myTableView = UITableView(frame: .zero, style: .grouped)
-        myTableView.dataSource = self
-        myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
-        self.view.addSubview(myTableView)
-        //set location constraints of the tableview
-        myTableView.translatesAutoresizingMaskIntoConstraints = false
-        myTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        myTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        
-        self.view.bringSubviewToFront(spinnerLabel)
-        self.view.bringSubviewToFront(spinner)
-        self.view.bringSubviewToFront(backGroundLabel)
-        
-        
-        
     }
     
     
@@ -115,9 +124,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         tableView.deselectRow(at: indexPath, animated: true)
         let eventUUID = displayedRecords[indexPath.section][indexPath.row].sheetID
         
-        spinner.startAnimating()
-        spinnerLabel.text = "Retrieving..."
-        spinnerLabel.isHidden = false
+        loadingBG.isHidden = false
         
         var parameters = [String : String]()
         parameters["uuid"] = eventUUID
@@ -142,18 +149,12 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
                 let event = Event(eventInfo: eventDictionary)
                 
                 event.getCover { eventWithImage in
-                    self.spinner.stopAnimating()
-                    self.spinnerLabel.isHidden = true
+                    self.loadingBG.isHidden = true
                     let detailPage = EventDetailPage()
                     detailPage.hidesBottomBarWhenPushed = true
                     detailPage.event = eventWithImage
                     self.navigationController?.pushViewController(detailPage, animated: true)
                 }
-                
-                DispatchQueue.main.async {
-                    
-                }
-                
                 
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -203,10 +204,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func retrieveEvents() {
         
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
-        
-        
+        loadingBG.isHidden = false
         
         var parameters = [String : String]()
         if User.current != nil {
@@ -222,8 +220,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             data, response, error in
             
             DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
+                self.loadingBG.isHidden = true
             }
             
             guard error == nil else {

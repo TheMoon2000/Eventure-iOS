@@ -37,6 +37,7 @@ class DraftOtherInfoPage: UITableViewController {
         
         let secureCell = SettingsSwitchCell()
         secureCell.enabled = false
+        secureCell.titleLabel.text = "Secure check-in"
         secureCell.switchHandler = { on in
             self.draftPage.draft.secureCheckin = on
         }

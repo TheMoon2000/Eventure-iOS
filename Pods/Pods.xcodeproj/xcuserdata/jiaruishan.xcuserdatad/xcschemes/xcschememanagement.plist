@@ -25,6 +25,16 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
+		<key>SwiftCSVExport.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>12</integer>
+		</dict>
+		<key>SwiftLoggly.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>13</integer>
+		</dict>
 		<key>SwiftyJSON-iOS11.0.xcscheme</key>
 		<dict>
 			<key>isShown</key>
