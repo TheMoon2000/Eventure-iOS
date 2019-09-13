@@ -43,6 +43,8 @@
 		CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */; };
 		CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */; };
 		CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC23293123163B720097A915 /* UpdatePasswordPage.swift */; };
+		CC2D5906232B4F59004120E8 /* UpdateNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5905232B4F59004120E8 /* UpdateNotice.swift */; };
+		CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5907232B5289004120E8 /* EventCodeView.swift */; };
 		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
 		CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */; };
 		CC2EB24D231F9E68004245F8 /* CheckinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */; };
@@ -199,6 +201,8 @@
 		CC2167C1231B719D003B8DE7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICheckbox.swift; sourceTree = "<group>"; };
 		CC23293123163B720097A915 /* UpdatePasswordPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordPage.swift; sourceTree = "<group>"; };
+		CC2D5905232B4F59004120E8 /* UpdateNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotice.swift; sourceTree = "<group>"; };
+		CC2D5907232B5289004120E8 /* EventCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCodeView.swift; sourceTree = "<group>"; };
 		CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
 		CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
 		CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinRecord.swift; sourceTree = "<group>"; };
@@ -405,6 +409,7 @@
 				CC18F54E229AD4EB008FABEA /* AppDelegate.swift */,
 				CC1AF7A4229B732C003471F2 /* Global Constants.swift */,
 				CC18F563229AD518008FABEA /* MainTabBarController.swift */,
+				CC2D5905232B4F59004120E8 /* UpdateNotice.swift */,
 				CC397638231025D8000CC35D /* Objective-C */,
 				CC0646E122FDF604000BF3CD /* Data structure */,
 				CC9C873422FDF68600498EB5 /* User Account */,
@@ -654,6 +659,7 @@
 			children = (
 				CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */,
 				CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */,
+				CC2D5907232B5289004120E8 /* EventCodeView.swift */,
 				CC426CAF2320828500BB3CA4 /* CheckinResults.swift */,
 				CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */,
 				CC66A5BC2329D127002DA953 /* Sorting cells */,
@@ -908,9 +914,11 @@
 				CCA0381C231DBF330011AE22 /* CheckinTable.swift in Sources */,
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
+				CC2D5906232B4F59004120E8 /* UpdateNotice.swift in Sources */,
 				67E89385231C40FF004896F7 /* changeGender.swift in Sources */,
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
 				CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */,
+				CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
 				CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */,
 				DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */,

@@ -119,13 +119,28 @@ class EventCheckinOverview: UIViewController {
     
     @objc private func saveImage(_ gesture: UIGestureRecognizer) {
         
-        guard let qr = qrCode.image else {
+        guard qrCode.image != nil else {
             print("no image found")
             return
         }
         
         if gesture.state != .began {
             return
+        }
+        
+        let formatted = EventCodeView()
+        formatted.titleLabel.text = event.title
+        formatted.subtitleLabel.text = event.timeDescription
+        formatted.qrCode.image = qrCode.image
+        formatted.orgTitle.text = event.hostTitle
+        formatted.translatesAutoresizingMaskIntoConstraints = false
+        formatted.layoutIfNeeded()
+        if let logo = Organization.current?.logoImage {
+            formatted.orgLogo.image = logo
+        }
+        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+        let qr = renderer.image { context in
+            formatted.layer.render(in: context.cgContext)
         }
         
         let alert = UIAlertController(title: "QR Code", message: nil, preferredStyle: .actionSheet)

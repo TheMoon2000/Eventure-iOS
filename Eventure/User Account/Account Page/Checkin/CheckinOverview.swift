@@ -79,8 +79,8 @@ class CheckinOverview: UIViewController {
         }()
         
         orgLogo = {
-            let iv = UIImageView()
-            iv.backgroundColor = .init(white: 0.95, alpha: 1)
+            let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
+            iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
@@ -97,6 +97,7 @@ class CheckinOverview: UIViewController {
             let label = UILabel()
             label.text = event.hostTitle
             label.font = .systemFont(ofSize: 22, weight: .medium)
+            label.textColor = .init(white: 0.1, alpha: 1)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -273,7 +274,6 @@ class CheckinOverview: UIViewController {
     
     func showUI() {
         if orgLogo.image != nil {
-            orgLogo.backgroundColor = nil
             if event.capacity != 0 {
                 self.captionLabel.text = "\(sheetInfo!.currentOccupied) / \(event.capacity) spots currently filled"
             }
@@ -307,9 +307,8 @@ class CheckinOverview: UIViewController {
             }
             
             DispatchQueue.main.async {
-                if self.orgLogo.image == nil {
-                    self.orgLogo.backgroundColor = nil
-                    self.orgLogo.image = UIImage(data: data!) ?? #imageLiteral(resourceName: "unknown")
+                if let logo = UIImage(data: data!) {
+                    self.orgLogo.image = logo
                 }
                 self.showUI()
             }

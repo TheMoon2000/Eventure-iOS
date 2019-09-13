@@ -325,6 +325,18 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     
     private func decryptDataString(_ string: String) -> String? {
+        
+        let components = string.components(separatedBy: "?id=")
+        
+        guard components.count >= 2 else {
+            return decryptLegacyQR(string)
+        }
+        
+        return components[1]
+    }
+    
+    
+    private func decryptLegacyQR(_ string: String) -> String? {
         guard string.hasPrefix(URL_PREFIX) else { return nil }
         
         let encrypted = string[string.index(string.startIndex, offsetBy: URL_PREFIX.count)...]
@@ -378,8 +390,6 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     }
     
     func presentCheckinForm(eventID: String) {
-        
-        print("presenting check-in form for \(eventID)")
         
         session?.stopRunning()
         spinner.startAnimating()
