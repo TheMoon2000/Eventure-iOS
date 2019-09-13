@@ -21,13 +21,15 @@ class EventCodeView: UIView {
         
         titleLabel = {
             let label = UILabel()
+            label.numberOfLines = 0
             label.textAlignment = .center
             label.textColor = .init(white: 0.1, alpha: 1)
-            label.font = .systemFont(ofSize: 26, weight: .semibold)
+            label.font = .systemFont(ofSize: 24, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+            label.leftAnchor.constraint(equalTo: leftAnchor, constant: 35).isActive = true
+            label.rightAnchor.constraint(equalTo: rightAnchor, constant: -35).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 50).isActive = true
             
             return label
@@ -37,7 +39,7 @@ class EventCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 5
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16.5)
+            label.font = .systemFont(ofSize: 16)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -56,10 +58,10 @@ class EventCodeView: UIView {
             
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-            iv.widthAnchor.constraint(equalToConstant: 230).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 220).isActive = true
             iv.topAnchor.constraint(greaterThanOrEqualTo: subtitleLabel.bottomAnchor, constant: 50).isActive = true
-            iv.leftAnchor.constraint(equalTo: leftAnchor, constant: 60).isActive = true
-            iv.rightAnchor.constraint(equalTo: rightAnchor, constant: -60).isActive = true
+            iv.leftAnchor.constraint(equalTo: leftAnchor, constant: 90).isActive = true
+            iv.rightAnchor.constraint(equalTo: rightAnchor, constant: -90).isActive = true
             
             return iv
         }()
