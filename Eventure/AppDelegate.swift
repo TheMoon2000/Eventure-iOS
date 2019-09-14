@@ -172,8 +172,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         let info = packet.dictionaryValue
         
-        guard let keyType = NotificationKeys(rawValue: info["type"]!.stringValue) else {
-            print("WARNING: type '\(info["type"]!.stringValue)' is unrecognized")
+        guard let type = info["type"]?.string, let keyType = NotificationKeys(rawValue: type) else {
+            print("WARNING: Notification type is not defined or unrecognized")
             return
         }
         
@@ -190,7 +190,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             
             let alert = UIAlertController(title: "New check-in request", message: "User '\(username)' would like to check-in for '\(title)'. The 6-digit verification code is \(code).", preferredStyle: .alert)
             alert.addAction(.init(title: "Done", style: .cancel))
-            MainTabBarController.current.present(alert, animated: true, completion: nil)
+            UIApplication.topMostViewController?.present(alert, animated: true, completion: nil)
+        case .generalNotice:
+            guard let alertInfo = info["alert"]?.dictionary else { return }
+            guard let title = alertInfo["title"]?.string else { return }
+            guard let body = alertInfo["body"]?.string else { return }
+            
+            let alert = UIAlertController(title: title, message: body, preferredStyle: .alert)
+            alert.addAction(.init(title: "Dismiss", style: .cancel))
+            UIApplication.topMostViewController?.present(alert, animated: true)
         }
     }
     

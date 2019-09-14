@@ -300,6 +300,7 @@ class Event {
         main.dictionaryObject?["Has cover"] = hasVisual
         main.dictionaryObject?["Active"] = active ? 1 : 0
         main.dictionaryObject?["Capacity"] = capacity
+        main.dictionaryObject?["Strict"] = secureCheckin
         
         return main
     }

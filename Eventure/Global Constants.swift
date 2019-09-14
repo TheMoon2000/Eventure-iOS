@@ -39,6 +39,7 @@ let URL_PREFIX = "eventure://"
 /// Notification types
 enum NotificationKeys: String {
     case oneTimeCode = "one-time code"
+    case generalNotice = "general notice"
 }
 
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
@@ -486,6 +487,28 @@ extension UIImage {
     
     func sizeDown(maxWidth: CGFloat = 400.0) -> UIImage {
         return UIImage(data: sizeDownData(maxWidth: maxWidth), scale: 0.8)!
+    }
+}
+
+extension UIApplication {
+    /// The top most view controller
+    static var topMostViewController: UIViewController? {
+        return UIApplication.shared.keyWindow?.rootViewController?.visibleViewController
+    }
+}
+
+extension UIViewController {
+    /// The visible view controller from a given view controller
+    var visibleViewController: UIViewController? {
+        if let navigationController = self as? UINavigationController {
+            return navigationController.topViewController?.visibleViewController
+        } else if let tabBarController = self as? UITabBarController {
+            return tabBarController.selectedViewController?.visibleViewController
+        } else if let presentedViewController = presentedViewController {
+            return presentedViewController.visibleViewController
+        } else {
+            return self
+        }
     }
 }
 
