@@ -24,7 +24,11 @@ class User: Profile {
     
     static var token: String? {
         didSet {
-            MainTabBarController.current.loginSetup()
+            if User.current != nil {
+                User.syncFromServer()
+            } else if Organization.current != nil {
+                Organization.syncFromServer()
+            }
         }
     }
     

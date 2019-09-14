@@ -13,6 +13,8 @@ class DraftOtherInfoPage: UITableViewController {
     var draftPage: EventDraft!
     private var contentCells = [UITableViewCell]()
     
+    private var previewImageVisible = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,6 +39,7 @@ class DraftOtherInfoPage: UITableViewController {
         contentCells.append(capacityCell)
         
         let secureCell = SettingsSwitchCell()
+        secureCell.backgroundColor = EventDraft.backgroundColor
         secureCell.enabled = false
         secureCell.titleLabel.text = "Secure check-in"
         secureCell.switchHandler = { on in
@@ -46,7 +49,6 @@ class DraftOtherInfoPage: UITableViewController {
         
         let imagePickerCell = EventImagePickerCell()
         imagePickerCell.backgroundColor = EventDraft.backgroundColor
-        imagePickerCell.expand()
         contentCells.append(imagePickerCell)
         
         let imagePreviewCell = EventImagePreviewCell(parentVC: self)
@@ -78,11 +80,19 @@ class DraftOtherInfoPage: UITableViewController {
         return contentCells[indexPath.row]
     }
     
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 4 && !previewImageVisible {
+            return 0
+        } else {
+            return super.tableView(tableView, heightForRowAt: indexPath)
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let cell = contentCells[indexPath.row]
-        
-        if let tagPickerCell = cell as? ChooseTagCell {
+        switch indexPath {
+        case [0, 0]:
+            let tagPickerCell = contentCells[0] as! ChooseTagCell
             let tagPicker = TagPickerView()
             tagPicker.customTitle = "Pick 1 ~ 3 tags that best describe your event!"
             tagPicker.customSubtitle = ""
@@ -105,8 +115,7 @@ class DraftOtherInfoPage: UITableViewController {
             
             tagPicker.selectedTags = draftPage.draft.tags
             navigationController?.pushViewController(tagPicker, animated: true)
-            
-        } else if indexPath == [0, 2] {
+        case [0, 2]:
             let alert = UIAlertController(title: "Secure Check-in", message: "This feature is intended for event that place restrictions / requirements on who can attend (e.g. tickets), so that you have the ability to decide who can attend the event. When secure check-in is on, users must obtain a verification code that will be sent to you during online check-in.", preferredStyle: .actionSheet)
             alert.addAction(.init(title: "Dismiss", style: .cancel))
             
@@ -117,6 +126,27 @@ class DraftOtherInfoPage: UITableViewController {
             }
             
             present(alert, animated: true)
+        case [0, 3]:
+            previewImageVisible.toggle()
+            
+            let topCell = contentCells[3] as! EventImagePickerCell
+            previewImageVisible ? topCell.expand() : topCell.collapse()
+            
+            let bottomCell = self.contentCells[4] as! EventImagePreviewCell
+            bottomCell.previewImage.isUserInteractionEnabled = self.previewImageVisible
+            
+            UIView.animate(withDuration: 0.2) {
+                let newAlpha: CGFloat = self.previewImageVisible ? 1.0 : 0.0
+                for view in [bottomCell.previewImage, bottomCell.chooseImageLabel, bottomCell.captionLabel] {
+                    view?.alpha = newAlpha
+                }
+                bottomCell.previewImage.alpha = newAlpha
+            }
+            
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        default:
+            break
         }
     }
 

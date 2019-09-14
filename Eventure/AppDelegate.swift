@@ -30,8 +30,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let entrypoint = MainTabBarController()
         MainTabBarController.current = entrypoint
         window?.rootViewController = entrypoint
+        entrypoint.loginSetup()
         
         window?.makeKeyAndVisible()
+        
+        application.applicationIconBadgeNumber = 0
+        
+        if User.current == nil && Organization.current == nil && !UserDefaults.standard.bool(forKey: "Has logged in") {
+            let login = LoginViewController()
+            let nvc = InteractivePopNavigationController(rootViewController: login)
+            nvc.isNavigationBarHidden = true
+            login.navBar = nvc
+            entrypoint.present(nvc, animated: false)
+            UserDefaults.standard.setValue(true, forKey: "Has logged in")
+        }
         
         registerForPushNotifications()
         

@@ -55,7 +55,6 @@ class EventImagePickerCell: UITableViewCell {
         indicator = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
             iv.tintColor = .lightGray
-            iv.alpha = DISABLED_ALPHA
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)

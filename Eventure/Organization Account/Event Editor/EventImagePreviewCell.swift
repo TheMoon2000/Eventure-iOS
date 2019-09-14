@@ -15,7 +15,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
     
     private var bgView: UIView!
     private(set) var previewImage: UIImageView!
-    private var captionLabel: UILabel!
+    private(set) var captionLabel: UILabel!
     private(set) var chooseImageLabel: UILabel!
     
     var updateImageHandler: ((UIImage?) -> ())?
@@ -65,12 +65,12 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
         
         previewImage = {
             let iv = UIImageView()
+            iv.alpha = 0
             iv.layer.borderWidth = 1
             iv.layer.borderColor = LINE_TINT.cgColor
             iv.backgroundColor = .init(white: 0.96, alpha: 1)
             iv.contentMode = .scaleAspectFill
             iv.clipsToBounds = true
-            iv.isUserInteractionEnabled = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -89,7 +89,9 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
             iv.centerXAnchor.constraint(equalTo: bgView.centerXAnchor).isActive = true
             iv.widthAnchor.constraint(lessThanOrEqualToConstant: 500).isActive = true
             iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
-            iv.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
+            let t = iv.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15)
+            t.priority = .defaultLow
+            t.isActive = true
             iv.bottomAnchor.constraint(equalTo: captionLabel.topAnchor, constant: -12).isActive = true
             
             iv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chooseImage)))
