@@ -388,6 +388,7 @@ class LoginViewController: UIViewController {
         ]
         
         loginParameters["token"] = User.token
+        loginParameters["build"] = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
         
         // Make the URL and URL request
         let apiURL = URL.with(base: API_BASE_URL,

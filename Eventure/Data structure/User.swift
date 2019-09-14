@@ -250,7 +250,8 @@ class User: Profile {
         
         var parameters = ["uuid": String(User.current!.uuid)]
         parameters["token"] = User.token
-            
+        parameters["build"] = Bundle.main.infoDictionary?[kCFBundleVersionKey as! String] as? String
+        
             
         User.waitingForSync = true
         let url = URL.with(base: API_BASE_URL,

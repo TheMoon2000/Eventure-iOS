@@ -546,9 +546,9 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
     vc.present(alert, animated: true, completion: nil)
 }
 
-func authorizationError(vc: UIViewController, handler: (() -> ())? = nil) {
+func authorizationError(handler: (() -> ())? = nil) {
     let noticeScreen = UpdateNotice()
-    vc.present(noticeScreen, animated: true)
+    UIApplication.topMostViewController?.present(noticeScreen, animated: true)
 }
 
 // MARK: - Notifications

@@ -42,7 +42,7 @@ class MainTabBarController: UITabBarController {
             
             if String(data: data!, encoding: .utf8) == UNAUTHORIZED_ERROR {
                 DispatchQueue.main.async {
-                    authorizationError(vc: self)
+                    authorizationError()
                 }
                 return
             }

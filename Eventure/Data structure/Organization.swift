@@ -306,7 +306,8 @@ class Organization: CustomStringConvertible {
         
         var parameters = ["orgId": Organization.current!.id]
         parameters["token"] = User.token
-                
+        parameters["build"] = Bundle.main.infoDictionary?[kCFBundleVersionKey as! String] as? String
+        
         Organization.waitingForSync = true
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetOrgInfo",

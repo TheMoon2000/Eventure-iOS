@@ -155,7 +155,7 @@ class DescriptionEditPage: UIViewController {
             
             label.leftAnchor.constraint(equalTo: canvas.leftAnchor, constant: 20).isActive = true
             label.topAnchor.constraint(equalTo: descriptionText.bottomAnchor, constant: 20).isActive = true
-            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -20).isActive = true
+            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -25).isActive = true
             
             return label
         }()
@@ -209,6 +209,7 @@ class DescriptionEditPage: UIViewController {
     }
     
     @objc private func closeEditor() {
+        view.endEditing(true)
         if edited {
             let alert = UIAlertController(title: "Caution", message: "You have unsaved changes", preferredStyle: .alert)
             alert.addAction(.init(title: "Save", style: .default, handler: { _ in
@@ -240,7 +241,6 @@ class DescriptionEditPage: UIViewController {
         previewButton.setTitleColor(.darkGray, for: .normal)
         previewText.isHidden = true
         descriptionText.isHidden = false
-        textViewDidChange(descriptionText)
         charCount.isHidden = false
     }
     
