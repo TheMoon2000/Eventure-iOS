@@ -158,6 +158,8 @@ class CheckinTable: UIViewController {
         orgLogo = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
             iv.tintColor = MAIN_DISABLED
+            iv.layer.cornerRadius = 5
+            iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
             iv.translatesAutoresizingMaskIntoConstraints = false

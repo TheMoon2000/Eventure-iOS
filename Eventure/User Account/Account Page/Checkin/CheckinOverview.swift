@@ -37,6 +37,15 @@ class CheckinOverview: UIViewController {
     private var LIST_FULL = "List is Full"
     private var CHECKED_IN = "Checked In"
     
+    private var canCheckInNow: Bool {
+        if event.checkinTime == -1 { return true }
+        if let start = event.startTime, start.timeIntervalSinceNow > Double(event.checkinTime) {
+            return false
+        }
+        
+        return true
+    }
+    
     required init(parentVC: CheckinPageController, event: Event!, sheetInfo: SignupSheet) {
         super.init(nibName: nil, bundle: nil)
         
@@ -83,11 +92,13 @@ class CheckinOverview: UIViewController {
         orgLogo = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
             iv.tintColor = MAIN_DISABLED
+            iv.layer.cornerRadius = 6
+            iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 110).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 100).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
             iv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 35).isActive = true
@@ -107,7 +118,7 @@ class CheckinOverview: UIViewController {
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             label.centerXAnchor.constraint(equalTo: orgLogo.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: orgLogo.bottomAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: orgLogo.bottomAnchor, constant: 25).isActive = true
             
             return label
         }()
@@ -148,12 +159,6 @@ class CheckinOverview: UIViewController {
         checkinButton = {
             let button = UIButton(type: .system)
             button.tintColor = .white
-            if let start = event.startTime, start.timeIntervalSinceNow > Double(event.checkinTime) {
-                Timer(fire: start.addingTimeInterval(Double(-event.checkinTime)), interval: 1.0, repeats: false) { [weak self] timer in
-                    self?.refreshUI()
-                    timer.invalidate()
-                } .fire()
-            }
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
             button.backgroundColor = MAIN_TINT
             button.layer.cornerRadius = 10
@@ -196,41 +201,39 @@ class CheckinOverview: UIViewController {
             return label
         }()
         
-        if (event.startTime! <= Date()) {
-            checkbox = {
-                let check = UICheckbox()
-                check.isChecked = true
-                check.format(type: .square)
-                check.translatesAutoresizingMaskIntoConstraints = false
-                view.addSubview(check)
-                
-                check.widthAnchor.constraint(equalToConstant: 20).isActive = true
-                check.heightAnchor.constraint(equalTo: check.widthAnchor).isActive = true
-                check.leftAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leftAnchor, constant: 40).isActive = true
-                
-                return check
-            }()
-        
-            checkboxLabel = {
-                let label = UILabel()
-                label.attributedText = "Allow **\(event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
-                label.textColor = .init(white: 0.2, alpha: 1)
-                label.lineBreakMode = .byWordWrapping
-                label.numberOfLines = 2
-                label.translatesAutoresizingMaskIntoConstraints = false
-                view.addSubview(label)
-                
-                label.leftAnchor.constraint(equalTo: checkbox.rightAnchor, constant: 10).isActive = true
-                label.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: -40).isActive = true
-                label.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 15).isActive = true
-                label.topAnchor.constraint(equalTo: checkbox.topAnchor).isActive = true
-                label.bottomAnchor.constraint(equalTo: checkinButton.topAnchor, constant: -20).isActive = true
-                
-                label.topAnchor.constraint(greaterThanOrEqualTo: eventTitle.bottomAnchor, constant: 50).isActive = true
-                
-                return label
-            }()
-        }
+        checkbox = {
+            let check = UICheckbox()
+            check.isChecked = true
+            check.format(type: .square)
+            check.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(check)
+            
+            check.widthAnchor.constraint(equalToConstant: 20).isActive = true
+            check.heightAnchor.constraint(equalTo: check.widthAnchor).isActive = true
+            check.leftAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leftAnchor, constant: 40).isActive = true
+            
+            return check
+        }()
+    
+        checkboxLabel = {
+            let label = UILabel()
+            label.attributedText = "Allow **\(event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
+            label.textColor = .init(white: 0.2, alpha: 1)
+            label.lineBreakMode = .byWordWrapping
+            label.numberOfLines = 2
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: checkbox.rightAnchor, constant: 10).isActive = true
+            label.rightAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: -40).isActive = true
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: checkbox.topAnchor).isActive = true
+            label.bottomAnchor.constraint(equalTo: checkinButton.topAnchor, constant: -20).isActive = true
+            
+            label.topAnchor.constraint(greaterThanOrEqualTo: eventTitle.bottomAnchor, constant: 50).isActive = true
+            
+            return label
+        }()
         
         loadingBG = {
             let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
@@ -276,6 +279,18 @@ class CheckinOverview: UIViewController {
             return label
         }()
         
+        if !canCheckInNow {
+            checkbox.isHidden = true
+            checkboxLabel.isHidden = true
+            let timer = Timer(fire: event.startTime!.addingTimeInterval(Double(-event.checkinTime)), interval: 0, repeats: false) { [weak self] timer in
+                self?.refreshUI()
+                self?.checkbox.isHidden = false
+                self?.checkboxLabel.isHidden = false
+                timer.invalidate()
+            }
+            RunLoop.main.add(timer, forMode: .common)
+        }
+        
         refreshUI()
         loadLogoImage()
     }
@@ -288,7 +303,7 @@ class CheckinOverview: UIViewController {
         if event.capacity != 0 {
             self.captionLabel.text = "\(sheetInfo!.currentOccupied) / \(event.capacity) spots currently filled"
         }
-        if let start = event.startTime, (start.timeIntervalSinceNow > Double(event.checkinTime)) {
+        if !canCheckInNow {
             self.checkinButton.isUserInteractionEnabled = true
             self.checkinButton.alpha = 1.0
             self.checkinButton.setTitle(VIEW, for: .normal)
@@ -354,6 +369,11 @@ class CheckinOverview: UIViewController {
         alert.addAction(.init(title: "Check in", style: .default, handler: { _ in
             self.sendCheckinRequest()
         }))
+        
+        if !canCheckInNow {
+            alert.actions.last?.isEnabled = false
+        }
+        
         alert.addAction(.init(title: "View Event", style: .default, handler: { _ in
             let eventpage = EventDetailPage()
             eventpage.event = self.event
@@ -432,9 +452,7 @@ class CheckinOverview: UIViewController {
                 }))
             case "incorrect":
                 alert = UIAlertController(title: "Incorrect code", message: "Please confirm your check-in code with the event organizer.", preferredStyle: .alert)
-                alert.addAction(.init(title: "Dismiss", style: .cancel, handler: { action in
-                    self.dismiss(animated: true, completion: nil)
-                }))
+                alert.addAction(.init(title: "Dismiss", style: .cancel))
             case "auth", "wait":
                 alert = UIAlertController(title: "Enter one-time code to check-in", message: "The event has been configured to require check-in verification. Please contact '\(self.event.hostTitle)' for your 6-digit code.", preferredStyle: .alert)
                 
