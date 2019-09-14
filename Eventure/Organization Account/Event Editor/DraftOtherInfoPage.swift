@@ -116,7 +116,7 @@ class DraftOtherInfoPage: UITableViewController {
             tagPicker.selectedTags = draftPage.draft.tags
             navigationController?.pushViewController(tagPicker, animated: true)
         case [0, 2]:
-            let alert = UIAlertController(title: "Secure Check-in", message: "This feature is intended for event that place restrictions / requirements on who can attend (e.g. tickets), so that you have the ability to decide who can attend the event. When secure check-in is on, users must obtain a verification code that will be sent to you during online check-in.", preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "What is secure check-in?", message: "Secure check-in is intended for events that place restrictions / requirements on who can check-in (e.g. ones that sell tickets or require reservation), so that you, the organizer, have the ability to decide who can attend the event. When secure check-in is on, users must obtain a one-time verification code that will be sent to you before they can check-in.", preferredStyle: .actionSheet)
             alert.addAction(.init(title: "Dismiss", style: .cancel))
             
             if let popoverController = alert.popoverPresentationController {
