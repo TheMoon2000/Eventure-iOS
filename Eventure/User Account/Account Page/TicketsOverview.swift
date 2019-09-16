@@ -13,17 +13,29 @@ class TicketsOverview: UIViewController {
     
     private var ticketsTable: UITableView!
     private var loadingBG: UIVisualEffectView!
+    private var navBarSpinner: UIActivityIndicatorView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
     
     var tickets = [Ticket]()
+    var logoCache = [String : UIImage]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "My Tickets"
         view.backgroundColor = .init(white: 0.93, alpha: 1)
+        
+        tickets = Ticket.userTickets.sorted { t1, t2 in
+            if t1.transactionDate == nil { return false }
+            if t2.transactionDate == nil { return true }
+            return t1.transactionDate!.timeIntervalSince(t2.transactionDate!) >= 0
+        }
+        
+        navBarSpinner = UIActivityIndicatorView(style: .gray)
+        navBarSpinner.hidesWhenStopped = true
+        navigationItem.rightBarButtonItem = .init(customView: navBarSpinner)
         
         emptyLabel = {
             let label = UILabel()
@@ -109,7 +121,12 @@ class TicketsOverview: UIViewController {
     private func getTickets() {
         
         emptyLabel.text = ""
-        loadingBG.isHidden = false
+        
+        if tickets.isEmpty {
+            loadingBG.isHidden = false
+        } else {
+            navBarSpinner.startAnimating()
+        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetTickets",
@@ -122,6 +139,7 @@ class TicketsOverview: UIViewController {
             
             DispatchQueue.main.async {
                 self.loadingBG.isHidden = true
+                self.navBarSpinner.stopAnimating()
             }
             
             guard error == nil else {
@@ -135,11 +153,17 @@ class TicketsOverview: UIViewController {
             if let json = try? JSON(data: data!), let tickets = json.array {
                 var tmp = [Ticket]()
                 for ticketData in tickets {
-                    tmp.append(Ticket(ticketInfo: ticketData))
+                    let newTicket = Ticket(ticketInfo: ticketData)
+                    newTicket.orgLogo = self.logoCache[newTicket.ticketID]
+                    tmp.append(newTicket)
                 }
                 self.tickets = tmp
                 DispatchQueue.main.async {
                     self.ticketsTable.reloadSections([0], with: .none)
+                }
+                DispatchQueue.global(qos: .default).async {
+                    Ticket.userTickets = Set(tmp)
+                    Ticket.writeToFile(userID: User.current!.userID)
                 }
             } else {
                 DispatchQueue.main.async {
@@ -198,9 +222,15 @@ extension TicketsOverview: UITableViewDataSource, UITableViewDelegate {
         let ticket = tickets[indexPath.row]
         
         cell.setup(ticket: ticket)
+        
+        if ticket.orgLogo != nil {
+            logoCache[ticket.ticketID] = ticket.orgLogo
+        }
+        
         if ticket.orgLogo == nil {
-            getLogoImage(ticket: ticket) { ticketWithLogo in
-                cell.setup(ticket: ticketWithLogo)
+            getLogoImage(ticket: ticket) { [weak cell] ticketWithLogo in
+                cell?.setup(ticket: ticketWithLogo)
+                self.logoCache[ticket.ticketID] = ticketWithLogo.orgLogo
             }
         }
         

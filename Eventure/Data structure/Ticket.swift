@@ -12,7 +12,7 @@ import SwiftyJSON
 class Ticket {
     
     static var allTickets = [Int: [[String : Any]]]()
-    static var userTickets = [Ticket]()
+    static var userTickets = Set<Ticket>()
     
     var ticketID: String
     var userID: Int
@@ -66,6 +66,10 @@ class Ticket {
         main.dictionaryObject?["Quantity"] = quantity
         main.dictionaryObject?["Payment type"] = paymentType.rawValue
         
+        if eventDate != nil {
+            main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: eventDate!)
+        }
+        
         if transactionDate != nil {
             main.dictionaryObject?["Transaction date"] = DATE_FORMATTER.string(from: transactionDate!)
         }
@@ -77,7 +81,7 @@ class Ticket {
         Ticket.writeToFile(userID: userID)
     }
     
-    static func writeToFile(userID: Int) -> Bool {
+    @discardableResult static func writeToFile(userID: Int) -> Bool {
         
         var collection = [[String : Any]]()
         
@@ -99,6 +103,61 @@ class Ticket {
         } else {
             return false
         }
+    }
+    
+    static func readFromFile() -> [Int: Set<Ticket>] {
+        
+        var tickets = [Int: Set<Ticket>]()
+        
+        guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: TICKETS_PATH) else {
+            return [:] // It's fine if no event collection cache exists.
+        }
+        
+        guard let collection = fileData as? [Int: [[String : Any]]] else {
+            print("WARNING: Cannot read tickets at \(TICKETS_PATH)!")
+            return [:]
+        }
+        
+        allTickets = collection
+        
+        for (id, ticketsList) in collection {
+            for ticketInfo in ticketsList {
+                guard let mainData = ticketInfo["main"] as? Data else {
+                    print("WARNING: Key `main` not found for user ID \(id) in ticket cache!")
+                    continue
+                }
+                
+                guard let decryptedMain: Data = NSData(data: mainData).aes256Decrypt(withKey: AES_KEY) else {
+                    print("WARNING: Unable to decrypt tickets for user \(id)!")
+                    continue
+                }
+                
+                if let json = try? JSON(data: decryptedMain) {
+                    let ticket: Ticket = Ticket(ticketInfo: json)
+                    var userSpecificTickets: Set<Ticket> = tickets[id] ?? []
+                    
+                    ticket.orgLogo = ticketInfo["org logo"] as? UIImage
+                    userSpecificTickets.insert(ticket)
+                    
+                    tickets[id] = userSpecificTickets
+                } else {
+                    print("WARNING: Unable to parse decrypted ticket main data as JSON!")
+                }
+            }
+        }
+        
+        return tickets
+    }
+}
+
+
+extension Ticket: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ticketID)
+    }
+    
+    static func ==(lhs: Ticket, rhs: Ticket) -> Bool {
+        return lhs.ticketID == rhs.ticketID
     }
 }
 

@@ -26,9 +26,10 @@ let PASSWORD = "__replace__"
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
 let UNAUTHORIZED_ERROR = "unauthorized"
-let CONNECTION_ERROR = "Connection Error"
-let SERVER_ERROR = "Server Error"
+let CONNECTION_ERROR = "Connection error"
+let SERVER_ERROR = "Server error"
 let APP_STORE_LINK = "https://apps.apple.com/app/id1478542362"
+let APP_DOMAIN = "https://eventure-app.com/"
 
 let KEY_ACCOUNT_TYPE = "Account Type"
 let ACCOUNT_TYPE_USER = "User"
@@ -45,7 +46,7 @@ enum NotificationKeys: String {
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
-let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
+let LINE_TINT = UIColor.init(white: 0.91, alpha: 1)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
@@ -146,6 +147,7 @@ let DRAFTS_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDom
 let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Account", isDirectory: true)
 
 let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
+let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
 
 /// Navigation bar background color
 let NAVBAR_TINT = UIColor.white

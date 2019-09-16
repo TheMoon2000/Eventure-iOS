@@ -24,7 +24,7 @@ class EventCheckinOverview: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "checkin_result"), style: .plain, target: self, action: #selector(viewResults))
         
-        let code = APP_STORE_LINK + "?id=" + event.uuid
+        let code = APP_DOMAIN + "checkin?id=" + event.uuid
 
         titleLabel = {
             let label = UILabel()

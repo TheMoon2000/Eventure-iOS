@@ -285,6 +285,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         case (2, 2):
             cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "My Tickets"
+            if User.current != nil {
+                cell.valueLabel.text = String(Ticket.userTickets.count)
+            }
         case (3, 0):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"

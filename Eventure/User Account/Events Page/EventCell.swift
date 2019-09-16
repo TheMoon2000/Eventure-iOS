@@ -280,8 +280,8 @@ class EventCell: UICollectionViewCell {
         
         if event.eventVisual == nil {
             if withImage {
-                event.getCover { eventWithCover in
-                    self.setupCellWithEvent(event: eventWithCover)
+                event.getCover { [weak self] eventWithCover in
+                    self?.setupCellWithEvent(event: eventWithCover)
                 }
             }
             cover.image = #imageLiteral(resourceName: "cover_placeholder")

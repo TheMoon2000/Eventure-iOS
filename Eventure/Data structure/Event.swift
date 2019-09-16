@@ -177,10 +177,6 @@ class Event {
                     let event: Event = Event(eventInfo: json)
                     var orgSpecificEvents: Set<Event> = events[id] ?? []
 
-                    // These two attributes need to be manually extracted from the JSON
-                    event.hostID = json.dictionary?["Host ID"]?.string ?? event.hostID
-                    event.hostTitle = json.dictionary?["Host title"]?.string ?? event.hostTitle
-                    
                     event.eventVisual = eventRawData["cover"] as? UIImage
                     orgSpecificEvents.insert(event)
                     
