@@ -107,11 +107,8 @@ class CheckinUserCell: UITableViewCell {
     
     func setup(registrant: Registrant) {
         self.registrant = registrant
-        if User.current?.userID == registrant.userID {
-            nameLabel.text = "(You) " + registrant.name
-        } else {
-            nameLabel.text = registrant.name
-        }
+        nameLabel.text = registrant.name
+        if nameLabel.text!.isEmpty { nameLabel.text = registrant.displayedName }
         if nameLabel.text!.isEmpty { nameLabel.text = registrant.email }
         if let order = registrant.order {
             self.placeLabel.text = String(order)

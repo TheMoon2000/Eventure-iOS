@@ -1,4 +1,31 @@
 PODS:
+  - Braintree (4.27.1):
+    - Braintree/Card (= 4.27.1)
+    - Braintree/Core (= 4.27.1)
+    - Braintree/PayPal (= 4.27.1)
+    - Braintree/UI (= 4.27.1)
+  - Braintree/Card (4.27.1):
+    - Braintree/Core
+  - Braintree/Core (4.27.1)
+  - Braintree/DataCollector (4.27.1):
+    - Braintree/Core
+  - Braintree/PayPal (4.27.1):
+    - Braintree/Core
+    - Braintree/PayPalOneTouch
+  - Braintree/PayPalDataCollector (4.27.1):
+    - Braintree/Core
+    - Braintree/PayPalUtils
+  - Braintree/PayPalOneTouch (4.27.1):
+    - Braintree/Core
+    - Braintree/PayPalDataCollector
+    - Braintree/PayPalUtils
+  - Braintree/PayPalUtils (4.27.1)
+  - Braintree/UI (4.27.1):
+    - Braintree/Card
+    - Braintree/Core
+  - Braintree/Venmo (4.27.1):
+    - Braintree/Core
+    - Braintree/PayPalDataCollector
   - Down (0.8.6)
   - SwiftCSVExport (2.0.1)
   - SwiftLoggly (1.0.7)
@@ -8,6 +35,9 @@ PODS:
   - XLPagerTabStrip (9.0.0)
 
 DEPENDENCIES:
+  - Braintree
+  - Braintree/DataCollector
+  - Braintree/Venmo
   - Down
   - SwiftCSVExport
   - SwiftLoggly (~> 1.0)
@@ -18,6 +48,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - Braintree
     - Down
     - SwiftCSVExport
     - SwiftLoggly
@@ -27,6 +58,7 @@ SPEC REPOS:
     - XLPagerTabStrip
 
 SPEC CHECKSUMS:
+  Braintree: eeb6e5aa9a893cbd6e7059fac708297844f3cce6
   Down: 3c758f2388fa739663023f400e742a988fa1e21d
   SwiftCSVExport: a2baa3904699e9d5b66dc1a15111d8172ade84dc
   SwiftLoggly: e698435ac1442ac0be4f4e2f74615ee1a0bd4547
@@ -35,6 +67,6 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
 
-PODFILE CHECKSUM: d0993c120e9d3ff24f1e48e4cb5a7a6158c6c01a
+PODFILE CHECKSUM: 801e0926b4fbbf0755e2bf8d1848fea6cc1fe530
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.5.3

@@ -53,8 +53,6 @@
 		CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */; };
 		CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6F2230709450044C6ED /* OrgEventsTabStrip.swift */; };
 		CC2F308E2324631A00AF5F8E /* OrgSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2F308D2324631A00AF5F8E /* OrgSplitViewController.swift */; };
-		CC31B5FC2328BA3100C4793F /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC31B5FB2328BA3100C4793F /* NotificationService.swift */; };
-		CC31B6002328BA3100C4793F /* NotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CC31B5F92328BA3100C4793F /* NotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CC3312822322121C00DC03D2 /* AboutPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3312812322121C00DC03D2 /* AboutPage.swift */; };
 		CC3760AC231F864800051C06 /* ProfilePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */; };
 		CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = CC39763A231025E3000CC35D /* NSString+AESCrypt.m */; };
@@ -79,6 +77,9 @@
 		CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */; };
 		CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */; };
 		CC66A5C02329F530002DA953 /* SettingsSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */; };
+		CC686ECE232F40DD00144CBF /* TicketsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC686ECD232F40DD00144CBF /* TicketsOverview.swift */; };
+		CC686ED0232F41AE00144CBF /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC686ECF232F41AE00144CBF /* TicketCell.swift */; };
+		CC686ED2232F459100144CBF /* Ticket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC686ED1232F459100144CBF /* Ticket.swift */; };
 		CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69A08D22F699F500C9920E /* SeparatorView.swift */; };
 		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
 		CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */; };
@@ -131,13 +132,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CC31B5FE2328BA3100C4793F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CC18F543229AD4EB008FABEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CC31B5F82328BA3100C4793F;
-			remoteInfo = NotificationService;
-		};
 		CCFB7A22229FA6810082FEC6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CC18F543229AD4EB008FABEA /* Project object */;
@@ -154,7 +148,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				CC31B6002328BA3100C4793F /* NotificationService.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,7 +205,6 @@
 		CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingEvents.swift; sourceTree = "<group>"; };
 		CC2EE6F2230709450044C6ED /* OrgEventsTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventsTabStrip.swift; sourceTree = "<group>"; };
 		CC2F308D2324631A00AF5F8E /* OrgSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgSplitViewController.swift; sourceTree = "<group>"; };
-		CC31B5F92328BA3100C4793F /* NotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC31B5FB2328BA3100C4793F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		CC31B5FD2328BA3100C4793F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC3312812322121C00DC03D2 /* AboutPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPage.swift; sourceTree = "<group>"; };
@@ -242,6 +234,9 @@
 		CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinSortSettings.swift; sourceTree = "<group>"; };
 		CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSettingsCell.swift; sourceTree = "<group>"; };
 		CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSwitchCell.swift; sourceTree = "<group>"; };
+		CC686ECD232F40DD00144CBF /* TicketsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsOverview.swift; sourceTree = "<group>"; };
+		CC686ECF232F41AE00144CBF /* TicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCell.swift; sourceTree = "<group>"; };
+		CC686ED1232F459100144CBF /* Ticket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ticket.swift; sourceTree = "<group>"; };
 		CC69A08D22F699F500C9920E /* SeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorView.swift; sourceTree = "<group>"; };
 		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscribersCell.swift; path = "Eventure/Organization Account/Account Page/SubscribersCell.swift"; sourceTree = SOURCE_ROOT; };
@@ -307,13 +302,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CC31B5F62328BA3100C4793F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CCFB7A1A229FA6810082FEC6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -356,6 +344,7 @@
 				CC46772C2319956600A9FF18 /* Campus.swift */,
 				CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */,
 				CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */,
+				CC686ED1232F459100144CBF /* Ticket.swift */,
 			);
 			path = "Data structure";
 			sourceTree = "<group>";
@@ -399,7 +388,6 @@
 			children = (
 				CC18F54B229AD4EB008FABEA /* Eventure.app */,
 				CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */,
-				CC31B5F92328BA3100C4793F /* NotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -442,6 +430,8 @@
 				67AFF77B23121ACE00329626 /* AccountViewController.swift */,
 				CC3312812322121C00DC03D2 /* AboutPage.swift */,
 				CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */,
+				CC686ECD232F40DD00144CBF /* TicketsOverview.swift */,
+				CC686ECF232F41AE00144CBF /* TicketCell.swift */,
 				CCA6CF79231AF4D3005D8BB2 /* Checkin */,
 				CC23293123163B720097A915 /* UpdatePasswordPage.swift */,
 				CCE214242314ED0E00E9B137 /* GenericOneFieldPage.swift */,
@@ -690,29 +680,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				CC31B5FF2328BA3100C4793F /* PBXTargetDependency */,
 			);
 			name = Eventure;
 			productName = Eventure;
 			productReference = CC18F54B229AD4EB008FABEA /* Eventure.app */;
 			productType = "com.apple.product-type.application";
-		};
-		CC31B5F82328BA3100C4793F /* NotificationService */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CC31B6032328BA3100C4793F /* Build configuration list for PBXNativeTarget "NotificationService" */;
-			buildPhases = (
-				CC31B5F52328BA3100C4793F /* Sources */,
-				CC31B5F62328BA3100C4793F /* Frameworks */,
-				CC31B5F72328BA3100C4793F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = NotificationService;
-			productName = NotificationService;
-			productReference = CC31B5F92328BA3100C4793F /* NotificationService.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 		CCFB7A1C229FA6810082FEC6 /* EventureAPITests */ = {
 			isa = PBXNativeTarget;
@@ -759,9 +731,6 @@
 							};
 						};
 					};
-					CC31B5F82328BA3100C4793F = {
-						CreatedOnToolsVersion = 10.3;
-					};
 					CCFB7A1C229FA6810082FEC6 = {
 						CreatedOnToolsVersion = 10.2.1;
 						LastSwiftMigration = 1030;
@@ -784,7 +753,6 @@
 			targets = (
 				CC18F54A229AD4EB008FABEA /* Eventure */,
 				CCFB7A1C229FA6810082FEC6 /* EventureAPITests */,
-				CC31B5F82328BA3100C4793F /* NotificationService */,
 			);
 		};
 /* End PBXProject section */
@@ -797,13 +765,6 @@
 				CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */,
 				CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */,
 				CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CC31B5F72328BA3100C4793F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -848,13 +809,34 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Braintree/Braintree.framework",
+				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftCSVExport/SwiftCSVExport.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftLoggly/SwiftLoggly.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+				"${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
+				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Braintree.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftCSVExport.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftLoggly.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TOCropViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Eventure/Pods-Eventure-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6F5EBFF09B0E344434C85222 /* [CP] Embed Pods Frameworks */ = {
@@ -865,13 +847,20 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework",
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftyJSON.framework",
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D218590EFDC7D3125452E53A /* [CP] Check Pods Manifest.lock */ = {
@@ -922,6 +911,7 @@
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
 				CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */,
 				CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */,
+				CC686ED2232F459100144CBF /* Ticket.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
 				CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */,
 				DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */,
@@ -936,6 +926,7 @@
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */,
 				67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */,
+				CC686ED0232F41AE00144CBF /* TicketCell.swift in Sources */,
 				CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */,
 				CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */,
 				CC3A3ED423235F3000D16A8C /* EventProvider.swift in Sources */,
@@ -977,6 +968,7 @@
 				CC2F308E2324631A00AF5F8E /* OrgSplitViewController.swift in Sources */,
 				677A8CAC231DA132007CB04F /* InterestedEvents.swift in Sources */,
 				CC66A5C02329F530002DA953 /* SettingsSwitchCell.swift in Sources */,
+				CC686ECE232F40DD00144CBF /* TicketsOverview.swift in Sources */,
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
@@ -1016,14 +1008,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CC31B5F52328BA3100C4793F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				CC31B5FC2328BA3100C4793F /* NotificationService.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		CCFB7A19229FA6810082FEC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1037,11 +1021,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CC31B5FF2328BA3100C4793F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CC31B5F82328BA3100C4793F /* NotificationService */;
-			targetProxy = CC31B5FE2328BA3100C4793F /* PBXContainerItemProxy */;
-		};
 		CCFB7A23229FA6810082FEC6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CC18F54A229AD4EB008FABEA /* Eventure */;
@@ -1120,7 +1099,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1175,7 +1154,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1234,48 +1213,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Eventure/Objective-C/Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		CC31B6012328BA3100C4793F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = US8T2D45H8;
-				INFOPLIST_FILE = NotificationService/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure.NotificationService;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		CC31B6022328BA3100C4793F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = US8T2D45H8;
-				INFOPLIST_FILE = NotificationService/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure.NotificationService;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1344,15 +1281,6 @@
 			buildConfigurations = (
 				CC18F561229AD4EC008FABEA /* Debug */,
 				CC18F562229AD4EC008FABEA /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CC31B6032328BA3100C4793F /* Build configuration list for PBXNativeTarget "NotificationService" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CC31B6012328BA3100C4793F /* Debug */,
-				CC31B6022328BA3100C4793F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
