@@ -108,6 +108,7 @@ class CheckinOverview: UIViewController {
         
         orgTitle = {
             let label = UILabel()
+            label.numberOfLines = 3
             label.text = event.hostTitle
             label.font = .systemFont(ofSize: 22, weight: .medium)
             label.textColor = .init(white: 0.1, alpha: 1)

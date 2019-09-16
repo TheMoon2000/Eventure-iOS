@@ -31,6 +31,7 @@ class Event {
     var membersOnly = false
     var capacity = 0
     var secureCheckin = false
+    var requiresTicket = false
     var lastModified: Date?
     
     // Only used as a temporary storage
@@ -126,6 +127,7 @@ class Event {
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
         capacity = dictionary["Capacity"]?.int ?? 0
         secureCheckin = (dictionary["Strict"]?.int ?? 0) == 1
+        requiresTicket = (dictionary["Requires ticket"]?.int ?? 0) == 1
         
         if let int_raw = dictionary["Interested"]?.string {
             if let intArray = JSON(parseJSON: int_raw).arrayObject as? [Int] {
@@ -301,6 +303,7 @@ class Event {
         main.dictionaryObject?["Active"] = active ? 1 : 0
         main.dictionaryObject?["Capacity"] = capacity
         main.dictionaryObject?["Strict"] = secureCheckin
+        main.dictionaryObject?["Requires ticket"] = requiresTicket ? 1 : 0
         
         return main
     }

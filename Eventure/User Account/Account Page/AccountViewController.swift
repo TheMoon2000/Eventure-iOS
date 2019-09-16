@@ -117,6 +117,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             let checkedInPage = CheckedInEvents()
             checkedInPage.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(checkedInPage, animated: true)
+        case (2, 2):
+            let ticketsPage = TicketsOverview()
+            ticketsPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(ticketsPage, animated: true)
         case (3,0):
             let likeEventsPage = LikedEvents()
             likeEventsPage.hidesBottomBarWhenPushed = true
@@ -278,6 +282,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Events I Checked in"
+        case (2, 2):
+            cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "My Tickets"
         case (3, 0):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"
@@ -344,7 +351,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 2, 3, 2][section]
+        return [1, 2, 3, 3, 2][section]
     }
     
     //eliminate first section header
