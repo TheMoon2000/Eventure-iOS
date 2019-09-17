@@ -67,7 +67,7 @@ class DraftOtherInfoPage: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        draftPage.currentPage = 2
+        draftPage.currentPage = 3
     }
 
     // MARK: - Table view data source

@@ -76,42 +76,46 @@ class EventsCell: UITableViewCell {
         } ()
     }
     
-    func setTime(for event: Event) {
-        if let startTime = event.startTime, let endTime = event.endTime {
-            let startYear = YEAR_FORMATTER.string(from: startTime)
-            let endYear = YEAR_FORMATTER.string(from: endTime)
-            let currentYear = YEAR_FORMATTER.string(from: Date())
-            
-            let startDay = DAY_FORMATTER.string(from: startTime)
-            let endDay = DAY_FORMATTER.string(from: endTime)
-            let today = DAY_FORMATTER.string(from: Date())
-            
-            let df1 = DateFormatter()
-            df1.locale = Locale(identifier: "en_US")
-            if startDay == today {
-                df1.dateFormat = "'Today' h:mm a"
-            } else if startYear == currentYear {
-                df1.dateFormat = "MM-dd h:mm a"
-            } else {
-                df1.dateFormat = "y-MM-dd h:mm a"
-            }
-            
-            let df2 = DateFormatter()
-            df2.locale = Locale(identifier: "en_US")
-            if startDay == endDay {
-                df2.dateFormat = "h:mm a"
-            } else if endDay == today {
-                df2.dateFormat = "today h:mm a"
-            } else if startYear == endYear {
-                df2.dateFormat = "MM-dd h:mm a"
-            } else {
-                df2.dateFormat = "y-MM-dd h:mm a"
-            }
-            
-            dateLabel.text = df1.string(from: startTime) + " ~ " + df2.string(from: endTime)
-        } else {
+    func setDisplayedDate(start: Date?, end: Date?) {
+        guard let startTime = start, let endTime = end else {
             dateLabel.text = "Unspecified"
+            return
         }
+        let startYear = YEAR_FORMATTER.string(from: startTime)
+        let endYear = YEAR_FORMATTER.string(from: endTime)
+        let currentYear = YEAR_FORMATTER.string(from: Date())
+        
+        let startDay = DAY_FORMATTER.string(from: startTime)
+        let endDay = DAY_FORMATTER.string(from: endTime)
+        let today = DAY_FORMATTER.string(from: Date())
+        
+        let df1 = DateFormatter()
+        df1.locale = Locale(identifier: "en_US")
+        if startDay == today {
+            df1.dateFormat = "'Today' h:mm a"
+        } else if startYear == currentYear {
+            df1.dateFormat = "MM-dd h:mm a"
+        } else {
+            df1.dateFormat = "y-MM-dd h:mm a"
+        }
+        
+        let df2 = DateFormatter()
+        df2.locale = Locale(identifier: "en_US")
+        if startDay == endDay {
+            df2.dateFormat = "h:mm a"
+        } else if endDay == today {
+            df2.dateFormat = "today h:mm a"
+        } else if startYear == endYear {
+            df2.dateFormat = "MM-dd h:mm a"
+        } else {
+            df2.dateFormat = "y-MM-dd h:mm a"
+        }
+        
+        dateLabel.text = df1.string(from: startTime) + " ~ " + df2.string(from: endTime)
+    }
+    
+    func setTime(for event: Event) {
+        setDisplayedDate(start: event.startTime, end: event.endTime)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

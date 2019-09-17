@@ -25,8 +25,8 @@ class DatePickerTopCell: UITableViewCell {
     }()
 
     private var bgView: UIView!
-    private var leftLabel: UILabel!
-    private var indicator: UIView!
+    private(set) var leftLabel: UILabel!
+    private(set) var indicator: UIView!
     private(set) var rightLabel: UILabel!
     
     var displayedDate = Date() {
@@ -107,10 +107,10 @@ class DatePickerTopCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: leftLabel.rightAnchor, constant: 8).isActive = true
             label.rightAnchor.constraint(equalTo: indicator.leftAnchor, constant: -5).isActive = true
             label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
-            let t = label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 16)
+            let t = label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 17)
             t.priority = .defaultLow
             t.isActive = true
-            let b = label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -16)
+            let b = label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -17)
             b.priority = .defaultLow
             b.isActive = true
             

@@ -21,9 +21,14 @@ class Ticket {
     var hostName: String
     var hostID: String
     var paymentType: PaymentType = .none
-    var quantity: Double
+    var quantity: Int
+    var paymentAmount: Double
+    var admissionType: String
     var eventDate: Date?
+    var eventEndDate: Date?
     var transactionDate: Date?
+    var activated: Bool
+    var notes: String
     
     let hasLogo: Bool
     var orgLogo: UIImage?
@@ -38,10 +43,18 @@ class Ticket {
         hostName = dictionary["Organization title"]?.string ?? ""
         hostID = dictionary["Organization"]?.string ?? ""
         hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
-        quantity = dictionary["Quantity"]?.double ?? 0.0
+        admissionType = dictionary["Admission type"]?.string ?? "Unspecified"
+        quantity = dictionary["Quantity"]?.int ?? 1
+        activated = (dictionary["Activated"]?.int ?? 0) == 1
+        paymentAmount = dictionary["Payment amount"]?.double ?? 0.0
+        notes = dictionary["Notes"]?.string ?? ""
         
         if let eventDateString = dictionary["Start time"]?.string {
             eventDate = DATE_FORMATTER.date(from: eventDateString)
+        }
+        
+        if let endString = dictionary["End time"]?.string {
+            eventEndDate = DATE_FORMATTER.date(from: endString)
         }
         
         if let dateString = dictionary["Transaction date"]?.string {
@@ -64,10 +77,17 @@ class Ticket {
         main.dictionaryObject?["Organization title"] = hostName
         main.dictionaryObject?["Organization"] = hostID
         main.dictionaryObject?["Quantity"] = quantity
+        main.dictionaryObject?["Payment amount"] = paymentAmount
         main.dictionaryObject?["Payment type"] = paymentType.rawValue
+        main.dictionaryObject?["Activated"] = activated ? 1 : 0
+        main.dictionaryObject?["Has logo"] = hasLogo ? 1 : 0
         
         if eventDate != nil {
             main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: eventDate!)
+        }
+        
+        if eventEndDate != nil {
+            main.dictionaryObject?["End time"] = DATE_FORMATTER.string(from: eventEndDate!)
         }
         
         if transactionDate != nil {

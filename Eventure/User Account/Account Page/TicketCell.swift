@@ -19,6 +19,9 @@ class TicketCell: UITableViewCell {
     private var dateValue: UILabel!
     private var paymentTypeLabel: UILabel!
     private var paymentTypeValue: UILabel!
+    private var countLabel: UILabel!
+    private var countValue: UILabel!
+    
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -64,7 +67,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 3
             label.font = .systemFont(ofSize: 15)
-            label.textColor = .darkGray
+            label.textColor = UIColor(white: 0.4, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -160,6 +163,36 @@ class TicketCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: paymentTypeLabel.rightAnchor, constant: 10).isActive = true
             label.rightAnchor.constraint(equalTo: dateValue.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: paymentTypeLabel.topAnchor).isActive = true
+            
+            return label
+        }()
+        
+        countLabel = {
+            let label = UILabel()
+            label.textColor = .gray
+            label.text = "Party size: "
+            label.font = .systemFont(ofSize: 16)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            bgView.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: orgLogo.leftAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: paymentTypeValue.bottomAnchor, constant: 10).isActive = true
+            
+            return label
+        }()
+        
+        countValue = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.numberOfLines = 2
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 16)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            bgView.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: countLabel.rightAnchor, constant: 10).isActive = true
+            label.rightAnchor.constraint(equalTo: dateValue.rightAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: countLabel.topAnchor).isActive = true
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
             
             return label
@@ -180,6 +213,7 @@ class TicketCell: UITableViewCell {
             dateValue.text = "Unknown"
         }
         paymentTypeValue.text = ticket.paymentType.rawValue
+        countValue.text = ticket.quantity == 1 ? "1 Person" : "\(ticket.quantity) People"
     }
     
     

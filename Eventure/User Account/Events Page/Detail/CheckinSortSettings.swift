@@ -118,12 +118,14 @@ class CheckinSortSettings: UITableViewController {
             tableView.beginUpdates()
             tableView.endUpdates()
         case [0, 1]:
+            UISelectionFeedbackGenerator().selectionChanged()
             checkinTableVC.sortMethod = .date
             (contentCells[1] as! SortSettingsCell).checked = true
             (contentCells[2] as! SortSettingsCell).checked = false
             (contentCells[0] as! SortTitleCell).rightLabel.text = "Check-in time"
             edited = true
         case [0, 2]:
+            UISelectionFeedbackGenerator().selectionChanged()
             checkinTableVC.sortMethod = .name
             (contentCells[1] as! SortSettingsCell).checked = false
             (contentCells[2] as! SortSettingsCell).checked = true

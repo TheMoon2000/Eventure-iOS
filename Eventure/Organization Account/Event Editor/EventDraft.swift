@@ -23,7 +23,8 @@ class EventDraft: UIPageViewController {
             navigationItem.title = [
                 "1. What's Happening?",
                 "2. When and Where?",
-                "3. Other Information"
+                "3. Ticket Information",
+                "4. Other Information"
             ][currentPage]
             
             let percentage = Float(currentPage + 1) / Float(pages.count)
@@ -82,6 +83,10 @@ class EventDraft: UIPageViewController {
         let tlPage = DraftTimeLocationPage()
         tlPage.draftPage = self
         pages.append(tlPage)
+        
+        let tkPage = DraftTicketsPage()
+        tkPage.draftPage = self
+        pages.append(tkPage)
         
         let otherPage = DraftOtherInfoPage()
         otherPage.draftPage = self

@@ -34,6 +34,9 @@ class Event {
     var requiresTicket = false
     var lastModified: Date?
     
+    /// A dictionary containing all the possible ticket types.
+    var admissionTypes = [String : [String: Any]]()
+    
     // Only used as a temporary storage
     var hostInfo: Organization?
     
@@ -121,6 +124,10 @@ class Event {
             if let tagsArray = JSON(parseJSON: tags_raw).arrayObject as? [String] {
                 tags = Set(tagsArray)
             }
+        }
+        
+        if let admissionTypes_raw = dictionary["Ticket types"]?.string {
+            admissionTypes = JSON(parseJSON: admissionTypes_raw).dictionaryObject as? [String : [String: Any]] ?? [:]
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
@@ -300,6 +307,7 @@ class Event {
         main.dictionaryObject?["Capacity"] = capacity
         main.dictionaryObject?["Strict"] = secureCheckin
         main.dictionaryObject?["Requires ticket"] = requiresTicket ? 1 : 0
+        main.dictionaryObject?["Ticket types"] = JSON(admissionTypes).description
         
         return main
     }

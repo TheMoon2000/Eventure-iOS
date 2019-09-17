@@ -286,7 +286,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "My Tickets"
             if User.current != nil {
-                cell.valueLabel.text = String(Ticket.userTickets.count)
+                cell.valueLabel.text = String(Ticket.userTickets.count) + " Total"
             }
         case (3, 0):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
