@@ -50,7 +50,7 @@ let LINE_TINT = UIColor.init(white: 0.91, alpha: 1)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
-let FATAL_COLOR = UIColor(red: 224/255, green: 33/255, blue: 0, alpha: 1)
+let FATAL_COLOR = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
 let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 let INTEREST_COLOR = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
@@ -379,6 +379,29 @@ extension UIView {
     }
 }
 
+func generateQRCode(from string: String) -> UIImage? {
+    let data = string.data(using: String.Encoding.ascii)
+    
+    guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
+        print("WARNING: Unable to find QR Generator filter")
+        return nil
+    }
+    
+    filter.setValue(data, forKey: "inputMessage")
+    let transform = CGAffineTransform(scaleX: 10, y: 10)
+    
+    guard let output = filter.outputImage?.transformed(by: transform) else {
+        return nil
+    }
+    
+    let context = CIContext()
+    guard let cg = context.createCGImage(output, from: output.extent) else {
+        return UIImage(ciImage: output)
+    }
+    
+    return UIImage(cgImage: cg)
+}
+
 
 extension UITextField {
     func doInset() {
@@ -524,7 +547,19 @@ let CACHES = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask
 // MARK: - Standard alerts
 
 func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
-    let alert = UIAlertController(title: "Expected Error", message: "Oops, looks like the feature you tried to access is unavailable or is currently under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
+    let alert = UIAlertController(title: "Unexpected error", message: "Oops, looks like the feature you tried to access is unavailable or is currently under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+        action in
+        DispatchQueue.main.async {
+            handler?()
+        }
+    }))
+    
+    vc.present(alert, animated: true, completion: nil)
+}
+
+func genericError(vc: UIViewController, handler: (() -> ())? = nil) {
+    let alert = UIAlertController(title: "Unexpected error", message: "An unknown error has occurred.", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
         action in
         DispatchQueue.main.async {

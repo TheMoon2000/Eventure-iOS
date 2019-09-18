@@ -265,7 +265,9 @@ class EventDraft: UIPageViewController {
             "public": "1",
             "tags": draft.tags.description,
             "capacity": String(draft.capacity),
-            "strict": draft.secureCheckin ? "1" : "0"
+            "strict": draft.secureCheckin ? "1" : "0",
+            "requiresTicket": draft.requiresTicket ? "1" : "0",
+            "ticketTypes": draft.admissionTypesEncoded
         ]
         
         var fileData = [String : Data]()

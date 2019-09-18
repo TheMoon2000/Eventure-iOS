@@ -94,29 +94,6 @@ class EventCheckinOverview: UIViewController {
     }
     
     
-    func generateQRCode(from string: String) -> UIImage? {
-        let data = string.data(using: String.Encoding.ascii)
-        
-        guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
-            print("WARNING: Unable to find QR Generator filter")
-            return nil
-        }
-        
-        filter.setValue(data, forKey: "inputMessage")
-        let transform = CGAffineTransform(scaleX: 10, y: 10)
-        
-        guard let output = filter.outputImage?.transformed(by: transform) else {
-            return nil
-        }
-
-        let context = CIContext()
-        guard let cg = context.createCGImage(output, from: output.extent) else {
-            return UIImage(ciImage: output)
-        }
-        
-        return UIImage(cgImage: cg)
-    }
-    
     @objc private func saveImage(_ gesture: UIGestureRecognizer) {
         
         guard qrCode.image != nil else {

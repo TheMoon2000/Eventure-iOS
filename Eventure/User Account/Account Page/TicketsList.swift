@@ -182,7 +182,7 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
                 }
                 self.tickets = tmp.filter { self.filter == nil || self.filter!($0) }
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = tmp.isEmpty ? self.emptyText : ""
+                    self.emptyLabel.text = self.tickets.isEmpty ? self.emptyText : ""
                     self.ticketsTable.reloadData()
                 }
                 DispatchQueue.global(qos: .default).async {
@@ -243,6 +243,7 @@ extension TicketsList: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ticket", for: indexPath) as! TicketCell
         
         let ticket = tickets[indexPath.row]
+        ticket.fetchEventImage(nil)
         
         cell.setup(ticket: ticket)
         
@@ -262,5 +263,8 @@ extension TicketsList: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let vc = TicketDetails(ticket: tickets[indexPath.row])
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

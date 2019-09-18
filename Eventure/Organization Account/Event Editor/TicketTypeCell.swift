@@ -11,8 +11,9 @@ import UIKit
 class TicketTypeCell: UITableViewCell {
     
     private var bgView: UIView!
-    private var titleLabel: UILabel!
-    private var subtitleLabel: UILabel!
+    private(set) var titleLabel: UILabel!
+    private(set) var subtitleLabel: UILabel!
+    private(set) var valueLabel: UILabel!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,7 +42,7 @@ class TicketTypeCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 10
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .systemFont(ofSize: 18, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -55,23 +56,33 @@ class TicketTypeCell: UITableViewCell {
         subtitleLabel = {
             let label = UILabel()
             label.textColor = .gray
+            label.text = "Price per ticket:"
+            label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: titleLabel.leftAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8).isActive = true
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
+            
+            return label
+        }()
+        
+        valueLabel = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.textColor = .darkGray
+            label.font = .systemFont(ofSize: 16)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: subtitleLabel.topAnchor).isActive = true
             
             return label
         }()
     }
     
-    func setup(typeName: String, price: Double) {
-        titleLabel.text = typeName
-        subtitleLabel.text = String(format: "$%.02f", price)
-    }
-
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         

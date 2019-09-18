@@ -32,6 +32,8 @@ class Ticket {
     
     let hasLogo: Bool
     var orgLogo: UIImage?
+    var eventCover: UIImage?
+    var associatedEvent: Event?
     
     required init(ticketInfo: JSON) {
         let dictionary = ticketInfo.dictionaryValue
@@ -95,6 +97,73 @@ class Ticket {
         }
         
         return main
+    }
+    
+    func fetchEventImage(_ handler: ((Ticket) -> ())?) {
+        if !hasLogo { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEventCover",
+                           parameters: ["uuid": eventID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.eventCover = UIImage(data: data!)
+            DispatchQueue.main.async {
+                handler?(self)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    func getEvent(handler: ((Bool) -> ())?) {
+        
+        guard associatedEvent == nil else {
+            handler?(true)
+            return
+        }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEvent",
+                           parameters: ["uuid": eventID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+            
+            if let eventDictionary = try? JSON(data: data!) {
+                let event = Event(eventInfo: eventDictionary)
+                self.associatedEvent = event
+                event.eventVisual = self.eventCover
+                
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+                
+            } else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+            }
+        }
+        
+        task.resume()
     }
     
     func save() {

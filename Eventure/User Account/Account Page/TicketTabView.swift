@@ -17,7 +17,7 @@ class TicketTabView: ButtonBarPagerTabStripViewController {
         settings.style.selectedBarBackgroundColor = MAIN_TINT
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0
-        settings.style.buttonBarMinimumLineSpacing = 0
+        settings.style.buttonBarItemLeftRightMargin = 20
         settings.style.buttonBarItemTitleColor = MAIN_TINT
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
@@ -34,15 +34,20 @@ class TicketTabView: ButtonBarPagerTabStripViewController {
     
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         
+        let all = TicketsList()
+        all.title = "All Tickets"
+        all.emptyText = "No tickets"
+        
         let new = TicketsList()
         new.title = "Available"
         new.emptyText = "No available tickets"
         new.filter = { !$0.activated }
+        
         let used = TicketsList()
         used.title = "Used / Expired"
         used.emptyText = "No used / expired tickets"
         used.filter = { $0.activated }
         
-        return [new, used]
+        return [all, new, used]
     }
 }

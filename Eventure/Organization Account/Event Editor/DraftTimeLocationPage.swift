@@ -102,7 +102,7 @@ class DraftTimeLocationPage: UITableViewController {
         
         
         let locationCell = DraftLocationCell()
-        locationCell.locationText.insertText(draftPage.draft.location)
+        locationCell.valueText.insertText(draftPage.draft.location)
         locationCell.textChangeHandler = { [weak self] textView in
             UIView.performWithoutAnimation {
                 self?.tableView.beginUpdates()

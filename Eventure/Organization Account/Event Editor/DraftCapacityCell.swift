@@ -12,17 +12,18 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
 
     private var bgView: UIView!
     private var leftLabel: UILabel!
-    private var capacity: UITextField!
+    private(set) var valueField: UITextField!
     
     var changeHandler: ((UITextField) -> ())?
+    var returnHandler: ((UITextField) -> ())?
     
-    required init() {
+    required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
         backgroundColor = EventDraft.backgroundColor
         selectionStyle = .none
         
-        let h = heightAnchor.constraint(equalToConstant: 70)
+        let h = heightAnchor.constraint(equalToConstant: 66)
         h.priority = .defaultHigh
         h.isActive = true
         
@@ -35,9 +36,9 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 6).isActive = true
             
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -8)
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -6)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
@@ -46,7 +47,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
         
         leftLabel = {
             let label = UILabel()
-            label.text = "Capacity (0 for unlimited):"
+            label.text = title
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -60,7 +61,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             return label
         }()
         
-        capacity = {
+        valueField = {
             let textfield = UITextField()
             textfield.textAlignment = .right
             textfield.keyboardType = .numberPad
@@ -75,14 +76,18 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             textfield.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             textfield.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
-            textfield.addTarget(self, action: #selector(capacityChanged), for: .editingChanged)
+            textfield.addTarget(self, action: #selector(valueChanged), for: .editingChanged)
             
             return textfield
         }()
     }
 
-    @objc private func capacityChanged() {
-        changeHandler?(capacity)
+    @objc private func valueChanged() {
+        changeHandler?(valueField)
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        returnHandler?(textField)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

@@ -23,8 +23,8 @@ class DraftOtherInfoPage: UITableViewController {
         tableView.backgroundColor = EventDraft.backgroundColor
         tableView.keyboardDismissMode = .interactive
         tableView.separatorStyle = .none
-        tableView.contentInset.top = 10
-        tableView.contentInset.bottom = 10
+        tableView.contentInset.top = 8
+        tableView.contentInset.bottom = 8
         tableView.tableFooterView = UIView()
                 
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
@@ -32,7 +32,7 @@ class DraftOtherInfoPage: UITableViewController {
         tagPickerCell.reloadTagPrompt(tags: draftPage.draft.tags)
         contentCells.append(tagPickerCell)
         
-        let capacityCell = DraftCapacityCell()
+        let capacityCell = DraftCapacityCell(title: "Capacity (0 for unlimited):")
         capacityCell.changeHandler = { [weak self] textfield in
             self?.draftPage.draft.capacity = Int(textfield.text!) ?? 0
         }
@@ -40,7 +40,7 @@ class DraftOtherInfoPage: UITableViewController {
         
         let secureCell = SettingsSwitchCell()
         secureCell.backgroundColor = EventDraft.backgroundColor
-        secureCell.enabled = false
+        secureCell.enabled = draftPage.draft.secureCheckin
         secureCell.titleLabel.text = "Secure check-in"
         secureCell.switchHandler = { on in
             self.draftPage.draft.secureCheckin = on

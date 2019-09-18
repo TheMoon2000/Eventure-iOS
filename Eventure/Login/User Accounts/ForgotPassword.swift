@@ -244,9 +244,7 @@ class ForgotPassword: UITableViewController {
             present(alert, animated: true, completion: nil)
         } else {
             print("Unidentified string: \(returnString)")
-            let alert = UIAlertController(title: "Error", message: "An unknown error has occurred.", preferredStyle: .alert)
-            alert.addAction(.init(title: "Dismiss", style: .default, handler: nil))
-            present(alert, animated: true, completion: nil)
+            genericError(vc: self)
         }
     }
     

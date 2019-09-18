@@ -30,6 +30,11 @@ class DraftTicketsPage: UITableViewController {
         tableView.contentInset.bottom = 8
 
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tableView.reloadData()
+    }
 
     // MARK: - Table view data source
     
@@ -50,9 +55,10 @@ class DraftTicketsPage: UITableViewController {
             let cell = SettingsSwitchCell()
             cell.backgroundColor = EventDraft.backgroundColor
             cell.titleLabel.text = "Enable ticketing"
-            cell.enabled = false
+            cell.enabled = draftPage.draft.requiresTicket
             cell.switchHandler = { on in
                 self.draftPage.draft.requiresTicket = on
+                self.draftPage.edited = true
                 
                 if let bottom = tableView.cellForRow(at: [0, 1]) as? DatePickerTopCell {
                     UIView.animate(withDuration: 0.2) {
@@ -66,9 +72,10 @@ class DraftTicketsPage: UITableViewController {
             }
             return cell
         } else if indexPath.row == 1 {
-            let cell = DatePickerTopCell(title: "Manage ticket...")
+            let cell = DatePickerTopCell(title: "Manage tickets...")
             let typesCount = draftPage.draft.admissionTypes.count
-            cell.rightLabel.text = typesCount == 0 ? "Not set" : "\(typesCount) \(typesCount) defined"
+            let typesNoun = typesCount == 1 ? "type" : "types"
+            cell.rightLabel.text = typesCount == 0 ? "Not set" : "\(typesCount) \(typesNoun) defined"
             if !draftPage.draft.requiresTicket {
                 [cell.leftLabel, cell.rightLabel, cell.indicator].forEach { $0?.alpha = 0.0 }
             }
@@ -86,7 +93,7 @@ class DraftTicketsPage: UITableViewController {
             alert.addAction(.init(title: "Close", style: .cancel))
             present(alert, animated: true, completion: nil)
         } else if indexPath.row == 1 {
-            let vc = TicketTypesEditor(event: draftPage.draft)
+            let vc = TicketTypes(draftPage: draftPage)
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
