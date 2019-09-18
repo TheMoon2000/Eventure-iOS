@@ -34,7 +34,7 @@ class Event {
     var requiresTicket = false
     var lastModified: Date?
     
-    /// A dictionary containing all the possible ticket types.
+    /// An array containing all the ticket types for the event.
     var admissionTypes = [AdmissionType]()
     var admissionTypesEncoded: String {
         let list = admissionTypes.map { $0.encodedJSON }
