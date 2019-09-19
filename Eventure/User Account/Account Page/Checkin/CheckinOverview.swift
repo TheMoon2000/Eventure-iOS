@@ -208,6 +208,7 @@ class CheckinOverview: UIViewController {
             check.format(type: .square)
             check.valueChanged = {
                 (_ : Bool)->Void in
+                User.current?.syncInterested(interested: check.isChecked, for: self.event, completion: nil)
                 if(!self.canCheckInNow) {
                     if (check.isChecked) {
                         self.checkboxLabel.text = "Thanks for your interest. See you soon!"
@@ -258,6 +259,29 @@ class CheckinOverview: UIViewController {
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
+        if !canCheckInNow {
+            checkbox.isChecked = User.current?.interestedEvents.contains(event.uuid) ?? false
+            if (checkbox.isChecked) {
+                checkboxLabel.text = "Thanks for your interest. See you soon!"
+            } else {
+                checkboxLabel.text = "Interested in this event? Let us know!"
+            }
+            
+            let timer = Timer(fire: event.startTime!.addingTimeInterval(Double(-event.checkinTime)), interval: 0, repeats: false) { [weak self] timer in
+                self?.refreshUI()
+                self?.checkbox.isChecked = true
+                self?.checkboxLabel.attributedText = "Allow **\(self?.event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
+                timer.invalidate()
+            }
+            RunLoop.main.add(timer, forMode: .common)
+        }
+        
+        refreshUI()
+        loadLogoImage()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         if !canCheckInNow {
             checkbox.isChecked = User.current?.interestedEvents.contains(event.uuid) ?? false
             if (checkbox.isChecked) {
