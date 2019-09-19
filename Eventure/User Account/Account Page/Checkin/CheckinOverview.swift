@@ -206,6 +206,24 @@ class CheckinOverview: UIViewController {
             let check = UICheckbox()
             check.isChecked = true
             check.format(type: .square)
+            check.valueChanged = {
+                (_ : Bool)->Void in
+                if(!self.canCheckInNow) {
+                    if (check.isChecked) {
+                        self.checkboxLabel.text = "Thanks for your interest. See you soon!"
+                        if !User.current!.interestedEvents.contains(self.event.uuid) {
+                            User.current?.interestedEvents.insert(self.event.uuid)
+                            self.event.interested.insert(User.current!.uuid)
+                        }
+                    } else {
+                        self.checkboxLabel.text = "Interested in this event? Let us know!"
+                        if User.current!.interestedEvents.contains(self.event.uuid) {
+                            User.current?.interestedEvents.remove(self.event.uuid)
+                            self.event.interested.remove(User.current!.uuid)
+                        }
+                    }
+                }
+            }
             check.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(check)
             
@@ -241,12 +259,17 @@ class CheckinOverview: UIViewController {
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         if !canCheckInNow {
-            checkbox.isHidden = true
-            checkboxLabel.isHidden = true
+            checkbox.isChecked = User.current?.interestedEvents.contains(event.uuid) ?? false
+            if (checkbox.isChecked) {
+                checkboxLabel.text = "Thanks for your interest. See you soon!"
+            } else {
+                checkboxLabel.text = "Interested in this event? Let us know!"
+            }
+            
             let timer = Timer(fire: event.startTime!.addingTimeInterval(Double(-event.checkinTime)), interval: 0, repeats: false) { [weak self] timer in
                 self?.refreshUI()
-                self?.checkbox.isHidden = false
-                self?.checkboxLabel.isHidden = false
+                self?.checkbox.isChecked = true
+                self?.checkboxLabel.attributedText = "Allow **\(self?.event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
                 timer.invalidate()
             }
             RunLoop.main.add(timer, forMode: .common)
@@ -261,6 +284,7 @@ class CheckinOverview: UIViewController {
     }
     
     func refreshUI() {
+        print(checkbox.isChecked)
         if event.capacity != 0 {
             self.captionLabel.text = "\(sheetInfo!.currentOccupied) / \(event.capacity) spots currently filled"
         }
