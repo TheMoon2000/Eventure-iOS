@@ -1,6 +1,0 @@
-framework module SwiftyJSON {
-  umbrella header "SwiftyJSON-iOS12.2-umbrella.h"
-
-  export *
-  module * { export * }
-}

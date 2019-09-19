@@ -20,8 +20,8 @@ import typealias CommonCrypto.CC_LONG
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "__replace__"
-let PASSWORD = "__replace__"
+let USERNAME = "Eventure 1.0.1"
+let PASSWORD = "c5501fa09934f96a48fca98478a9729c"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
