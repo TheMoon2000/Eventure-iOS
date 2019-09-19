@@ -18,9 +18,7 @@ class TagPickerView: UIViewController {
     private var subtitleLabel: UILabel!
     private var bottomBanner: UIVisualEffectView!
     private var continueButton: UIButton!
-    
-    var spinner: UIActivityIndicatorView!
-    var spinnerLabel: UILabel!
+    private(set) var loadingBG: UIView!
     
     var customContinueMethod: ((TagPickerView) -> ())?
     var customTitle: String?
@@ -125,7 +123,6 @@ class TagPickerView: UIViewController {
             return banner
         }()
         
-
         tagPicker = {
             let picker = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             picker.backgroundColor = .clear
@@ -148,34 +145,9 @@ class TagPickerView: UIViewController {
             
             return picker
         }()
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.startAnimating()
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: -5).isActive = true
-
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Fetching tags..."
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: topBanner.frame.height / 2).isActive = true
         
         bottomBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -218,6 +190,8 @@ class TagPickerView: UIViewController {
 
     private func loadTags() {
         
+        loadingBG.isHidden = false
+        
         self.continueButton.backgroundColor = MAIN_DISABLED
         self.continueButton.isUserInteractionEnabled = false
         
@@ -248,8 +222,7 @@ class TagPickerView: UIViewController {
                 } else {
                     self.tags = json?["tags"]!.arrayObject as! [String]
                     DispatchQueue.main.async {
-                        self.spinner.stopAnimating()
-                        self.spinnerLabel.isHidden = true
+                        self.loadingBG.isHidden = true
                         self.tagPicker.reloadSections(IndexSet(arrayLiteral: 0))
                         self.updateUI()
                     }
@@ -372,10 +345,10 @@ extension TagPickerView: UICollectionViewDelegateFlowLayout {
     
     var tagWidth: CGFloat {
         if usableWidth < 150 {
-            return usableWidth - 8
+            return usableWidth - 5
         } else {
             let numFit = floor(usableWidth / 120)
-            return ((usableWidth - 4) / numFit) - 4
+            return ((usableWidth - 2.5) / numFit) - 2.5
         }
     }
     

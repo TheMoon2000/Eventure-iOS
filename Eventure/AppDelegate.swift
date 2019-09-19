@@ -199,6 +199,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let alert = UIAlertController(title: title, message: body, preferredStyle: .alert)
             alert.addAction(.init(title: "Dismiss", style: .cancel))
             UIApplication.topMostViewController?.present(alert, animated: true)
+        case .ticketActivation:
+            break
         }
     }
     

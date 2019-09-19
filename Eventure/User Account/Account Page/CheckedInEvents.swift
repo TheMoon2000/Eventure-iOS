@@ -15,7 +15,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     private var myTableView: UITableView!
     
-    private var loadingBG: UIVisualEffectView!
+    private var loadingBG: UIView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
 
@@ -73,48 +73,9 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             return label
         }()
         
-        loadingBG = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-            v.layer.cornerRadius = 12
-            v.layer.masksToBounds = true
-            v.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(v)
-            
-            v.widthAnchor.constraint(equalToConstant: 110).isActive = true
-            v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
-            v.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            v.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-            
-            return v
-        }()
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .gray
-            spinner.startAnimating()
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            loadingBG.contentView.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor, constant: -10).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Loading..."
-            label.textAlignment = .center
-            label.font = .systemFont(ofSize: 15)
-            label.textColor = .gray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            loadingBG.contentView.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8).isActive = true
-            
-            return label
-        }()
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: myTableView.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: myTableView.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         retrieveEvents()
     }

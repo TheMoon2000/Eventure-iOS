@@ -76,7 +76,7 @@ class AddTicket: UITableViewController {
         ]
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/ActivateTicket",
+                           API_Name: "events/RedeemTicket",
                            parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()

@@ -137,31 +137,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             tagPicker.customButtonTitle = "Done"
             tagPicker.customContinueMethod = { tagPicker in
                 
-                tagPicker.spinner.removeFromSuperview()
-                
-                let loadingView: UIView = UIView()
-                loadingView.frame = CGRect(x:0, y:0, width:110, height:110)
-                loadingView.center = tagPicker.view.center
-                loadingView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-                loadingView.clipsToBounds = true
-                loadingView.layer.cornerRadius = 10
-                
-                let label = UILabel()
-                label.text = "Updating..."
-                label.font = .systemFont(ofSize: 17, weight: .medium)
-                label.textColor = .white
-                label.translatesAutoresizingMaskIntoConstraints = false
-                loadingView.addSubview(label)
-                label.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
-                label.topAnchor.constraint(equalTo: loadingView.topAnchor,constant:80).isActive = true
-                
-                loadingView.addSubview(tagPicker.spinner)
-                tagPicker.view.addSubview(loadingView)
-                
-                tagPicker.spinner.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
-                tagPicker.spinner.centerYAnchor.constraint(equalTo: loadingView.centerYAnchor, constant: -5).isActive = true
-                
-                tagPicker.spinner.startAnimating()
+                tagPicker.loadingBG.isHidden = false
                 
                 User.current!.tags = tagPicker.selectedTags
                 
@@ -180,7 +156,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                     data, response, error in
                     
                     DispatchQueue.main.async {
-                        self.navigationController?.popViewController(animated: true)
+                        tagPicker.loadingBG.isHidden = true
                     }
                     
                     guard error == nil else {
@@ -195,10 +171,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                     case INTERNAL_ERROR:
                         serverMaintenanceError(vc: self)
                     case "success":
-                        print("successfully updated tags")
                         User.current!.tags = Set(tagsArray)
+                        self.navigationController?.popViewController(animated: true)
                     default:
-                        break
+                        internetUnavailableError(vc: self)
                     }
                 }
                 

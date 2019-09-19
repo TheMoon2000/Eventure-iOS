@@ -15,6 +15,7 @@ class TicketQRCell: UITableViewCell {
     private var quantity: UILabel!
     private var ticketInfo: Ticket!
     private var qrCode: UIImageView!
+    private var activationLabel: UILabel!
     
     required init(ticket: Ticket) {
         super.init(style: .default, reuseIdentifier: nil)
@@ -71,9 +72,29 @@ class TicketQRCell: UITableViewCell {
             iv.heightAnchor.constraint(equalToConstant: 200).isActive = true
             iv.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
             iv.topAnchor.constraint(equalTo: quantity.bottomAnchor, constant: 20).isActive = true
-            iv.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30).isActive = true
+            iv.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -32).isActive = true
             
             return iv
+        }()
+        
+        activationLabel = {
+            let label = UILabel()
+            label.numberOfLines = 5
+            if let aDate = ticket.activationDate {
+                label.attributedText = "Activated on \(aDate.readableString())".attributedText(style: COMPACT_STYLE)
+                qrCode.alpha = 0.09
+            }
+            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.textAlignment = .center
+            label.textColor = .init(white: 0.1, alpha: 1)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: qrCode.leftAnchor, constant: -10).isActive = true
+            label.rightAnchor.constraint(equalTo: qrCode.rightAnchor, constant: 10).isActive = true
+            label.centerYAnchor.constraint(equalTo: qrCode.centerYAnchor).isActive = true
+            
+            return label
         }()
     }
     

@@ -22,12 +22,13 @@ class Ticket {
     var hostID: String
     var paymentType: PaymentType = .none
     var quantity: Int
+    var ticketPrice: Double
     var paymentAmount: Double
     var admissionType: String
     var eventDate: Date?
     var eventEndDate: Date?
     var transactionDate: Date?
-    var activated: Bool
+    var activationDate: Date?
     var notes: String
     
     let hasLogo: Bool
@@ -47,7 +48,7 @@ class Ticket {
         hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
         admissionType = dictionary["Admission type"]?.string ?? "Unspecified"
         quantity = dictionary["Quantity"]?.int ?? 1
-        activated = (dictionary["Activated"]?.int ?? 0) == 1
+        ticketPrice = dictionary["Ticket price"]?.double ?? 0.0
         paymentAmount = dictionary["Payment amount"]?.double ?? 0.0
         notes = dictionary["Notes"]?.string ?? ""
         
@@ -61,6 +62,10 @@ class Ticket {
         
         if let dateString = dictionary["Transaction date"]?.string {
             transactionDate = DATE_FORMATTER.date(from: dateString)
+        }
+        
+        if let activationDateString = dictionary["Activation date"]?.string {
+            activationDate = DATE_FORMATTER.date(from: activationDateString)
         }
         
         if let paymentRaw = dictionary["Payment type"]?.string {
@@ -81,8 +86,12 @@ class Ticket {
         main.dictionaryObject?["Quantity"] = quantity
         main.dictionaryObject?["Payment amount"] = paymentAmount
         main.dictionaryObject?["Payment type"] = paymentType.rawValue
-        main.dictionaryObject?["Activated"] = activated ? 1 : 0
         main.dictionaryObject?["Has logo"] = hasLogo ? 1 : 0
+        
+        if activationDate != nil {
+            main.dictionaryObject?["Activation date"] = DATE_FORMATTER.string(from: activationDate!)
+        }
+
         
         if eventDate != nil {
             main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: eventDate!)

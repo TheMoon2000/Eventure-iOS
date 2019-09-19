@@ -41,6 +41,7 @@ let URL_PREFIX = "eventure://"
 enum NotificationKeys: String {
     case oneTimeCode = "one-time code"
     case generalNotice = "general notice"
+    case ticketActivation = "ticket activation"
 }
 
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
@@ -377,6 +378,54 @@ extension UIView {
         self.removeConstraint(widthConstraint)
         return height
     }
+    
+    /// Insert a standardized loading view into the target view.
+    func addLoader() -> UIView {
+        
+        let loadingBG: UIVisualEffectView = {
+            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            v.layer.cornerRadius = 12
+            v.isHidden = true
+            v.layer.masksToBounds = true
+            v.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(v)
+            
+            v.widthAnchor.constraint(equalToConstant: 110).isActive = true
+            v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
+            
+            return v
+        }()
+        
+        let spinner: UIActivityIndicatorView = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.color = .gray
+            spinner.startAnimating()
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor, constant: -10).isActive = true
+            
+            return spinner
+        }()
+        
+        let _: UILabel = {
+            let label = UILabel()
+            label.text = "Loading..."
+            label.textAlignment = .center
+            label.font = .systemFont(ofSize: 15)
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8).isActive = true
+            
+            return label
+        }()
+        
+        return loadingBG
+    }
 }
 
 func generateQRCode(from string: String) -> UIImage? {
@@ -559,7 +608,7 @@ func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
 }
 
 func genericError(vc: UIViewController, handler: (() -> ())? = nil) {
-    let alert = UIAlertController(title: "Unexpected error", message: "An unknown error has occurred.", preferredStyle: .alert)
+    let alert = UIAlertController(title: "Unexpected error", message: "An error has occurred.", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
         action in
         DispatchQueue.main.async {
@@ -593,3 +642,4 @@ let USER_SYNC_SUCCESS = Notification.Name("user sync success")
 let USER_SYNC_FAILED = Notification.Name("user sync failed")
 let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
 let ORG_SYNC_FAILED = Notification.Name("org sync failed")
+let TICKET_ACTIVATED = Notification.Name("ticket activated")

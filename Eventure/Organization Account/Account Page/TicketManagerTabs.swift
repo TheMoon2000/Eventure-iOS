@@ -1,15 +1,23 @@
 //
-//  TicketTabView.swift
+//  TicketManagerTabs.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/9/16.
+//  Created by Jia Rui Shan on 2019/9/19.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 import XLPagerTabStrip
 
-class TicketTabView: ButtonBarPagerTabStripViewController {
+class TicketManagerTabs: ButtonBarPagerTabStripViewController {
+
+    var parentVC: TicketManagerMain!
+    
+    required init(parentVC: TicketManagerMain) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.parentVC = parentVC
+    }
     
     override func viewDidLoad() {
         settings.style.buttonBarBackgroundColor = .white
@@ -17,7 +25,6 @@ class TicketTabView: ButtonBarPagerTabStripViewController {
         settings.style.selectedBarBackgroundColor = MAIN_TINT
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0
-        settings.style.buttonBarItemLeftRightMargin = 18
         settings.style.buttonBarItemTitleColor = MAIN_TINT
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
@@ -32,22 +39,16 @@ class TicketTabView: ButtonBarPagerTabStripViewController {
         super.viewDidLoad()
     }
     
+
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         
-        let all = TicketsList()
-        all.title = "All Tickets"
-        all.emptyText = "No tickets"
-        
-        let new = TicketsList()
-        new.title = "Available"
-        new.emptyText = "No available tickets"
-        new.filter = { $0.activationDate == nil }
-        
-        let used = TicketsList()
-        used.title = " Used / Expired "
-        used.emptyText = "No used / expired tickets"
-        used.filter = { $0.activationDate != nil }
-        
-        return [all, new, used]
+        let buyers = TicketPurchases(event: parentVC.event, admissionType: parentVC.admissionType)
+        return [buyers]
     }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
 }

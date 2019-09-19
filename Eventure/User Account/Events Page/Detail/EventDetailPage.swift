@@ -324,6 +324,12 @@ class EventDetailPage: UIViewController {
                 checkin.event = self.event
                 self.navigationController?.pushViewController(checkin, animated: true)
             }))
+            if self.event.requiresTicket {
+                alert.addAction(.init(title: "Ticket Center", style: .default, handler: { action in
+                    let center = TicketCenter(parentVC: self)
+                    self.navigationController?.pushViewController(center, animated: true)
+                }))
+            }
             alert.addAction(.init(title: "Remove Event", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to permanently remove this published event. There is no going back.", preferredStyle: .alert)
                 warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
@@ -332,6 +338,7 @@ class EventDetailPage: UIViewController {
                 })
                 self.present(warning, animated: true)
             })
+            
         } else {
             alert.addAction(.init(title: "Delete Draft", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to delete this local draft. This process cannot be undone.", preferredStyle: .alert)

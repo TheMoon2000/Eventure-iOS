@@ -15,6 +15,9 @@ class AdmissionType {
     var price: Double?
     var notes: String
     
+    /// This value needs to be manually pulled from the server and updated. Before it's loaded, the default value is `nil`.
+    var quantitySold: Int?
+    
     var priceDescription: String {
         return String(format: "%.02f", price ?? 0.0)
     }

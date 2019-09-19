@@ -286,6 +286,43 @@ class Event {
         task.resume()
     }
     
+    func updateTicketQuantities(handler: ((Bool) -> ())?) {
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/QuantitySold",
+                           parameters: ["eventId": uuid])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+                        
+            if let json = try? JSON(data: data!), let quantities = json.dictionaryObject as? [String : Int] {
+                for type in self.admissionTypes {
+                    if let q = quantities[type.typeName] {
+                        type.quantitySold = q
+                    }
+                }
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
     
     private var encodedJSON: JSON {
         var main = JSON()

@@ -40,8 +40,8 @@ class TicketTypes: UITableViewController {
 
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
-        tableView.contentInset.top = 8
-        tableView.contentInset.bottom = 8
+        tableView.contentInset.top = 6
+        tableView.contentInset.bottom = 6
         tableView.register(TicketTypeCell.classForCoder(), forCellReuseIdentifier: "ticket type")
         
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(addTicket))

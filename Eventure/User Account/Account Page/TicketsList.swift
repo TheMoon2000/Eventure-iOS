@@ -13,13 +13,9 @@ import XLPagerTabStrip
 class TicketsList: UIViewController, IndicatorInfoProvider {
     
     private let refreshControl = UIRefreshControl()
-    private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
-        NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
-        .font: UIFont.systemFont(ofSize: 16, weight: .medium)
-    ]
     
     private var ticketsTable: UITableView!
-    private var loadingBG: UIVisualEffectView!
+    private var loadingBG: UIView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
@@ -64,49 +60,9 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
             return label
         }()
         
-        loadingBG = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-            v.layer.cornerRadius = 12
-            v.isHidden = true
-            v.layer.masksToBounds = true
-            v.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(v)
-            
-            v.widthAnchor.constraint(equalToConstant: 110).isActive = true
-            v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
-            v.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            v.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-            
-            return v
-        }()
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .gray
-            spinner.startAnimating()
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            loadingBG.contentView.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor, constant: -10).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Loading..."
-            label.textAlignment = .center
-            label.font = .systemFont(ofSize: 15)
-            label.textColor = .gray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            loadingBG.contentView.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8).isActive = true
-            
-            return label
-        }()
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         ticketsTable = {
             let tv = UITableView()
@@ -131,7 +87,7 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
         
-        getTickets()
+        getTickets(pulled: true)
     }
     
     @objc private func pullDownRefresh() {

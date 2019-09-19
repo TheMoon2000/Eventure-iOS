@@ -12,8 +12,8 @@ class CheckinUserCell: UITableViewCell {
     
     private var bgView: UIView!
     private(set) var profilePicture: UIImageView!
-    private var nameLabel: UILabel!
-    private var majorLabel: UILabel!
+    private(set) var nameLabel: UILabel!
+    private(set) var majorLabel: UILabel!
     private var registrant: Registrant?
     private(set) var placeLabel: UILabel!
 

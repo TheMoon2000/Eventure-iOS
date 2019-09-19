@@ -78,7 +78,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             
             tv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
             tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
-            tv.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 5).isActive = true
+            tv.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 4).isActive = true
             tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -10).isActive = true
             
             return tv

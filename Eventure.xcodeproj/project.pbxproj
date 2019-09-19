@@ -50,6 +50,10 @@
 		CC2CCD4F2331CF7B000C65E2 /* AdmissionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD4E2331CF7B000C65E2 /* AdmissionType.swift */; };
 		CC2CCD5123323474000C65E2 /* TicketQRCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5023323474000C65E2 /* TicketQRCell.swift */; };
 		CC2CCD532332F3FC000C65E2 /* TicketDetailInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */; };
+		CC2CCD5523331FE1000C65E2 /* TicketCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */; };
+		CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */; };
+		CC2CCD5923336DB2000C65E2 /* TicketManagerTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */; };
+		CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */; };
 		CC2D5906232B4F59004120E8 /* UpdateNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5905232B4F59004120E8 /* UpdateNotice.swift */; };
 		CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5907232B5289004120E8 /* EventCodeView.swift */; };
 		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
@@ -215,6 +219,10 @@
 		CC2CCD4E2331CF7B000C65E2 /* AdmissionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmissionType.swift; sourceTree = "<group>"; };
 		CC2CCD5023323474000C65E2 /* TicketQRCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketQRCell.swift; sourceTree = "<group>"; };
 		CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketDetailInfoCell.swift; sourceTree = "<group>"; };
+		CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCenter.swift; sourceTree = "<group>"; };
+		CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketManagerMain.swift; sourceTree = "<group>"; };
+		CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketManagerTabs.swift; sourceTree = "<group>"; };
+		CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketPurchases.swift; sourceTree = "<group>"; };
 		CC2D5905232B4F59004120E8 /* UpdateNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotice.swift; sourceTree = "<group>"; };
 		CC2D5907232B5289004120E8 /* EventCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCodeView.swift; sourceTree = "<group>"; };
 		CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
@@ -626,6 +634,10 @@
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
 				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
+				CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */,
+				CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */,
+				CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */,
+				CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -922,9 +934,12 @@
 			files = (
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
+				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
+				CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */,
 				CC0B3A3D2320C9D200DE7203 /* Profile.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
 				CC2CCD532332F3FC000C65E2 /* TicketDetailInfoCell.swift in Sources */,
+				CC2CCD5923336DB2000C65E2 /* TicketManagerTabs.swift in Sources */,
 				CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */,
 				CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */,
 				CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */,
@@ -936,6 +951,7 @@
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
 				CC2CCD4D2331C175000C65E2 /* TicketInfoEditor.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
+				CC2CCD5523331FE1000C65E2 /* TicketCenter.swift in Sources */,
 				CC2D5906232B4F59004120E8 /* UpdateNotice.swift in Sources */,
 				67E89385231C40FF004896F7 /* changeGender.swift in Sources */,
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
