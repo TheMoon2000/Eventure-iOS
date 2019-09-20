@@ -26,6 +26,8 @@ class TicketManagerMain: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = EventDraft.backgroundColor
+        
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createTicket))
 
         tabs = {
             let tabs = TicketManagerTabs(parentVC: self)
@@ -56,6 +58,10 @@ class TicketManagerMain: UIViewController {
         navigationController?.navigationBar.shadowImage = nil
     }
     
+    @objc private func createTicket() {
+        let vc = CreateNewTicket(parentVC: tabs.viewControllers[1] as! IssuedTickets)
+        navigationController?.pushViewController(vc, animated: true)
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

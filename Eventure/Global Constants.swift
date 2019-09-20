@@ -20,8 +20,8 @@ import typealias CommonCrypto.CC_LONG
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "Eventure 1.0.1"
-let PASSWORD = "c5501fa09934f96a48fca98478a9729c"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
@@ -155,7 +155,7 @@ let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
 let NAVBAR_TINT = UIColor.white
 
 /// Height between items in a vertical stack
-let VERTICAL_SPACING: CGFloat = 12
+let VERTICAL_SPACING: CGFloat = 13
 
 /// Alpha value for disabled UI elements.
 let DISABLED_ALPHA: CGFloat = 0.5

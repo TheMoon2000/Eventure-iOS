@@ -56,9 +56,6 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         DispatchQueue.main.async {
             self.navigationItem.title = "Dashboard"
             self.myTableView.reloadData()
-            UIView.performWithoutAnimation {
-                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
-            }
         }
     }
     

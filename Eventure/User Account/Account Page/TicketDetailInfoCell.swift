@@ -53,7 +53,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: providerLabel.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: providerLabel.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             label.topAnchor.constraint(equalTo: providerLabel.topAnchor).isActive = true
             
@@ -86,7 +86,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: paymentDateLabel.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: paymentDateLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: paymentDateLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             
@@ -141,7 +141,6 @@ class TicketDetailInfoCell: UITableViewCell {
         
         ticketPrice = {
             let label = UILabel()
-            label.numberOfLines = 2
             label.text = String(format: "$%.02f", ticket.ticketPrice)
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
@@ -149,7 +148,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: ticketPriceLabel.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(greaterThanOrEqualTo: ticketPriceLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: ticketPriceLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             
@@ -166,6 +165,7 @@ class TicketDetailInfoCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             label.topAnchor.constraint(equalTo: ticketPrice.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width)
             
             return label
         }()
@@ -176,7 +176,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = String(format: "$%.02f", ticket.paymentAmount)
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -187,7 +187,41 @@ class TicketDetailInfoCell: UITableViewCell {
             return label
         }()
         
-        amountPaid.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
+        notesLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 16)
+            label.text = "Notes:"
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: amountPaid.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
+            return label
+        }()
+        
+        notes = {
+            let label = UILabel()
+            label.numberOfLines = 10
+            label.attributedText = ticket.notes.attributedText(style: COMPACT_STYLE)
+            if label.text!.isEmpty {
+                label.attributedText = "*The event host did not leave a note.*".attributedText(style: COMPACT_STYLE)
+            }
+            label.textAlignment = .right
+            label.textColor = VALUE_COLOR
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: notesLabel.rightAnchor, constant: 12).isActive = true
+            label.topAnchor.constraint(equalTo: notesLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            
+            return label
+        }()
+        
+        notes.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {

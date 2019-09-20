@@ -145,6 +145,7 @@ class IssuedTicketCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: separator.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: status.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
             
             return label
         }()
@@ -162,6 +163,7 @@ class IssuedTicketCell: UITableViewCell {
             label.topAnchor.constraint(equalTo: extraLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: separator.rightAnchor).isActive = true
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()

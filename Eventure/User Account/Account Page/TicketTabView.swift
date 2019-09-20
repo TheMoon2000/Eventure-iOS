@@ -41,12 +41,12 @@ class TicketTabView: ButtonBarPagerTabStripViewController {
         let new = TicketsList()
         new.title = "Available"
         new.emptyText = "No available tickets"
-        new.filter = { $0.activationDate == nil }
+        new.filter = { $0.activationDate == nil && ($0.eventDate ?? .distantFuture).timeIntervalSinceNow >= -7200 }
         
         let used = TicketsList()
         used.title = " Used / Expired "
         used.emptyText = "No used / expired tickets"
-        used.filter = { $0.activationDate != nil }
+        used.filter = { $0.activationDate != nil || ($0.eventDate ?? .distantFuture).timeIntervalSinceNow < -7200 }
         
         return [all, new, used]
     }

@@ -158,14 +158,14 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                     return
                 }
                 
-                let msg = String(data: data!, encoding: .utf8)!
+                let msg = String(data: data!, encoding: .utf8)
                 
                 if msg == INTERNAL_ERROR {
                     DispatchQueue.main.async {
                         serverMaintenanceError(vc: self)
                     }
                     return
-                } else {
+                } else if msg == "success" {
                     DispatchQueue.main.async {
                         if type == .displayedName {
                             User.current?.displayedName = inputField.text!
@@ -173,6 +173,12 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                             User.current!.email = inputField.text!
                         }
                         self.navigationController?.popViewController(animated: true)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                        alert.addAction(.init(title: "OK", style: .cancel))
+                        self.present(alert, animated: true)
                     }
                 }
             }

@@ -17,11 +17,24 @@ class Ticket {
     var ticketID: String
     var userID: Int
     var username: String?
+    var userEmail: String?
     var eventID: String
     var eventName: String
     var hostName: String
     var hostID: String
     var paymentType: PaymentType = .none
+    var paymentInfo: String {
+        switch paymentType {
+        case .offline:
+            return "offline transaction"
+        case .none:
+            return "unknown payment"
+        case .credit:
+            return paymentDescription + " (card)"
+        default:
+            return paymentDescription + " (\(paymentType.rawValue))"
+        }
+    }
     var quantity: Int
     var ticketPrice: Double
     var paymentAmount: Double
@@ -47,9 +60,10 @@ class Ticket {
         
         ticketID = dictionary["Ticket ID"]?.string ?? ""
         userID = dictionary["User ID"]?.int ?? -1
+        userEmail = dictionary["Email"]?.string
         username = dictionary["Displayed name"]?.string
         if username == nil {
-            username = dictionary["Email"]?.string
+            username = userEmail
         }
         redeemCode = dictionary["Code"]?.string
         eventID = dictionary["Event ID"]?.string ?? ""
@@ -94,6 +108,7 @@ class Ticket {
         
         main.dictionaryObject?["Ticket ID"] = ticketID
         main.dictionaryObject?["User ID"] = userID
+        main.dictionaryObject?["Email"] = userEmail
         main.dictionaryObject?["Displayed name"] = username
         main.dictionaryObject?["Event ID"] = eventID
         main.dictionaryObject?["Event title"] = eventName
@@ -329,5 +344,6 @@ extension Ticket {
         case credit = "Credit/debit card"
         case paypal = "Paypal"
         case none = "N/A"
+        case offline = "Offline"
     }
 }

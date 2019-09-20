@@ -147,7 +147,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         if cell.nameLabel.text!.isEmpty {
             cell.nameLabel.text = purchaseInfo.registrant.email
         }
-        cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentDescription + " (\(purchaseInfo.ticket.paymentType.rawValue))"
+        cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentInfo
         if purchaseInfo.registrant.profilePicture == nil {
             purchaseInfo.registrant.getProfilePicture { new in
                 if new.profilePicture != nil {

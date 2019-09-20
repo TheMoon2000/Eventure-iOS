@@ -93,7 +93,7 @@ class CheckinUserCell: UITableViewCell {
             let label = UILabel()
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

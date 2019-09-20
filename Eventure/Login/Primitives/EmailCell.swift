@@ -184,6 +184,11 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             alert.addAction(.init(title: campus.key, style: .default, handler: chooseAction))
         }
         
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = addressButton
+            popoverController.sourceRect = CGRect(x: addressButton.bounds.midX, y: addressButton.bounds.midY, width: 0, height: 0)
+        }
+        
         parentVC.present(alert, animated: true, completion: nil)
     }
     

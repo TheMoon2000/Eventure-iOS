@@ -61,7 +61,6 @@ class TicketQRCell: UITableViewCell {
             data.dictionaryObject?["Ticket ID"] = ticket.ticketID
             let iv = UIImageView()
             if let msg = data.rawString([.castNilToNSNull: true]) {
-                print(msg)
                 iv.image = generateQRCode(from: msg)
             }
             iv.contentMode = .scaleAspectFit

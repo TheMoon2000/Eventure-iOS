@@ -12,8 +12,8 @@ import XLPagerTabStrip
 
 class IssuedTickets: UITableViewController, IndicatorInfoProvider {
 
-    private var event: Event!
-    private var admissionType: AdmissionType!
+    private(set) var event: Event!
+    private(set) var admissionType: AdmissionType!
     
     /// Incomplete registrant information, only using it as a data structure to hold partial information
     var tickets = [Ticket]()
@@ -38,7 +38,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         tableView.contentInset.bottom = 6
         tableView.backgroundColor = EventDraft.backgroundColor
         tableView.register(IssuedTicketCell.classForCoder(), forCellReuseIdentifier: "ticket")
-        
+                
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -64,6 +64,13 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     
     @objc private func refresh() {
         loadTickets(pulled: true)
+    }
+    
+    func sortAndReload() {
+        tickets.sort { (t1, t2) -> Bool in
+            (t1.creationDate ?? .distantPast) >= (t2.creationDate ?? .distantPast)
+        }
+        tableView.reloadData()
     }
     
     private func loadTickets(pulled: Bool = false) {
@@ -109,10 +116,10 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                         newRecords.append(newTicket)
                     }
                 }
-                self.tickets = newRecords
                 DispatchQueue.main.async {
+                    self.tickets = newRecords
                     self.emptyLabel.text = self.tickets.isEmpty ? "No issued tickets" : ""
-                    self.tableView.reloadData()
+                    self.sortAndReload()
                 }
             } else {
                 DispatchQueue.main.async {
@@ -139,6 +146,12 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        let editor = CreateNewTicket(parentVC: self, ticketToEdit: tickets[indexPath.row])
+        navigationController?.pushViewController(editor, animated: true)
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {

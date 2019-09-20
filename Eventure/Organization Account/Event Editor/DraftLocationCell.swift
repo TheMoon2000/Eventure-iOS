@@ -16,7 +16,14 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     private var placeholder: UILabel!
     private var baseline: UIView!
     
+    var multiLine = true {
+        didSet {
+            valueText.returnKeyType = multiLine ? .default : .done
+        }
+    }
+    
     var textChangeHandler: ((UITextView) -> ())?
+    var returnHandler: ((UITextView) -> ())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -43,12 +50,14 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         promptLabel = {
             let label = UILabel()
+            label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.text = "Location:"
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
             
             return label
@@ -124,6 +133,18 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         textChangeHandler?(textView)
         placeholder.isHidden = !textView.text.isEmpty
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if (text == "\n" && !multiLine) {
+            if returnHandler == nil {
+                textView.resignFirstResponder()
+            } else {
+                returnHandler?(textView)
+                return false
+            }
+        }
+        return true
     }
     
     required init?(coder aDecoder: NSCoder) {

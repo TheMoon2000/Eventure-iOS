@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -86,6 +86,7 @@
 		CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */; };
 		CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
 		CC5E8FE9232BFE2A00962B8B /* CheckinTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */; };
+		CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
 		CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */; };
 		CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */; };
@@ -262,6 +263,7 @@
 		CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailPage.swift; sourceTree = "<group>"; };
 		CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventViewController.swift; sourceTree = "<group>"; };
 		CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTimeCell.swift; sourceTree = "<group>"; };
+		CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewTicket.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
 		CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinSortSettings.swift; sourceTree = "<group>"; };
 		CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSettingsCell.swift; sourceTree = "<group>"; };
@@ -644,6 +646,7 @@
 				CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */,
 				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
 				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
+				CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -1037,6 +1040,7 @@
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
+				CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */,
 				CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */,
 				CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */,
 				CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */,
