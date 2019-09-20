@@ -43,7 +43,9 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         
         let buyers = TicketPurchases(event: parentVC.event, admissionType: parentVC.admissionType)
-        return [buyers]
+        let issued = IssuedTickets(event: parentVC.event, admissionType: parentVC.admissionType)
+        
+        return [buyers, issued]
     }
     
     

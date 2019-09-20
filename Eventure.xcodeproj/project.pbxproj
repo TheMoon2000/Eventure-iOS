@@ -54,6 +54,8 @@
 		CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */; };
 		CC2CCD5923336DB2000C65E2 /* TicketManagerTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */; };
 		CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */; };
+		CC2CCD5D2333DAC3000C65E2 /* IssuedTickets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */; };
+		CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */; };
 		CC2D5906232B4F59004120E8 /* UpdateNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5905232B4F59004120E8 /* UpdateNotice.swift */; };
 		CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5907232B5289004120E8 /* EventCodeView.swift */; };
 		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
@@ -223,6 +225,8 @@
 		CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketManagerMain.swift; sourceTree = "<group>"; };
 		CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketManagerTabs.swift; sourceTree = "<group>"; };
 		CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketPurchases.swift; sourceTree = "<group>"; };
+		CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuedTickets.swift; sourceTree = "<group>"; };
+		CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuedTicketCell.swift; sourceTree = "<group>"; };
 		CC2D5905232B4F59004120E8 /* UpdateNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNotice.swift; sourceTree = "<group>"; };
 		CC2D5907232B5289004120E8 /* EventCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCodeView.swift; sourceTree = "<group>"; };
 		CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewController.swift; sourceTree = "<group>"; };
@@ -638,6 +642,8 @@
 				CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */,
 				CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */,
 				CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */,
+				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
+				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -1034,6 +1040,7 @@
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
 				EB944584231F322E00631D8E /* OrgEventBriefPage.swift in Sources */,
+				CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
@@ -1047,6 +1054,7 @@
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
 				CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */,
 				67AFF77C23121ACE00329626 /* AccountCell.swift in Sources */,
+				CC2CCD5D2333DAC3000C65E2 /* IssuedTickets.swift in Sources */,
 				CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */,
 				CC2167C2231B719D003B8DE7 /* CommentCell.swift in Sources */,
 				CCE214252314ED0E00E9B137 /* GenericOneFieldPage.swift in Sources */,

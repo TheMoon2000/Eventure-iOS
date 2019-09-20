@@ -24,6 +24,8 @@ class TicketManagerMain: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = EventDraft.backgroundColor
 
         tabs = {
             let tabs = TicketManagerTabs(parentVC: self)

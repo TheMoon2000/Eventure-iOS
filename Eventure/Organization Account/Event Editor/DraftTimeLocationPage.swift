@@ -24,6 +24,7 @@ class DraftTimeLocationPage: UITableViewController {
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
+        tableView.keyboardDismissMode = .interactive
         tableView.tintColor = MAIN_TINT
 
         let startTopCell = DatePickerTopCell(title: "Start time:")

@@ -136,7 +136,7 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
                     newTicket.orgLogo = self.logoCache[newTicket.ticketID]
                     tmp.append(newTicket)
                 }
-                self.tickets = tmp.filter { self.filter == nil || self.filter!($0) }
+                self.tickets = tmp.filter { $0.userID == User.current?.userID && (self.filter == nil || self.filter!($0)) }
                 DispatchQueue.main.async {
                     self.emptyLabel.text = self.tickets.isEmpty ? self.emptyText : ""
                     self.ticketsTable.reloadData()

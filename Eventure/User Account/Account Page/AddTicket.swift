@@ -38,6 +38,12 @@ class AddTicket: UITableViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        textCell.inputField.becomeFirstResponder()
+    }
+    
     /// Make keyboard accessory view
     
     private func makeAccessoryView() -> UIView {

@@ -58,7 +58,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.title = "Me"
             self.navigationController?.navigationBar.setNeedsDisplay()
             UIView.performWithoutAnimation {
-                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
+                self.myTableView.reloadRows(at: [[1, 1], [2, 2]], with: .none)
             }
         }
     }

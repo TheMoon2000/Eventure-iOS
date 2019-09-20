@@ -14,6 +14,7 @@ class CheckinUserCell: UITableViewCell {
     private(set) var profilePicture: UIImageView!
     private(set) var nameLabel: UILabel!
     private(set) var majorLabel: UILabel!
+    private(set) var auxiliaryLabel: UILabel!
     private var registrant: Registrant?
     private(set) var placeLabel: UILabel!
 
@@ -75,7 +76,6 @@ class CheckinUserCell: UITableViewCell {
         majorLabel = {
             let label = UILabel()
             label.numberOfLines = 3
-            label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 16)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -85,6 +85,20 @@ class CheckinUserCell: UITableViewCell {
             label.rightAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5).isActive = true
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -10).isActive = true
+            
+            return label
+        }()
+        
+        auxiliaryLabel = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.topAnchor.constraint(equalTo: majorLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             
             return label
         }()

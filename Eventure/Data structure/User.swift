@@ -17,6 +17,7 @@ class User: Profile {
             if current != nil {
                 UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
                 Ticket.userTickets = Ticket.readFromFile()[current!.userID] ?? []
+                Ticket.updateTickets()
             } else {
                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                 Ticket.userTickets = []

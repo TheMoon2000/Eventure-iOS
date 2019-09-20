@@ -23,9 +23,6 @@ class TicketDetailInfoCell: UITableViewCell {
     private var notesLabel: UILabel!
     private var notes: UILabel!
     
-    private var VERTICAL_SPACING: CGFloat = 12
-    private var valueColor: UIColor = .init(white: 0.25, alpha: 1)
-
     required init(ticket: Ticket) {
         super.init(style: .default, reuseIdentifier: nil)
         
@@ -52,7 +49,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.numberOfLines = 10
             label.attributedText = ticket.hostName.attributedText(style: COMPACT_STYLE)
             label.textAlignment = .right
-            label.textColor = valueColor
+            label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -85,7 +82,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = valueColor
+            label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -117,7 +114,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = ticket.paymentType.rawValue
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = valueColor
+            label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -148,7 +145,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = String(format: "$%.02f", ticket.ticketPrice)
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = valueColor
+            label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

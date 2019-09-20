@@ -60,10 +60,9 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.isScrollEnabled = false
             tv.delegate = self
             tv.backgroundColor = .clear
-            tv.keyboardDismissMode = .onDrag
             tv.autocorrectionType = .no
         
-            tv.textContainer.lineFragmentPadding = 0
+            tv.textContainer.lineFragmentPadding = 5
             
             let pStyle = NSMutableParagraphStyle()
             pStyle.lineSpacing = 4
@@ -76,9 +75,9 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tv)
             
-            tv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
-            tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
-            tv.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 4).isActive = true
+            tv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 10).isActive = true
+            tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -10).isActive = true
+            tv.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 3).isActive = true
             tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -10).isActive = true
             
             return tv
@@ -91,8 +90,8 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             label.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(label, belowSubview: valueText)
             
-            label.leftAnchor.constraint(equalTo: valueText.leftAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: valueText.rightAnchor).isActive = true
+            label.leftAnchor.constraint(equalTo: valueText.leftAnchor, constant: 5).isActive = true
+            label.rightAnchor.constraint(equalTo: valueText.rightAnchor, constant: -5).isActive = true
             label.topAnchor.constraint(equalTo: valueText.topAnchor, constant: 8).isActive = true
             label.bottomAnchor.constraint(lessThanOrEqualTo: valueText.bottomAnchor, constant: -10).isActive = true
             

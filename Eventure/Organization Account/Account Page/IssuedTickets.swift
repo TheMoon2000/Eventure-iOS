@@ -1,5 +1,5 @@
 //
-//  TicketPurchases.swift
+//  IssuedTickets.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/9/19.
@@ -10,14 +10,13 @@ import UIKit
 import SwiftyJSON
 import XLPagerTabStrip
 
-class TicketPurchases: UITableViewController, IndicatorInfoProvider {
-    
+class IssuedTickets: UITableViewController, IndicatorInfoProvider {
+
     private var event: Event!
     private var admissionType: AdmissionType!
     
     /// Incomplete registrant information, only using it as a data structure to hold partial information
-    var purchases = [(registrant: Registrant, ticket: Ticket)]()
-    var profileCache = [Int : UIImage]()
+    var tickets = [Ticket]()
     
     private var rc = UIRefreshControl()
     private var emptyLabel: UILabel!
@@ -29,16 +28,16 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         self.event = event
         self.admissionType = admissionType
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 6
         tableView.contentInset.bottom = 6
         tableView.backgroundColor = EventDraft.backgroundColor
-        tableView.register(CheckinUserCell().classForCoder, forCellReuseIdentifier: "user")
+        tableView.register(IssuedTicketCell.classForCoder(), forCellReuseIdentifier: "ticket")
         
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
@@ -60,14 +59,14 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         
         rc.addTarget(self, action: #selector(refresh), for: .valueChanged)
         
-        loadPurchases()
+        loadTickets()
     }
     
     @objc private func refresh() {
-        loadPurchases(pulled: true)
+        loadTickets(pulled: true)
     }
     
-    private func loadPurchases(pulled: Bool = false) {
+    private func loadTickets(pulled: Bool = false) {
         
         emptyLabel.text = ""
         
@@ -103,18 +102,16 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
             }
             
             if let json = try? JSON(data: data!), json.array != nil {
-                var newRecords = [(Registrant, Ticket)]()
+                var newRecords = [Ticket]()
                 for purchase in json.array! {
-                    let ticket = Ticket(ticketInfo: purchase)
-                    if ticket.redeemCode != nil { continue }
-                    let registrant = Registrant(json: purchase)
-                    registrant.profilePicture = self.profileCache[registrant.userID]
-                    
-                    newRecords.append((registrant, ticket))
+                    let newTicket = Ticket(ticketInfo: purchase)
+                    if newTicket.paymentType == .none {
+                        newRecords.append(newTicket)
+                    }
                 }
-                self.purchases = newRecords
+                self.tickets = newRecords
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = self.purchases.isEmpty ? "No purchase records" : ""
+                    self.emptyLabel.text = self.tickets.isEmpty ? "No issued tickets" : ""
                     self.tableView.reloadData()
                 }
             } else {
@@ -127,43 +124,25 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         
         task.resume()
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return purchases.count
+        return tickets.count
     }
-
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "user", for: indexPath) as! CheckinUserCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ticket", for: indexPath) as! IssuedTicketCell
         
-        let purchaseInfo = purchases[indexPath.row]
-
-        cell.nameLabel.text = purchaseInfo.registrant.displayedName
-        if cell.nameLabel.text!.isEmpty {
-            cell.nameLabel.text = purchaseInfo.registrant.name
-        }
-        if cell.nameLabel.text!.isEmpty {
-            cell.nameLabel.text = purchaseInfo.registrant.email
-        }
-        cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentDescription + " (\(purchaseInfo.ticket.paymentType.rawValue))"
-        if purchaseInfo.registrant.profilePicture == nil {
-            purchaseInfo.registrant.getProfilePicture { new in
-                if new.profilePicture != nil {
-                    cell.profilePicture.image = new.profilePicture
-                    self.profileCache[new.userID] = new.profilePicture
-                }
-            }
-        }
-        let noun = purchaseInfo.ticket.quantity == 1 ? "Ticket" : "Tickets"
-        cell.majorLabel.text = "\(purchaseInfo.ticket.quantity) " + noun
-
+        cell.setup(ticket: tickets[indexPath.row])
+        
+        
         return cell
     }
- 
+    
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: "Purchases")
+        return IndicatorInfo(title: "Issued")
     }
     
     

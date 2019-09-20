@@ -16,6 +16,7 @@ class Ticket {
     
     var ticketID: String
     var userID: Int
+    var username: String?
     var eventID: String
     var eventName: String
     var hostName: String
@@ -24,11 +25,16 @@ class Ticket {
     var quantity: Int
     var ticketPrice: Double
     var paymentAmount: Double
+    var paymentDescription: String {
+        return String(format: "$%.02f", paymentAmount)
+    }
+    var redeemCode: String?
     var admissionType: String
     var eventDate: Date?
     var eventEndDate: Date?
     var transactionDate: Date?
     var activationDate: Date?
+    var creationDate: Date?
     var notes: String
     
     let hasLogo: Bool
@@ -41,6 +47,11 @@ class Ticket {
         
         ticketID = dictionary["Ticket ID"]?.string ?? ""
         userID = dictionary["User ID"]?.int ?? -1
+        username = dictionary["Displayed name"]?.string
+        if username == nil {
+            username = dictionary["Email"]?.string
+        }
+        redeemCode = dictionary["Code"]?.string
         eventID = dictionary["Event ID"]?.string ?? ""
         eventName = dictionary["Event title"]?.string ?? ""
         hostName = dictionary["Organization title"]?.string ?? ""
@@ -54,6 +65,10 @@ class Ticket {
         
         if let eventDateString = dictionary["Start time"]?.string {
             eventDate = DATE_FORMATTER.date(from: eventDateString)
+        }
+        
+        if let creationString = dictionary["Creation date"]?.string {
+            creationDate = DATE_FORMATTER.date(from: creationString)
         }
         
         if let endString = dictionary["End time"]?.string {
@@ -79,6 +94,7 @@ class Ticket {
         
         main.dictionaryObject?["Ticket ID"] = ticketID
         main.dictionaryObject?["User ID"] = userID
+        main.dictionaryObject?["Displayed name"] = username
         main.dictionaryObject?["Event ID"] = eventID
         main.dictionaryObject?["Event title"] = eventName
         main.dictionaryObject?["Organization title"] = hostName
@@ -92,6 +108,9 @@ class Ticket {
             main.dictionaryObject?["Activation date"] = DATE_FORMATTER.string(from: activationDate!)
         }
 
+        if creationDate != nil {
+            main.dictionaryObject?["Creation date"] = DATE_FORMATTER.string(from: creationDate!)
+        }
         
         if eventDate != nil {
             main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: eventDate!)
@@ -246,6 +265,50 @@ class Ticket {
         
         return tickets
     }
+    
+    
+    static func updateTickets() {
+        
+        guard User.current != nil else { return }
+        
+        var logoCache = [String : UIImage]()
+        userTickets.forEach { logoCache[$0.ticketID] = $0.orgLogo }
+
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetTickets",
+                           parameters: ["userId": String(User.current!.userID)])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let json = try? JSON(data: data!), let tickets = json.array {
+                var tmp = Set<Ticket>()
+                for ticketData in tickets {
+                    let newTicket = Ticket(ticketInfo: ticketData)
+                    if newTicket.userID == User.current!.userID {
+                        newTicket.orgLogo = logoCache[newTicket.ticketID]
+                        tmp.insert(newTicket)
+                    }
+                }
+                
+                userTickets = tmp
+                
+                NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
+
+                DispatchQueue.global(qos: .default).async {
+                    Ticket.writeToFile(userID: User.current!.userID)
+                }
+            }
+        }
+        
+        task.resume()
+    }
 }
 
 
@@ -262,7 +325,6 @@ extension Ticket: Hashable {
 
 extension Ticket {
     enum PaymentType: String {
-        case offline = "Offline"
         case venmo = "Venmo"
         case credit = "Credit/debit card"
         case paypal = "Paypal"
