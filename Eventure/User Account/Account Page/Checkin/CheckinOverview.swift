@@ -29,8 +29,6 @@ class CheckinOverview: UIViewController {
     private var consentStack: UIStackView!
     
     private var loadingBG: UIView!
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
     
     private var CHECK_IN = "Check In"
     private var VIEW = "View Event"
@@ -399,7 +397,6 @@ class CheckinOverview: UIViewController {
     
     private func sendCheckinRequest(code: String? = nil) {
         
-        spinnerLabel.text = "Loading..."
         loadingBG.isHidden = false
         
         var parameters: [String: String] = [
@@ -493,7 +490,6 @@ class CheckinOverview: UIViewController {
     }
     
     private func authenticateCheckin(code: String) {
-        spinnerLabel.text = "Verifying..."
         loadingBG.isHidden = false
         sendCheckinRequest(code: code)
     }

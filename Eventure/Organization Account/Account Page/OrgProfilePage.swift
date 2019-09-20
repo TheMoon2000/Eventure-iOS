@@ -176,8 +176,6 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         
         let url = URL.with(base: API_BASE_URL, API_Name: "account/UpdateOrgInfo", parameters: ["id": String(org.id)])!
         
-        print("place1")
-        
         var request = URLRequest(url: url)
         request.addAuthHeader()
         request.httpMethod = "POST"
@@ -207,12 +205,10 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             if !disappearing {
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self)
-                    print("place2")
                 }
             } else {
                 let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your organization's settings could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
                 alert.addAction(.init(title: "I Understand", style: .cancel))
-                print("place3")
                 DispatchQueue.main.async {
                     self.parentVC?.present(alert, animated: true, completion: nil)
                 }
@@ -233,7 +229,6 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
                 print("success")
             default:
                 print(msg!)
-                print("place4")
             }
             
         }

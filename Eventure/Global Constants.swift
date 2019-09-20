@@ -201,7 +201,7 @@ extension String {
     
     /// URL encode.
     var encoded: String {
-        return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? self
+        return self.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
     }
     
     /// URL decode.

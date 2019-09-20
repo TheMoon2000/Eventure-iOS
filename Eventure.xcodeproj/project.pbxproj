@@ -34,6 +34,7 @@
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
 		CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050542334BA9B00F6A114 /* UserScanner.swift */; };
 		CC2050572334BF0000F6A114 /* OrgScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050562334BF0000F6A114 /* OrgScanner.swift */; };
+		CC2050592335302E00F6A114 /* CheckinVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050582335302E00F6A114 /* CheckinVerification.swift */; };
 		CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */; };
 		CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */; };
 		CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B9231B0171003B8DE7 /* Registrant.swift */; };
@@ -209,6 +210,7 @@
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
 		CC2050542334BA9B00F6A114 /* UserScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScanner.swift; sourceTree = "<group>"; };
 		CC2050562334BF0000F6A114 /* OrgScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgScanner.swift; sourceTree = "<group>"; };
+		CC2050582335302E00F6A114 /* CheckinVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinVerification.swift; sourceTree = "<group>"; };
 		CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinPageController.swift; sourceTree = "<group>"; };
 		CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSheet.swift; sourceTree = "<group>"; };
 		CC2167B9231B0171003B8DE7 /* Registrant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registrant.swift; sourceTree = "<group>"; };
@@ -644,6 +646,8 @@
 				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
 				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
+				CC2050562334BF0000F6A114 /* OrgScanner.swift */,
+				CC2050582335302E00F6A114 /* CheckinVerification.swift */,
 				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
 				CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */,
 				CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */,
@@ -652,7 +656,6 @@
 				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
 				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
 				CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */,
-				CC2050562334BF0000F6A114 /* OrgScanner.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -929,6 +932,7 @@
 				CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */,
 				CC0B3A3D2320C9D200DE7203 /* Profile.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
+				CC2050592335302E00F6A114 /* CheckinVerification.swift in Sources */,
 				CC2CCD532332F3FC000C65E2 /* TicketDetailInfoCell.swift in Sources */,
 				CC2CCD5923336DB2000C65E2 /* TicketManagerTabs.swift in Sources */,
 				CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */,

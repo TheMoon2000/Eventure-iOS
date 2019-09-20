@@ -84,6 +84,7 @@ class CreateNewTicket: UITableViewController {
             cell.multiLine = false
             cell.valueText.insertText(draftTicket.userEmail ?? "")
             cell.valueText.returnKeyType = .next
+            cell.valueText.keyboardType = .emailAddress
             cell.valueText.autocapitalizationType = .none
             cell.valueText.autocorrectionType = .no
             cell.valueText.isEditable = draftTicket.activationDate == nil
@@ -139,6 +140,8 @@ class CreateNewTicket: UITableViewController {
             parameters["email"] = draftTicket.userEmail
         }
         
+        print(parameters)
+        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/AddTicket",
                            parameters: parameters)!
@@ -168,9 +171,10 @@ class CreateNewTicket: UITableViewController {
             case "success":
                 DispatchQueue.main.async {
                     if self.newTicket {
-                        self.parentVC.tickets.append(self.draftTicket)
+                        self.parentVC.loadTickets()
+                    } else {
+                        self.parentVC.sortAndReload()
                     }
-                    self.parentVC.sortAndReload()
                     self.navigationController?.popViewController(animated: true)
                 }
             default:

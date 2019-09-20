@@ -64,6 +64,7 @@ class TicketTypeCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: titleLabel.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8).isActive = true
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -76,6 +77,7 @@ class TicketTypeCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
+            label.leftAnchor.constraint(equalTo: subtitleLabel.rightAnchor, constant: 10).isActive = true
             label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: subtitleLabel.topAnchor).isActive = true
             

@@ -73,7 +73,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         tableView.reloadData()
     }
     
-    private func loadTickets(pulled: Bool = false) {
+    func loadTickets(pulled: Bool = false) {
         
         emptyLabel.text = ""
         

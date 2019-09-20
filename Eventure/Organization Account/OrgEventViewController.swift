@@ -44,6 +44,10 @@ class OrgEventViewController: UIViewController, EventProvider {
     private var publishedLabel: UILabel!
     private var draftLabel: UILabel!
     
+    private var loadMoreLabel: UILabel!
+    private var shouldLoadMore = false
+    private(set) var eventsDisplayed = 20
+    
     var allEvents = Set<Event>() {
         didSet {
             if !self.allEvents.isEmpty {
@@ -117,7 +121,9 @@ class OrgEventViewController: UIViewController, EventProvider {
         topTabBg.isHidden = !showTopTab
         
         eventCatalog = {
-            let ec = UICollectionView(frame: .zero, collectionViewLayout: TopAlignedCollectionViewFlowLayout())
+            let layout = TopAlignedCollectionViewFlowLayout()
+            layout.footerReferenceSize = CGSize(width: 300, height: 50)
+            let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
             if useRefreshControl {
@@ -125,13 +131,14 @@ class OrgEventViewController: UIViewController, EventProvider {
             }
             ec.alwaysBounceVertical = true
             ec.contentInset.top = 8
-            ec.contentInset.bottom = 8
+            ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
             if !topTabBg.isHidden {
                 ec.scrollIndicatorInsets.top = topTabBg.frame.height
                 ec.contentInset.top += topTabBg.frame.height
             }
             ec.backgroundColor = .init(white: 0.92, alpha: 1)
             ec.register(OrgEventCell.classForCoder(), forCellWithReuseIdentifier: "org event")
+            ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
             ec.contentInsetAdjustmentBehavior = .always
             ec.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(ec, belowSubview: topTabBg)
@@ -324,9 +331,10 @@ class OrgEventViewController: UIViewController, EventProvider {
             spinner.alpha = 1.0
             spinnerLabel.alpha = 1.0
         }
-        
+        topTab.isUserInteractionEnabled = false
         updateFiltered {
             self.eventCatalog.reloadData()
+            self.topTab.isUserInteractionEnabled = true
         }
     }
     
@@ -349,7 +357,7 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let count = filteredEvents.count
+        let count = min(filteredEvents.count, eventsDisplayed)
         
         if topTab.selectedSegmentIndex == 0 {
             publishedLabel.text = count == 0 && !spinner.isAnimating ? EMPTY_STRING : ""
@@ -380,6 +388,14 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         detailPage.orgEventView = self
         detailPage.event = filteredEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let v = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath)
+            return v
+        }
+        return UICollectionReusableView()
     }
 }
 
@@ -492,3 +508,37 @@ extension OrgEventViewController {
         
     }
 }
+
+extension OrgEventViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.contentSize.height
+        let scrolled = scrollView.frame.height + scrollView.contentOffset.y - topTab.frame.height - 8
+        if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
+            if topTab.selectedSegmentIndex == 0 && !spinner.isAnimating {
+                footer.textLabel.alpha = (scrolled - height) / 80
+                if eventsDisplayed < filteredEvents.count {
+                    if footer.textLabel.alpha >= 1 {
+                        footer.textLabel.text = "Release to load more"
+                        shouldLoadMore = true
+                    } else {
+                        footer.textLabel.text = "Load more..."
+                        shouldLoadMore = false
+                    }
+                } else {
+                    footer.textLabel.text = "No more events to load"
+                }
+            } else {
+                footer.textLabel.alpha = 0.0
+            }
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if shouldLoadMore {
+            shouldLoadMore = false
+            eventsDisplayed += 10
+            eventCatalog.reloadData()
+        }
+    }
+}
+

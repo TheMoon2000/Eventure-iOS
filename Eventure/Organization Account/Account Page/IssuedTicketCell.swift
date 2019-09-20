@@ -174,7 +174,7 @@ class IssuedTicketCell: UITableViewCell {
         let noun = ticket.quantity == 1 ? "ticket" : "tickets"
         ticketTitle.text = ticket.admissionType + " (\(ticket.quantity) \(noun))"
         issuedDate.text = ticket.creationDate?.readableString() ?? "Unknown"
-        if ticket.userID == -1 {
+        if ticket.redeemCode != nil {
             status.text = "Not yet redeemed"
             extraLabel.text = "Redeem code:"
             extra.text = ticket.redeemCode ?? "Error"

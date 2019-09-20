@@ -40,33 +40,31 @@ class AccountCell: UITableViewCell {
         
         function = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
             label.numberOfLines = 3
-            label.lineBreakMode = .byTruncatingTail
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: functionImage.rightAnchor, constant: 20).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
+            label.setContentHuggingPriority(.required, for: .horizontal)
             
             return label
         }()
         
         sideLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
             label.numberOfLines = 3
-            label.textColor = UIColor.gray
-            label.lineBreakMode = .byTruncatingTail
+            label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .right
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo:function.rightAnchor, constant: 100).isActive = true
+            label.leftAnchor.constraint(equalTo: function.rightAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: rightAnchor, constant: -40).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor,constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         } ()
