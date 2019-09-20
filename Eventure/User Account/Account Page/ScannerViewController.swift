@@ -12,17 +12,17 @@ import SwiftyJSON
 
 class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    private var session:AVCaptureSession!
-    private var device: AVCaptureDevice!
+    private(set) var session:AVCaptureSession!
+    private(set) var device: AVCaptureDevice!
     private var screenWidth : CGFloat!
     private var screenHeight: CGFloat!
     
     private var activeRegion: UIView!
-    private var cameraPrompt: UILabel!
-    private var spinner: UIActivityIndicatorView!
-    private var torchSwitch: UIButton!
-    private var cameraDefaultText = "Place QR code within to scan!"
-    private var lastZoomFactor: CGFloat = 1.0
+    private(set) var cameraPrompt: UILabel!
+    private(set) var spinner: UIActivityIndicatorView!
+    private(set) var torchSwitch: UIButton!
+    private(set) var cameraDefaultText = "Place QR code within to scan!"
+    private(set) var lastZoomFactor: CGFloat = 1.0
     
     private var TORCH_ON = "Let there be light"
     private var TORCH_OFF = "Tap to turn off flashlight"
@@ -319,33 +319,30 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         }
     }
     
+    func detectQRCode(_ image: UIImage?) -> String? {
+        if let image = image, let ciImage = CIImage.init(image: image) {
+            var options: [String: Any]
+            let context = CIContext()
+            options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+            let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
+            if ciImage.properties.keys.contains((kCGImagePropertyOrientation as String)){
+                options = [CIDetectorImageOrientation: ciImage.properties[(kCGImagePropertyOrientation as String)] ?? 1]
+            }else {
+                options = [CIDetectorImageOrientation: 1]
+            }
+            let features = qrDetector?.features(in: ciImage, options: options)
+            
+            return (features?.first as? CIQRCodeFeature)?.messageString
+        }
+        return nil
+    }
+    
     //扫描完成的代理
     
     private var lastReturnDate = Date(timeIntervalSinceReferenceDate: 0)
     
-    
-    private func decryptDataString(_ string: String) -> String? {
-        
-        let components = string.components(separatedBy: "?id=")
-        
-        guard components.count >= 2 else {
-            return decryptLegacyQR(string)
-        }
-        
-        return components[1]
-    }
-    
-    
-    private func decryptLegacyQR(_ string: String) -> String? {
-        guard string.hasPrefix(URL_PREFIX) else { return nil }
-        
-        let encrypted = string[string.index(string.startIndex, offsetBy: URL_PREFIX.count)...]
-        
-        if let decrypted = NSString(string: String(encrypted)).aes256Decrypt(withKey: AES_KEY) {
-            
-            return decrypted
-        }
-        
+    /// Override this
+    func decryptDataString(_ string: String) -> String? {
         return nil
     }
     
@@ -370,9 +367,9 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         let thisDate = Date()
         lastReturnDate = thisDate
         
-        if let eventID = filtered.first {
+        if let decrypted = filtered.first {
             UISelectionFeedbackGenerator().selectionChanged()
-            presentCheckinForm(eventID: eventID)
+            processDecryptedCode(string: decrypted)
         } else {
             cameraPrompt.text = INVALID_CODE
             cameraPrompt.textColor = LIGHT_RED
@@ -389,64 +386,17 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         
     }
     
-    func presentCheckinForm(eventID: String) {
-        
+    func processDecryptedCode(string: String) {
+        // Override this...
         session?.stopRunning()
         spinner.startAnimating()
         
-        cameraPrompt.text = "Event code scanned! Processing..."
+        cameraPrompt.text = "Code scanned! Processing..."
         cameraPrompt.textColor = .white
         
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetEvent",
-                           parameters: ["uuid": eventID])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-            }
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    self.cameraPrompt.text = "No internet connection."
-                    self.cameraPrompt.textColor = WARNING_COLOR
-                    self.session.startRunning()
-                }
-                return
-            }
-            
-            if let json = try? JSON(data: data!) {
-                let event = Event(eventInfo: json)
-                event.getCover(nil)
-                let checkinForm = CheckinPageController(event: event)
-                DispatchQueue.main.async {
-                    self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true) {
-                        self.navigationController?.popViewController(animated: false)
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.cameraPrompt.text = "The event you scanned does not exist or has been deleted by its host organization."
-                    self.cameraPrompt.textColor = LIGHT_RED
-                }
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                if self.cameraPrompt.textColor == LIGHT_RED {
-                    self.cameraPrompt.text = self.cameraDefaultText
-                    self.cameraPrompt.textColor = .white
-                }
-            }
-        }
-        
-        task.resume()
     }
     
-    @objc private func pickLocalImage() {
+    @objc func pickLocalImage() {
         guard UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) else {
             return
         }
@@ -460,39 +410,9 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     override var shouldAutorotate: Bool {
         return false
     }
+    
 }
-
 
 extension ScannerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        if let message = detectQRCode(image), let eventUUID = decryptDataString(message) {
-            picker.dismiss(animated: true)
-            presentCheckinForm(eventID: eventUUID)
-        } else {
-            let alert = UIAlertController(title: "This is not an Eventure event code!", message: "Please try a different image.", preferredStyle: .alert)
-            alert.addAction(.init(title: "OK", style: .cancel))
-            picker.present(alert, animated: true, completion: nil)
-        }
-    }
     
-    func detectQRCode(_ image: UIImage?) -> String? {
-        if let image = image, let ciImage = CIImage.init(image: image) {
-            var options: [String: Any]
-            let context = CIContext()
-            options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-            let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
-            if ciImage.properties.keys.contains((kCGImagePropertyOrientation as String)){
-                options = [CIDetectorImageOrientation: ciImage.properties[(kCGImagePropertyOrientation as String)] ?? 1]
-            }else {
-                options = [CIDetectorImageOrientation: 1]
-            }
-            let features = qrDetector?.features(in: ciImage, options: options)
-            
-            return (features?.first as? CIQRCodeFeature)?.messageString
-        }
-        return nil
-    }
 }
-

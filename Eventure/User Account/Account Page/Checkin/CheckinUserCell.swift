@@ -111,7 +111,7 @@ class CheckinUserCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -20).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -18).isActive = true
             label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
             
             return label

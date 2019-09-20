@@ -61,7 +61,7 @@ class TicketQRCell: UITableViewCell {
             data.dictionaryObject?["Ticket ID"] = ticket.ticketID
             let iv = UIImageView()
             if let msg = data.rawString([.castNilToNSNull: true]) {
-                iv.image = generateQRCode(from: msg)
+                iv.image = generateQRCode(from: NSString(string: msg).aes256Encrypt(withKey: AES_KEY))
             }
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false

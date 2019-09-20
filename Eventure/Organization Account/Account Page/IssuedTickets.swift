@@ -112,7 +112,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 var newRecords = [Ticket]()
                 for purchase in json.array! {
                     let newTicket = Ticket(ticketInfo: purchase)
-                    if newTicket.paymentType == .none {
+                    if newTicket.paymentType == .offline {
                         newRecords.append(newTicket)
                     }
                 }

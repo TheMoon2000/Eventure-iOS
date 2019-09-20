@@ -102,10 +102,14 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             orgProfile.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgProfile, animated: true)
         case (2, 0):
+            let scanner = OrgScanner()
+            scanner.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(scanner, animated: true)
+        case (2, 1):
             let alert = UIAlertController(title: "Feature unavailable", message: "We are still working on this feature. Please wait a few weeks for our next release.", preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))
             present(alert, animated: true)
-        case (2, 1):
+        case (2, 2):
             let subscriber = SubscriberListPage()
             subscriber.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(subscriber, animated:true)
@@ -165,9 +169,12 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
         case (2, 0):
+            cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "Scan Ticket Code"
+        case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "stats")
             cell.titleLabel.text = "Event Statistics"
-        case (2, 1):
+        case (2, 2):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Subscribers"
             cell.valueLabel.text = "\(Organization.current!.subscribers.count)"
@@ -229,7 +236,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     
     //rows in sections
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 2, 2][section]
+        return [1, 2, 3, 2][section]
     }
     
     //eliminate first section header

@@ -32,6 +32,8 @@
 		CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F563229AD518008FABEA /* MainTabBarController.swift */; };
 		CC18F568229AD535008FABEA /* OrganizationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F567229AD535008FABEA /* OrganizationsViewController.swift */; };
 		CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1AF7A4229B732C003471F2 /* Global Constants.swift */; };
+		CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050542334BA9B00F6A114 /* UserScanner.swift */; };
+		CC2050572334BF0000F6A114 /* OrgScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050562334BF0000F6A114 /* OrgScanner.swift */; };
 		CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */; };
 		CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */; };
 		CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B9231B0171003B8DE7 /* Registrant.swift */; };
@@ -205,6 +207,8 @@
 		CC18F567229AD535008FABEA /* OrganizationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationsViewController.swift; sourceTree = "<group>"; };
 		CC18F569229AD570008FABEA /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CC1AF7A4229B732C003471F2 /* Global Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Global Constants.swift"; sourceTree = "<group>"; };
+		CC2050542334BA9B00F6A114 /* UserScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScanner.swift; sourceTree = "<group>"; };
+		CC2050562334BF0000F6A114 /* OrgScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgScanner.swift; sourceTree = "<group>"; };
 		CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinPageController.swift; sourceTree = "<group>"; };
 		CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSheet.swift; sourceTree = "<group>"; };
 		CC2167B9231B0171003B8DE7 /* Registrant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registrant.swift; sourceTree = "<group>"; };
@@ -466,6 +470,7 @@
 				CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */,
 				CC3312812322121C00DC03D2 /* AboutPage.swift */,
 				CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */,
+				CC2050542334BA9B00F6A114 /* UserScanner.swift */,
 				CC2CCD442330B516000C65E2 /* TicketsOverview.swift */,
 				CC9A74F62330AC930021A790 /* TicketTabView.swift */,
 				CC686ECD232F40DD00144CBF /* TicketsList.swift */,
@@ -647,6 +652,7 @@
 				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
 				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
 				CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */,
+				CC2050562334BF0000F6A114 /* OrgScanner.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -942,6 +948,7 @@
 				CC0646DF22FDF201000BF3CD /* Event.swift in Sources */,
 				CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */,
 				CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */,
+				CC2050572334BF0000F6A114 /* OrgScanner.swift in Sources */,
 				CC686ED2232F459100144CBF /* Ticket.swift in Sources */,
 				CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */,
 				CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */,
@@ -1006,6 +1013,7 @@
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC2CCD452330B517000C65E2 /* TicketsOverview.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
+				CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
 				CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */,
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,

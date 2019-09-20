@@ -110,7 +110,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             profileInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(profileInfo, animated: true)
         case (2, 0):
-            let scanVC = ScannerViewController()
+            let scanVC = UserScanner()
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
         case (2, 1):

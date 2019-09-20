@@ -203,8 +203,7 @@ class CheckinTable: UIViewController {
         DispatchQueue.main.async {
             
             let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
-            
-            
+
 
             self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
             self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
@@ -274,7 +273,7 @@ class CheckinTable: UIViewController {
                         self.emptyLabel.text = ""
                     }
                     self.reloadStats()
-                    self.checkinTable.reloadSections([0], with: .none)
+                    self.checkinTable.reloadData()
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
