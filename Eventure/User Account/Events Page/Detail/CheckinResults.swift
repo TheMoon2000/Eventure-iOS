@@ -363,8 +363,8 @@ class CheckinResults: UIViewController {
                         self.reloadStats()
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                        self.refreshRegistrants(stealth: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                        self?.refreshRegistrants(stealth: true)
                     }
                 }
             } else {

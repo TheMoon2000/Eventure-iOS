@@ -389,10 +389,10 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             cameraPrompt.text = INVALID_CODE
             cameraPrompt.textColor = LIGHT_RED
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                if thisDate == self.lastReturnDate {
-                    self.cameraPrompt.text = self.cameraDefaultText
-                    self.cameraPrompt.textColor = .white
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                if thisDate == self?.lastReturnDate {
+                    self?.cameraPrompt.text = self?.cameraDefaultText
+                    self?.cameraPrompt.textColor = .white
                 }
             }
         }

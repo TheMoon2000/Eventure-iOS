@@ -121,8 +121,8 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
                 }
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                self.getTickets(pulled: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+                self?.getTickets(pulled: true)
             }
             
             guard error == nil else {

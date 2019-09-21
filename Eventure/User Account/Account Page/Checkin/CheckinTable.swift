@@ -276,8 +276,8 @@ class CheckinTable: UIViewController {
                     self.checkinTable.reloadData()
                 }
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                    self.refreshRegistrants(stealth: true)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                    self?.refreshRegistrants(stealth: true)
                 }
             } else {
                 if !stealth {

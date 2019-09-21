@@ -75,10 +75,10 @@ class UserScanner: ScannerViewController {
                 }
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                if self.cameraPrompt.textColor == LIGHT_RED {
-                    self.cameraPrompt.text = self.cameraDefaultText
-                    self.cameraPrompt.textColor = .white
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+                if self?.cameraPrompt.textColor == LIGHT_RED {
+                    self?.cameraPrompt.text = self?.cameraDefaultText
+                    self?.cameraPrompt.textColor = .white
                 }
             }
         }
