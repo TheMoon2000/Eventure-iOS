@@ -35,6 +35,7 @@
 		CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050542334BA9B00F6A114 /* UserScanner.swift */; };
 		CC2050572334BF0000F6A114 /* OrgScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050562334BF0000F6A114 /* OrgScanner.swift */; };
 		CC2050592335302E00F6A114 /* CheckinVerification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2050582335302E00F6A114 /* CheckinVerification.swift */; };
+		CC20505B2335F1F000F6A114 /* ActivateTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC20505A2335F1F000F6A114 /* ActivateTicket.swift */; };
 		CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */; };
 		CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */; };
 		CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167B9231B0171003B8DE7 /* Registrant.swift */; };
@@ -211,6 +212,7 @@
 		CC2050542334BA9B00F6A114 /* UserScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserScanner.swift; sourceTree = "<group>"; };
 		CC2050562334BF0000F6A114 /* OrgScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgScanner.swift; sourceTree = "<group>"; };
 		CC2050582335302E00F6A114 /* CheckinVerification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinVerification.swift; sourceTree = "<group>"; };
+		CC20505A2335F1F000F6A114 /* ActivateTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivateTicket.swift; sourceTree = "<group>"; };
 		CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinPageController.swift; sourceTree = "<group>"; };
 		CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSheet.swift; sourceTree = "<group>"; };
 		CC2167B9231B0171003B8DE7 /* Registrant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registrant.swift; sourceTree = "<group>"; };
@@ -646,7 +648,6 @@
 				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
 				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
-				CC2050562334BF0000F6A114 /* OrgScanner.swift */,
 				CC2050582335302E00F6A114 /* CheckinVerification.swift */,
 				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
 				CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */,
@@ -717,6 +718,8 @@
 				CC2D5907232B5289004120E8 /* EventCodeView.swift */,
 				CC426CAF2320828500BB3CA4 /* CheckinResults.swift */,
 				CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */,
+				CC2050562334BF0000F6A114 /* OrgScanner.swift */,
+				CC20505A2335F1F000F6A114 /* ActivateTicket.swift */,
 				CC66A5BC2329D127002DA953 /* Sorting cells */,
 				DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */,
 				DD1BB0D52310B2350082C4EE /* AboutViewController.swift */,
@@ -1023,6 +1026,7 @@
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
 				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
+				CC20505B2335F1F000F6A114 /* ActivateTicket.swift in Sources */,
 				CC3312822322121C00DC03D2 /* AboutPage.swift in Sources */,
 				CC2CCD47233184CD000C65E2 /* TicketTypes.swift in Sources */,
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,

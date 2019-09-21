@@ -61,7 +61,6 @@ class CheckinVerification: UIViewController {
             return label
         }()
         
-        
     }
     
 

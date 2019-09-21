@@ -512,9 +512,10 @@ extension OrgEventViewController {
 extension OrgEventViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let height = scrollView.contentSize.height
-        let scrolled = scrollView.frame.height + scrollView.contentOffset.y - topTab.frame.height - 8
+        let scrolled = scrollView.frame.height + scrollView.contentOffset.y - (topTabBg.isHidden ? 50 : topTabBg.frame.height) - 8
+        print(scrolled - height)
         if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
-            if topTab.selectedSegmentIndex == 0 && !spinner.isAnimating {
+            if !filteredEvents.isEmpty && !spinner.isAnimating {
                 footer.textLabel.alpha = (scrolled - height) / 80
                 if eventsDisplayed < filteredEvents.count {
                     if footer.textLabel.alpha >= 1 {

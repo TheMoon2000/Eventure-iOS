@@ -121,6 +121,10 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
                 }
             }
             
+            DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                self.getTickets(pulled: true)
+            }
+            
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.emptyLabel.text = CONNECTION_ERROR

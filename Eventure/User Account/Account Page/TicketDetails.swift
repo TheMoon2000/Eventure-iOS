@@ -16,8 +16,6 @@ class TicketDetails: UITableViewController {
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     
-    private var contentCells = [[UITableViewCell]]()
-    
     required init(ticket: Ticket) {
         super.init(nibName: nil, bundle: nil)
         
@@ -29,6 +27,12 @@ class TicketDetails: UITableViewController {
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         ticket.getEvent(handler: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ticketActivated(_:)), name: TICKET_ACTIVATED, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewDidLoad() {
@@ -40,7 +44,17 @@ class TicketDetails: UITableViewController {
         tableView.sectionFooterHeight = 0
         tableView.sectionHeaderHeight = 40
                 
+    }
+    
+    @objc private func ticketActivated(_ notification: Notification) {
+        guard let dict = notification.object as? [String : String] else {
+            return
         }
+        if ticket.eventID == dict["eventId"] {
+            ticket.activationDate = DATE_FORMATTER.date(from: dict["date"] ?? "")
+            tableView.reloadData()
+        }
+    }
 
     // MARK: - Table view data source
 

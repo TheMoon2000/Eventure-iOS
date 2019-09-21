@@ -143,6 +143,21 @@ let COMPACT_STYLE = """
     }
 """
 
+let TITLE_STYLE = """
+    body {
+        font-family: -apple-system;
+        font-size: 18.5px;
+        line-height: 1.4;
+        letter-spacing: 1%;
+        color: #505050;
+        margin-bottom: 10px;
+    }
+
+    strong, em {
+        color: #303030;
+    }
+"""
+
 // MARK: - Cache files
 
 let DRAFTS_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("drafts")

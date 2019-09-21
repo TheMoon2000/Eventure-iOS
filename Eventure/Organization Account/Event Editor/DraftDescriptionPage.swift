@@ -383,7 +383,6 @@ extension DraftDescriptionPage {
     @objc private func keyboardDidShow(_ notification: Notification) {
         let kbSize = ((notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey]) as! CGRect).size
         canvas.contentInset.bottom = kbSize.height
-        print(kbSize.height)
         canvas.scrollIndicatorInsets.bottom = kbSize.height
     }
     

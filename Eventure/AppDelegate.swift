@@ -200,7 +200,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             alert.addAction(.init(title: "Dismiss", style: .cancel))
             UIApplication.topMostViewController?.present(alert, animated: true)
         case .ticketActivation:
-            break
+            NotificationCenter.default.post(name: TICKET_ACTIVATED, object: packet.dictionaryObject as? [String : String])
         }
     }
     

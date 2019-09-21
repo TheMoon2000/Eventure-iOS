@@ -79,8 +79,13 @@ class TicketQRCell: UITableViewCell {
         activationLabel = {
             let label = UILabel()
             label.numberOfLines = 5
-            if let aDate = ticket.activationDate {
-                label.attributedText = "Activated on \(aDate.readableString())".attributedText(style: COMPACT_STYLE)
+            if let dateString = ticket.activationDate?.readableString() {
+                if dateString.hasPrefix("Today") {
+                    let truncated = dateString[dateString.index(dateString.startIndex, offsetBy: 5)..<dateString.endIndex]
+                    label.attributedText = ("Activated today" + String(truncated)).attributedText()
+                } else {
+                    label.attributedText = "Activated on \(dateString)".attributedText()
+                }
                 qrCode.alpha = 0.09
             }
             label.font = .systemFont(ofSize: 17, weight: .medium)

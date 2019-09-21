@@ -169,12 +169,17 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                     let msg = String(data: data!, encoding: .ascii) ?? ""
                     switch msg {
                     case INTERNAL_ERROR:
-                        serverMaintenanceError(vc: self)
+                        DispatchQueue.main.async {
+                            serverMaintenanceError(vc: self)
+                        }
                     case "success":
                         User.current!.tags = Set(tagsArray)
-                        self.navigationController?.popViewController(animated: true)
+                        DispatchQueue.main.async { self.navigationController?.popViewController(animated: true)
+                        }
                     default:
-                        internetUnavailableError(vc: self)
+                        DispatchQueue.main.async {
+                            internetUnavailableError(vc: self)
+                        }
                     }
                 }
                 

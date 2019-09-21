@@ -10,6 +10,12 @@ import UIKit
 import SwiftyJSON
 
 class OrgScanner: ScannerViewController {
+    
+    var event: Event?
+    
+    override var INVALID_CODE: String {
+        return "Oops, this doesn't look like an event ticket."
+    }
 
     override func decryptDataString(_ string: String) -> String? {
         if let decrypted = NSString(string: string).aes256Decrypt(withKey: AES_KEY) {
@@ -20,7 +26,11 @@ class OrgScanner: ScannerViewController {
     }
     
     override func processDecryptedCode(string: String) {
-        print("Process \(string)")
+        super.processDecryptedCode(string: string)
+        let at = ActivateTicket(ticketID: string, event: event)
+        present(at, animated: true) {
+            self.resetDisplay()
+        }
     }
     
 }

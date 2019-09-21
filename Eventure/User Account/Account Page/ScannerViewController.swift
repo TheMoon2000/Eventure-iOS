@@ -26,7 +26,9 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     private var TORCH_ON = "Let there be light"
     private var TORCH_OFF = "Tap to turn off flashlight"
-    private var INVALID_CODE = "Oops, this QR code is not a valid event code."
+    var INVALID_CODE: String {
+        return "Oops, this QR code is not a valid event code."
+    }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -68,10 +70,15 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        session.startRunning()
         AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
     }
     /// We need to make four views that block the area that is NOT part of the active scanning area.
@@ -100,8 +107,6 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             
             return region
         }()
-        
-        activeRegion.layoutIfNeeded()
         
         let wallColor = UIColor(white: 0.1, alpha: 0.6)
         
@@ -206,6 +211,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             return button
         }()
         
+        view.layoutIfNeeded()
     }
     
     
@@ -239,7 +245,11 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                 //扫描区域
                 
                 //rectOfInterest 属性中x和y互换，width和height互换。
-                output.rectOfInterest = activeRegion.frame
+                output.rectOfInterest = CGRect(
+                    x: activeRegion.frame.origin.y / view.bounds.height,
+                    y: activeRegion.frame.origin.x / view.bounds.width,
+                    width: activeRegion.frame.height / view.bounds.height,
+                    height: activeRegion.frame.width / view.bounds.width)
             }
             
             
@@ -346,6 +356,12 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         return nil
     }
     
+    func resetDisplay() {
+        spinner.stopAnimating()
+        self.cameraPrompt.text = self.cameraDefaultText
+        self.cameraPrompt.textColor = .white
+    }
+    
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         
         
@@ -362,13 +378,12 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             return decryptDataString(dataString) ?? ""
         }
         
-        let filtered = parsed.filter { !$0.isEmpty }
-        
         let thisDate = Date()
         lastReturnDate = thisDate
+
+        let filtered = parsed.filter { !$0.isEmpty }
         
         if let decrypted = filtered.first {
-            UISelectionFeedbackGenerator().selectionChanged()
             processDecryptedCode(string: decrypted)
         } else {
             cameraPrompt.text = INVALID_CODE
@@ -393,7 +408,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         
         cameraPrompt.text = "Code scanned! Processing..."
         cameraPrompt.textColor = .white
-        
+        UISelectionFeedbackGenerator().selectionChanged()
     }
     
     @objc func pickLocalImage() {
