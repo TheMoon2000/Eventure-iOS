@@ -112,7 +112,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 var newRecords = [Ticket]()
                 for purchase in json.array! {
                     let newTicket = Ticket(ticketInfo: purchase)
-                    if newTicket.paymentType == .offline {
+                    if newTicket.paymentType == .offline && newTicket.admissionType == self.admissionType.typeName {
                         newRecords.append(newTicket)
                     }
                 }
@@ -152,6 +152,69 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         tableView.deselectRow(at: indexPath, animated: false)
         let editor = CreateNewTicket(parentVC: self, ticketToEdit: tickets[indexPath.row])
         navigationController?.pushViewController(editor, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        guard tickets[indexPath.row].transactionDate == nil else { return nil }
+
+        let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
+            self.deleteRow(indexPath: indexPath)
+        })
+
+        action.backgroundColor = FATAL_COLOR
+        return [action]
+    }
+    
+    private func deleteRow(indexPath: IndexPath) {
+        let ticket = tickets[indexPath.row]
+        
+        loadingBG.isHidden = false
+        (loadingBG.subviews.last as? UILabel)?.text = "Deleting..."
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/DeleteTicket",
+                           parameters: ["ticketId": ticket.ticketID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+                (self.loadingBG.subviews.last as? UILabel)?.text = "Loading..."
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                DispatchQueue.main.async {
+                    self.tickets.remove(at: indexPath.row)
+                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
+            default:
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                    alert.addAction(.init(title: "Dismiss", style: .cancel))
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+        
+        task.resume()
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {

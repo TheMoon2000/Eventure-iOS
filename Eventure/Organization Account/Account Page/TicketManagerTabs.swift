@@ -37,6 +37,8 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
         }
         
         super.viewDidLoad()
+        
+        containerView.isScrollEnabled = false
     }
     
 
