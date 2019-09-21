@@ -59,6 +59,7 @@ class TicketManagerMain: UIViewController {
     }
     
     @objc private func createTicket() {
+        tabs.viewControllers[1].loadViewIfNeeded()
         let vc = CreateNewTicket(parentVC: tabs.viewControllers[1] as! IssuedTickets)
         navigationController?.pushViewController(vc, animated: true)
     }

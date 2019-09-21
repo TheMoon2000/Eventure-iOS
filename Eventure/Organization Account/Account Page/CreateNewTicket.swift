@@ -139,9 +139,7 @@ class CreateNewTicket: UITableViewController {
         if draftTicket.userEmail?.isValidEmail() ?? false {
             parameters["email"] = draftTicket.userEmail
         }
-        
-        print(parameters)
-        
+                
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/AddTicket",
                            parameters: parameters)!
