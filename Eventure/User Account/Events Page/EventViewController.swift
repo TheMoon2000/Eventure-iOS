@@ -483,7 +483,7 @@ extension EventViewController {
 extension EventViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let height = scrollView.contentSize.height
-        let scrolled = scrollView.frame.height + scrollView.contentOffset.y - topTab.frame.height - 8
+        let scrolled = scrollView.frame.height + scrollView.contentOffset.y - 10
         if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
             footer.textLabel.alpha = (scrolled - height) / 70
             if eventsDisplayed < filteredEvents.count {
