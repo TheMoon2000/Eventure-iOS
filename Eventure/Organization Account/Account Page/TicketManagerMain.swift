@@ -19,7 +19,7 @@ class TicketManagerMain: UIViewController {
         
         self.event = event
         self.admissionType = admissionType
-        self.title = "Manage Tickets"
+        self.title = admissionType.typeName
     }
 
     override func viewDidLoad() {

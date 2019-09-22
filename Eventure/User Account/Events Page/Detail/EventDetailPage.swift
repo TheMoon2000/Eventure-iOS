@@ -277,6 +277,10 @@ class EventDetailPage: UIViewController {
             emptyImageHeightConstraint?.isActive = false
             coverImage.image = event.eventVisual
         }
+        if let v = tabStrip.viewControllers.last as? OtherViewController {
+            v.event = self.event
+            v.refreshValues()
+        }
     }
     
     @objc private func interestedAction() {

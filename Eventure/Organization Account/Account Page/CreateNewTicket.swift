@@ -27,7 +27,7 @@ class CreateNewTicket: UITableViewController {
         if ticketToEdit == nil {
             draftTicket = Ticket(ticketInfo: JSON())
             draftTicket.ticketID = UUID().uuidString.lowercased()
-            draftTicket.admissionType = parentVC.admissionType.typeName
+            draftTicket.admissionID = parentVC.admissionType.id
             draftTicket.ticketPrice = parentVC.admissionType.price ?? 0.0
             draftTicket.paymentType = .offline
         } else {
@@ -87,11 +87,11 @@ class CreateNewTicket: UITableViewController {
             cell.valueText.keyboardType = .emailAddress
             cell.valueText.autocapitalizationType = .none
             cell.valueText.autocorrectionType = .no
-            cell.valueText.isEditable = draftTicket.activationDate == nil
-            if draftTicket.activationDate == nil {
+            if draftTicket.transactionDate == nil {
                 cell.promptLabel.text = "Recipient email (Leave blank if this ticket can be redeemed by anyone with the code):"
             } else {
                 cell.promptLabel.text = "The ticket has already been claimed by the user associated with the email below and cannot be modified further."
+                cell.valueText.isEditable = false
             }
             cell.returnHandler = { tv in
                 let notesCell = self.contentCells[2] as? DraftLocationCell
@@ -131,7 +131,7 @@ class CreateNewTicket: UITableViewController {
             "eventId": parentVC.event.uuid,
             "ticketId": draftTicket.ticketID,
             "quantity": String(draftTicket.quantity),
-            "type": draftTicket.admissionType,
+            "admissionId": draftTicket.admissionID,
             "price": String(draftTicket.ticketPrice),
             "notes": draftTicket.notes
         ]
@@ -190,7 +190,9 @@ class CreateNewTicket: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        (contentCells[0] as? DraftCapacityCell)?.valueField.becomeFirstResponder()
+        if newTicket {
+            (contentCells[0] as? DraftCapacityCell)?.valueField.becomeFirstResponder()
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

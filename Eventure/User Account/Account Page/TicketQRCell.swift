@@ -27,7 +27,7 @@ class TicketQRCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.textAlignment = .center
-            label.text = ticket.admissionType
+            label.text = ticket.typeName
             label.font = .systemFont(ofSize: 24, weight: .medium)
             label.textColor = .init(white: 0.1, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -88,14 +88,14 @@ class TicketQRCell: UITableViewCell {
                 }
                 qrCode.alpha = 0.09
             }
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .systemFont(ofSize: 18, weight: .medium)
             label.textAlignment = .center
             label.textColor = .init(white: 0.1, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: qrCode.leftAnchor, constant: -10).isActive = true
-            label.rightAnchor.constraint(equalTo: qrCode.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: qrCode.leftAnchor, constant: -15).isActive = true
+            label.rightAnchor.constraint(equalTo: qrCode.rightAnchor, constant: 15).isActive = true
             label.centerYAnchor.constraint(equalTo: qrCode.centerYAnchor).isActive = true
             
             return label

@@ -78,7 +78,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ListPurchases",
                            parameters: ["eventId": event.uuid,
-                                        "type": admissionType.typeName])!
+                                        "admissionId": admissionType.id])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -106,7 +106,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
                 var newRecords = [(Registrant, Ticket)]()
                 for purchase in json.array! {
                     let ticket = Ticket(ticketInfo: purchase)
-                    if ticket.redeemCode != nil { continue }
+                    if ticket.userID == -1 { continue }
                     let registrant = Registrant(json: purchase)
                     registrant.profilePicture = self.profileCache[registrant.userID]
                     

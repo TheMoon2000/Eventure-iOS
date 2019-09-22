@@ -77,7 +77,7 @@ class TicketTypeCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: subtitleLabel.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: subtitleLabel.rightAnchor, constant: 15).isActive = true
             label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: subtitleLabel.topAnchor).isActive = true
             

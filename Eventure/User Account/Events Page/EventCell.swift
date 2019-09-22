@@ -9,9 +9,7 @@
 import UIKit
 
 class EventCell: UICollectionViewCell {
-    
-    private let verticalSpacing: CGFloat = 14
-    
+        
     private var event: Event!
     
     private var card: UIView!
@@ -199,7 +197,7 @@ class EventCell: UICollectionViewCell {
             card.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: timeText.bottomAnchor, constant: verticalSpacing).isActive = true
+            label.topAnchor.constraint(equalTo: timeText.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             label.topAnchor.constraint(equalTo: locationLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
             
@@ -232,7 +230,7 @@ class EventCell: UICollectionViewCell {
             card.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: eventHostLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: verticalSpacing).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             label.topAnchor.constraint(equalTo: eventHostLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
             label.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20).isActive = true

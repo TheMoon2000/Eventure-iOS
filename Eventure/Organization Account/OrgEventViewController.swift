@@ -95,7 +95,7 @@ class OrgEventViewController: UIViewController, EventProvider {
             ev.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             ev.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             ev.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-            ev.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            ev.heightAnchor.constraint(equalToConstant: 50).isActive = true
             
             return ev
         }()
@@ -497,9 +497,7 @@ extension OrgEventViewController {
                 }
                 . sorted { self.sortFunction(event1: $0, event2: $1) }
             } else {
-                self.filteredEvents = self.allDrafts.filter { self.filterFunction($0)
-                }
-                . sorted { self.sortFunction(event1: $0, event2: $1) }
+                self.filteredEvents = self.allDrafts.sorted { self.sortFunction(event1: $0, event2: $1) }
             }
             DispatchQueue.main.async {
                 handler?()
@@ -511,8 +509,8 @@ extension OrgEventViewController {
 
 extension OrgEventViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let height = scrollView.contentSize.height
-        let scrolled = scrollView.frame.height + scrollView.contentOffset.y + (topTabBg.isHidden ? 50 : 0) - 10
+        let height = scrollView.contentSize.height - 50
+        let scrolled = scrollView.safeAreaLayoutGuide.layoutFrame.height + scrollView.contentOffset.y - 10
         if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
             if !filteredEvents.isEmpty && !spinner.isAnimating {
                 footer.textLabel.alpha = (scrolled - height) / 80

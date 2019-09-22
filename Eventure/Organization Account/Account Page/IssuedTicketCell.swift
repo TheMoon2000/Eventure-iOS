@@ -83,7 +83,7 @@ class IssuedTicketCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: separator.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 15).isActive = true
-            label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -97,9 +97,10 @@ class IssuedTicketCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: issuedDateLabel.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: issuedDateLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: issuedDateLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: separator.rightAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -115,6 +116,7 @@ class IssuedTicketCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: separator.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: issuedDate.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -128,9 +130,10 @@ class IssuedTicketCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: statusLabel.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: statusLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: statusLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: separator.rightAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -145,7 +148,7 @@ class IssuedTicketCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: separator.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: status.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
-            label.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -172,7 +175,7 @@ class IssuedTicketCell: UITableViewCell {
     
     func setup(ticket: Ticket) {
         let noun = ticket.quantity == 1 ? "ticket" : "tickets"
-        ticketTitle.text = ticket.admissionType + " (\(ticket.quantity) \(noun))"
+        ticketTitle.text = ticket.typeName + " (\(ticket.quantity) \(noun))"
         issuedDate.text = ticket.creationDate?.readableString() ?? "Unknown"
         if ticket.redeemCode != nil {
             status.text = "Not yet redeemed"

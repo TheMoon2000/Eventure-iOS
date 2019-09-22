@@ -86,12 +86,12 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
         changeHandler?(valueField)
     }
     
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        returnHandler?(textField)
-    }
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        if returnHandler == nil {
+            textField.resignFirstResponder()
+        } else {
+            returnHandler?(textField)
+        }
         return true
     }
     

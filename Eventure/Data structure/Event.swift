@@ -35,10 +35,13 @@ class Event {
     var lastModified: Date?
     
     /// An array containing all the ticket types for the event.
-    var admissionTypes = [AdmissionType]()
+    var admissionTypes = Set<AdmissionType>()
     var admissionTypesEncoded: String {
-        let list = admissionTypes.map { $0.encodedJSON }
-        return JSON(list).rawString([.castNilToNSNull: true])!
+        var json = JSON()
+        for type in admissionTypes {
+            json[type.id] = type.encodedJSON
+        }
+        return json.rawString([.castNilToNSNull : true])!
     }
     
     // Only used as a temporary storage
@@ -131,9 +134,11 @@ class Event {
         }
         
         if let admissionTypes_raw = dictionary["Ticket types"]?.string {
-            for type in JSON(parseJSON: admissionTypes_raw).arrayValue {
-                admissionTypes.append(AdmissionType(json: type))
+            var tmp = Set<AdmissionType>()
+            for (k, v) in JSON(parseJSON: admissionTypes_raw).dictionaryValue {
+                tmp.insert(AdmissionType(json: v, id: k))
             }
+            admissionTypes = tmp
         }
         
         active = (dictionary["Active"]?.int ?? 1) == 1
@@ -171,7 +176,7 @@ class Event {
             print("WARNING: Cannot read event collection at \(path)!")
             return [:]
         }
-        
+                
         cachedEvents = collection
         
         for (id, eventList) in collection {
@@ -286,10 +291,11 @@ class Event {
         task.resume()
     }
     
-    func updateTicketQuantities(handler: ((Bool) -> ())?) {
+    /// Adds useful information such as quantity and revenue to the event's ticket information.
+    func updateAdmissionTypes(handler: ((Bool) -> ())?) {
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/QuantitySold",
+                           API_Name: "events/GetTicketInfo",
                            parameters: ["eventId": uuid])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
@@ -304,12 +310,13 @@ class Event {
                 return
             }
                         
-            if let json = try? JSON(data: data!), let quantities = json.dictionaryObject as? [String : Int] {
-                for type in self.admissionTypes {
-                    if let q = quantities[type.typeName] {
-                        type.quantitySold = q
-                    }
+            if let json = try? JSON(data: data!).dictionaryValue {
+                var newTypes = Set<AdmissionType>()
+                
+                for (key, value) in json {
+                    newTypes.insert(AdmissionType(json: value, id: key))
                 }
+                self.admissionTypes = newTypes
                 DispatchQueue.main.async {
                     handler?(true)
                 }

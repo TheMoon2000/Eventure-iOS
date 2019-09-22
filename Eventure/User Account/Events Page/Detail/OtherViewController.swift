@@ -14,6 +14,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     var event: Event!
     var detailPage: EventDetailPage!
     
+    private var verticalSpacing: CGFloat = 15
+    
     private var canvas: UIView!
     
     private var hostLabel: UILabel!
@@ -30,6 +32,9 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     
     private var interestedLabel: UILabel!
     private(set) var interestedText: UILabel!
+    
+    private var ticketLabel: UILabel!
+    private(set) var ticketValue: UILabel!
     
     var heightConstraint: NSLayoutConstraint?
 
@@ -105,10 +110,9 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: hostLink.titleLabel!.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: hostLink.titleLabel!.bottomAnchor, constant: verticalSpacing).isActive = true
             
-            label.layoutIfNeeded()
-            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -117,7 +121,6 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = event.location.isEmpty ? "TBA" : event.location
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -139,10 +142,9 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: verticalSpacing).isActive = true
             
-            label.layoutIfNeeded()
-            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -151,7 +153,6 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = event.startTime?.readableString() ?? "Unspecified"
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -172,7 +173,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: startDate.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: startDate.bottomAnchor, constant: verticalSpacing).isActive = true
             
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
@@ -184,7 +185,6 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = event.duration
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -206,10 +206,9 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: endDate.bottomAnchor, constant: 15).isActive = true
+            label.topAnchor.constraint(equalTo: endDate.bottomAnchor, constant: verticalSpacing).isActive = true
             
-            label.layoutIfNeeded()
-            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -218,7 +217,6 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.text = String(event.interested.count)
             label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -231,7 +229,48 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             return label
         }()
         
-        interestedText.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20).isActive = true
+        ticketLabel = {
+            let label = UILabel()
+            label.text = "Requires ticket: "
+            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: interestedText.bottomAnchor, constant: verticalSpacing).isActive = true
+            
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
+            
+            return label
+        }()
+        
+        ticketValue = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.numberOfLines = 0
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: ticketLabel.rightAnchor, constant: 10).isActive = true
+            label.topAnchor.constraint(equalTo: ticketLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: interestedText.rightAnchor).isActive = true
+            
+            return label
+        }()
+        
+        ticketValue.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20).isActive = true
+        
+        refreshValues()
+    }
+    
+    func refreshValues() {
+        locationText.text = event.location.isEmpty ? "TBA" : event.location
+        startDate.text = event.startTime?.readableString() ?? "Unspecified"
+        endDate.text = event.duration
+        interestedText.text = String(event.interested.count)
+        ticketValue.text = event.requiresTicket ? "Yes" : "No"
     }
     
     @objc private func openOrganization() {

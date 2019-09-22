@@ -10,40 +10,67 @@ import UIKit
 import SwiftyJSON
 
 class AdmissionType {
+    
+    /// The ID is immutable.
+    let id: String
+    var eventID: String
     var typeName: String
     var quota: Int?
     var price: Double?
     var notes: String
     
-    /// This value needs to be manually pulled from the server and updated. Before it's loaded, the default value is `nil`.
-    var quantitySold: Int?
+    var currentRevenue: Double
+    var quantitySold: Int
     
     var priceDescription: String {
         return String(format: "%.02f", price ?? 0.0)
     }
     
-    static var new: AdmissionType {
-        return AdmissionType(json: JSON())
+    init(eventID: String) {
+        self.id = UUID().uuidString.lowercased()
+        self.typeName = ""
+        self.eventID = eventID
+        self.notes = ""
+        currentRevenue = 0.0
+        quantitySold = 0
     }
     
-    init(json: JSON) {
+    init(json: JSON, id: String) {
         let dictionary = json.dictionaryValue
-        typeName = dictionary["Name"]?.string ?? ""
+        
+        self.id = id
+        typeName = dictionary["Type name"]?.string ?? ""
+        eventID = dictionary["Event ID"]?.string ?? ""
         quota = dictionary["Quota"]?.int
         price = dictionary["Price"]?.double
         notes = dictionary["Notes"]?.string ?? ""
+        currentRevenue = dictionary["Revenue"]?.double ?? 0.0
+        quantitySold = dictionary["Quantity"]?.int ?? 0
     }
     
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(typeName)
-    }
-    
+    /// Encodes everything but the ID.
     var encodedJSON: JSON {
         var json = JSON()
-        json.dictionaryObject?["Name"] = typeName
+        json.dictionaryObject?["Type name"] = typeName
+        json.dictionaryObject?["Event ID"] = eventID
         json.dictionaryObject?["Quota"] = quota
         json.dictionaryObject?["Price"] = price
         json.dictionaryObject?["Notes"] = notes
+        json.dictionaryObject?["Quantity"] = quantitySold
+        
+        // The revenue should not be saved
+        
         return json
+    }
+    
+}
+
+extension AdmissionType: Hashable {
+    static func ==(lhs: AdmissionType, rhs: AdmissionType) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

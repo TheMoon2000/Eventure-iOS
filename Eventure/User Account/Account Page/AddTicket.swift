@@ -108,7 +108,7 @@ class AddTicket: UITableViewController {
                     alert.title = "Ticket added succesfully!"
                     let noun = quantity == 1 ? "ticket" : "tickets"
                     var admissionType = ""
-                    if let a = result["admission type"]?.string {
+                    if let a = result["Type name"]?.string {
                         admissionType = " (\(a))"
                     }
                     alert.message = "You have just received \(quantity) \(noun) for '\(result["event"] ?? "<event name>")'\(admissionType)."

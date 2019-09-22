@@ -84,7 +84,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ListPurchases",
                            parameters: ["eventId": event.uuid,
-                                        "type": admissionType.typeName])!
+                                        "admissionId": admissionType.id])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -112,7 +112,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 var newRecords = [Ticket]()
                 for purchase in json.array! {
                     let newTicket = Ticket(ticketInfo: purchase)
-                    if newTicket.paymentType == .offline && newTicket.admissionType == self.admissionType.typeName {
+                    if newTicket.paymentType == .offline && newTicket.admissionID == self.admissionType.id {
                         newRecords.append(newTicket)
                     }
                 }

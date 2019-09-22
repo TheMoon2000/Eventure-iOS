@@ -55,6 +55,7 @@ class TicketInfoEditor: UITableViewController {
         priceCell.valueField.keyboardType = .decimalPad
         priceCell.changeHandler = { field in
             self.edited = true
+            self.admissionInfo.price = Double(field.text!)
         }
         priceCell.returnHandler = { field in
             if let double = Double(field.text!) {
@@ -73,8 +74,6 @@ class TicketInfoEditor: UITableViewController {
         quotaCell.valueField.placeholder = "0"
         quotaCell.changeHandler = { field in
             self.edited = true
-        }
-        quotaCell.returnHandler = { field in
             self.admissionInfo.quota = Int(field.text!)
         }
         
@@ -84,6 +83,7 @@ class TicketInfoEditor: UITableViewController {
         notesCell.promptLabel.text = "Additional notes (optional):"
         notesCell.valueText.textColor = .darkGray
         notesCell.setPlaceholder(string: "Where should people buy tickets from you offline?")
+        notesCell.valueText.insertText(admissionInfo.notes)
         notesCell.textChangeHandler = { tv in
             self.edited = true
             self.admissionInfo.notes = tv.text
@@ -100,6 +100,14 @@ class TicketInfoEditor: UITableViewController {
         super.viewWillDisappear(animated)
         
         parentVC.resortAndReload()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if admissionInfo.typeName.isEmpty {
+            (contentCells[0] as? DraftCapacityCell)?.valueField.becomeFirstResponder()
+        }
     }
     
     @objc private func done() {

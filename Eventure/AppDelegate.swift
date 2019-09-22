@@ -201,6 +201,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             UIApplication.topMostViewController?.present(alert, animated: true)
         case .ticketActivation:
             NotificationCenter.default.post(name: TICKET_ACTIVATED, object: packet.dictionaryObject as? [String : String])
+        case .ticketRedemption:
+            print(info)
         }
     }
     

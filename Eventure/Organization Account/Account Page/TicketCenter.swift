@@ -37,9 +37,11 @@ class TicketCenter: UITableViewController {
         tableView.contentInset.top = 6
         tableView.contentInset.bottom = 6
         tableView.register(TicketTypeCell.classForCoder(), forCellReuseIdentifier: "ticket type")
+        navigationItem.backBarButtonItem = .init(title: "All Tickets", style: .plain, target: nil, action: nil)
         
         emptyLabel = {
             let label = UILabel()
+            label.numberOfLines = 10
             label.textColor = .gray
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -47,7 +49,7 @@ class TicketCenter: UITableViewController {
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -10).isActive = true
             
             return label
         }()
@@ -73,7 +75,7 @@ class TicketCenter: UITableViewController {
             loadingBG.isHidden = false
         }
         
-        detailPage.event.updateTicketQuantities { success in
+        detailPage.event.updateAdmissionTypes { success in
             
             if pulled {
                 self.rc.endRefreshing()
@@ -88,11 +90,14 @@ class TicketCenter: UITableViewController {
             }
             
             
-            self.admissionTypes = self.detailPage.event.admissionTypes
+            self.admissionTypes = self.detailPage.event.admissionTypes.sorted(by: { (t1, t2) -> Bool in
+                return t1.typeName.lowercased() < t2.typeName.lowercased()
+            })
             
             if self.admissionTypes.isEmpty {
                 self.emptyLabel.attributedText = self.EMPTY_PROMPT.attributedText()
                 self.emptyLabel.textColor = .gray
+                self.emptyLabel.textAlignment = .center
             }
             
             self.tableView.reloadData()
@@ -111,15 +116,18 @@ class TicketCenter: UITableViewController {
         
         let type = admissionTypes[indexPath.row]
         cell.titleLabel.text = type.typeName
-        cell.subtitleLabel.text = "Quantity sold:"
-        
-        let quantityDescription = type.quantitySold != nil ? String(type.quantitySold!) : "?"
-        if let quota = type.quota {
-            cell.valueLabel.text = quantityDescription + " / \(quota)"
-        } else {
-            cell.valueLabel.text = quantityDescription
+        if type.typeName.isEmpty {
+            cell.titleLabel.text = "<Untitled ticket type>"
         }
-
+        
+        if let quota = type.quota {
+            cell.subtitleLabel.text = String(type.quantitySold) + " / \(quota) Sold"
+        } else {
+            cell.subtitleLabel.text = String(type.quantitySold)
+        }
+        
+        cell.valueLabel.text = "$\(type.currentRevenue) Received"
+        
         return cell
     }
     

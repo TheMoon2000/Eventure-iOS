@@ -42,7 +42,8 @@ class Ticket {
         return String(format: "$%.02f", paymentAmount)
     }
     var redeemCode: String?
-    var admissionType: String
+    var admissionID: String
+    var typeName: String
     var eventDate: Date?
     var eventEndDate: Date?
     var transactionDate: Date?
@@ -71,7 +72,8 @@ class Ticket {
         hostName = dictionary["Organization title"]?.string ?? ""
         hostID = dictionary["Organization"]?.string ?? ""
         hasLogo = (dictionary["Has logo"]?.int ?? 0) == 1
-        admissionType = dictionary["Admission type"]?.string ?? "Unspecified"
+        admissionID = dictionary["Admission ID"]?.string ?? ""
+        typeName = dictionary["Type name"]?.string ?? "<Ticket name>"
         quantity = dictionary["Quantity"]?.int ?? 1
         ticketPrice = dictionary["Ticket price"]?.double ?? 0.0
         paymentAmount = dictionary["Payment amount"]?.double ?? 0.0
@@ -107,6 +109,8 @@ class Ticket {
         var main = JSON()
         
         main.dictionaryObject?["Ticket ID"] = ticketID
+        main.dictionaryObject?["Type name"] = typeName
+        main.dictionaryObject?["Admission ID"] = admissionID
         main.dictionaryObject?["User ID"] = userID
         main.dictionaryObject?["Email"] = userEmail
         main.dictionaryObject?["Displayed name"] = username

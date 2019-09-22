@@ -29,7 +29,7 @@ class TicketTypes: UITableViewController {
     
     func resortAndReload() {
         sortedAdmissionTypes.sort { ($0.price ?? 0.0) >= ($1.price ?? 0.0) }
-        draftPage.draft.admissionTypes = sortedAdmissionTypes
+        draftPage.draft.admissionTypes = Set(sortedAdmissionTypes)
         emptyLabel.isHidden = !sortedAdmissionTypes.isEmpty
         draftPage.edited = true
         tableView.reloadData()
@@ -74,7 +74,17 @@ class TicketTypes: UITableViewController {
         
         let admission = sortedAdmissionTypes[indexPath.row]
         cell.titleLabel.text = admission.typeName
-        cell.valueLabel.text = "$" + admission.priceDescription
+        if admission.typeName.isEmpty {
+            cell.titleLabel.text = "<Untitled ticket type>"
+        }
+        if (admission.quota ?? 0) == 0 {
+            cell.subtitleLabel.text = "No Quota"
+        } else if admission.quota == 1 {
+            cell.subtitleLabel.text = "1 Ticket"
+        } else {
+            cell.subtitleLabel.text = "\(admission.quota!) Tickets"
+        }
+        cell.valueLabel.text = "$" + admission.priceDescription + " each"
 
         return cell
     }
@@ -86,12 +96,12 @@ class TicketTypes: UITableViewController {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { (action, indexPath) in
-            let alert = UIAlertController(title: "Delete ticket type?", message: "There is no going back. User who have already purchased this type of ticket will be unaffected.", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Delete ticket type?", message: "Doing so will also delete all the issued tickets associated with this ticket type. You should ensure that no one has purchased this type of ticket before proceeding.", preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Delete", style: .destructive, handler: {_ in
-                self.sortedAdmissionTypes.remove(at: indexPath.row)
+                let removed = self.sortedAdmissionTypes.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .automatic)
-                self.draftPage.draft.admissionTypes = self.sortedAdmissionTypes
+                self.draftPage.draft.admissionTypes.remove(removed)
                 self.draftPage.edited = true
             }))
             self.present(alert, animated: true)
@@ -104,7 +114,7 @@ class TicketTypes: UITableViewController {
  
     
     @objc private func addTicket() {
-        let newType = AdmissionType.new
+        let newType = AdmissionType.init(eventID: draftPage.draft.uuid)
         sortedAdmissionTypes.append(newType)
         let vc = TicketInfoEditor(parentVC: self, admissionInfo: newType)
         navigationController?.pushViewController(vc, animated: true)

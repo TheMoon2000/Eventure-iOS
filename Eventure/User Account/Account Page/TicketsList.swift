@@ -96,6 +96,8 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
     
     func getTickets(pulled: Bool = false) {
         
+        guard let currentUser = User.current else { return }
+        
         emptyLabel.text = ""
         
         if !pulled {
@@ -104,7 +106,7 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetTickets",
-                           parameters: ["userId": String(User.current!.userID)])!
+                           parameters: ["userId": String(currentUser.userID)])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         

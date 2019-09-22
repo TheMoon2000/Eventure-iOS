@@ -16,6 +16,8 @@
 		67E89385231C40FF004896F7 /* changeGender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E89384231C40FF004896F7 /* changeGender.swift */; };
 		67E89387231C57F4004896F7 /* LikedEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E89386231C57F4004896F7 /* LikedEvents.swift */; };
 		72FBF9563D73581832FD864F /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 38E7FCF4452050673FCE4162 /* Pods_Eventure.framework */; };
+		CC04666723372A4900BB2754 /* TicketRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04666623372A4900BB2754 /* TicketRequests.swift */; };
+		CC04666923372A8700BB2754 /* RequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC04666823372A8700BB2754 /* RequestCell.swift */; };
 		CC0646D922FDF1CC000BF3CD /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646D822FDF1CC000BF3CD /* User.swift */; };
 		CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646DB22FDF1EA000BF3CD /* Organization.swift */; };
 		CC0646DF22FDF201000BF3CD /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0646DE22FDF201000BF3CD /* Event.swift */; };
@@ -190,6 +192,8 @@
 		7C67F7AC97682227DC5550B8 /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
 		7D887385E346207EAFB63C0D /* Pods-Eventure.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.release.xcconfig"; path = "Pods/Target Support Files/Pods-Eventure/Pods-Eventure.release.xcconfig"; sourceTree = "<group>"; };
 		A64DD550A0FD125726ED39F3 /* Pods_EventureAPITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EventureAPITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC04666623372A4900BB2754 /* TicketRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketRequests.swift; sourceTree = "<group>"; };
+		CC04666823372A8700BB2754 /* RequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestCell.swift; sourceTree = "<group>"; };
 		CC0646D822FDF1CC000BF3CD /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		CC0646DB22FDF1EA000BF3CD /* Organization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Organization.swift; sourceTree = "<group>"; };
 		CC0646DE22FDF201000BF3CD /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -657,6 +661,8 @@
 				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
 				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
 				CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */,
+				CC04666623372A4900BB2754 /* TicketRequests.swift */,
+				CC04666823372A8700BB2754 /* RequestCell.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -932,10 +938,12 @@
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
+				CC04666923372A8700BB2754 /* RequestCell.swift in Sources */,
 				CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */,
 				CC0B3A3D2320C9D200DE7203 /* Profile.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
 				CC2050592335302E00F6A114 /* CheckinVerification.swift in Sources */,
+				CC04666723372A4900BB2754 /* TicketRequests.swift in Sources */,
 				CC2CCD532332F3FC000C65E2 /* TicketDetailInfoCell.swift in Sources */,
 				CC2CCD5923336DB2000C65E2 /* TicketManagerTabs.swift in Sources */,
 				CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */,
@@ -1232,6 +1240,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1259,6 +1268,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
