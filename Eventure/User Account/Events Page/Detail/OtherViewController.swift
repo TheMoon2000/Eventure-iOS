@@ -260,7 +260,9 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             return label
         }()
         
-        ticketValue.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20).isActive = true
+        let b = ticketValue.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20)
+        b.priority = .defaultHigh
+        b.isActive = true
         
         refreshValues()
     }

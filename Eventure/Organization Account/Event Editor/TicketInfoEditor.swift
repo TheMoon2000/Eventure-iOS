@@ -43,10 +43,17 @@ class TicketInfoEditor: UITableViewController {
         typeCell.valueField.textColor = MAIN_TINT
         typeCell.valueField.keyboardType = .default
         typeCell.valueField.autocapitalizationType = .words
+        typeCell.valueField.returnKeyType = .next
         typeCell.changeHandler = { field in
             self.edited = true
             self.admissionInfo.typeName = field.text!
         }
+        
+        typeCell.returnHandler = { field in
+            let priceCell = self.contentCells[1] as? DraftCapacityCell
+            priceCell?.valueField.becomeFirstResponder()
+        }
+        
         contentCells.append(typeCell)
         
         let priceCell = DraftCapacityCell(title: "Price (in USD):")
