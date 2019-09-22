@@ -198,26 +198,29 @@ class CheckinTable: UIViewController {
         refreshRegistrants()
         loadOrganizationInfo()
         
-        banner.layoutIfNeeded()
+        view.layoutIfNeeded()
+        layoutTableInset()
+    }
+    
+    private func layoutTableInset() {
         
-        DispatchQueue.main.async {
-            
-            let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
-
-
-            self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
-            self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
-        }
+        let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
+        
+        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
+        
+        self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
     }
     
     
     private func reloadStats() {
-        let word = sortedRegistrants.count == 1 ? "person" : "people"
         if event.capacity == 0 {
+            let word = sortedRegistrants.count == 1 ? "person" : "people"
             checkinSubtitle.text = "\(sortedRegistrants.count) \(word) checked in"
         } else {
-            checkinSubtitle.text = "\(sortedRegistrants) / \(event.capacity) \(word) checked in."
+            let word = event.capacity == 1 ? "person" : "people"
+            checkinSubtitle.text = "\(sortedRegistrants.count) / \(event.capacity) \(word) checked in."
         }
+        view.layoutIfNeeded()
     }
     
     @objc private func refreshRegistrants(stealth: Bool = false) {
@@ -340,6 +343,14 @@ class CheckinTable: UIViewController {
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { _ in
+            self.layoutTableInset()
+        }, completion: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
