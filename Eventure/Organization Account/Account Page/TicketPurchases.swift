@@ -146,7 +146,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "user", for: indexPath) as! CheckinUserCell
+        let cell = CheckinUserCell()
         
         let purchaseInfo = purchases[indexPath.row]
 
@@ -157,14 +157,18 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         if cell.nameLabel.text!.isEmpty {
             cell.nameLabel.text = purchaseInfo.registrant.email
         }
-        cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentInfo
+        cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentDescription
+        
+        
         if purchaseInfo.registrant.profilePicture == nil {
-            purchaseInfo.registrant.getProfilePicture { [weak cell] new in
+            purchaseInfo.registrant.getProfilePicture { new in
                 if new.profilePicture != nil {
-                    cell?.profilePicture.image = new.profilePicture
+                    cell.profilePicture.image = new.profilePicture
                     self.profileCache[new.userID] = new.profilePicture
                 }
             }
+        } else {
+            cell.profilePicture.image = purchaseInfo.registrant.profilePicture
         }
         let noun = purchaseInfo.ticket.quantity == 1 ? "Ticket" : "Tickets"
         cell.majorLabel.text = "\(purchaseInfo.ticket.quantity) " + noun

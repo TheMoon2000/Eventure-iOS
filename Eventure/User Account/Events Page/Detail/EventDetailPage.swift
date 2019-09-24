@@ -281,6 +281,10 @@ class EventDetailPage: UIViewController {
             v.event = self.event
             v.refreshValues()
         }
+        
+        if let v = tabStrip.viewControllers.first as? AboutViewController {
+            v.event = self.event
+        }
     }
     
     @objc private func interestedAction() {

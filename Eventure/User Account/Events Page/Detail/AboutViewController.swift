@@ -12,7 +12,7 @@ import SafariServices
 
 class AboutViewController: UIViewController, IndicatorInfoProvider {
 
-    private var event: Event!
+    var event: Event!
     var detailPage: EventDetailPage!
     private(set) var textView: UITextView!
     

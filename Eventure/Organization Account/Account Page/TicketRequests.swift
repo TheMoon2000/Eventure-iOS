@@ -67,24 +67,30 @@ class TicketRequests: UITableViewController, IndicatorInfoProvider {
         
         fetchRequests()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NEW_TICKET_REQUEST, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(backgroundUpdate), name: NEW_TICKET_REQUEST, object: nil)
     }
     
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
     
+    @objc private func backgroundUpdate() {
+        fetchRequests(pulled: false, stealth: true)
+    }
+    
     @objc private func refresh() {
         fetchRequests(pulled: true)
     }
     
-    private func fetchRequests(pulled: Bool = false) {
+    private func fetchRequests(pulled: Bool = false, stealth: Bool = false) {
         
         if !pulled {
             loadingBG.isHidden = false
         }
         
-        emptyLabel.text = ""
+        if !stealth {
+            emptyLabel.text = ""
+        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ListTicketRequests",

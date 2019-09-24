@@ -54,7 +54,7 @@ let VALUE_COLOR = UIColor(white: 0.25, alpha: 1)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
-let FATAL_COLOR = UIColor(red: 235/255, green: 33/255, blue: 15/255, alpha: 1)
+let FATAL_COLOR = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
 let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 let INTEREST_COLOR = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
@@ -80,6 +80,10 @@ let PLAIN_STYLE =  """
         margin-bottom: 12px;
     }
 
+    li {
+        margin-bottom: 8px;
+    }
+
     strong, em {
         color: #4A4A4A;
     }
@@ -94,26 +98,27 @@ let PLAIN_STYLE =  """
         font-weight: 600;
         letter-spacing: 1.5%;
         color: rgb(255, 120, 104);
+        line-height: 1.4;
     }
 
     h1 {
         font-size: 23px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
     }
 
     h2 {
         font-size: 22px;
-        margin-bottom: 15px;
+        margin-bottom: 13.5px;
     }
 
     h3 {
         font-size: 21px;
-        margin-bottom: 14px;
+        margin-bottom: 13px;
     }
 
     h4 {
         font-size: 20px;
-        margin-bottom: 13px;
+        margin-bottom: 12.5px;
     }
 
     h5 {

@@ -33,7 +33,7 @@ class PurchaseDetailsCell: UITableViewCell {
         recipientLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.text = "Recipient name:"
+            label.text = "Ticket recipient:"
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

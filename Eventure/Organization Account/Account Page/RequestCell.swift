@@ -193,7 +193,7 @@ class RequestCell: UITableViewCell {
             stack.topAnchor.constraint(equalTo: emailValue.bottomAnchor, constant: 16).isActive = true
             stack.leftAnchor.constraint(equalTo: bgView.leftAnchor).isActive = true
             stack.rightAnchor.constraint(equalTo: bgView.rightAnchor).isActive = true
-            stack.heightAnchor.constraint(equalToConstant: 42).isActive = true
+            stack.heightAnchor.constraint(equalToConstant: 40).isActive = true
             stack.bottomAnchor.constraint(equalTo: bgView.bottomAnchor).isActive = true
             
             return stack
