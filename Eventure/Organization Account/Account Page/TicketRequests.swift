@@ -30,6 +30,12 @@ class TicketRequests: UITableViewController, IndicatorInfoProvider {
         refreshControl = UIRefreshControl()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        parentVC.navigationItem.backBarButtonItem = .init(title: "Requests", style: .plain, target: nil, action: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

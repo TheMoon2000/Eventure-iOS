@@ -32,6 +32,12 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         self.parentVC = parentVC
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        parentVC.navigationItem.backBarButtonItem = .init(title: "Issued Tickets", style: .plain, target: nil, action: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

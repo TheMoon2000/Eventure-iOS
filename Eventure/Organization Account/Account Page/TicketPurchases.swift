@@ -32,6 +32,12 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         self.event = parentVC.event
         self.parentVC = parentVC
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        parentVC.navigationItem.backBarButtonItem = .init(title: "Purchases", style: .plain, target: nil, action: nil)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -167,8 +173,6 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        parentVC.navigationItem.backBarButtonItem = .init(title: "Purchases", style: .plain, target: nil, action: nil)
         let vc = PurchaseDetails(ticket: purchases[indexPath.row].ticket)
         navigationController?.pushViewController(vc, animated: true)
     }
