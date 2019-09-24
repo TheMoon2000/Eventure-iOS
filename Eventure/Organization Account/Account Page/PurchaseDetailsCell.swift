@@ -1,23 +1,25 @@
 //
-//  TicketDetailInfoCell.swift
+//  PurchaseDetailsCell.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/9/18.
+//  Created by Jia Rui Shan on 2019/9/23.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 
-class TicketDetailInfoCell: UITableViewCell {
-    
-    private var providerLabel: UILabel!
-    private var provider: UILabel!
+class PurchaseDetailsCell: UITableViewCell {
+
+    private var recipientLabel: UILabel!
+    private var recipient: UILabel!
+    private var emailLabel: UILabel!
+    private var emailValue: UILabel!
     private var paymentDateLabel: UILabel!
     private var paymentDate: UILabel!
     private var paymentTypeLabel: UILabel!
     private var paymentType: UILabel!
-    private var ticketPriceLabel: UILabel!
-    private var ticketPrice: UILabel!
+    private var quantityLabel: UILabel!
+    private var quantityValue: UILabel!
     private var amountPaidLabel: UILabel!
     private var amountPaid: UILabel!
     private var notesLabel: UILabel!
@@ -28,10 +30,10 @@ class TicketDetailInfoCell: UITableViewCell {
         
         selectionStyle = .none
         
-        providerLabel = {
+        recipientLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.text = "Ticket provider:"
+            label.text = "Recipient name:"
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -44,7 +46,7 @@ class TicketDetailInfoCell: UITableViewCell {
             return label
         }()
         
-        provider = {
+        recipient = {
             let label = UILabel()
             label.numberOfLines = 10
             label.attributedText = ticket.hostName.attributedText(style: COMPACT_STYLE)
@@ -53,9 +55,42 @@ class TicketDetailInfoCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: providerLabel.rightAnchor, constant: 12).isActive = true
+            label.leftAnchor.constraint(equalTo: recipientLabel.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-            label.topAnchor.constraint(equalTo: providerLabel.topAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: recipientLabel.topAnchor).isActive = true
+            
+            return label
+        }()
+        
+        emailLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 16)
+            label.text = "Recipient email:"
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: recipient.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            
+            label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width).isActive = true
+            
+            return label
+        }()
+        
+        emailValue = {
+            let label = UILabel()
+            label.numberOfLines = 3
+            label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
+            label.textAlignment = .right
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = VALUE_COLOR
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: emailLabel.rightAnchor, constant: 12).isActive = true
+            label.topAnchor.constraint(equalTo: emailLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             
             return label
         }()
@@ -63,13 +98,13 @@ class TicketDetailInfoCell: UITableViewCell {
         paymentDateLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.text = "Date of purchase:"
+            label.text = "Transaction date:"
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            label.topAnchor.constraint(equalTo: provider.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.topAnchor.constraint(equalTo: emailValue.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             
             label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width).isActive = true
             
@@ -125,10 +160,10 @@ class TicketDetailInfoCell: UITableViewCell {
             return label
         }()
         
-        ticketPriceLabel = {
+        quantityLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.text = "Ticket price:"
+            label.text = "Quantity:"
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -140,17 +175,17 @@ class TicketDetailInfoCell: UITableViewCell {
             return label
         }()
         
-        ticketPrice = {
+        quantityValue = {
             let label = UILabel()
-            label.text = String(format: "$%.02f", ticket.ticketPrice)
+            label.text = String(ticket.quantity)
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
             label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: ticketPriceLabel.rightAnchor, constant: 12).isActive = true
-            label.topAnchor.constraint(equalTo: ticketPriceLabel.topAnchor).isActive = true
+            label.leftAnchor.constraint(equalTo: quantityLabel.rightAnchor, constant: 12).isActive = true
+            label.topAnchor.constraint(equalTo: quantityLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             
             return label
@@ -165,7 +200,7 @@ class TicketDetailInfoCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            label.topAnchor.constraint(equalTo: ticketPrice.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.topAnchor.constraint(equalTo: quantityValue.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label

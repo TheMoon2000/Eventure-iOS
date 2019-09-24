@@ -140,7 +140,6 @@ class OrgEventCell: UICollectionViewCell {
         locationText = {
             let label = UILabel()
             label.numberOfLines = 5
-            label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false

@@ -96,6 +96,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             let label = UILabel()
             label.numberOfLines = 10
             label.text = "TBA"
+            label.textColor = .init(white: 0.8, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(label, belowSubview: valueText)
             

@@ -206,9 +206,13 @@ class CheckinResults: UIViewController {
         
         let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
         
-        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
+        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 6
         
-        self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
+        self.checkinTable.scrollIndicatorInsets.top =
+            self.checkinTable.contentInset.top
+        
+        checkinTable.contentInset.bottom = bottomBanner.frame.height + 6
+        checkinTable.scrollIndicatorInsets.bottom = checkinTable.contentInset.bottom
     }
     
     
@@ -326,8 +330,8 @@ class CheckinResults: UIViewController {
             
             DispatchQueue.main.async {
                 if !stealth {
-                    self.checkinTable.refreshControl = self.refreshControl
                     self.refreshControl.endRefreshing()
+                    self.checkinTable.refreshControl = self.refreshControl
                 }
             }
             
@@ -361,10 +365,6 @@ class CheckinResults: UIViewController {
                     DispatchQueue.main.async {
                         self.resortRegistrants()
                         self.reloadStats()
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-                        self?.refreshRegistrants(stealth: true)
                     }
                 }
             } else {
@@ -410,6 +410,7 @@ class CheckinResults: UIViewController {
         let nav = UINavigationController(rootViewController: menu)
         nav.navigationBar.tintColor = MAIN_TINT
         nav.navigationBar.barTintColor = NAVBAR_TINT
+        nav.modalPresentationStyle = .formSheet
         present(nav, animated: true)
     }
 
@@ -457,6 +458,15 @@ extension CheckinResults: UITableViewDataSource, UITableViewDelegate {
         if registrant.showProfile {
             let profilePage = ProfileInfoPage(profile: registrant)
             self.navigationController?.pushViewController(profilePage, animated: true)
+        } else {
+            let alert = UIAlertController(title: "Profile unavailable", message: nil, preferredStyle: .alert)
+            if registrant.userID == -1 {
+                alert.message = "This user is registered online and does not have a profile."
+            } else {
+                alert.message = "This user did not share their profile information for this event."
+            }
+            alert.addAction(.init(title: "OK", style: .cancel))
+            present(alert, animated: true)
         }
     }
     

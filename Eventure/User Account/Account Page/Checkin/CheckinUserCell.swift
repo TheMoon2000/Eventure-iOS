@@ -136,11 +136,19 @@ class CheckinUserCell: UITableViewCell {
             majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
             bgView.backgroundColor = .white
         }
+        majorLabel.attributedText = majorLabel.text?.attributedText(style: COMPACT_STYLE)
+        majorLabel.textColor = .gray
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {
             profilePicture.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
         }
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        
+        bgView.backgroundColor = highlighted ? .init(white: 0.96, alpha: 1) : .white
     }
     
     required init?(coder aDecoder: NSCoder) {

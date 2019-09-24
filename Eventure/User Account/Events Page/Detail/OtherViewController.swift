@@ -36,6 +36,8 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     private var ticketLabel: UILabel!
     private(set) var ticketValue: UILabel!
     
+    private var VALUE_COLOR: UIColor = .init(white: 0.1, alpha: 1)
+    
     var heightConstraint: NSLayoutConstraint?
 
     required init(detailPage: EventDetailPage) {
@@ -68,6 +70,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         hostLabel = {
             let label = UILabel()
             label.text = "Host: "
+            label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -105,6 +108,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         locationLabel = {
             let label = UILabel()
             label.text = "Location: "
+            label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -137,6 +141,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         startLabel = {
             let label = UILabel()
             label.text = "Start time: "
+            label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -168,6 +173,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         endLabel = {
             let label = UILabel()
             label.text = "Duration: "
+            label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -201,6 +207,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         interestedLabel = {
             let label = UILabel()
             label.text = "Interested: "
+            label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -232,6 +239,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         ticketLabel = {
             let label = UILabel()
             label.text = "Requires ticket: "
+            label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)

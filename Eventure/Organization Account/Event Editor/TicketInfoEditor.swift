@@ -13,9 +13,7 @@ class TicketInfoEditor: UITableViewController {
     private var admissionInfo: AdmissionType!
     private var parentVC: TicketTypes!
     private var contentCells = [UITableViewCell]()
-    
-    private var edited = false
-    
+        
     required init(parentVC: TicketTypes, admissionInfo: AdmissionType) {
         super.init(nibName: nil, bundle: nil)
         
@@ -45,7 +43,7 @@ class TicketInfoEditor: UITableViewController {
         typeCell.valueField.autocapitalizationType = .words
         typeCell.valueField.returnKeyType = .next
         typeCell.changeHandler = { field in
-            self.edited = true
+            self.parentVC.draftPage.edited = true
             self.admissionInfo.typeName = field.text!
         }
         
@@ -61,7 +59,7 @@ class TicketInfoEditor: UITableViewController {
         priceCell.valueField.text = admissionInfo.price != nil ? admissionInfo.priceDescription : ""
         priceCell.valueField.keyboardType = .decimalPad
         priceCell.changeHandler = { field in
-            self.edited = true
+            self.parentVC.draftPage.edited = true
             self.admissionInfo.price = Double(field.text!)
         }
         priceCell.returnHandler = { field in
@@ -80,7 +78,7 @@ class TicketInfoEditor: UITableViewController {
         }
         quotaCell.valueField.placeholder = "0"
         quotaCell.changeHandler = { field in
-            self.edited = true
+            self.parentVC.draftPage.edited = true
             self.admissionInfo.quota = Int(field.text!)
         }
         
@@ -92,8 +90,8 @@ class TicketInfoEditor: UITableViewController {
         notesCell.setPlaceholder(string: "Where should people buy tickets from you offline?")
         notesCell.valueText.insertText(admissionInfo.notes)
         notesCell.textChangeHandler = { tv in
-            self.edited = true
             self.admissionInfo.notes = tv.text
+            self.parentVC.draftPage.edited = true
             
             UIView.performWithoutAnimation {
                 self.tableView.beginUpdates()

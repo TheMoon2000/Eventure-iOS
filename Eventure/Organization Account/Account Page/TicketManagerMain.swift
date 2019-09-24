@@ -10,15 +10,17 @@ import UIKit
 
 class TicketManagerMain: UIViewController {
     
+    private(set) var center: TicketCenter!
     private var tabs: TicketManagerTabs!
     private(set) var event: Event!
     private(set) var admissionType: AdmissionType!
     
-    required init(event: Event, admissionType: AdmissionType) {
+    required init(event: Event, center: TicketCenter, type: AdmissionType) {
         super.init(nibName: nil, bundle: nil)
         
         self.event = event
-        self.admissionType = admissionType
+        self.center = center
+        self.admissionType = type
         self.title = admissionType.typeName
     }
 
@@ -46,6 +48,11 @@ class TicketManagerMain: UIViewController {
         }()
     }
     
+    func reloadPurchases() {
+        (tabs.viewControllers.first as? TicketPurchases)?.loadPurchases()
+        center.refresh()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -59,8 +66,8 @@ class TicketManagerMain: UIViewController {
     }
     
     @objc private func createTicket() {
-        tabs.viewControllers[1].loadViewIfNeeded()
-        let vc = CreateNewTicket(parentVC: tabs.viewControllers[1] as! IssuedTickets)
+        tabs.viewControllers.last?.loadViewIfNeeded()
+        let vc = CreateNewTicket(parentVC: tabs.viewControllers.last as! IssuedTickets)
         navigationController?.pushViewController(vc, animated: true)
     }
     

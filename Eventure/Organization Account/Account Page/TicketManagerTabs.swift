@@ -25,6 +25,7 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
         settings.style.selectedBarBackgroundColor = MAIN_TINT
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0
+        settings.style.buttonBarItemLeftRightMargin = 15
         settings.style.buttonBarItemTitleColor = MAIN_TINT
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
@@ -44,10 +45,11 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
 
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
         
-        let buyers = TicketPurchases(event: parentVC.event, admissionType: parentVC.admissionType)
+        let buyers = TicketPurchases(event: parentVC.event, parentVC: parentVC)
+        let requests = TicketRequests(parentVC: parentVC)
         let issued = IssuedTickets(event: parentVC.event, admissionType: parentVC.admissionType)
         
-        return [buyers, issued]
+        return [buyers, requests, issued]
     }
     
     

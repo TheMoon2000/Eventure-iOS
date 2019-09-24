@@ -16,6 +16,7 @@ class EventDraft: UIPageViewController {
     static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
     
     var edited = false
+    var imageEdited = false
     
     var isEditingExistingEvent = false
     var currentPage = -1 {
@@ -271,8 +272,9 @@ class EventDraft: UIPageViewController {
         ]
         
         var fileData = [String : Data]()
-        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDownData(maxWidth: 500)
-        
+        if imageEdited {
+            fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDownData(maxWidth: 500)
+        }
         request.addMultipartBody(parameters: parameters, files: fileData)
         request.addAuthHeader()
         

@@ -136,7 +136,7 @@ class Event {
         if let admissionTypes_raw = dictionary["Ticket types"]?.string {
             var tmp = Set<AdmissionType>()
             for (k, v) in JSON(parseJSON: admissionTypes_raw).dictionaryValue {
-                tmp.insert(AdmissionType(json: v, id: k))
+                tmp.insert(AdmissionType(json: v, admissionID: k, eventID: uuid))
             }
             admissionTypes = tmp
         }
@@ -314,7 +314,7 @@ class Event {
                 var newTypes = Set<AdmissionType>()
                 
                 for (key, value) in json {
-                    newTypes.insert(AdmissionType(json: value, id: key))
+                    newTypes.insert(AdmissionType(json: value, admissionID: key, eventID: self.uuid))
                 }
                 self.admissionTypes = newTypes
                 DispatchQueue.main.async {

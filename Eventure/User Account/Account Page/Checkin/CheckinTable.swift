@@ -206,9 +206,12 @@ class CheckinTable: UIViewController {
         
         let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
         
-        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 5
+        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 6
         
         self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
+        
+        checkinTable.contentInset.bottom = bottomBanner.frame.height + 6
+               checkinTable.scrollIndicatorInsets.bottom = checkinTable.contentInset.bottom
     }
     
     
@@ -277,10 +280,6 @@ class CheckinTable: UIViewController {
                     }
                     self.reloadStats()
                     self.checkinTable.reloadData()
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-                    self?.refreshRegistrants(stealth: true)
                 }
             } else {
                 if !stealth {

@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let nvc = InteractivePopNavigationController(rootViewController: login)
             nvc.isNavigationBarHidden = true
             login.navBar = nvc
+            nvc.modalPresentationStyle = .fullScreen
             entrypoint.present(nvc, animated: false)
             UserDefaults.standard.setValue(true, forKey: "Has logged in")
         }
@@ -203,6 +204,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             NotificationCenter.default.post(name: TICKET_ACTIVATED, object: packet.dictionaryObject as? [String : String])
         case .ticketRedemption:
             print(info)
+        case .ticketRequest:
+            NotificationCenter.default.post(name: NEW_TICKET_REQUEST, object: nil)
         }
     }
     

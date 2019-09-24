@@ -202,7 +202,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 let nvc = InteractivePopNavigationController(rootViewController: login)
                 nvc.isNavigationBarHidden = true
                 login.navBar = nvc
-                present(nvc, animated: true, completion: nil)
+                present(nvc, animated: true)
             } else {
                 //pop out an alert window
                 let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
@@ -282,7 +282,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.titleLabel.text = "My Tags"
         case (4, 0):
             let cell = UITableViewCell()
-            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
             
             let label = UILabel()
             label.text = "About Eventure"
@@ -297,7 +299,9 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             return cell
         case (4, 1):
             let cell = UITableViewCell()
-            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
             
             let label = UILabel()
             label.text = User.current != nil ? "Log Out" : "Log In"

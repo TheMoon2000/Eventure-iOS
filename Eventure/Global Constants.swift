@@ -43,6 +43,7 @@ enum NotificationKeys: String {
     case generalNotice = "general notice"
     case ticketActivation = "ticket activation"
     case ticketRedemption = "ticket redemption"
+    case ticketRequest = "ticket request"
 }
 
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
@@ -53,7 +54,7 @@ let VALUE_COLOR = UIColor(white: 0.25, alpha: 1)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
 let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
-let FATAL_COLOR = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
+let FATAL_COLOR = UIColor(red: 235/255, green: 33/255, blue: 15/255, alpha: 1)
 let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 let INTEREST_COLOR = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
@@ -75,12 +76,12 @@ let PLAIN_STYLE =  """
         font-size: 17px;
         line-height: 1.5;
         letter-spacing: 1.5%;
-        color: #565656;
+        color: #525252;
         margin-bottom: 12px;
     }
 
     strong, em {
-        color: #4E4E4E;
+        color: #4A4A4A;
     }
 
     a {
@@ -147,7 +148,7 @@ let COMPACT_STYLE = """
 let TITLE_STYLE = """
     body {
         font-family: -apple-system;
-        font-size: 18.5px;
+        font-size: 18px;
         line-height: 1.4;
         letter-spacing: 1%;
         color: #505050;
@@ -663,3 +664,4 @@ let USER_SYNC_FAILED = Notification.Name("user sync failed")
 let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
 let ORG_SYNC_FAILED = Notification.Name("org sync failed")
 let TICKET_ACTIVATED = Notification.Name("ticket activated")
+let NEW_TICKET_REQUEST = Notification.Name("new ticket request")

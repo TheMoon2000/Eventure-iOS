@@ -69,8 +69,8 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
             tv.backgroundColor = .clear
             tv.dataSource = self
             tv.delegate = self
-            tv.contentInset.top = 10
-            tv.contentInset.bottom = 10
+            tv.contentInset.top = 6
+            tv.contentInset.bottom = 6
             tv.separatorStyle = .none
             tv.tableFooterView = UIView()
             tv.register(TicketCell.classForCoder(), forCellReuseIdentifier: "ticket")

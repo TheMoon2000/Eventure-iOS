@@ -35,12 +35,12 @@ class AdmissionType {
         quantitySold = 0
     }
     
-    init(json: JSON, id: String) {
+    init(json: JSON, admissionID: String, eventID: String) {
         let dictionary = json.dictionaryValue
         
-        self.id = id
+        self.id = admissionID
+        self.eventID = eventID
         typeName = dictionary["Type name"]?.string ?? ""
-        eventID = dictionary["Event ID"]?.string ?? ""
         quota = dictionary["Quota"]?.int
         price = dictionary["Price"]?.double
         notes = dictionary["Notes"]?.string ?? ""
@@ -52,7 +52,6 @@ class AdmissionType {
     var encodedJSON: JSON {
         var json = JSON()
         json.dictionaryObject?["Type name"] = typeName
-        json.dictionaryObject?["Event ID"] = eventID
         json.dictionaryObject?["Quota"] = quota
         json.dictionaryObject?["Price"] = price
         json.dictionaryObject?["Notes"] = notes

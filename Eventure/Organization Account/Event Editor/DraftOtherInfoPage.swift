@@ -60,6 +60,7 @@ class DraftOtherInfoPage: UITableViewController {
         imagePreviewCell.updateImageHandler = { [weak self] image in
             self?.draftPage.draft.eventVisual = image
             self?.draftPage.edited = true
+            self?.draftPage.imageEdited = true
         }
         contentCells.append(imagePreviewCell)
     }

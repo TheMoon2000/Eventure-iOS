@@ -12,8 +12,11 @@ import XLPagerTabStrip
 
 class TicketPurchases: UITableViewController, IndicatorInfoProvider {
     
+    private var parentVC: TicketManagerMain!
     private var event: Event!
-    private var admissionType: AdmissionType!
+    private var admissionType: AdmissionType {
+        return parentVC.admissionType
+    }
     
     /// Incomplete registrant information, only using it as a data structure to hold partial information
     var purchases = [(registrant: Registrant, ticket: Ticket)]()
@@ -23,11 +26,11 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
     private var emptyLabel: UILabel!
     private var loadingBG: UIView!
     
-    required init(event: Event!, admissionType: AdmissionType) {
+    required init(event: Event!, parentVC: TicketManagerMain) {
         super.init(nibName: nil, bundle: nil)
         
         self.event = event
-        self.admissionType = admissionType
+        self.parentVC = parentVC
     }
 
     override func viewDidLoad() {
@@ -67,7 +70,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         loadPurchases(pulled: true)
     }
     
-    private func loadPurchases(pulled: Bool = false) {
+    func loadPurchases(pulled: Bool = false) {
         
         emptyLabel.text = ""
         
@@ -116,6 +119,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
                 DispatchQueue.main.async {
                     self.emptyLabel.text = self.purchases.isEmpty ? "No purchase records" : ""
                     self.tableView.reloadData()
+                    self.parentVC.center.refresh()
                 }
             } else {
                 DispatchQueue.main.async {
@@ -149,9 +153,9 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         }
         cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentInfo
         if purchaseInfo.registrant.profilePicture == nil {
-            purchaseInfo.registrant.getProfilePicture { new in
+            purchaseInfo.registrant.getProfilePicture { [weak cell] new in
                 if new.profilePicture != nil {
-                    cell.profilePicture.image = new.profilePicture
+                    cell?.profilePicture.image = new.profilePicture
                     self.profileCache[new.userID] = new.profilePicture
                 }
             }

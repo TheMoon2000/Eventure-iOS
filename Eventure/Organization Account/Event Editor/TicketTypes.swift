@@ -10,7 +10,7 @@ import UIKit
 
 class TicketTypes: UITableViewController {
     
-    private var draftPage: EventDraft!
+    private(set) var draftPage: EventDraft!
     
     private var sortedAdmissionTypes = [AdmissionType]()
     private var emptyLabel: UILabel!
@@ -31,7 +31,6 @@ class TicketTypes: UITableViewController {
         sortedAdmissionTypes.sort { ($0.price ?? 0.0) >= ($1.price ?? 0.0) }
         draftPage.draft.admissionTypes = Set(sortedAdmissionTypes)
         emptyLabel.isHidden = !sortedAdmissionTypes.isEmpty
-        draftPage.edited = true
         tableView.reloadData()
     }
 

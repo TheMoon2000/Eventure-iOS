@@ -63,7 +63,7 @@ class TicketCenter: UITableViewController {
         updateQuantities()
     }
     
-    @objc private func refresh() {
+    @objc func refresh() {
         updateQuantities(pulled: true)
     }
     
@@ -134,7 +134,7 @@ class TicketCenter: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         
-        let vc = TicketManagerMain(event: detailPage.event, admissionType: admissionTypes[indexPath.row])
+        let vc = TicketManagerMain(event: detailPage.event, center: self, type: admissionTypes[indexPath.row])
         navigationController?.pushViewController(vc, animated: true)
     }
     
