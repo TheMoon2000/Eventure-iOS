@@ -145,7 +145,8 @@ class PurchaseDetailsCell: UITableViewCell {
         
         quantityValue = {
             let label = UILabel()
-            label.text = String(ticket.quantity)
+            let noun = ticket.quantity == 1 ? "Ticket" : "Tickets"
+            label.text = "\(ticket.quantity) " + noun
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
             label.textColor = VALUE_COLOR
