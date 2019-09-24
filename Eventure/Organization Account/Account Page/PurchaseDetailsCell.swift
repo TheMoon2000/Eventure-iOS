@@ -49,7 +49,7 @@ class PurchaseDetailsCell: UITableViewCell {
         recipient = {
             let label = UILabel()
             label.numberOfLines = 10
-            label.attributedText = ticket.hostName.attributedText(style: COMPACT_STYLE)
+            label.text = ticket.username
             label.textAlignment = .right
             label.textColor = VALUE_COLOR
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +81,7 @@ class PurchaseDetailsCell: UITableViewCell {
         emailValue = {
             let label = UILabel()
             label.numberOfLines = 3
-            label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
+            label.text = ticket.userEmail ?? "Unknown"
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
             label.textColor = VALUE_COLOR
@@ -128,6 +128,37 @@ class PurchaseDetailsCell: UITableViewCell {
             return label
         }()
         
+        quantityLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 16)
+            label.text = "Quantity:"
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: paymentDate.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
+            
+            return label
+        }()
+        
+        quantityValue = {
+            let label = UILabel()
+            label.text = String(ticket.quantity)
+            label.textAlignment = .right
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = VALUE_COLOR
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: quantityLabel.rightAnchor, constant: 12).isActive = true
+            label.topAnchor.constraint(equalTo: quantityLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            
+            return label
+        }()
+        
         paymentTypeLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
@@ -137,7 +168,7 @@ class PurchaseDetailsCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            label.topAnchor.constraint(equalTo: paymentDate.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            label.topAnchor.constraint(equalTo: quantityValue.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
@@ -160,10 +191,10 @@ class PurchaseDetailsCell: UITableViewCell {
             return label
         }()
         
-        quantityLabel = {
+        amountPaidLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.text = "Quantity:"
+            label.text = "Amount paid:"
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -175,41 +206,10 @@ class PurchaseDetailsCell: UITableViewCell {
             return label
         }()
         
-        quantityValue = {
-            let label = UILabel()
-            label.text = String(ticket.quantity)
-            label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
-            label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: quantityLabel.rightAnchor, constant: 12).isActive = true
-            label.topAnchor.constraint(equalTo: quantityLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-            
-            return label
-        }()
-        
-        amountPaidLabel = {
-            let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
-            label.text = "Amount paid:"
-            label.textColor = .gray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            label.topAnchor.constraint(equalTo: quantityValue.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
-            label.setContentCompressionResistancePriority(.required, for: .horizontal)
-            
-            return label
-        }()
-        
         amountPaid = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.text = String(format: "$%.02f", ticket.paymentAmount)
+            label.text = ticket.paymentDescription
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
             label.textColor = VALUE_COLOR
@@ -223,41 +223,7 @@ class PurchaseDetailsCell: UITableViewCell {
             return label
         }()
         
-        notesLabel = {
-            let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
-            label.text = "Notes:"
-            label.textColor = .gray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            label.topAnchor.constraint(equalTo: amountPaid.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
-            label.setContentCompressionResistancePriority(.required, for: .horizontal)
-            return label
-        }()
-        
-        notes = {
-            let label = UILabel()
-            label.numberOfLines = 10
-            label.attributedText = ticket.notes.attributedText(style: COMPACT_STYLE)
-            if label.text!.isEmpty {
-                label.attributedText = "*The event host did not leave a note.*".attributedText(style: COMPACT_STYLE)
-            }
-            label.textAlignment = .right
-            label.textColor = VALUE_COLOR
-            label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.leftAnchor.constraint(equalTo: notesLabel.rightAnchor, constant: 12).isActive = true
-            label.topAnchor.constraint(equalTo: notesLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-            
-            return label
-        }()
-        
-        notes.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
+        amountPaid.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {

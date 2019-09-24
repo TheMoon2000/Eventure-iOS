@@ -13,7 +13,10 @@ import XLPagerTabStrip
 class IssuedTickets: UITableViewController, IndicatorInfoProvider {
 
     private(set) var event: Event!
-    private(set) var admissionType: AdmissionType!
+    private(set) var parentVC: TicketManagerMain!
+    var admissionType: AdmissionType {
+        return parentVC.admissionType
+    }
     
     /// Incomplete registrant information, only using it as a data structure to hold partial information
     var tickets = [Ticket]()
@@ -22,11 +25,11 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     private var emptyLabel: UILabel!
     private var loadingBG: UIView!
     
-    required init(event: Event!, admissionType: AdmissionType) {
+    required init(parentVC: TicketManagerMain) {
         super.init(nibName: nil, bundle: nil)
         
-        self.event = event
-        self.admissionType = admissionType
+        self.event = parentVC.event
+        self.parentVC = parentVC
     }
     
     override func viewDidLoad() {
@@ -150,6 +153,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
+        parentVC.navigationItem.backBarButtonItem = .init(title: "Issued Tickets", style: .plain, target: nil, action: nil)
         let editor = CreateNewTicket(parentVC: self, ticketToEdit: tickets[indexPath.row])
         navigationController?.pushViewController(editor, animated: true)
     }

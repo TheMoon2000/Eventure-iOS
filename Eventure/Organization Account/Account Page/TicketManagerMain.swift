@@ -30,6 +30,7 @@ class TicketManagerMain: UIViewController {
         view.backgroundColor = EventDraft.backgroundColor
         
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createTicket))
+        navigationItem.backBarButtonItem = .init(title: "Purchases", style: .plain, target: nil, action: nil)
 
         tabs = {
             let tabs = TicketManagerTabs(parentVC: self)

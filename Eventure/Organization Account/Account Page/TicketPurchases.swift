@@ -26,10 +26,10 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
     private var emptyLabel: UILabel!
     private var loadingBG: UIView!
     
-    required init(event: Event!, parentVC: TicketManagerMain) {
+    required init(parentVC: TicketManagerMain) {
         super.init(nibName: nil, bundle: nil)
         
-        self.event = event
+        self.event = parentVC.event
         self.parentVC = parentVC
     }
 
@@ -164,6 +164,13 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         cell.majorLabel.text = "\(purchaseInfo.ticket.quantity) " + noun
 
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        parentVC.navigationItem.backBarButtonItem = .init(title: "Purchases", style: .plain, target: nil, action: nil)
+        let vc = PurchaseDetails(ticket: purchases[indexPath.row].ticket)
+        navigationController?.pushViewController(vc, animated: true)
     }
  
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
