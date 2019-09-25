@@ -110,6 +110,8 @@
 		CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */; };
 		CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */; };
 		CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */; };
+		CC8960C7233C21CF000E8C3D /* BuyTickets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8960C6233C21CF000E8C3D /* BuyTickets.swift */; };
+		CC8960C9233C2242000E8C3D /* BuyTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8960C8233C2242000E8C3D /* BuyTicketCell.swift */; };
 		CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */; };
 		CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */; };
 		CC9A74F52330A97B0021A790 /* TicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A74F42330A97B0021A790 /* TicketDetails.swift */; };
@@ -296,6 +298,8 @@
 		CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftDescriptionPage.swift; sourceTree = "<group>"; };
 		CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftTimeLocationPage.swift; sourceTree = "<group>"; };
 		CC8469CC230FDF0A004E7B9D /* DraftOtherInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftOtherInfoPage.swift; sourceTree = "<group>"; };
+		CC8960C6233C21CF000E8C3D /* BuyTickets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyTickets.swift; sourceTree = "<group>"; };
+		CC8960C8233C2242000E8C3D /* BuyTicketCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyTicketCell.swift; sourceTree = "<group>"; };
 		CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventCell.swift; sourceTree = "<group>"; };
 		CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationRegistrationData.swift; sourceTree = "<group>"; };
 		CC9A74F42330A97B0021A790 /* TicketDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketDetails.swift; sourceTree = "<group>"; };
@@ -739,6 +743,8 @@
 				DD1BB0D02310B1390082C4EE /* EventDetailTabStrip.swift */,
 				DD1BB0D52310B2350082C4EE /* AboutViewController.swift */,
 				DD1BB0D72310B3560082C4EE /* OtherViewController.swift */,
+				CC8960C6233C21CF000E8C3D /* BuyTickets.swift */,
+				CC8960C8233C2242000E8C3D /* BuyTicketCell.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -1071,12 +1077,14 @@
 				67AFF77C23121ACE00329626 /* AccountCell.swift in Sources */,
 				CC2CCD5D2333DAC3000C65E2 /* IssuedTickets.swift in Sources */,
 				CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */,
+				CC8960C7233C21CF000E8C3D /* BuyTickets.swift in Sources */,
 				CC2167C2231B719D003B8DE7 /* CommentCell.swift in Sources */,
 				CCE214252314ED0E00E9B137 /* GenericOneFieldPage.swift in Sources */,
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
 				CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */,
+				CC8960C9233C2242000E8C3D /* BuyTicketCell.swift in Sources */,
 				CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */,
 				CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */,
 				CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */,

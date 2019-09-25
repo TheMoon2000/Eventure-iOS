@@ -34,7 +34,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     private(set) var interestedText: UILabel!
     
     private var ticketLabel: UILabel!
-    private(set) var ticketValue: UILabel!
+    private(set) var ticketValue: UIButton!
     
     private var VALUE_COLOR: UIColor = .init(white: 0.1, alpha: 1)
     
@@ -238,7 +238,6 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         
         ticketLabel = {
             let label = UILabel()
-            label.text = "Requires ticket: "
             label.textColor = VALUE_COLOR
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -253,24 +252,22 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         }()
         
         ticketValue = {
-            let label = UILabel()
-            label.textAlignment = .right
-            label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(label)
+            let button = UIButton(type: .system)
+            button.titleLabel?.textAlignment = .right
+            button.titleLabel?.numberOfLines = 0
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
             
-            label.leftAnchor.constraint(equalTo: ticketLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: ticketLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: interestedText.rightAnchor).isActive = true
+            button.titleLabel?.leftAnchor.constraint(equalTo: ticketLabel.rightAnchor, constant: 10).isActive = true
+            button.titleLabel?.topAnchor.constraint(equalTo: ticketLabel.topAnchor).isActive = true
+            button.titleLabel?.rightAnchor.constraint(equalTo: interestedText.rightAnchor).isActive = true
             
-            return label
+            return button
         }()
         
-        let b = ticketValue.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20)
-        b.priority = .defaultHigh
-        b.isActive = true
+        let b = ticketValue.titleLabel?.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20)
+        b?.priority = .defaultHigh
+        b?.isActive = true
         
         refreshValues()
     }
@@ -280,7 +277,24 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         startDate.text = event.startTime?.readableString() ?? "Unspecified"
         endDate.text = event.duration
         interestedText.text = String(event.interested.count)
-        ticketValue.text = event.requiresTicket ? "Yes" : "No"
+        ticketValue.titleLabel?.font = .systemFont(ofSize: 17)
+        if User.current != nil {
+            ticketLabel.text = "Tickets:"
+            if event.requiresTicket {
+                ticketValue.setTitleColor(LINK_COLOR, for: .normal)
+                ticketValue.addTarget(self, action: #selector(showTickets), for: .touchUpInside)
+                ticketValue.setTitle("Buy Tickets", for: .normal)
+            } else {
+                ticketValue.isUserInteractionEnabled = false
+                ticketValue.setTitleColor(.darkGray, for: .normal)
+                ticketValue.setTitle("No tickets required", for: .normal)
+            }
+        } else {
+            ticketLabel.text = "Requires tickets:"
+            ticketValue.isUserInteractionEnabled = false
+            ticketValue.setTitleColor(.darkGray, for: .normal)
+            ticketValue.setTitle(event.requiresTicket ? "Yes" : "No", for: .normal)
+        }
     }
     
     @objc private func openOrganization() {
@@ -293,6 +307,11 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             alert.addAction(.init(title: "Dismiss", style: .cancel))
             detailPage.present(alert, animated: true)
         }
+    }
+    
+    @objc private func showTickets() {
+        let bt = BuyTickets(parentVC: detailPage)
+        navigationController?.pushViewController(bt, animated: true)
     }
     
     

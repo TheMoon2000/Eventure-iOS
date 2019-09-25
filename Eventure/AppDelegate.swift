@@ -152,6 +152,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         // 2. Print device token to use for PNs payloads
         print("Device Token: \(token)")
         User.token = token
+        
+        // 3. Register for notification actions
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -206,6 +208,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             print(info)
         case .ticketRequest:
             NotificationCenter.default.post(name: NEW_TICKET_REQUEST, object: nil)
+        case .ticketRequestApproved:
+            print(info)
         }
     }
     

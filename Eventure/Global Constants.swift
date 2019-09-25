@@ -44,6 +44,7 @@ enum NotificationKeys: String {
     case ticketActivation = "ticket activation"
     case ticketRedemption = "ticket redemption"
     case ticketRequest = "ticket request"
+    case ticketRequestApproved = "ticket request approved"
 }
 
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)

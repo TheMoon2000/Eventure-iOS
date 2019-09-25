@@ -16,7 +16,7 @@ class AdmissionType {
     var eventID: String
     var typeName: String
     var quota: Int?
-    var price: Double?
+    var price: Double? // Should not be nil unless just initialized
     var notes: String
     
     var currentRevenue: Double
