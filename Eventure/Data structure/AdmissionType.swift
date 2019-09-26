@@ -15,7 +15,7 @@ class AdmissionType {
     let id: String
     var eventID: String
     var typeName: String
-    var quota: Int?
+    var quota: Int? // Either 0 or nil means no quota
     var price: Double? // Should not be nil unless just initialized
     var notes: String
     
