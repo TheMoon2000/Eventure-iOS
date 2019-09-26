@@ -16,6 +16,8 @@ class BuyTicketCell: UITableViewCell {
     private(set) var ticketName: UILabel!
     private(set) var ticketPrice: UILabel!
     private(set) var buyButton: UIButton!
+    
+    var buyHandler: ((AdmissionType) -> ())?
 
     required init(admissionType: AdmissionType) {
         super.init(style: .default, reuseIdentifier: nil)

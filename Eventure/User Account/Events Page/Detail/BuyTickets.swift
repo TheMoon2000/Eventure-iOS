@@ -41,8 +41,29 @@ class BuyTickets: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return BuyTicketCell(admissionType: sortedTypes[indexPath.row])
+        let cell = BuyTicketCell(admissionType: sortedTypes[indexPath.row])
+        cell.buyHandler = { type in
+            let alert = UIAlertController(title: "Select payment type", message: "We're still figuring out the best way to carry out payments in Eventure. In the mean time, please reach out to the event organizer first to complete the payment and then request your ticket(s).", preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Request Paid Ticket", style: .default, handler: { _ in
+                self.initiateRequest()
+            }))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = cell
+                popoverController.sourceRect = cell.buyButton.frame
+            }
+            
+            self.present(alert, animated: true)
+        }
+        return cell
     }
+    
+    private func initiateRequest() {
+        
+    }
+    
+    
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
