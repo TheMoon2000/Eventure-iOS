@@ -211,8 +211,8 @@ class OrgEventViewController: UIViewController, EventProvider {
             }()
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
-        refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
-        refreshControl.tintColor = MAIN_TINT
+        // refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
+        // refreshControl.tintColor = MAIN_TINT
         
         // Fetch all events and draft events
         updateEvents()

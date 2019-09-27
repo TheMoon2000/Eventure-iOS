@@ -13,13 +13,14 @@ class BuyTickets: UITableViewController {
     private var event: Event!
     private var sortedTypes = [AdmissionType]()
     
+    private var loadingBG: UIView!
+    private var emptyLabel: UILabel!
+    private var rc = UIRefreshControl()
+    
     required init(parentVC: EventDetailPage) {
         super.init(nibName: nil, bundle: nil)
         
         self.event = parentVC.event
-        self.sortedTypes = event.admissionTypes.sorted(by: { (t1, t2) -> Bool in
-            return (t1.price ?? 0.0) >= (t2.price ?? 0.0)
-        })
     }
 
     override func viewDidLoad() {
@@ -32,6 +33,67 @@ class BuyTickets: UITableViewController {
         tableView.contentInset.top = 5
         tableView.contentInset.bottom = 5
         tableView.tableFooterView = UIView()
+        
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = .gray
+            label.font = .systemFont(ofSize: 17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
+        rc.addTarget(self, action: #selector(pullRefresh), for: .valueChanged)
+        
+        updateTickets()
+    }
+    
+    @objc private func pullRefresh() {
+        updateTickets(pulled: true)
+    }
+    
+    private func updateTickets(pulled: Bool = false) {
+        
+        if !pulled {
+            loadingBG.isHidden = false
+        }
+        
+        emptyLabel.text = ""
+        
+        event.updateAdmissionTypes { success in
+            self.loadingBG.isHidden = true
+            if pulled {
+                self.rc.endRefreshing()
+            } else {
+                self.tableView.refreshControl = self.rc
+            }
+            
+            if !success {
+                let alert = UIAlertController(title: "Unable to load tickets", message: "We could not communicate with our server. Perhaps there is a connection problem?", preferredStyle: .alert)
+                alert.addAction(.init(title: "Close", style: .cancel, handler: { _ in
+                    self.navigationController?.popViewController(animated: true)
+                }))
+                alert.addAction(.init(title: "Retry", style: .default, handler: { _ in
+                    self.updateTickets()
+                }))
+            } else {
+                self.sortedTypes = self.event.admissionTypes.sorted(by: { (t1, t2) -> Bool in
+                    return (t1.price ?? 0.0) >= (t2.price ?? 0.0)
+                })
+                if self.sortedTypes.isEmpty {
+                    self.emptyLabel.text = "No tickets available"
+                }
+                self.tableView.reloadData()
+            }
+        }
     }
 
     // MARK: - Table view data source
@@ -46,7 +108,7 @@ class BuyTickets: UITableViewController {
             let alert = UIAlertController(title: "Select payment type", message: "We're still figuring out the best way to carry out payments in Eventure. In the mean time, please reach out to the event organizer first to complete the payment and then request your ticket(s).", preferredStyle: .actionSheet)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Request Paid Ticket", style: .default, handler: { _ in
-                self.initiateRequest()
+                self.initiateRequest(type: cell.admissionType)
             }))
             
             if let popoverController = alert.popoverPresentationController {
@@ -59,8 +121,8 @@ class BuyTickets: UITableViewController {
         return cell
     }
     
-    private func initiateRequest() {
-        let vc = InitiateTicketRequest(event: self.event)
+    private func initiateRequest(type: AdmissionType) {
+        let vc = InitiateTicketRequest(event: self.event, admissionType: type)
         navigationController?.pushViewController(vc, animated: true)
     }
     

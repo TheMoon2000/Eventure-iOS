@@ -10,7 +10,7 @@ import UIKit
 
 class BuyTicketCell: UITableViewCell {
     
-    private var admissionType: AdmissionType!
+    private(set) var admissionType: AdmissionType!
     
     private var bgView: UIView!
     private(set) var ticketName: UILabel!
@@ -61,6 +61,7 @@ class BuyTicketCell: UITableViewCell {
         
         ticketPrice = {
             let label = UILabel()
+            label.numberOfLines = 5
             label.text = "$" + admissionType.priceDescription
             label.font = .systemFont(ofSize: 15)
             label.textColor = .gray
@@ -76,12 +77,18 @@ class BuyTicketCell: UITableViewCell {
         
         buyButton = {
             let button = UIButton(type: .system)
-            button.setTitle("Buy", for: .normal)
+            if (admissionType.quota ?? 0) != 0 && admissionType.quota! <= admissionType.quantitySold {
+                button.setTitle("Sold out", for: .normal)
+                button.isUserInteractionEnabled = false
+                button.backgroundColor = MAIN_DISABLED
+            } else {
+                button.setTitle("Buy", for: .normal)
+                button.backgroundColor = MAIN_TINT
+            }
             button.tintColor = .white
             button.contentEdgeInsets.left = 16
             button.contentEdgeInsets.right = 16
             button.layer.cornerRadius = 8
-            button.backgroundColor = MAIN_TINT
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setContentCompressionResistancePriority(.required, for: .horizontal)

@@ -130,7 +130,6 @@ class ActivateTicket: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                self.loadingBG.isHidden = true
             }
             
             guard error == nil else {
@@ -143,6 +142,7 @@ class ActivateTicket: UIViewController {
                         self.activateTicket(overrideCapacity: overrideCapacity)
                     }))
                     self.present(alert, animated: true)
+                    self.loadingBG.isHidden = true
                 }
                 return
             }
@@ -163,6 +163,7 @@ class ActivateTicket: UIViewController {
                     }))
                     DispatchQueue.main.async {
                         self.present(alert, animated: true)
+                        self.loadingBG.isHidden = true
                     }
                 case 0:
                     alert.title = "Check-in failure"
@@ -172,6 +173,7 @@ class ActivateTicket: UIViewController {
                     }
                 case 1:
                     DispatchQueue.main.async {
+                        self.loadingBG.isHidden = true
                         self.checkinSuccess(info: returnData)
                     }
                 default:
@@ -209,10 +211,11 @@ class ActivateTicket: UIViewController {
         }
         
         let quantity = info["Quantity"]?.int ?? 1
-        let quantityInfo = quantity == 1 ? "" : "(party size = \(quantity)) "
+        let noun = quantity == 1 ? "ticket" : "tickets"
+        let quantityInfo = quantity == 1 ? "" : "(\(quantity) \(noun)) "
         let eventInfo = event == nil ? " of event *\(info["Event title"]!)*" : ""
         
-        message.attributedText = ("**\(displayedName)** " + quantityInfo + "is successfully checked in for admission type  **\(admissionType)**\(eventInfo).").attributedText(style: TITLE_STYLE)
+        message.attributedText = ("**\(displayedName)** " + quantityInfo + "is successfully checked in for ticket type  **\(admissionType)**\(eventInfo).").attributedText(style: TITLE_STYLE)
         message.textAlignment = .center
         canvas.isHidden = false
     }

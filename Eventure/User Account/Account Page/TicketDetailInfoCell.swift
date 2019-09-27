@@ -188,6 +188,11 @@ class TicketDetailInfoCell: UITableViewCell {
             return label
         }()
         
+        if ticket.notes.isEmpty {
+            amountPaid.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
+            return
+        }
+        
         notesLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
