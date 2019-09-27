@@ -163,7 +163,8 @@ class CheckinResults: UIViewController {
         }()
         
         orgLogo = {
-            let iv = UIImageView(image: Organization.current?.logoImage ?? #imageLiteral(resourceName: "unknown"))
+            let iv = UIImageView(image: Organization.current?.logoImage ?? #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
+            iv.tintColor = MAIN_DISABLED
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(iv)

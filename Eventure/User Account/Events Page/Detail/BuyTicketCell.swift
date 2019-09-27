@@ -94,8 +94,14 @@ class BuyTicketCell: UITableViewCell {
             button.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             button.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
             
+            button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+            
             return button
         }()
+    }
+    
+    @objc private func buttonPressed() {
+        buyHandler?(admissionType)
     }
     
     

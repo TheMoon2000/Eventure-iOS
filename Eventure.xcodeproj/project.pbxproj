@@ -105,6 +105,7 @@
 		CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */; };
 		CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */; };
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
+		CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7440CA233D2AD600AA374D /* InitiateTicketRequest.swift */; };
 		CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */; };
 		CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469C6230FDB9B004E7B9D /* EventDraft.swift */; };
 		CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */; };
@@ -293,6 +294,7 @@
 		CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscribersCell.swift; path = "Eventure/Organization Account/Account Page/SubscribersCell.swift"; sourceTree = SOURCE_ROOT; };
 		CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DescriptionEditPage.swift; path = "Eventure/Organization Account/Account Page/DescriptionEditPage.swift"; sourceTree = SOURCE_ROOT; };
 		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
+		CC7440CA233D2AD600AA374D /* InitiateTicketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitiateTicketRequest.swift; sourceTree = "<group>"; };
 		CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgContactInfo.swift; sourceTree = "<group>"; };
 		CC8469C6230FDB9B004E7B9D /* EventDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDraft.swift; sourceTree = "<group>"; };
 		CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftDescriptionPage.swift; sourceTree = "<group>"; };
@@ -745,6 +747,7 @@
 				DD1BB0D72310B3560082C4EE /* OtherViewController.swift */,
 				CC8960C6233C21CF000E8C3D /* BuyTickets.swift */,
 				CC8960C8233C2242000E8C3D /* BuyTicketCell.swift */,
+				CC7440CA233D2AD600AA374D /* InitiateTicketRequest.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -951,6 +954,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
+				CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
 				CC04666923372A8700BB2754 /* RequestCell.swift in Sources */,

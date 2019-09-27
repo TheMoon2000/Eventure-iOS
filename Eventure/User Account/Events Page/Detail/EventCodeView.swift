@@ -59,7 +59,7 @@ class EventCodeView: UIView {
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
             iv.widthAnchor.constraint(equalToConstant: 220).isActive = true
-            iv.topAnchor.constraint(greaterThanOrEqualTo: subtitleLabel.bottomAnchor, constant: 50).isActive = true
+            iv.topAnchor.constraint(greaterThanOrEqualTo: subtitleLabel.bottomAnchor, constant: 45).isActive = true
             iv.leftAnchor.constraint(equalTo: leftAnchor, constant: 90).isActive = true
             iv.rightAnchor.constraint(equalTo: rightAnchor, constant: -90).isActive = true
             
@@ -69,6 +69,7 @@ class EventCodeView: UIView {
         orgLogo = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
             iv.layer.cornerRadius = 4
+            iv.tintColor = MAIN_DISABLED
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
@@ -76,7 +77,7 @@ class EventCodeView: UIView {
             
             iv.widthAnchor.constraint(equalToConstant: 32).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
-            iv.leftAnchor.constraint(greaterThanOrEqualTo: leftAnchor, constant: 20).isActive = true
+            iv.leftAnchor.constraint(greaterThanOrEqualTo: leftAnchor, constant: 30).isActive = true
             iv.topAnchor.constraint(equalTo: qrCode.bottomAnchor, constant: 40).isActive = true
             
             return iv
@@ -84,14 +85,14 @@ class EventCodeView: UIView {
         
         orgTitle = {
             let label = UILabel()
-            label.numberOfLines = 4
+            label.numberOfLines = 5
             label.font = .systemFont(ofSize: 17.5, weight: .medium)
             label.textColor = .init(white: 0.15, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 10).isActive = true
-            label.rightAnchor.constraint(lessThanOrEqualTo: rightAnchor, constant: -20).isActive = true
+            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 12).isActive = true
+            label.rightAnchor.constraint(lessThanOrEqualTo: rightAnchor, constant: -30).isActive = true
             label.centerXAnchor.constraint(equalTo: centerXAnchor, constant: 21).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -40).isActive = true
             label.centerYAnchor.constraint(equalTo: orgLogo.centerYAnchor).isActive = true

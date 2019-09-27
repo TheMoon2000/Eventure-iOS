@@ -107,7 +107,11 @@ class EventCheckinOverview: UIViewController {
         
         let formatted = EventCodeView()
         formatted.titleLabel.text = event.title
-        formatted.subtitleLabel.text = event.timeDescription
+        if let startTime = event.startTime {
+            formatted.subtitleLabel.text = Date.readableFormatter.string(from: startTime)
+        } else {
+            formatted.subtitleLabel.text = "Date: TBA"
+        }
         formatted.qrCode.image = qrCode.image
         formatted.orgTitle.text = event.hostTitle
         formatted.translatesAutoresizingMaskIntoConstraints = false

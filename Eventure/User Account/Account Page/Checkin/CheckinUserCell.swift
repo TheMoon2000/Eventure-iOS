@@ -67,7 +67,7 @@ class CheckinUserCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: profilePicture.rightAnchor, constant: 12).isActive = true
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -35).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -40).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 10).isActive = true
             
             return label

@@ -122,10 +122,10 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
                     self.refreshControl.endRefreshing()
                 }
             }
-            
+            /*
             DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
                 self?.getTickets(pulled: true)
-            }
+            }*/
             
             guard error == nil else {
                 DispatchQueue.main.async {

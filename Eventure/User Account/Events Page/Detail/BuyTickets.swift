@@ -60,7 +60,8 @@ class BuyTickets: UITableViewController {
     }
     
     private func initiateRequest() {
-        
+        let vc = InitiateTicketRequest(event: self.event)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     

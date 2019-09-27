@@ -26,8 +26,6 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         field.returnKeyType = .next
         field.placeholder = "Email"
         field.autocorrectionType = .no
-        field.adjustsFontSizeToFitWidth = true
-        field.minimumFontSize = 9
         return field
     }()
     
@@ -102,7 +100,8 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             button.setTitleColor(MAIN_TINT, for: .normal)
             button.layer.borderColor = overlay.layer.borderColor
             button.layer.borderWidth = 1
-            button.titleEdgeInsets.right = 10
+            button.contentEdgeInsets.left = 10
+            button.contentEdgeInsets.right = 12
             button.titleLabel?.font = .systemFont(ofSize: 16.5)
             button.setTitle("@berkeley.edu", for: .normal)
             button.backgroundColor = .init(white: 0.98, alpha: 1)
@@ -113,9 +112,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             button.rightAnchor.constraint(equalTo: overlay.rightAnchor).isActive = true
             button.centerYAnchor.constraint(equalTo: overlay.centerYAnchor).isActive = true
             button.leftAnchor.constraint(equalTo: textField.rightAnchor, constant: 10).isActive = true
-            let c = button.widthAnchor.constraint(equalToConstant: button.intrinsicContentSize.width + 35)
-            c.priority = .defaultHigh
-            c.isActive = true
+            button.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             button.addTarget(self, action: #selector(buttonPressed), for: .touchDown)
             button.addTarget(self, action: #selector(buttonLifted), for: [.touchUpInside, .touchUpOutside, .touchCancel, .touchDragExit])
