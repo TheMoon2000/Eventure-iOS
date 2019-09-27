@@ -271,11 +271,19 @@ class CheckinResults: UIViewController {
         for r in filteredRegistrants {
             let registrant:NSMutableDictionary = NSMutableDictionary()
             if (r.displayedName == "") {
-                registrant.setObject("incognito", forKey: "name" as NSCopying)
+                if (r.name == "") {
+                    registrant.setObject("incognito", forKey: "name" as NSCopying)
+                } else {
+                    registrant.setObject(r.name, forKey: "name" as NSCopying)
+                }
             } else {
                 registrant.setObject(r.displayedName, forKey: "name" as NSCopying)
             }
-            registrant.setObject(r.email, forKey: "email" as NSCopying)
+            if (r.email == "No email provided") {
+                 registrant.setObject(r.major, forKey: "email" as NSCopying)
+            } else {
+                registrant.setObject(r.email, forKey: "email" as NSCopying)
+            }
             print(r.displayedName)
             print(r.email)
             data.add(registrant)
