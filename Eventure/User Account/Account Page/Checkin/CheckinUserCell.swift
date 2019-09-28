@@ -132,8 +132,11 @@ class CheckinUserCell: UITableViewCell {
         if let code = registrant.currentCode {
             majorLabel.text = "Check-in code: \(code)"
             bgView.backgroundColor = PENDING_TINT
+        } else if registrant.userID != -1 {
+            majorLabel.text = registrant.majorDescription
+            bgView.backgroundColor = .white
         } else {
-            majorLabel.text = registrant.major.isEmpty ? "Undeclared" : registrant.major
+            majorLabel.text = registrant.email
             bgView.backgroundColor = .white
         }
         majorLabel.attributedText = majorLabel.text?.attributedText(style: COMPACT_STYLE)

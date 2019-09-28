@@ -117,6 +117,11 @@
 		CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */; };
 		CC9A74F52330A97B0021A790 /* TicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A74F42330A97B0021A790 /* TicketDetails.swift */; };
 		CC9A74F72330AC930021A790 /* TicketTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A74F62330AC930021A790 /* TicketTabView.swift */; };
+		CC9E1DF9233EDC5E00931BFD /* MajorList.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9E1DF8233EDC5E00931BFD /* MajorList.swift */; };
+		CC9E1DFB233EE17300931BFD /* MajorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9E1DFA233EE17300931BFD /* MajorCell.swift */; };
+		CC9E1DFD233EE23B00931BFD /* Major.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9E1DFC233EE23B00931BFD /* Major.swift */; };
+		CC9E1DFF233EFCD200931BFD /* MajorSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9E1DFE233EFCD200931BFD /* MajorSearchResults.swift */; };
+		CC9E1E01233F186F00931BFD /* MajorPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9E1E00233F186F00931BFD /* MajorPreviewCell.swift */; };
 		CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA03819231DB6A20011AE22 /* CheckinUserCell.swift */; };
 		CCA0381C231DBF330011AE22 /* CheckinTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0381B231DBF330011AE22 /* CheckinTable.swift */; };
 		CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA0381D231DC8C10011AE22 /* DraftCapacityCell.swift */; };
@@ -306,6 +311,11 @@
 		CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationRegistrationData.swift; sourceTree = "<group>"; };
 		CC9A74F42330A97B0021A790 /* TicketDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketDetails.swift; sourceTree = "<group>"; };
 		CC9A74F62330AC930021A790 /* TicketTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTabView.swift; sourceTree = "<group>"; };
+		CC9E1DF8233EDC5E00931BFD /* MajorList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorList.swift; sourceTree = "<group>"; };
+		CC9E1DFA233EE17300931BFD /* MajorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorCell.swift; sourceTree = "<group>"; };
+		CC9E1DFC233EE23B00931BFD /* Major.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Major.swift; sourceTree = "<group>"; };
+		CC9E1DFE233EFCD200931BFD /* MajorSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorSearchResults.swift; sourceTree = "<group>"; };
+		CC9E1E00233F186F00931BFD /* MajorPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorPreviewCell.swift; sourceTree = "<group>"; };
 		CCA03819231DB6A20011AE22 /* CheckinUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinUserCell.swift; sourceTree = "<group>"; };
 		CCA0381B231DBF330011AE22 /* CheckinTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTable.swift; sourceTree = "<group>"; };
 		CCA0381D231DC8C10011AE22 /* DraftCapacityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftCapacityCell.swift; sourceTree = "<group>"; };
@@ -406,6 +416,7 @@
 				CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */,
 				CC686ED1232F459100144CBF /* Ticket.swift */,
 				CCBA13D623389DA100E282AD /* TicketRequest.swift */,
+				CC9E1DFC233EE23B00931BFD /* Major.swift */,
 			);
 			path = "Data structure";
 			sourceTree = "<group>";
@@ -483,23 +494,17 @@
 				67E89384231C40FF004896F7 /* changeGender.swift */,
 				67705BD1231395900024FBBA /* PersonalInfoPage.swift */,
 				CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */,
-				CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */,
-				CCF68B8C232239AE00942DD9 /* EmailProfileCell.swift */,
-				CC2167C1231B719D003B8DE7 /* CommentCell.swift */,
-				CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */,
-				67AFF77923121ACE00329626 /* AccountCell.swift */,
-				CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */,
+				CC9E1DF8233EDC5E00931BFD /* MajorList.swift */,
+				CC9E1DFE233EFCD200931BFD /* MajorSearchResults.swift */,
 				CC3312812322121C00DC03D2 /* AboutPage.swift */,
 				CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */,
 				CC2050542334BA9B00F6A114 /* UserScanner.swift */,
 				CC2CCD442330B516000C65E2 /* TicketsOverview.swift */,
 				CC9A74F62330AC930021A790 /* TicketTabView.swift */,
 				CC686ECD232F40DD00144CBF /* TicketsList.swift */,
-				CC686ECF232F41AE00144CBF /* TicketCell.swift */,
 				CC0D9F0A233074950050CC92 /* AddTicket.swift */,
 				CC9A74F42330A97B0021A790 /* TicketDetails.swift */,
-				CC2CCD5023323474000C65E2 /* TicketQRCell.swift */,
-				CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */,
+				CCA52C93233EDA0900873B2F /* Cell types */,
 				CCA6CF79231AF4D3005D8BB2 /* Checkin */,
 				CC23293123163B720097A915 /* UpdatePasswordPage.swift */,
 				CCE214242314ED0E00E9B137 /* GenericOneFieldPage.swift */,
@@ -652,6 +657,24 @@
 				CC2538AE22F4E47F00690503 /* Account Page */,
 			);
 			path = "User Account";
+			sourceTree = "<group>";
+		};
+		CCA52C93233EDA0900873B2F /* Cell types */ = {
+			isa = PBXGroup;
+			children = (
+				CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */,
+				CC9E1DFA233EE17300931BFD /* MajorCell.swift */,
+				CC9E1E00233F186F00931BFD /* MajorPreviewCell.swift */,
+				CCF68B8C232239AE00942DD9 /* EmailProfileCell.swift */,
+				CC2167C1231B719D003B8DE7 /* CommentCell.swift */,
+				67AFF77923121ACE00329626 /* AccountCell.swift */,
+				CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */,
+				CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */,
+				CC686ECF232F41AE00144CBF /* TicketCell.swift */,
+				CC2CCD5023323474000C65E2 /* TicketQRCell.swift */,
+				CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */,
+			);
+			path = "Cell types";
 			sourceTree = "<group>";
 		};
 		CCA6CF76231A6889005D8BB2 /* Account Page */ = {
@@ -968,6 +991,7 @@
 				CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */,
 				CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */,
 				CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */,
+				CC9E1DF9233EDC5E00931BFD /* MajorList.swift in Sources */,
 				CC2167BC231B06F0003B8DE7 /* ProfileInfoPage.swift in Sources */,
 				CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */,
 				CC3F000122F7EFEC00996440 /* OrgFinishRegistration.swift in Sources */,
@@ -1011,6 +1035,7 @@
 				CC2EB24D231F9E68004245F8 /* CheckinRecord.swift in Sources */,
 				CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */,
 				CC426CB02320828500BB3CA4 /* CheckinResults.swift in Sources */,
+				CC9E1DFB233EE17300931BFD /* MajorCell.swift in Sources */,
 				CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */,
 				67AFF77E23121ACE00329626 /* AccountViewController.swift in Sources */,
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
@@ -1018,6 +1043,7 @@
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
+				CC9E1DFD233EE23B00931BFD /* Major.swift in Sources */,
 				CC46772D2319956600A9FF18 /* Campus.swift in Sources */,
 				67E89387231C57F4004896F7 /* LikedEvents.swift in Sources */,
 				CC9A74F52330A97B0021A790 /* TicketDetails.swift in Sources */,
@@ -1050,10 +1076,12 @@
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC2CCD452330B517000C65E2 /* TicketsOverview.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
+				CC9E1E01233F186F00931BFD /* MajorPreviewCell.swift in Sources */,
 				CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
 				CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */,
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
+				CC9E1DFF233EFCD200931BFD /* MajorSearchResults.swift in Sources */,
 				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
 				CC20505B2335F1F000F6A114 /* ActivateTicket.swift in Sources */,

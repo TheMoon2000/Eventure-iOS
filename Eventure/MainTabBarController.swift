@@ -143,6 +143,8 @@ class MainTabBarController: UITabBarController {
         
         loadSupportedCampuses()
         checkForNotices()
+        Major.recoverCache()
+        Major.updateCurrentMajors(nil)
         
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {

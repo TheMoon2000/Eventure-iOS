@@ -56,6 +56,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             nameCell.textfield.autocapitalizationType = .words
             nameCell.textfield.enablesReturnKeyAutomatically = true
             nameCell.textfield.text = userProfile.name
+            nameCell.textfield.returnKeyType = .done
             
             nameCell.changeHandler = { textfield in
                 User.current?.saveEnabled = false
@@ -65,10 +66,6 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             
             nameCell.endEditingHandler = { textfield in
                 User.current?.fullName = textfield.text!
-            }
-            
-            nameCell.returnHandler = { textfield in
-                (self.contentCells[0][2] as! TextFieldCell).textfield.becomeFirstResponder()
             }
             
             section.append(nameCell)
@@ -81,34 +78,19 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 section.append(UITableViewCell())
             }
             
-            
-            let majorCell = TextFieldCell(parentVC: self)
-            majorCell.icon.image = #imageLiteral(resourceName: "major")
-            majorCell.textfield.placeholder = "Field(s) of study"
-            majorCell.textfield.enablesReturnKeyAutomatically = true
-            majorCell.textfield.returnKeyType = .next
-            majorCell.textfield.text = userProfile.major
-            
-            
-            majorCell.changeHandler = { textfield in
-                User.current?.saveEnabled = false
-                User.current?.major = textfield.text!
-                User.current?.saveEnabled = true
+            if cellsEditable {
+                let majorCell = SettingsItemCell(withAccessory: true)
+                majorCell.icon.image = #imageLiteral(resourceName: "major")
+                majorCell.titleLabel.text = "Area(s) of study"
+                majorCell.valueLabel.numberOfLines = 1
+                section.append(majorCell)
+                
+            } else {
+                let majorCell = MajorPreviewCell()
+                majorCell.icon.image = #imageLiteral(resourceName: "major")
+                majorCell.setMajor(major: userProfile.majorDescription)
+                section.append(majorCell)
             }
-            
-            majorCell.endEditingHandler = { textfield in
-                User.current?.major = textfield.text!
-            }
-            
-            majorCell.returnHandler = { textfield in
-                textfield.resignFirstResponder()
-                if User.current?.graduationYear == nil {
-                    self.graduationCellExpanded = true
-                    self.refreshGradCell()
-                }
-            }
-            
-            section.append(majorCell)
             
             let gradCell = cellsEditable ? SettingsItemCell() : SettingsItemCell(withAccessory: false)
             gradCell.icon.image = #imageLiteral(resourceName: "graduation")
@@ -331,7 +313,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         body.dictionaryObject?["Full name"] = user.fullName
         body.dictionaryObject?["Graduation year"] = user.graduationYear
         body.dictionaryObject?["Graduation season"] = user.graduationSeason?.rawValue
-        body.dictionaryObject?["Major"] = user.major
+        body.dictionaryObject?["Major"] = user.majorEncoded
         body.dictionaryObject?["Resume"] = user.resume
         body.dictionaryObject?["LinkedIn"] = user.linkedIn
         body.dictionaryObject?["GitHub"] = user.github
@@ -443,6 +425,9 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
+        case [0, 2]:
+            let ml = MajorList()
+            navigationController?.pushViewController(ml, animated: true)
         case [0, 3]:
             view.endEditing(true)
             graduationCellExpanded.toggle()

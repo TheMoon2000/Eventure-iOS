@@ -12,7 +12,8 @@ protocol Profile {
     
     var userID: Int { get }
     var name: String { get }
-    var major: String { get }
+    var majorDescription: String { get }
+    var shortMajorDescription: String { get }
     var email: String { get }
     
     var graduationYear: Int? { get }

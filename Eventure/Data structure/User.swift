@@ -75,7 +75,33 @@ class User: Profile {
     /// Alias of full name.
     var name: String { return fullName }
     
-    var major: String { didSet { save() } }
+    /// Majors by IDs.
+    var majors = Set<Int>() { didSet { save() } }
+    
+    var majorEncoded: String {
+        return JSON(majors.map { $0 }).rawString([.castNilToNSNull: true])!
+    }
+    
+    var majorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
+    var shortMajorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
     var interests: String { didSet { save() } }
     var resume: String { didSet { save() } }
     var linkedIn: String { didSet { save() } }
@@ -86,16 +112,19 @@ class User: Profile {
     
     var profileStatus: String {
         var allEmpty = true
-        for item in [fullName, major, interests, resume, linkedIn, github, graduation, comments] {
+        for item in [fullName, interests, resume, linkedIn, github, graduation, comments] {
             allEmpty = allEmpty && item.isEmpty
         }
+        
+        allEmpty = allEmpty && majors.isEmpty
         
         if allEmpty { return "Not Started" }
         
         var filledRequirements = true
-        for item in [fullName, major, resume, graduation] {
+        for item in [fullName, resume, graduation] {
             filledRequirements = filledRequirements && !item.isEmpty
         }
+        filledRequirements = filledRequirements && !majors.isEmpty
         
         if filledRequirements {
             return "Completed"
@@ -142,7 +171,9 @@ class User: Profile {
         numberOfAttendedEvents = dictionary["# checked in"]?.int ?? 0
         
         fullName = dictionary["Full name"]?.string ?? ""
-        major = dictionary["Major"]?.string ?? ""
+        if let majorString = dictionary["Major"]?.string {
+            majors = Set((JSON(parseJSON: majorString).arrayObject as? [Int] ?? []))
+        }
         graduationYear = dictionary["Graduation year"]?.int
         if let tmp = dictionary["Graduation season"]?.string {
             graduationSeason = User.GraduationSeason(rawValue: tmp)
@@ -222,7 +253,7 @@ class User: Profile {
         json.dictionaryObject?["Interested"] = self.interestedEvents.description
         
         json.dictionaryObject?["Full name"] = self.fullName
-        json.dictionaryObject?["Major"] = self.major
+        json.dictionaryObject?["Major"] = majorEncoded
         json.dictionaryObject?["Graduation year"] = self.graduationYear
         json.dictionaryObject?["Graduation season"] = self.graduationSeason?.rawValue
         json.dictionaryObject?["Resume"] = self.resume

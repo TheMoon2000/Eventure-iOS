@@ -173,6 +173,7 @@ let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDom
 
 let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
 let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
+let MAJORS_PATH = ACCOUNT_DIR.path + "/" + "majors"
 
 /// Navigation bar background color
 let NAVBAR_TINT = UIColor.white

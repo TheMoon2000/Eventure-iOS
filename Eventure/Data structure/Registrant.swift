@@ -19,7 +19,28 @@ class Registrant: Hashable, Profile {
     var orgID: String
     var name: String
     var displayedName: String
-    var major: String
+    var majors = Set<Int>()
+    
+    var majorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
+    var shortMajorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
     var email: String
     var order: Int?
     var currentCode: String?
@@ -47,7 +68,11 @@ class Registrant: Hashable, Profile {
         name = dictionary["Full name"]?.string ?? ""
         email = dictionary["Email"]?.string ?? "No email provided"
         displayedName = dictionary["Displayed name"]?.string ?? ""
-        major = dictionary["Major"]?.string ?? "Undecided"
+        
+        if let majorString = dictionary["Major"]?.string {
+            majors = Set((JSON(parseJSON: majorString).arrayObject as? [Int] ?? []))
+        }
+        
         graduationYear = dictionary["Graduation year"]?.int
         graduationSeason = User.GraduationSeason(rawValue: dictionary["Graduation season"]?.string ?? "")
         resume = dictionary["Resume"]?.string ?? ""
