@@ -161,33 +161,6 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
         
         task.resume()
     }
-    
-    /// Load the logo image for an organization.
-    func getLogoImage(ticket: Ticket, handler: ((Ticket) -> ())?) {
-        if !ticket.hasLogo { return }
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetLogo",
-                           parameters: ["id": ticket.hostID])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                print("WARNING: Get logo image returned error for organization!")
-                return // Don't display any alert here
-            }
-            if let newLogo = UIImage(data: data!) {
-                ticket.orgLogo = newLogo
-                DispatchQueue.main.async {
-                    handler?(ticket)
-                }
-            }
-        }
-        
-        task.resume()
-    }
 
 }
 
@@ -214,7 +187,7 @@ extension TicketsList: UITableViewDataSource, UITableViewDelegate {
         }
         
         if ticket.orgLogo == nil {
-            getLogoImage(ticket: ticket) { [weak cell] ticketWithLogo in
+            ticket.getLogoImage { [weak cell] ticketWithLogo in
                 cell?.setup(ticket: ticketWithLogo)
                 self.logoCache[ticket.ticketID] = ticketWithLogo.orgLogo
             }

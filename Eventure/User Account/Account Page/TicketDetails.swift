@@ -59,15 +59,15 @@ class TicketDetails: UITableViewController {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return ["Event details", "Entrance code", "Ticket info"][section]
+        return ["Event details", "Entrance code", "Transfer"][section]
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return ticket.transferable ? 3 : 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [1, 2][section]
+        return [1, 2, 1][section]
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -91,9 +91,69 @@ class TicketDetails: UITableViewController {
             return cell
         case [1, 1]:
             return TicketDetailInfoCell(ticket: ticket)
+        case [2, 0]:
+            let lock = TransferLockCell()
+            lock.lockSwitch.isOn = ticket.transferLocked
+            lock.switchHandler = { sw in
+                self.updateTransferLock(sw: sw)
+            }
+            return lock
         default:
             return UITableViewCell()
         }
+    }
+    
+    func updateTransferLock(sw: UISwitch) {
+        loadingBG.isHidden = false
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/ToggleTransferLock",
+                           parameters: [
+                            "ticketId": ticket.ticketID,
+                            "locked": sw.isOn ? "1" : "0"
+                           ])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self) {
+                        sw.isOn = !sw.isOn
+                    }
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self) {
+                        sw.isOn = !sw.isOn
+                    }
+                }
+            case "success":
+                break
+            default:
+                let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .cancel))
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true) {
+                        sw.isOn = !sw.isOn
+                    }
+                }
+            }
+        }
+        
+        task.resume()
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

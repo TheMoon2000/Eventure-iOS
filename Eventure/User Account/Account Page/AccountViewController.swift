@@ -58,7 +58,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.title = "Me"
             self.navigationController?.navigationBar.setNeedsDisplay()
             UIView.performWithoutAnimation {
-                self.myTableView.reloadRows(at: [[1, 1], [2, 2]], with: .none)
+                self.myTableView.reloadRows(at: [[0, 0], [1, 1], [2, 2]], with: .none)
             }
         }
     }
@@ -259,7 +259,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.valueLabel.text = User.current?.profileStatus
         case (2, 0):
             cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Scan Event Code"
+            cell.titleLabel.text = "Scan"
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Events I Checked in"

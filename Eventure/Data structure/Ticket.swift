@@ -23,6 +23,10 @@ class Ticket {
     var hostName: String
     var hostID: String
     var paymentType: PaymentType = .none
+    var transferable: Bool
+    var transferLocked: Bool
+    var transferHistory = [Int]()
+    
     var paymentInfo: String {
         switch paymentType {
         case .offline:
@@ -66,6 +70,15 @@ class Ticket {
         if username == nil {
             username = userEmail
         }
+        transferable = (dictionary["Transferable"]?.int ?? 0) == 1
+        transferLocked = (dictionary["Transfer lock"]?.int ?? 1) == 1
+        
+        if let th = dictionary["Transfer history"]?.string {
+            if let arr = JSON(parseJSON: th).arrayObject as? [Int] {
+                transferHistory = arr
+            }
+        }
+        
         redeemCode = dictionary["Code"]?.string
         eventID = dictionary["Event ID"]?.string ?? ""
         eventName = dictionary["Event title"]?.string ?? ""
@@ -110,6 +123,9 @@ class Ticket {
         
         main.dictionaryObject?["Ticket ID"] = ticketID
         main.dictionaryObject?["Type name"] = typeName
+        main.dictionaryObject?["Transferable"] = transferable ? 1 : 0
+        main.dictionaryObject?["Transfer lock"] = transferLocked ? 1 : 0
+        main.dictionaryObject?["Transfer history"] = transferHistory.description
         main.dictionaryObject?["Admission ID"] = admissionID
         main.dictionaryObject?["User ID"] = userID
         main.dictionaryObject?["Email"] = userEmail
@@ -213,6 +229,34 @@ class Ticket {
         task.resume()
     }
     
+    /// Load the logo image for the host organization.
+    func getLogoImage(handler: ((Ticket) -> ())?) {
+        if !hasLogo { return }
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetLogo",
+                           parameters: ["id": hostID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                print("WARNING: Get logo image returned error for organization!")
+                return // Don't display any alert here
+            }
+            
+            if let newLogo = UIImage(data: data!) {
+                self.orgLogo = newLogo
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
     func save() {
         Ticket.writeToFile(userID: userID)
     }
@@ -285,6 +329,10 @@ class Ticket {
         return tickets
     }
     
+    var QRCode: UIImage? {
+        return generateQRCode(from: APP_DOMAIN + "ticket?id=" + ticketID)
+    }
+    
     
     static func updateTickets() {
         
@@ -302,7 +350,7 @@ class Ticket {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            guard error == nil else {
+            guard error == nil && User.current != nil else {
                 return
             }
             
@@ -321,7 +369,9 @@ class Ticket {
                 NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
 
                 DispatchQueue.global(qos: .default).async {
-                    Ticket.writeToFile(userID: User.current!.userID)
+                    if let current = User.current {
+                        Ticket.writeToFile(userID: current.uuid)
+                    }
                 }
             }
         }
@@ -348,6 +398,7 @@ extension Ticket {
         case credit = "Credit/debit card"
         case paypal = "Paypal"
         case none = "N/A"
+        case issued = "Issued"
         case offline = "Offline"
     }
 }

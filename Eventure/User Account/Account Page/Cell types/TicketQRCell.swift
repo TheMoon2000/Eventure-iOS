@@ -57,12 +57,7 @@ class TicketQRCell: UITableViewCell {
         }()
         
         qrCode = {
-            var data = JSON()
-            data.dictionaryObject?["Ticket ID"] = ticket.ticketID
-            let iv = UIImageView()
-            if let msg = data.rawString([.castNilToNSNull: true]) {
-                iv.image = generateQRCode(from: NSString(string: msg).aes256Encrypt(withKey: AES_KEY))
-            }
+            let iv = UIImageView(image: ticket.QRCode)
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
@@ -79,13 +74,8 @@ class TicketQRCell: UITableViewCell {
         activationLabel = {
             let label = UILabel()
             label.numberOfLines = 5
-            if let dateString = ticket.activationDate?.readableString() {
-                if dateString.hasPrefix("Today") {
-                    let truncated = dateString[dateString.index(dateString.startIndex, offsetBy: 5)..<dateString.endIndex]
-                    label.attributedText = ("Activated today" + String(truncated)).attributedText()
-                } else {
-                    label.attributedText = "Activated on \(dateString)".attributedText()
-                }
+            if let activationDate = ticket.activationDate {
+                label.attributedText = "Activated \(activationDate.inlineString())".attributedText()
                 qrCode.alpha = 0.09
             }
             label.font = .systemFont(ofSize: 18, weight: .medium)

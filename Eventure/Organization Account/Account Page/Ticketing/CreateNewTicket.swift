@@ -19,6 +19,8 @@ class CreateNewTicket: UITableViewController {
     
     private var buttonItem: UIBarButtonItem!
     private var spinnerItem: UIBarButtonItem!
+    
+    private var generateQuantity = 1
         
     required init(parentVC: IssuedTickets, ticketToEdit: Ticket? = nil) {
         super.init(nibName: nil, bundle: nil)
@@ -29,7 +31,7 @@ class CreateNewTicket: UITableViewController {
             draftTicket.ticketID = UUID().uuidString.lowercased()
             draftTicket.admissionID = parentVC.admissionType.id
             draftTicket.ticketPrice = parentVC.admissionType.price ?? 0.0
-            draftTicket.paymentType = .offline
+            draftTicket.paymentType = .issued
         } else {
             newTicket = false
             draftTicket = ticketToEdit!
@@ -56,7 +58,7 @@ class CreateNewTicket: UITableViewController {
         tableView.backgroundColor = EventDraft.backgroundColor
         
         let quantityCell: UITableViewCell = {
-            let cell = DraftCapacityCell(title: "Party size:")
+            let cell = DraftCapacityCell(title: "Ticket size:")
             cell.valueField.placeholder = "1"
             cell.valueField.returnKeyType = .next
             cell.valueField.autocapitalizationType = .none
@@ -67,8 +69,7 @@ class CreateNewTicket: UITableViewController {
                 tf.text = String(self.draftTicket.quantity)
             }
             cell.returnHandler = { tf in
-                let emailCell = self.contentCells[1] as? DraftLocationCell
-                emailCell?.valueText.becomeFirstResponder()
+                tf.resignFirstResponder()
             }
             if !newTicket {
                 cell.valueField.text = String(draftTicket.quantity)
@@ -94,7 +95,7 @@ class CreateNewTicket: UITableViewController {
                 cell.valueText.isEditable = false
             }
             cell.returnHandler = { tv in
-                let notesCell = self.contentCells[2] as? DraftLocationCell
+                let notesCell = self.contentCells.last as? DraftLocationCell
                 notesCell?.valueText.becomeFirstResponder()
             }
             cell.textChangeHandler = { tv in
@@ -104,6 +105,18 @@ class CreateNewTicket: UITableViewController {
             return cell
         }()
         contentCells.append(emailCell)
+        
+        let transferCell: UITableViewCell = {
+            let cell = SettingsSwitchCell()
+            cell.titleLabel.text = "Transferable:"
+            cell.enabled = draftTicket.transferable
+            cell.switchHandler = { on in
+                self.draftTicket.transferable = on
+            }
+            
+            return cell
+        }()
+        contentCells.append(transferCell)
         
         let notesCell: UITableViewCell = {
             let cell = DraftLocationCell()
@@ -124,6 +137,13 @@ class CreateNewTicket: UITableViewController {
     }
     
     @objc private func done() {
+        
+        if let quota = parentVC.admissionType.quota, quota > 0 && parentVC.admissionType.quantitySold + draftTicket.quantity > quota {
+            let alert = UIAlertController(title: "You are overselling tickets!", message: "You are about to create more tickets than the quota for '\(parentVC.admissionType.typeName)'! If you would like to add these tickets, please first go to the event editor and increase the quota for this ticket type. The current quota is \(quota).", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            self.present(alert, animated: true)
+            return
+        }
 
         navigationItem.rightBarButtonItem = spinnerItem
         
@@ -133,6 +153,7 @@ class CreateNewTicket: UITableViewController {
             "quantity": String(draftTicket.quantity),
             "admissionId": draftTicket.admissionID,
             "price": String(draftTicket.ticketPrice),
+            "transferable": draftTicket.transferable ? "1" : "0",
             "notes": draftTicket.notes
         ]
         

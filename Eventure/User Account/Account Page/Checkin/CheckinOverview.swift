@@ -266,9 +266,10 @@ class CheckinOverview: UIViewController {
             }
             
             let timer = Timer(fire: event.startTime!.addingTimeInterval(Double(-event.checkinTime)), interval: 0, repeats: false) { [weak self] timer in
-                self?.refreshUI()
-                self?.checkbox.isChecked = true
-                self?.checkboxLabel.attributedText = "Allow **\(self?.event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
+                if self == nil { return }
+                self!.refreshUI()
+                self!.checkbox.isChecked = true
+                self!.checkboxLabel.attributedText = "Allow **\(self!.event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
                 timer.invalidate()
             }
             RunLoop.main.add(timer, forMode: .common)
@@ -289,9 +290,10 @@ class CheckinOverview: UIViewController {
             }
             
             let timer = Timer(fire: event.startTime!.addingTimeInterval(Double(-event.checkinTime)), interval: 0, repeats: false) { [weak self] timer in
-                self?.refreshUI()
-                self?.checkbox.isChecked = true
-                self?.checkboxLabel.attributedText = "Allow **\(self?.event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
+                if self == nil { return }
+                self!.refreshUI()
+                self!.checkbox.isChecked = true
+                self!.checkboxLabel.attributedText = "Allow **\(self!.event.hostTitle)** to view my profile information".attributedText(style: COMPACT_STYLE)
                 timer.invalidate()
             }
             RunLoop.main.add(timer, forMode: .common)

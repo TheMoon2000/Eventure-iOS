@@ -123,7 +123,7 @@ class CheckinUserCell: UITableViewCell {
         self.registrant = registrant
         nameLabel.text = registrant.name
         if nameLabel.text!.isEmpty { nameLabel.text = registrant.displayedName }
-        if nameLabel.text!.isEmpty { nameLabel.text = registrant.email }
+        if nameLabel.text!.isEmpty { nameLabel.text = "Incognito" }
         if let order = registrant.order {
             self.placeLabel.text = String(order)
         } else {

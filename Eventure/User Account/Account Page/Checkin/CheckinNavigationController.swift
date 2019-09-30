@@ -16,9 +16,20 @@ class CheckinNavigationController: UINavigationController {
         navigationBar.tintColor = MAIN_TINT
         navigationBar.barTintColor = .white
     }
-//    
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
+
+}
+
+class PortraitNavigationController: UINavigationController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        navigationBar.tintColor = MAIN_TINT
+        navigationBar.barTintColor = .white
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
 
 }

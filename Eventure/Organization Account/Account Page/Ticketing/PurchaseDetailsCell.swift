@@ -224,7 +224,43 @@ class PurchaseDetailsCell: UITableViewCell {
             return label
         }()
         
-        amountPaid.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
+        if !ticket.notes.isEmpty {
+            notesLabel = {
+                let label = UILabel()
+                label.font = .systemFont(ofSize: 16)
+                label.text = "Note:"
+                label.textColor = .gray
+                label.translatesAutoresizingMaskIntoConstraints = false
+                addSubview(label)
+                
+                label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+                label.topAnchor.constraint(equalTo: amountPaid.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+                label.setContentCompressionResistancePriority(.required, for: .horizontal)
+                
+                return label
+            }()
+            
+            notes = {
+                let label = UILabel()
+                label.numberOfLines = 2
+                label.text = ticket.notes
+                label.textAlignment = .right
+                label.font = .systemFont(ofSize: 16)
+                label.textColor = VALUE_COLOR
+                label.translatesAutoresizingMaskIntoConstraints = false
+                addSubview(label)
+                
+                label.leftAnchor.constraint(equalTo: notesLabel.rightAnchor, constant: 12).isActive = true
+                label.topAnchor.constraint(equalTo: notesLabel.topAnchor).isActive = true
+                label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+                
+                return label
+            }()
+        
+            notes.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
+        } else {
+            amountPaid.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

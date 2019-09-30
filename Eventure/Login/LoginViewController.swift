@@ -465,7 +465,6 @@ class LoginViewController: UIViewController {
         
         func handleOrgLogin(org: Organization) {
             Organization.current = org
-            Organization.current?.save(requireReupload: false)
             MainTabBarController.current.openScreen(isUserAccount: false)
             dismiss(animated: true, completion: nil)
         }

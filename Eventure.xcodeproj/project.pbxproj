@@ -48,6 +48,9 @@
 		CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */; };
 		CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */; };
 		CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC23293123163B720097A915 /* UpdatePasswordPage.swift */; };
+		CC247A7723412D0500C4EE75 /* TicketScannedPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC247A7623412D0500C4EE75 /* TicketScannedPage.swift */; };
+		CC247A79234196FD00C4EE75 /* TransferLockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC247A78234196FD00C4EE75 /* TransferLockCell.swift */; };
+		CC247A7D2341D0F800C4EE75 /* TransferHistoryUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC247A7C2341D0F800C4EE75 /* TransferHistoryUser.swift */; };
 		CC2CCD452330B517000C65E2 /* TicketsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD442330B516000C65E2 /* TicketsOverview.swift */; };
 		CC2CCD47233184CD000C65E2 /* TicketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD46233184CD000C65E2 /* TicketTypes.swift */; };
 		CC2CCD49233184FE000C65E2 /* TicketTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD48233184FE000C65E2 /* TicketTypeCell.swift */; };
@@ -237,6 +240,9 @@
 		CC2167C1231B719D003B8DE7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		CC2167C3231C4A35003B8DE7 /* UICheckbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UICheckbox.swift; sourceTree = "<group>"; };
 		CC23293123163B720097A915 /* UpdatePasswordPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordPage.swift; sourceTree = "<group>"; };
+		CC247A7623412D0500C4EE75 /* TicketScannedPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketScannedPage.swift; sourceTree = "<group>"; };
+		CC247A78234196FD00C4EE75 /* TransferLockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferLockCell.swift; sourceTree = "<group>"; };
+		CC247A7C2341D0F800C4EE75 /* TransferHistoryUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferHistoryUser.swift; sourceTree = "<group>"; };
 		CC2CCD442330B516000C65E2 /* TicketsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsOverview.swift; sourceTree = "<group>"; };
 		CC2CCD46233184CD000C65E2 /* TicketTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTypes.swift; sourceTree = "<group>"; };
 		CC2CCD48233184FE000C65E2 /* TicketTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTypeCell.swift; sourceTree = "<group>"; };
@@ -487,6 +493,25 @@
 			path = Eventure;
 			sourceTree = "<group>";
 		};
+		CC247A7E2341D12D00C4EE75 /* Ticketing */ = {
+			isa = PBXGroup;
+			children = (
+				CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */,
+				CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */,
+				CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */,
+				CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */,
+				CCBA13DA23399BC000E282AD /* PurchaseDetails.swift */,
+				CCBA13D823396B9300E282AD /* PurchaseDetailsCell.swift */,
+				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
+				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
+				CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */,
+				CC04666623372A4900BB2754 /* TicketRequests.swift */,
+				CC04666823372A8700BB2754 /* RequestCell.swift */,
+				CC247A7C2341D0F800C4EE75 /* TransferHistoryUser.swift */,
+			);
+			path = Ticketing;
+			sourceTree = "<group>";
+		};
 		CC2538AE22F4E47F00690503 /* Account Page */ = {
 			isa = PBXGroup;
 			children = (
@@ -504,6 +529,7 @@
 				CC686ECD232F40DD00144CBF /* TicketsList.swift */,
 				CC0D9F0A233074950050CC92 /* AddTicket.swift */,
 				CC9A74F42330A97B0021A790 /* TicketDetails.swift */,
+				CC247A7623412D0500C4EE75 /* TicketScannedPage.swift */,
 				CCA52C93233EDA0900873B2F /* Cell types */,
 				CCA6CF79231AF4D3005D8BB2 /* Checkin */,
 				CC23293123163B720097A915 /* UpdatePasswordPage.swift */,
@@ -673,6 +699,7 @@
 				CC686ECF232F41AE00144CBF /* TicketCell.swift */,
 				CC2CCD5023323474000C65E2 /* TicketQRCell.swift */,
 				CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */,
+				CC247A78234196FD00C4EE75 /* TransferLockCell.swift */,
 			);
 			path = "Cell types";
 			sourceTree = "<group>";
@@ -690,17 +717,7 @@
 				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				CC2050582335302E00F6A114 /* CheckinVerification.swift */,
 				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
-				CC2CCD5423331FE1000C65E2 /* TicketCenter.swift */,
-				CC2CCD5623336D96000C65E2 /* TicketManagerMain.swift */,
-				CC2CCD5823336DB2000C65E2 /* TicketManagerTabs.swift */,
-				CC2CCD5A23336EB1000C65E2 /* TicketPurchases.swift */,
-				CCBA13DA23399BC000E282AD /* PurchaseDetails.swift */,
-				CCBA13D823396B9300E282AD /* PurchaseDetailsCell.swift */,
-				CC2CCD5C2333DAC3000C65E2 /* IssuedTickets.swift */,
-				CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */,
-				CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */,
-				CC04666623372A4900BB2754 /* TicketRequests.swift */,
-				CC04666823372A8700BB2754 /* RequestCell.swift */,
+				CC247A7E2341D12D00C4EE75 /* Ticketing */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -1013,6 +1030,7 @@
 				CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */,
 				DD1BB0D62310B2350082C4EE /* AboutViewController.swift in Sources */,
 				CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */,
+				CC247A79234196FD00C4EE75 /* TransferLockCell.swift in Sources */,
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
 				CCE214272314ED4500E9B137 /* GenericTextCell.swift in Sources */,
 				D5216649231D828600A54F21 /* FilterDateTableViewController.swift in Sources */,
@@ -1022,6 +1040,7 @@
 				CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */,
 				CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */,
 				CC2167B6231AF6DF003B8DE7 /* SignupSheet.swift in Sources */,
+				CC247A7D2341D0F800C4EE75 /* TransferHistoryUser.swift in Sources */,
 				67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */,
 				CC686ED0232F41AE00144CBF /* TicketCell.swift in Sources */,
 				CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */,
@@ -1076,6 +1095,7 @@
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC2CCD452330B517000C65E2 /* TicketsOverview.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
+				CC247A7723412D0500C4EE75 /* TicketScannedPage.swift in Sources */,
 				CC9E1E01233F186F00931BFD /* MajorPreviewCell.swift in Sources */,
 				CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
@@ -1292,7 +1312,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1300,7 +1320,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1321,7 +1341,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1329,7 +1349,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

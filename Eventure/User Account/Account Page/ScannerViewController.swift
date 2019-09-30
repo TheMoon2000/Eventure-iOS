@@ -27,7 +27,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     private var TORCH_ON = "Let there be light"
     private var TORCH_OFF = "Tap to turn off flashlight"
     var INVALID_CODE: String {
-        return "Oops, this QR code is not a valid event code."
+        return "Oops, this QR code is not recognized by Eventure."
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

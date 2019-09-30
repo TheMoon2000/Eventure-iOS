@@ -16,8 +16,10 @@ class User: Profile {
         didSet {
             if current != nil {
                 UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
+                current?.save(needsUpload: false)
                 Ticket.userTickets = Ticket.readFromFile()[current!.userID] ?? []
                 Ticket.updateTickets()
+                current?.saveEnabled = true
             } else {
                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                 Ticket.userTickets = []
@@ -183,8 +185,6 @@ class User: Profile {
         github = dictionary["GitHub"]?.string ?? ""
         interests = dictionary["Interests"]?.string ?? ""
         comments = dictionary["Comments"]?.string ?? ""
-        
-        saveEnabled = true
     }
     
     // MARK: - Read & Write
@@ -224,8 +224,10 @@ class User: Profile {
     }
     
     /// Short-cut for writeToFile().
-    func save() {
-        User.needsUpload = true
+    func save(needsUpload: Bool = true) {
+        if needsUpload {
+            User.needsUpload = true
+        }
 
         if !saveEnabled { return }
         

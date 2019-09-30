@@ -18,11 +18,7 @@ class OrgScanner: ScannerViewController {
     }
 
     override func decryptDataString(_ string: String) -> String? {
-        if let decrypted = NSString(string: string).aes256Decrypt(withKey: AES_KEY) {
-            print(decrypted)
-            return JSON(parseJSON: decrypted).dictionary?["Ticket ID"]?.string
-        }
-        return nil
+        return string.components(separatedBy: "=").last 
     }
     
     override func processDecryptedCode(string: String) {

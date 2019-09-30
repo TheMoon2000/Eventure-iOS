@@ -204,13 +204,57 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             UIApplication.topMostViewController?.present(alert, animated: true)
         case .ticketActivation:
             NotificationCenter.default.post(name: TICKET_ACTIVATED, object: packet.dictionaryObject as? [String : String])
-        case .ticketRedemption:
-            print(info)
         case .ticketRequest:
             NotificationCenter.default.post(name: NEW_TICKET_REQUEST, object: nil)
-        case .ticketRequestApproved:
+        case .ticketTransferRequest:
+            print(info)
+            guard let alertMsg = info["alert"]?.dictionary?["body"]?.string else { return }
+            guard let requesterID = info["Requester ID"]?.int else { return }
+            guard let ticketID = info["Ticket ID"]?.string else { return }
+            
+            let alert = UIAlertController(title: "Ticket transfer request", message: alertMsg + "\n\n" + "If you approve this ticket transfer, the requester will immediately become the new owner of this ticket. Please confirm that you have received all necessary payments (if any) before proceeding.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Decline", style: .cancel, handler: { _ in
+                self.respondToTransferRequest(ticketID: ticketID, approve: false, newOwner: requesterID)
+            }))
+            alert.addAction(.init(title: "Approve", style: .default, handler: { _ in
+                self.respondToTransferRequest(ticketID: ticketID, approve: true, newOwner: requesterID)
+            }))
+            UIApplication.topMostViewController?.present(alert, animated: true)
+        case .ticketTransferApproved, .ticketTransferDeclined:
+            let approved = keyType == .ticketTransferApproved
+            let ticketID = info["Ticket ID"]?.string ?? ""
+            NotificationCenter.default.post(name: TICKET_TRANSFER_STATUS, object: (approved, ticketID))
+        default:
             print(info)
         }
+    }
+    
+    @objc private func respondToTransferRequest(ticketID: String, approve: Bool, newOwner: Int) {
+        
+        let parameters = [
+            "ticketId": ticketID,
+            "approve": approve ? "1" : "0",
+            "newOwner": String(newOwner)
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/RespondTransferRequest",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: UIApplication.topMostViewController!)
+                }
+                return
+            }
+        }
+        
+        task.resume()
     }
     
 }

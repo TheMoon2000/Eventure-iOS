@@ -47,6 +47,8 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         tableView.contentInset.bottom = 6
         tableView.backgroundColor = EventDraft.backgroundColor
         tableView.register(IssuedTicketCell.classForCoder(), forCellReuseIdentifier: "ticket")
+        
+        tableView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(showMore)))
                 
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
@@ -121,7 +123,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 var newRecords = [Ticket]()
                 for purchase in json.array! {
                     let newTicket = Ticket(ticketInfo: purchase)
-                    if newTicket.paymentType == .offline && newTicket.admissionID == self.admissionType.id {
+                    if newTicket.paymentType == .issued && newTicket.admissionID == self.admissionType.id {
                         newRecords.append(newTicket)
                     }
                 }
@@ -139,6 +141,30 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         }
         
         task.resume()
+    }
+    
+    @objc private func showMore(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: tableView)
+            if let indexPath = tableView.indexPathForRow(at: touchPoint), tickets[indexPath.row].transactionDate == nil {
+                let alert = UIAlertController(title: "More actions", message: nil, preferredStyle: .actionSheet)
+                alert.addAction(.init(title: "Copy Redeem Code", style: .default, handler: { _ in
+                    UIPasteboard.general.string = self.tickets[indexPath.row].redeemCode ?? ""
+                }))
+                alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
+                    self.deleteRow(indexPath: indexPath)
+                }))
+                alert.addAction(.init(title: "Cancel", style: .cancel))
+                
+                if let popoverController = alert.popoverPresentationController {
+                    popoverController.sourceView = tableView
+                    let cellRect = tableView.rectForRow(at: indexPath)
+                    popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+                }
+                
+                present(alert, animated: true)
+            }
+        }
     }
     
     // MARK: - Table view data source
@@ -166,7 +192,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     
     override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         
-        guard tickets[indexPath.row].transactionDate == nil else { return nil }
+        guard tickets[indexPath.row].transactionDate == nil else { return [] }
 
         let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
             self.deleteRow(indexPath: indexPath)

@@ -147,7 +147,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         let cell = EventsCell()
         cell.titleLabel.text = record.eventTitle
         
-        cell.dateLabel.text = "Checked in on " + record.checkedInDate.readableString()
+        cell.dateLabel.text = "Checked in " + record.checkedInDate.inlineString()
         
         if record.coverImage != nil {
             cell.icon.image = record.coverImage

@@ -15,6 +15,8 @@ class Organization: CustomStringConvertible {
         didSet {
             if current != nil {
                 UserDefaults.standard.setValue(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
+                current?.save(requireReupload: false)
+                current?.saveEnabled = true
             } else {
                  UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
             }
@@ -123,8 +125,6 @@ class Organization: CustomStringConvertible {
                 subscribers = Set(subArray)
             }
         }
-
-        saveEnabled = true
     }
 
     var description: String {
@@ -158,6 +158,7 @@ class Organization: CustomStringConvertible {
         
         let newOrg = Organization(orgInfo: json)
         guard !newOrg.title.isEmpty else {
+            print(json)
             print("WARNING: Damaged data was read from cache!")
             return nil
         }
@@ -173,7 +174,6 @@ class Organization: CustomStringConvertible {
 
     /// Short-cut for writeToFile().
     func save(requireReupload: Bool = true) {
-        if !saveEnabled { return }
         if self.id != Organization.current?.id { return }
 
         if requireReupload {

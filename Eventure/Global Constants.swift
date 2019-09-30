@@ -45,6 +45,9 @@ enum NotificationKeys: String {
     case ticketRedemption = "ticket redemption"
     case ticketRequest = "ticket request"
     case ticketRequestApproved = "ticket request approved"
+    case ticketTransferRequest = "ticket transfer request"
+    case ticketTransferApproved = "ticket transfer approved"
+    case ticketTransferDeclined = "ticket transfer declined"
 }
 
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
@@ -295,6 +298,13 @@ extension Date {
         return formatter
     }()
     
+    static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
     func readableString() -> String {
         if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {
             return Date.readableFormatter.string(from: self)
@@ -302,6 +312,16 @@ extension Date {
             return Date.shortFormatter.string(from: self)
         } else {
             return Date.todayFormatter.string(from: self)
+        }
+    }
+    
+    func inlineString() -> String {
+        if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {
+            return "on " + Date.readableFormatter.string(from: self)
+        } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: self) {
+            return "on " + Date.shortFormatter.string(from: self)
+        } else {
+            return "at " + Date.timeFormatter.string(from: self)
         }
     }
 }
@@ -672,3 +692,4 @@ let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
 let ORG_SYNC_FAILED = Notification.Name("org sync failed")
 let TICKET_ACTIVATED = Notification.Name("ticket activated")
 let NEW_TICKET_REQUEST = Notification.Name("new ticket request")
+let TICKET_TRANSFER_STATUS = Notification.Name(rawValue: "ticket transfer status")
