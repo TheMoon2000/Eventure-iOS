@@ -211,13 +211,17 @@ class OrgEventCell: UICollectionViewCell {
         }
         if event.eventVisual == nil {
             if withImage {
-                event.getCover { [weak self] eventWithCover in
-                    if let image = eventWithCover.eventVisual {
-                        self?.cover.image = image
+                if event.hasVisual {
+                    cover.image = #imageLiteral(resourceName: "cover_placeholder")
+                    event.getCover { [weak self] eventWithCover in
+                        if let image = eventWithCover.eventVisual {
+                            self?.cover.image = image
+                        }
                     }
+                } else {
+                    cover.image = #imageLiteral(resourceName: "berkeley")
                 }
             }
-            cover.image = #imageLiteral(resourceName: "cover_placeholder")
         } else {
             cover.image = event.eventVisual
         }

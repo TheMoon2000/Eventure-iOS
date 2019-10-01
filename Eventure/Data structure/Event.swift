@@ -32,7 +32,11 @@ class Event {
     var capacity = 0
     var secureCheckin = false
     var requiresTicket = false
+    var ticketStyle: QRStyle = .standard
     var lastModified: Date?
+    
+    var hasBannerImage = false
+    var bannerImage: UIImage?
     
     /// An array containing all the ticket types for the event.
     var admissionTypes = Set<AdmissionType>()
@@ -143,6 +147,7 @@ class Event {
         
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
+        hasBannerImage = (dictionary["Has banner"]?.int ?? 0) == 1
         capacity = dictionary["Capacity"]?.int ?? 0
         secureCheckin = (dictionary["Strict"]?.int ?? 0) == 1
         requiresTicket = (dictionary["Requires ticket"]?.int ?? 0) == 1
@@ -161,6 +166,12 @@ class Event {
        
         if let dateString = dictionary["Last modified"]?.string {
             lastModified = DATE_FORMATTER.date(from: dateString)
+        }
+        
+        if let ticketStyleRaw = dictionary["Ticket QR style"]?.int {
+            if let style = QRStyle(rawValue: ticketStyleRaw) {
+                self.ticketStyle = style
+            }
         }
     }
     
@@ -196,6 +207,7 @@ class Event {
                     var orgSpecificEvents: Set<Event> = events[id] ?? []
 
                     event.eventVisual = eventRawData["cover"] as? UIImage
+                    event.bannerImage = eventRawData["banner"] as? UIImage
                     orgSpecificEvents.insert(event)
                     
                     events[id] = orgSpecificEvents
@@ -219,6 +231,7 @@ class Event {
             
             eventRaw["main"] = mainEncrypted
             eventRaw["cover"] = event.eventVisual
+            eventRaw["banner"] = event.bannerImage
             
             collection.append(eventRaw)
         }
@@ -264,6 +277,34 @@ class Event {
         return ""
     }
     
+    /// Load the cover image for an event.
+    func getBanner(_ handler: ((Event) -> ())?) {
+        if !hasBannerImage { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEventBanner",
+                           parameters: ["eventId": uuid])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.bannerImage = UIImage(data: data!)
+            if self.bannerImage != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
     
     /// Load the cover image for an event.
     func getCover(_ handler: ((Event) -> ())?) {
@@ -283,8 +324,10 @@ class Event {
             }
             
             self.eventVisual = UIImage(data: data!)
-            DispatchQueue.main.async {
-                handler?(self)
+            if self.eventVisual != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
             }
         }
         
@@ -353,11 +396,13 @@ class Event {
         main.dictionaryObject?["Published"] = published ? 1 : 0
         main.dictionaryObject?["Tags"] = tags.description
         main.dictionaryObject?["Has cover"] = hasVisual
+        main.dictionaryObject?["Has banner"] = hasBannerImage
         main.dictionaryObject?["Active"] = active ? 1 : 0
         main.dictionaryObject?["Capacity"] = capacity
         main.dictionaryObject?["Strict"] = secureCheckin
         main.dictionaryObject?["Requires ticket"] = requiresTicket ? 1 : 0
         main.dictionaryObject?["Ticket types"] = admissionTypesEncoded
+        main.dictionaryObject?["Ticket QR style"] = ticketStyle.rawValue
         
         return main
     }
@@ -402,6 +447,10 @@ class Event {
 extension Event {
     enum Going: Int {
         case neutral = 0, interested, going
+    }
+    
+    enum QRStyle: Int {
+        case standard = 0, imageBelow
     }
 }
 

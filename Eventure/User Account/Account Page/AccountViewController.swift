@@ -12,7 +12,7 @@ import TOCropViewController
 
 class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
     
-    private var myTableView: UITableView!
+    private(set) var myTableView: UITableView!
     
     private var currentImageView: UIImageView!
     private var profilePicture: UIImage!
@@ -111,6 +111,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             navigationController?.pushViewController(profileInfo, animated: true)
         case (2, 0):
             let scanVC = UserScanner()
+            scanVC.accountVC = self
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
         case (2, 1):
@@ -217,6 +218,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         default:
             break
         }
+    }
+    
+    func openTickets() {
+        let ticketsPage = TicketsOverview()
+        ticketsPage.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(ticketsPage, animated: true)
     }
     
     //create a cell for each table view row

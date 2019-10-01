@@ -139,8 +139,10 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         if event.eventVisual != nil {
             cell.icon.image = event.eventVisual
+        } else if !event.hasVisual {
+            cell.icon.image = #imageLiteral(resourceName: "berkeley")
         } else {
-            cell.icon.image = UIImage(named: "cover_placeholder")
+            cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
         }
         return cell
     }

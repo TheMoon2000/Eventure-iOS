@@ -87,7 +87,7 @@ class TicketInfoEditor: UITableViewController {
         let notesCell = DraftLocationCell()
         notesCell.promptLabel.text = "Additional notes (optional):"
         notesCell.valueText.textColor = .darkGray
-        notesCell.setPlaceholder(string: "Where should people buy tickets from you offline?")
+        notesCell.setPlaceholder(string: "e.g. Where should people buy tickets from you offline?")
         notesCell.valueText.insertText(admissionInfo.notes)
         notesCell.textChangeHandler = { tv in
             self.admissionInfo.notes = tv.text

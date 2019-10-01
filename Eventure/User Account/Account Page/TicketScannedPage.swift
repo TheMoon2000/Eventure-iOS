@@ -120,25 +120,36 @@ class TicketScannedPage: UIViewController {
         
         claimButton = {
             let button = UIButton(type: .system)
-            button.setTitle("Request Ticket Transfer", for: .normal)
+            if ticket.userID != -1 {
+                button.setTitle("Request Ticket Transfer", for: .normal)
+            } else {
+                button.setTitle("Claim Ticket", for: .normal)
+            }
             button.tintColor = .white
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
             button.backgroundColor = MAIN_TINT
             button.layer.cornerRadius = 10
-            button.contentEdgeInsets.left = 30
-            button.contentEdgeInsets.right = 30
+            button.contentEdgeInsets.left = 32
+            button.contentEdgeInsets.right = 32
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)
             
             button.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
             button.heightAnchor.constraint(equalToConstant: 53).isActive = true
+            
             let b = button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70)
             b.priority = .defaultLow
             b.isActive = true
+            
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
             button.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
             button.topAnchor.constraint(greaterThanOrEqualTo: quantity.bottomAnchor, constant: 30).isActive = true
             
-            button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+            if ticket.userID != -1 {
+                button.addTarget(self, action: #selector(initiateRequest), for: .touchUpInside)
+            } else {
+                button.addTarget(self, action: #selector(claimTicket), for: .touchUpInside)
+            }
                         
             return button
         }()
@@ -180,7 +191,66 @@ class TicketScannedPage: UIViewController {
         present(alert, animated: true)
     }
     
-    @objc private func buttonPressed() {
+    @objc private func claimTicket() {
+        loadingBG.isHidden = false
+        claimButton.isUserInteractionEnabled = false
+        
+        let parameters = [
+            "userId": String(User.current!.uuid),
+            "ticketId": ticket.ticketID,
+            "claim" : "1"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/InitiateTicketTransfer",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+                self.claimButton.isUserInteractionEnabled = true
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            switch msg {
+            case "success":
+                let noun = self.ticket.quantity == 1 ? "ticket" : "tickets"
+                let alert = UIAlertController(title: "Ticket claimed!", message: "You have successfully claimed \(self.ticket.quantity) × \(self.ticket.typeName) \(noun) for “\(self.ticket.eventName).” ", preferredStyle: .alert)
+                alert.addAction(.init(title: "Done", style: .cancel, handler: { _ in
+                    self.dismiss(animated: true)
+                }))
+                alert.addAction(.init(title: "Go to Tickets", style: .default, handler: { _ in
+                    self.dismiss(animated: true) {
+                        self.parentVC.accountVC?.openTickets()
+                    }
+                }))
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true)
+                }
+            default:
+                let alert = UIAlertController(title: "Unable to claim ticket", message: msg, preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .cancel))
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    @objc private func initiateRequest() {
         
         loadingBG.isHidden = false
         

@@ -229,7 +229,7 @@ class User: Profile {
             User.needsUpload = true
         }
 
-        if !saveEnabled { return }
+        if !saveEnabled || User.current != self { return }
         
         DispatchQueue.global(qos: .background).async {
             if self.writeToFile(path: CURRENT_USER_PATH) == false {

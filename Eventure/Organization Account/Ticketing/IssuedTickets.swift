@@ -9,6 +9,7 @@
 import UIKit
 import SwiftyJSON
 import XLPagerTabStrip
+import MessageUI
 
 class IssuedTickets: UITableViewController, IndicatorInfoProvider {
 
@@ -88,14 +89,18 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         
         emptyLabel.text = ""
         
+        let parameters = [
+            "eventId": event.uuid,
+            "admissionId": admissionType.id
+        ]
+        
         if !pulled {
             loadingBG.isHidden = false
         }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ListPurchases",
-                           parameters: ["eventId": event.uuid,
-                                        "admissionId": admissionType.id])!
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -122,7 +127,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             if let json = try? JSON(data: data!), json.array != nil {
                 var newRecords = [Ticket]()
                 for purchase in json.array! {
-                    let newTicket = Ticket(ticketInfo: purchase)
+   	                 let newTicket = Ticket(ticketInfo: purchase)
                     if newTicket.paymentType == .issued && newTicket.admissionID == self.admissionType.id {
                         newRecords.append(newTicket)
                     }
@@ -151,6 +156,12 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 alert.addAction(.init(title: "Copy Redeem Code", style: .default, handler: { _ in
                     UIPasteboard.general.string = self.tickets[indexPath.row].redeemCode ?? ""
                 }))
+                alert.addAction(.init(title: "Save QR Image", style: .default, handler: { _ in
+                    self.saveQRCode(ticket: self.tickets[indexPath.row])
+                }))
+                alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
+                    self.mailTicket(ticket: self.tickets[indexPath.row])
+                }))
                 alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
                     self.deleteRow(indexPath: indexPath)
                 }))
@@ -164,6 +175,124 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 
                 present(alert, animated: true)
             }
+        }
+    }
+    
+    private func generateCode(from ticket: Ticket) -> UIView? {
+        
+        guard let qrCode = generateQRCode(from: APP_DOMAIN + "ticket?id=" + ticket.ticketID) else {
+            let alert = UIAlertController(title: "Error generating QR code", message: "You device does not support QR code generation!", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            present(alert, animated: true)
+            return nil
+        }
+        
+        if event.ticketStyle == .standard {
+            let formatted = TicketCodeView()
+            formatted.titleLabel.text = event.title
+            if let startTime = event.startTime {
+                formatted.subtitleLabel.text = Date.readableFormatter.string(from: startTime) + " | " + event.location
+            } else {
+                formatted.subtitleLabel.text = "TBA | " + event.location
+            }
+            formatted.qrCode.image = qrCode
+            let noun = ticket.quantity == 1 ? "Ticket" : "Tickets"
+            formatted.ticketType.text = "\(ticket.quantity) × \(ticket.typeName) " + noun
+            formatted.redeemCode.text = "Redeem code: \(ticket.redeemCode ?? "Unavailable")"
+            formatted.translatesAutoresizingMaskIntoConstraints = false
+            formatted.layoutIfNeeded()
+            
+            if let logo = Organization.current?.logoImage {
+                formatted.orgLogo.image = logo
+            }
+            
+            return formatted
+        } else if event.ticketStyle == .imageBelow {
+            
+            guard event.hasBannerImage else {
+                let alert = UIAlertController(title: "No custom image was specified", message: "You have configured your event to generate QR codes with a custom layout that requires an embedded image. However, you never provided that image in the event editor. Please first go there and add your image.", preferredStyle: .alert)
+                alert.addAction(.init(title: "Dismiss", style: .cancel))
+                present(alert, animated: true)
+                return nil
+            }
+            
+            guard let banner = event.bannerImage else {
+                event.getBanner(nil)
+                let alert = UIAlertController(title: "No custom image was found", message: "Our records indicate that you have provided a custom image for QR code generation, but this image isn't locally available on your device right now. We've just sent an request to fetch the image from our server. Please wait a few seconds and try again.", preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .cancel))
+                present(alert, animated: true)
+                return nil
+            }
+            
+            let qr = TicketImageBelowQR(banner: banner)
+            qr.qrCode.image = qrCode
+            qr.redeemCode.text = "Redeem code: \(ticket.redeemCode ?? "Unavailable")"
+            qr.translatesAutoresizingMaskIntoConstraints = false
+            qr.layoutIfNeeded()
+            
+            if let logo = Organization.current?.logoImage {
+                qr.orgLogo.image = logo
+            }
+            
+            return qr
+        }
+        return nil
+    }
+    
+    private func mailTicket(ticket: Ticket) {
+        guard MFMailComposeViewController.canSendMail() else {
+            return
+        }
+        
+        guard let formatted = generateCode(from: ticket) else {
+            return
+        }
+        
+        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+        let qr = renderer.image { context in
+            formatted.layer.render(in: context.cgContext)
+        }
+        
+        let body = """
+        <a style="float:right" href="\(APP_STORE_LINK)"><img src="\(APP_DOMAIN)static/assets/logo.jpg" style="width:60px; height:60px" title="Eventure app" alt="Eventure"></a><br><div style="clear:both">
+        Hi there!<br><br>Thank you for supporting <em>\(event.title)</em>. Here is your digital ticket, which contains detailed information about when and where it will take place. If you have an iOS device, we recommend that you <b>scan this QR code</b> with <a href="\(APP_STORE_LINK)">Eventure</a>, which will automatically validate your ownership and sync the ticket to your account. Otherwise, please take a moment to visit <a href="https://eventure-app.com/ticket?id=\(ticket.ticketID)">this link</a> and fill out your contact information. This will help us to assign ownership to this ticket, which is <b>essential</b> for its validation. We hope to see you at the event:)<br><br>Best regards,<br> \(event.hostTitle)</div>
+"""
+        
+        let composer = MFMailComposeViewController()
+        composer.setMessageBody(body, isHTML: true)
+        composer.setSubject("Ticket receipt for “\(event.title)”")
+        composer.addAttachmentData(qr.pngData()!, mimeType: "image/png", fileName: "ticket")
+        composer.mailComposeDelegate = self
+        
+        present(composer, animated: true)
+        
+    }
+    
+    private func saveQRCode(ticket: Ticket) {
+        
+        guard let formatted = generateCode(from: ticket) else {
+            return
+        }
+        
+        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+        let qr = renderer.image { context in
+            formatted.layer.render(in: context.cgContext)
+        }
+
+        UIImageWriteToSavedPhotosAlbum(qr, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        
+    }
+    
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer) {
+        if let error = error {
+            // we got back an error!
+            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
+        } else {
+            let ac = UIAlertController(title: "Saved!", message: "The QR Code has been saved to your photos.", preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            present(ac, animated: true)
         }
     }
     
@@ -262,4 +391,10 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         super.init(coder: aDecoder)
     }
 
+}
+
+extension IssuedTickets: MFMailComposeViewControllerDelegate, UINavigationControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
+    }
 }

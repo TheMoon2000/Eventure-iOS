@@ -17,6 +17,7 @@ class EventDraft: UIPageViewController {
     
     var edited = false
     var imageEdited = false
+    var bannerEdited = false
     
     var isEditingExistingEvent = false
     var currentPage = -1 {
@@ -268,20 +269,23 @@ class EventDraft: UIPageViewController {
             "capacity": String(draft.capacity),
             "strict": draft.secureCheckin ? "1" : "0",
             "requiresTicket": draft.requiresTicket ? "1" : "0",
-            "ticketTypes": draft.admissionTypesEncoded
+            "ticketTypes": draft.admissionTypesEncoded,
+            "ticketStyle": String(draft.ticketStyle.rawValue)
         ]
         
         var fileData = [String : Data]()
         if imageEdited {
             fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDownData(maxWidth: 500)
         }
+        if bannerEdited {
+            fileData["banner"] = draft.bannerImage?.fixedOrientation().sizeDownData(maxWidth: 500)
+        }
+        
         request.addMultipartBody(parameters: parameters, files: fileData)
         request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
-            
-            
             
             guard error == nil else {
                 DispatchQueue.main.async {
@@ -313,7 +317,7 @@ class EventDraft: UIPageViewController {
                         self.detailPage?.event = self.draft
                         self.orgEventView?.allEvents = published
                         self.orgEventView?.allDrafts = remaining
-                        self.orgEventView?.eventCatalog.reloadSections([0])
+                        self.orgEventView?.eventCatalog.reloadData()
                         self.navigationItem.rightBarButtonItem = doneButton
                         self.dismiss(animated: true, completion: nil)
                     }

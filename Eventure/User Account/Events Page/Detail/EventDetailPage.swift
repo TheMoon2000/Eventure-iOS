@@ -106,8 +106,14 @@ class EventDetailPage: UIViewController {
             right.isActive = true
             
             if event.eventVisual == nil {
-                emptyImageHeightConstraint = iv.heightAnchor.constraint(equalToConstant: 0)
-                emptyImageHeightConstraint.isActive = true
+                if event.hasVisual {
+                    iv.image = #imageLiteral(resourceName: "cover_placeholder")
+                    event.getCover { withImage in
+                        iv.image = withImage.eventVisual
+                    }
+                } else {
+                    iv.image = #imageLiteral(resourceName: "berkeley")
+                }
             }
             
             iv.isUserInteractionEnabled = true

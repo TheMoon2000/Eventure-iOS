@@ -18,14 +18,22 @@ class OrgScanner: ScannerViewController {
     }
 
     override func decryptDataString(_ string: String) -> String? {
-        return string.components(separatedBy: "=").last 
+        if string.contains("ticket?") {
+            return "ticket: " + string.components(separatedBy: "=").last!
+        }
+        return nil
     }
     
     override func processDecryptedCode(string: String) {
         super.processDecryptedCode(string: string)
-        let at = ActivateTicket(ticketID: string, event: event)
-        present(at, animated: true) {
-            self.resetDisplay()
+        
+        // Handling for ticket IDs
+        if string.hasPrefix("ticket: ") {
+            let ticketID = String(string.suffix(36))
+            let at = ActivateTicket(ticketID: ticketID, event: event)
+            present(at, animated: true) {
+                self.resetDisplay()
+            }
         }
     }
     

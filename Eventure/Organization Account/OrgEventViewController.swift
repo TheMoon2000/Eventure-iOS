@@ -284,6 +284,7 @@ class OrgEventViewController: UIViewController, EventProvider {
                 var tmp = Set<Event>()
                 for eventJSON in eventsList {
                     let event = Event(eventInfo: eventJSON)
+                    event.getBanner(nil)
                     tmp.insert(event)
                 }
                 DispatchQueue.main.async {

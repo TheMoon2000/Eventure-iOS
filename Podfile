@@ -10,9 +10,9 @@ target 'Eventure' do
   pod 'TOCropViewController'
   pod 'SwiftCSVExport'
   pod 'SwiftLoggly', '~> 1.0'
-  pod 'Braintree'
-  pod 'Braintree/DataCollector'
-  pod 'Braintree/Venmo'
+  # pod 'Braintree'
+  # pod 'Braintree/DataCollector'
+  # pod 'Braintree/Venmo'
 end
 
 target 'EventureAPITests' do

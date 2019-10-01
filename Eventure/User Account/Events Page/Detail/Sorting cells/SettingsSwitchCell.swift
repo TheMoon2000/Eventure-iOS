@@ -43,7 +43,7 @@ class SettingsSwitchCell: UITableViewCell {
             view.heightAnchor.constraint(equalToConstant: 55).isActive = true
 
             
-            let b = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -8)
+            let b = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -6)
             b.priority = .defaultHigh
             b.isActive = true
             

@@ -209,10 +209,11 @@ class TicketDetailInfoCell: UITableViewCell {
         
         notes = {
             let label = UILabel()
-            label.numberOfLines = 10
-            label.attributedText = ticket.notes.attributedText(style: COMPACT_STYLE)
+            label.numberOfLines = 20
+            label.text = ticket.notes
+            label.font = .systemFont(ofSize: 16)
             if label.text!.isEmpty {
-                label.attributedText = "*The event host did not leave a note.*".attributedText(style: COMPACT_STYLE)
+                label.text = "The event host did not leave a note."
             }
             label.textAlignment = .right
             label.textColor = VALUE_COLOR

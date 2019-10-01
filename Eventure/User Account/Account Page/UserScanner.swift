@@ -10,6 +10,8 @@ import UIKit
 import SwiftyJSON
 
 class UserScanner: ScannerViewController {
+    
+    var accountVC: AccountViewController?
 
     override func decryptDataString(_ string: String) -> String? {
         if string.contains("checkin?") {
@@ -110,7 +112,7 @@ class UserScanner: ScannerViewController {
             if let json = try? JSON(data: data!), json.dictionary != nil {
                 let ticket = Ticket(ticketInfo: json)
                 
-                if !ticket.transferable || ticket.transferLocked {
+                if !ticket.transferable || (ticket.transferLocked && ticket.userID != -1) {
                     DispatchQueue.main.async {
                         let alert = UIAlertController(title: "Could not initiate ticket transfer", message: "The ticket you just scanned does not support transfer.", preferredStyle: .alert)
                         alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in

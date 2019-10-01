@@ -30,8 +30,8 @@ class BuyTickets: UITableViewController {
         view.backgroundColor = EventDraft.backgroundColor
 
         tableView.separatorStyle = .none
-        tableView.contentInset.top = 5
-        tableView.contentInset.bottom = 5
+        tableView.contentInset.top = 6
+        tableView.contentInset.bottom = 6
         tableView.tableFooterView = UIView()
         
         loadingBG = view.addLoader()
@@ -126,6 +126,22 @@ class BuyTickets: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        
+        let admissionType = sortedTypes[indexPath.row]
+        if !admissionType.notes.isEmpty {
+            let alert = UIAlertController(title: admissionType.typeName, message: admissionType.notes, preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Close", style: .cancel))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = tableView
+                popoverController.sourceRect = tableView.rectForRow(at: indexPath)
+            }
+            
+            present(alert, animated: true)
+        }
+    }
     
     
     required init?(coder: NSCoder) {

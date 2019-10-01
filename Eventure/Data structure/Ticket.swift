@@ -53,6 +53,7 @@ class Ticket {
     var transactionDate: Date?
     var activationDate: Date?
     var creationDate: Date?
+    var location: String
     var notes: String
     
     let hasLogo: Bool
@@ -90,6 +91,7 @@ class Ticket {
         quantity = dictionary["Quantity"]?.int ?? 1
         ticketPrice = dictionary["Ticket price"]?.double ?? 0.0
         paymentAmount = dictionary["Payment amount"]?.double ?? 0.0
+        location = dictionary["Location"]?.string ?? "TBA"
         notes = dictionary["Notes"]?.string ?? ""
         
         if let eventDateString = dictionary["Start time"]?.string {
@@ -138,6 +140,9 @@ class Ticket {
         main.dictionaryObject?["Payment amount"] = paymentAmount
         main.dictionaryObject?["Payment type"] = paymentType.rawValue
         main.dictionaryObject?["Has logo"] = hasLogo ? 1 : 0
+        main.dictionaryObject?["Location"] = location
+        main.dictionaryObject?["Notes"] = notes
+        main.dictionaryObject?["Code"] = redeemCode
         
         if activationDate != nil {
             main.dictionaryObject?["Activation date"] = DATE_FORMATTER.string(from: activationDate!)

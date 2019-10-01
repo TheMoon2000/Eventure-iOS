@@ -151,11 +151,13 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         
         if record.coverImage != nil {
             cell.icon.image = record.coverImage
-        } else {
+        } else if record.hasCover {
             cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
             record.getCover { recordWithCover in
                 cell.icon.image = recordWithCover.coverImage
             }
+        } else {
+            cell.icon.image = #imageLiteral(resourceName: "berkeley")
         }
         return cell
     }
@@ -180,7 +182,8 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         }
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetCheckedInEvents", parameters: parameters)!
+                           API_Name: "events/GetCheckedInEvents",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -239,13 +242,13 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             let isSameMonth = eventDateComponents.month == todayDateComponents.month
             let isSameDay = eventDateComponents.day == todayDateComponents.day
             
-            if (isSameDay && isSameYear && isSameMonth) {
+            if isSameDay && isSameYear && isSameMonth {
                 self.today.append(record)
-            } else if (isSameYear && isSameMonth && (eventDateComponents.day! - todayDateComponents.day! == 1)) {
+            } else if isSameYear && isSameMonth && (todayDateComponents.day! - eventDateComponents.day! == 1) {
                 self.tomorrow.append(record)
-            } else if (isSameYear && isSameMonth && (eventDateComponents.day! - todayDateComponents.day! <= 7)) {
+            } else if isSameYear && isSameMonth && (todayDateComponents.day! - eventDateComponents.day! <= 7) {
                 self.thisWeek.append(record)
-            } else if (record.checkedInDate > today) {
+            } else if record.checkedInDate > today {
                 self.future.append(record)
             } else {
                 self.past.append(record)

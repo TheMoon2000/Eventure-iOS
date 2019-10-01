@@ -143,7 +143,7 @@ class OrgEventBriefPage: UIViewController, UITableViewDelegate, UITableViewDataS
         if event.eventVisual != nil {
             cell.icon.image = event.eventVisual
         } else {
-            cell.icon.image = UIImage(named: "cover_placeholder")
+            cell.icon.image = #imageLiteral(resourceName: "IMG_0236.jpg")
         }
         return cell
     }

@@ -43,6 +43,7 @@ class TicketDetails: UITableViewController {
         tableView.separatorColor = .init(white: 0.85, alpha: 1)
         tableView.sectionFooterHeight = 0
         tableView.sectionHeaderHeight = 40
+        tableView.contentInset.bottom = 5
                 
     }
     
@@ -78,7 +79,7 @@ class TicketDetails: UITableViewController {
             cell.setDisplayedDate(start: ticket.eventDate, end: ticket.eventEndDate)
             cell.icon.image = ticket.eventCover
             if ticket.eventCover == nil {
-                cell.icon.image = UIImage(named: "cover_placeholder")
+                cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
                 ticket.fetchEventImage { ticket in
                     cell.icon.image = ticket.eventCover
                 }

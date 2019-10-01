@@ -282,7 +282,7 @@ class EventCell: UICollectionViewCell {
                     self?.setupCellWithEvent(event: eventWithCover)
                 }
             }
-            cover.image = #imageLiteral(resourceName: "cover_placeholder")
+            cover.image = #imageLiteral(resourceName: "berkeley")
         } else {
             cover.image = event.eventVisual
         }

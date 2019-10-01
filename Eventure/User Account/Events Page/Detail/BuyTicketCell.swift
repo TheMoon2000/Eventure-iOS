@@ -111,6 +111,11 @@ class BuyTicketCell: UITableViewCell {
         buyHandler?(admissionType)
     }
     
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        
+        bgView.backgroundColor = highlighted ? .init(white: 0.96, alpha: 1) : .white
+    }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
