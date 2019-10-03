@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     static var changed: Bool = false
     
@@ -27,7 +27,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     private var today = [CheckinRecord]()
     private var tomorrow = [CheckinRecord]()
-    private var thisWeek = [CheckinRecord]()
+    private var last7Days = [CheckinRecord]()
     private var future = [CheckinRecord]()
     private var past = [CheckinRecord]()
     
@@ -233,37 +233,32 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     
     func groupEventsTime() {
         
-        let today = Date()
-        let calender = Calendar.current
+        let todayMidnight = Date().midnight
+
         for record in recordDictionaryList {
-            let eventDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: record.checkedInDate)
-            let todayDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: today)
-            let isSameYear = eventDateComponents.year == todayDateComponents.year
-            let isSameMonth = eventDateComponents.month == todayDateComponents.month
-            let isSameDay = eventDateComponents.day == todayDateComponents.day
             
-            if isSameDay && isSameYear && isSameMonth {
+            // Use the information below to group events by time
+            let recordMidnight = record.checkedInDate.midnight
+            let offset = recordMidnight.timeIntervalSince(todayMidnight)
+            
+            if todayMidnight.compare(recordMidnight) == .orderedSame {
                 self.today.append(record)
-            } else if isSameYear && isSameMonth && (todayDateComponents.day! - eventDateComponents.day! == 1) {
-                self.tomorrow.append(record)
-            } else if isSameYear && isSameMonth && (todayDateComponents.day! - eventDateComponents.day! <= 7) {
-                self.thisWeek.append(record)
-            } else if record.checkedInDate > today {
+            } else if offset == 24 * 3600 {
+                self.tomorrow.append(record) // Exactly tomorrow
+            } else if offset > 24 * 3600 {
                 self.future.append(record)
+            } else if offset >= -7 * 86400 {
+                self.last7Days.append(record)
             } else {
                 self.past.append(record)
             }
         }
-        
-        let sortFunction: ((CheckinRecord, CheckinRecord) -> Bool) = {
-            return $0.checkedInDate < $1.checkedInDate
-        }
-        
-        self.today = self.today.sorted(by: sortFunction)
-        self.tomorrow = self.tomorrow.sorted(by: sortFunction)
-        self.thisWeek = self.thisWeek.sorted(by: sortFunction)
-        self.future = self.future.sorted(by: sortFunction)
-        self.past = self.past.sorted(by: sortFunction)
+
+        today.sort { CheckinRecord.oldestFirst($0, $1) }
+        tomorrow.sort { CheckinRecord.oldestFirst($0, $1) }
+        last7Days.sort { CheckinRecord.lastestFirst($0, $1) }
+        future.sort { CheckinRecord.oldestFirst($0, $1) }
+        past.sort { CheckinRecord.lastestFirst($0, $1) }
         
         if self.today.count > 0 {
             sections += 1
@@ -277,21 +272,21 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             displayedRecords.append(self.tomorrow)
             rowsForSection.append(self.tomorrow.count)
         }
-        if self.thisWeek.count > 0 {
+        if self.last7Days.count > 0 {
             sections += 1
-            labels.append("This Week")
-            displayedRecords.append(self.thisWeek)
-            rowsForSection.append(self.thisWeek.count)
+            labels.append("Last 7 days")
+            displayedRecords.append(self.last7Days)
+            rowsForSection.append(self.last7Days.count)
         }
         if self.future.count > 0 {
             sections += 1
-            labels.append("In the future...")
+            labels.append("Coming up")
             displayedRecords.append(self.future)
             rowsForSection.append(self.future.count)
         }
         if self.past.count > 0 {
             sections += 1
-            labels.append("Past Events")
+            labels.append("Past Activities")
             displayedRecords.append(self.past)
             rowsForSection.append(self.past.count)
         }
@@ -303,7 +298,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
     func clearAll() {
         today.removeAll()
         tomorrow.removeAll()
-        thisWeek.removeAll()
+        last7Days.removeAll()
         future.removeAll()
         past.removeAll()
         

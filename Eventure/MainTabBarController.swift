@@ -136,6 +136,7 @@ class MainTabBarController: UITabBarController {
             Organization.current?.getLogoImage(nil)
         }
         selectedIndex = page
+        dismiss(animated: true)
     }
     
     func loginSetup() {

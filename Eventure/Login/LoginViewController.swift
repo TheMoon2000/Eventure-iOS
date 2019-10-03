@@ -172,7 +172,6 @@ class LoginViewController: UIViewController {
             let usr = UITextField()
             usr.placeholder = "Email / Organization ID"
             usr.keyboardType = .emailAddress
-            usr.adjustsFontSizeToFitWidth = true
             usr.textContentType = .emailAddress
             usr.returnKeyType = .next
             prepareField(textfield: usr)
@@ -459,14 +458,12 @@ class LoginViewController: UIViewController {
                 present(nextVC, animated: true, completion: nil)
             } else {
                 MainTabBarController.current.openScreen()
-                dismiss(animated: true, completion: nil)
             }
         }
         
         func handleOrgLogin(org: Organization) {
             Organization.current = org
             MainTabBarController.current.openScreen(isUserAccount: false)
-            dismiss(animated: true, completion: nil)
         }
         
         if user == nil {

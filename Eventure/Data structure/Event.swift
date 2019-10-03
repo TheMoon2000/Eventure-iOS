@@ -407,6 +407,26 @@ class Event {
         return main
     }
     
+    static let lastestFirst: ((Event, Event) -> Bool) = { e1, e2 in
+        if e1.startTime == nil {
+            return false
+        } else if e2.startTime == nil {
+            return true
+        } else {
+            return e1.startTime! >= e2.startTime!
+        }
+    }
+    
+    static let oldestFirst: ((Event, Event) -> Bool) = { e1, e2 in
+        if e1.startTime == nil {
+            return false
+        } else if e2.startTime == nil {
+            return true
+        } else {
+            return e1.startTime! <= e2.startTime!
+        }
+    }
+    
     func copy() -> Event {
         let new = Event(eventInfo: encodedJSON)
         new.eventVisual = self.eventVisual

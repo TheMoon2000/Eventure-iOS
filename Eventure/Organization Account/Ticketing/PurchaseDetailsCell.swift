@@ -242,7 +242,7 @@ class PurchaseDetailsCell: UITableViewCell {
             
             notes = {
                 let label = UILabel()
-                label.numberOfLines = 2
+                label.numberOfLines = 20
                 label.text = ticket.notes
                 label.textAlignment = .right
                 label.font = .systemFont(ofSize: 16)

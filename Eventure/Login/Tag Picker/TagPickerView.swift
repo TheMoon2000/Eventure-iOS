@@ -259,6 +259,8 @@ class TagPickerView: UIViewController {
             return
         }
         
+        loadingBG.isHidden = false
+        
         let url = URL(string: API_BASE_URL + "account/UpdateTags")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"

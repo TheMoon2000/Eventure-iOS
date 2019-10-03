@@ -213,6 +213,13 @@ let YEAR_FORMATTER: DateFormatter = {
     return formatter
 }()
 
+let WEEK_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "EEE"
+    formatter.locale = Locale(identifier: "en_US")
+    return formatter
+}()
+
 /// A formatter to get the current month in string format.
 let DAY_FORMATTER: DateFormatter = {
     let formatter = DateFormatter()
@@ -304,6 +311,14 @@ extension Date {
         formatter.locale = Locale(identifier: "en_US")
         return formatter
     }()
+    
+    /// Truncates the hour, minute and second components of the date.
+    var midnight: Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter.date(from: formatter.string(from: self))!
+    }
     
     func readableString() -> String {
         if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {

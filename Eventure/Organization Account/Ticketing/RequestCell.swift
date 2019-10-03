@@ -19,6 +19,9 @@ class RequestCell: UITableViewCell {
     private var emailLabel: UILabel!
     private var emailValue: UIButton!
     
+    private var noteLabel: UILabel!
+    private var noteValue: UILabel!
+    
     private var acceptButton: UIButton!
     private var declineButton: UIButton!
     private var buttonStack: UIStackView!
@@ -149,6 +152,38 @@ class RequestCell: UITableViewCell {
             return button
         }()
         
+        noteLabel = {
+            let label = UILabel()
+            label.text = "Note:"
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            bgView.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: separator.leftAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: emailValue.bottomAnchor, constant: 16).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
+            
+            return label
+        }()
+        
+        noteValue = {
+            let label = UILabel()
+            label.numberOfLines = 20
+            label.textAlignment = .right
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = VALUE_COLOR
+            label.translatesAutoresizingMaskIntoConstraints = false
+            bgView.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: noteLabel.rightAnchor, constant: 12).isActive = true
+            label.rightAnchor.constraint(equalTo: separator.rightAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: noteLabel.topAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            
+            return label
+        }()
+        
         acceptButton = {
             let button = UIButton(type: .system)
             button.setTitle("APPROVE", for: .normal)
@@ -190,7 +225,6 @@ class RequestCell: UITableViewCell {
             stack.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(stack)
             
-            stack.topAnchor.constraint(equalTo: emailValue.bottomAnchor, constant: 16).isActive = true
             stack.leftAnchor.constraint(equalTo: bgView.leftAnchor).isActive = true
             stack.rightAnchor.constraint(equalTo: bgView.rightAnchor).isActive = true
             stack.heightAnchor.constraint(equalToConstant: 40).isActive = true
@@ -254,6 +288,16 @@ class RequestCell: UITableViewCell {
         let noun = requestInfo.quantity == 1 ? "ticket" : "tickets"
         message.attributedText = "**\(username)** has requested \(requestInfo.quantity) \(noun).".attributedText(style: TITLE_STYLE)
         emailValue.setTitle(requestInfo.email, for: .normal)
+        
+        if requestInfo.notes.isEmpty {
+            noteLabel.isHidden = true
+            noteValue.isHidden = true
+            
+            buttonStack.topAnchor.constraint(equalTo: emailValue.bottomAnchor, constant: 16).isActive = true
+        } else {
+            noteValue.text = requestInfo.notes
+            buttonStack.topAnchor.constraint(equalTo: noteValue.bottomAnchor, constant: 16).isActive = true
+        }
         
         if requestInfo.requestDate != nil {
             dateValue.text = requestInfo.requestDate!.readableString()

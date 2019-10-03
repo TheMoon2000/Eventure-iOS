@@ -65,6 +65,14 @@ class CheckinRecord: Hashable {
         task.resume()
     }
     
+    static let lastestFirst: ((CheckinRecord, CheckinRecord) -> Bool) = { e1, e2 in
+        return e1.checkedInDate >= e2.checkedInDate
+    }
+    
+    static let oldestFirst: ((CheckinRecord, CheckinRecord) -> Bool) = { e1, e2 in
+        return e1.checkedInDate <= e2.checkedInDate
+    }
+    
     
     // MARK: - Hashable
     
