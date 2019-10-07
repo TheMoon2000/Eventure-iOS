@@ -20,7 +20,7 @@ class DraftOtherInfoPage: UITableViewController {
         
         // Do any additional setup after loading the view.
                 
-        tableView.backgroundColor = EventDraft.backgroundColor
+        tableView.backgroundColor = AppColors.background
         tableView.keyboardDismissMode = .interactive
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
@@ -28,7 +28,7 @@ class DraftOtherInfoPage: UITableViewController {
         tableView.tableFooterView = UIView()
                 
         let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
-        tagPickerCell.backgroundColor = EventDraft.backgroundColor
+        tagPickerCell.backgroundColor = AppColors.background
         tagPickerCell.reloadTagPrompt(tags: draftPage.draft.tags)
         contentCells.append(tagPickerCell)
         
@@ -39,7 +39,7 @@ class DraftOtherInfoPage: UITableViewController {
         contentCells.append(capacityCell)
         
         let secureCell = SettingsSwitchCell()
-        secureCell.backgroundColor = EventDraft.backgroundColor
+        secureCell.backgroundColor = AppColors.background
         secureCell.enabled = draftPage.draft.secureCheckin
         secureCell.titleLabel.text = "Secure check-in"
         secureCell.switchHandler = { on in
@@ -48,7 +48,7 @@ class DraftOtherInfoPage: UITableViewController {
         contentCells.append(secureCell)
         
         let imagePickerCell = EventImagePickerCell()
-        imagePickerCell.backgroundColor = EventDraft.backgroundColor
+        imagePickerCell.backgroundColor = AppColors.background
         contentCells.append(imagePickerCell)
         
         let imagePreviewCell = EventImagePreviewCell(parentVC: self)

@@ -20,7 +20,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
     required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        backgroundColor = EventDraft.backgroundColor
+        backgroundColor = AppColors.background
         selectionStyle = .none
         
         let h = heightAnchor.constraint(equalToConstant: 66)
@@ -29,7 +29,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)

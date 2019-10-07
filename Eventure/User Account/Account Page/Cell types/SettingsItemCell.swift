@@ -24,6 +24,8 @@ class SettingsItemCell: UITableViewCell {
             accessoryType = .disclosureIndicator
         }
         
+        backgroundColor = AppColors.background
+        
         heightConstraint = heightAnchor.constraint(equalToConstant: 55)
         heightConstraint.priority = .defaultHigh
         heightConstraint.isActive = true

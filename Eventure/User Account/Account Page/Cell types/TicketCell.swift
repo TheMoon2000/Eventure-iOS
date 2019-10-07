@@ -31,7 +31,7 @@ class TicketCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 8
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -220,7 +220,7 @@ class TicketCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
-        bgView.backgroundColor = highlighted ? .init(white: 0.96, alpha: 1) : .white
+        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
     }
     
     required init?(coder aDecoder: NSCoder) {

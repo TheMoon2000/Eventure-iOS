@@ -20,8 +20,8 @@ import typealias CommonCrypto.CC_LONG
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "__replace__"
-let PASSWORD = "__replace__"
+let USERNAME = "Eventure 1.0.4"
+let PASSWORD = "efd2d743b153e71e6244b2ebf4bb9e75"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
@@ -65,6 +65,7 @@ struct AppColors {
     static var passed = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
     static var interest = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
     static var link = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
+    static var placeholder = UIColor(white: 0.83, alpha: 1)
     static var line = UIColor(named: "AppColors.line")!
     static var label = UIColor(named: "AppColors.label")!
     static var value = UIColor(named: "AppColors.value")!
@@ -76,9 +77,17 @@ struct AppColors {
     /// The background color for subviews.
     static var subview = UIColor(named: "AppColors.subview")!
     
+    /// The background color for a selected subview.
+    static var selected = UIColor(named: "AppColors.selected")!
+    
+    /// Background color for event previews.
+    static var card = UIColor(named: "AppColors.card")!
+    
     /// The background color for navigation bars.
     static var navbar = UIColor(named: "AppColors.navbar")!
     
+    /// Dark background for scrollviews.
+    static var canvas = UIColor(named: "AppColors.canvas")!
 }
 
 let SAMPLE_TEXT = """

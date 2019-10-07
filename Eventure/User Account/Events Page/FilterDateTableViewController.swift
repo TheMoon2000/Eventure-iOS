@@ -32,7 +32,7 @@ class FilterDateTableViewController: UITableViewController {
         
         title = "Filter Settings"
         
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = AppColors.background
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8

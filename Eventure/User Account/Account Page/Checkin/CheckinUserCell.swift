@@ -26,7 +26,7 @@ class CheckinUserCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 8
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)

@@ -19,7 +19,7 @@ class SortSettingsCell: UITableViewCell {
     var checked = false {
         didSet {
             img.isHidden = !checked
-            bgView.backgroundColor = checked ? UIColor.init(white: 0.98, alpha: 1) : .white
+            bgView.backgroundColor = checked ? AppColors.selected : AppColors.subview
             sortTitle.textColor = checked ? AppColors.label : .darkGray
         }
     }
@@ -33,7 +33,7 @@ class SortSettingsCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             if style == .top {
                 view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

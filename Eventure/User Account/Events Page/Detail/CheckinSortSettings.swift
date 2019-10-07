@@ -29,7 +29,7 @@ class CheckinSortSettings: UITableViewController {
 
         tableView.separatorStyle = .none
         tableView.contentInset.top = 10
-        tableView.backgroundColor = EventDraft.backgroundColor
+        tableView.backgroundColor = AppColors.background
         tableView.tableFooterView = UIView()
         
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(done))

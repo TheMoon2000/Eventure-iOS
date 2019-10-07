@@ -27,7 +27,7 @@ class PurchaseDetails: UITableViewController {
         super.viewDidLoad()
 
         title = "Transaction Details"
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = AppColors.background
         tableView = UITableView(frame: .zero, style: .grouped)
         
         loadingBG = view.addLoader()

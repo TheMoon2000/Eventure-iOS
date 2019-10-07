@@ -50,7 +50,7 @@ class EventDetailPage: UIViewController {
         super.viewDidLoad()
         
         self.title = "Event Details"
-        view.backgroundColor = .init(white: 0.95, alpha: 1)
+        view.backgroundColor = AppColors.background
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
                 
         if Organization.current == nil {
@@ -195,6 +195,7 @@ class EventDetailPage: UIViewController {
             return tabStrip
         }()
         
+        /*
         let white = UIView()
         white.backgroundColor = .white
         white.translatesAutoresizingMaskIntoConstraints = false
@@ -204,6 +205,7 @@ class EventDetailPage: UIViewController {
         white.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         white.topAnchor.constraint(equalTo: canvas.topAnchor).isActive = true
         white.bottomAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
+        */
         
     }
     
@@ -381,7 +383,7 @@ class EventDetailPage: UIViewController {
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
         nav.navigationBar.tintColor = MAIN_TINT
-        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.barTintColor = AppColors.navbar
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true)
     }

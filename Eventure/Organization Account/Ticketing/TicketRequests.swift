@@ -43,7 +43,7 @@ class TicketRequests: UITableViewController, IndicatorInfoProvider {
         tableView.separatorStyle = .none
         tableView.contentInset.top = 6
         tableView.contentInset.bottom = 6
-        tableView.backgroundColor = EventDraft.backgroundColor
+        tableView.backgroundColor = AppColors.background
 
         emptyLabel = {
             let label = UILabel()

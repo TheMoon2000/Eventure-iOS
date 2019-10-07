@@ -60,7 +60,7 @@ class TicketStyleTypeCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             if position == .top {
                 view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

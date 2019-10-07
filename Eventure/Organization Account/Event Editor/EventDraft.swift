@@ -12,9 +12,7 @@ class EventDraft: UIPageViewController {
     
     var orgEventView: OrgEventViewController?
     var detailPage: EventDetailPage?
-    
-    static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
-    
+        
     var edited = false
     var imageEdited = false
     var bannerEdited = false
@@ -65,7 +63,7 @@ class EventDraft: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = AppColors.background
         dataSource = self
         
         // Prepare for transition progress detection
@@ -98,7 +96,7 @@ class EventDraft: UIPageViewController {
         // Set up progress indicator in the navigation bar.
         progressIndicator = {
             let bar = UIProgressView(progressViewStyle: .bar)
-            bar.trackTintColor = .init(white: 0.9, alpha: 1)
+            bar.trackTintColor = AppColors.line
             bar.progressTintColor = MAIN_TINT
             bar.translatesAutoresizingMaskIntoConstraints = false
             

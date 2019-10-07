@@ -23,8 +23,8 @@ class EventDetailTabStrip : ButtonBarPagerTabStripViewController {
     
     
     override func viewDidLoad() {
-        settings.style.buttonBarBackgroundColor = .white
-        settings.style.buttonBarItemBackgroundColor = .init(white: 0.98, alpha: 1)
+        settings.style.buttonBarBackgroundColor = AppColors.subview
+        settings.style.buttonBarItemBackgroundColor = AppColors.subview
         settings.style.selectedBarBackgroundColor = MAIN_TINT
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0

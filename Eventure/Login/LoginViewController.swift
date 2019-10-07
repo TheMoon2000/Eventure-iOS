@@ -124,6 +124,7 @@ class LoginViewController: UIViewController {
     
     private func prepareField(textfield: UITextField) {
         textfield.delegate = self
+        textfield.textColor = UIColor(white: 0.1, alpha: 1)
         textfield.autocorrectionType = .no
         textfield.autocapitalizationType = .none
         textfield.clearButtonMode = .whileEditing
@@ -133,6 +134,11 @@ class LoginViewController: UIViewController {
         textfield.layer.borderWidth = 1.4
         textfield.layer.cornerRadius = 4
         textfield.doInset()
+        
+        let ph = NSAttributedString(string: textfield.placeholder ?? "", attributes: [
+            .foregroundColor: AppColors.placeholder
+        ])
+        textfield.attributedPlaceholder = ph
     }
     
     

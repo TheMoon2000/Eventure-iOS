@@ -41,7 +41,7 @@ class RequestCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 8
             view.layer.borderWidth = 1
             view.layer.borderColor = UIColor(white: 0.86, alpha: 1).cgColor

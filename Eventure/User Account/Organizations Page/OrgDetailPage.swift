@@ -200,7 +200,7 @@ class OrgDetailPage: UIViewController {
         
         blockBG = {
             let b = UIView()
-            b.backgroundColor = EventDraft.backgroundColor
+            b.backgroundColor = AppColors.background
             b.translatesAutoresizingMaskIntoConstraints = false
             b.isHidden = !organization.title.isEmpty
             view.addSubview(b)

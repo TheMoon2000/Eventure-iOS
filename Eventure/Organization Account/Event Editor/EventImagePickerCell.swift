@@ -23,7 +23,7 @@ class EventImagePickerCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -82,7 +82,7 @@ class EventImagePickerCell: UITableViewCell {
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        bgView.backgroundColor = highlighted ? UIColor(white: 0.97, alpha: 1) : .white
+        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
     }
     
     required init?(coder aDecoder: NSCoder) {

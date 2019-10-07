@@ -31,7 +31,7 @@ class EventCell: UICollectionViewCell {
         
         card = {
             let view = UIView()
-            view.backgroundColor = AppColors.subview
+            view.backgroundColor = AppColors.card
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
@@ -242,6 +242,12 @@ class EventCell: UICollectionViewCell {
             return label
         }()
         
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        card.layer.borderColor = AppColors.line.cgColor
     }
     
     @objc private func toggleInterested() {

@@ -21,14 +21,14 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         title = User.waitingForSync ? "Syncing..." : "Me"
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false

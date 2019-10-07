@@ -69,10 +69,24 @@ class OrgEventViewController: UIViewController, EventProvider {
         return filteredEvents
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topTabBg.effect = UIBlurEffect(style: .regular)
+            } else {
+                topTabBg.effect = UIBlurEffect(style: .extraLight)
+            }
+        } else {
+            topTabBg.effect = UIBlurEffect(style: .extraLight)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Event Posts"
         
         // Search bar setup
@@ -89,6 +103,13 @@ class OrgEventViewController: UIViewController, EventProvider {
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    ev.effect = UIBlurEffect(style: .regular)
+                }
+            }
+            
             ev.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(ev)
             
@@ -132,11 +153,11 @@ class OrgEventViewController: UIViewController, EventProvider {
             ec.alwaysBounceVertical = true
             ec.contentInset.top = 8
             ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
+            ec.backgroundColor = AppColors.canvas
             if !topTabBg.isHidden {
                 ec.scrollIndicatorInsets.top = topTabBg.frame.height
                 ec.contentInset.top += topTabBg.frame.height
             }
-            ec.backgroundColor = .init(white: 0.92, alpha: 1)
             ec.register(OrgEventCell.classForCoder(), forCellWithReuseIdentifier: "org event")
             ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
             ec.contentInsetAdjustmentBehavior = .always

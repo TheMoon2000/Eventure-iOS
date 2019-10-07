@@ -31,7 +31,7 @@ class DraftDescriptionPage: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
         view.tintColor = MAIN_TINT
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))

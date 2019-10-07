@@ -45,7 +45,7 @@ class CheckinTimeCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)

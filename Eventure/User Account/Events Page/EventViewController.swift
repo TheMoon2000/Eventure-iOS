@@ -55,11 +55,25 @@ class EventViewController: UIViewController, EventProvider {
     var eventsForSearch: [Event] {
         return filteredEvents
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topTabBg.effect = UIBlurEffect(style: .regular)
+            } else {
+                topTabBg.effect = UIBlurEffect(style: .extraLight)
+            }
+        } else {
+            topTabBg.effect = UIBlurEffect(style: .extraLight)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         title = "Events"
         
         searchResultTable = EventSearchResults(parentVC: self)
@@ -92,7 +106,14 @@ class EventViewController: UIViewController, EventProvider {
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(updateEvents))
         
         topTabBg = {
+            
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    ev.effect = UIBlurEffect(style: .regular)
+                }
+            }
             ev.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(ev)
             
@@ -131,6 +152,7 @@ class EventViewController: UIViewController, EventProvider {
             let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
+            ec.backgroundColor = AppColors.canvas
             ec.contentInset.top = topTabBg.frame.height + 8
             ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
             ec.scrollIndicatorInsets.top = topTabBg.frame.height

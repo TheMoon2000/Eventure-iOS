@@ -33,11 +33,11 @@ class OrgEventCell: UICollectionViewCell {
         
         card = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.card
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
-            view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
+            view.layer.borderColor = AppColors.line.cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
@@ -225,6 +225,12 @@ class OrgEventCell: UICollectionViewCell {
         } else {
             cover.image = event.eventVisual
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        card.layer.borderColor = AppColors.line.cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {

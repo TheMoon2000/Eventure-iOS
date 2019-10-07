@@ -87,7 +87,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             button.titleLabel?.numberOfLines = 0
             button.titleLabel?.textAlignment = .right
             button.setTitle(event.hostTitle, for: .normal)
-            button.setTitleColor(.darkGray, for: .normal)
+            button.setTitleColor(AppColors.value, for: .normal)
             button.isUserInteractionEnabled = false
             button.contentHorizontalAlignment = .right
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -124,7 +124,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.textAlignment = .right
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -157,7 +157,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.textAlignment = .right
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -190,7 +190,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.textAlignment = .right
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -223,7 +223,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             label.textAlignment = .right
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -284,13 +284,13 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
                 ticketValue.setTitle("Buy Tickets", for: .normal)
             } else {
                 ticketValue.isUserInteractionEnabled = false
-                ticketValue.setTitleColor(.darkGray, for: .normal)
+                ticketValue.setTitleColor(AppColors.value, for: .normal)
                 ticketValue.setTitle("No tickets required", for: .normal)
             }
         } else {
             ticketLabel.text = "Requires tickets:"
             ticketValue.isUserInteractionEnabled = false
-            ticketValue.setTitleColor(.darkGray, for: .normal)
+            ticketValue.setTitleColor(AppColors.value, for: .normal)
             ticketValue.setTitle(event.requiresTicket ? "Yes" : "No", for: .normal)
         }
     }

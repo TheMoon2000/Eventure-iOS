@@ -26,7 +26,7 @@ class TicketInfoEditor: UITableViewController {
         
         title = "Edit"
 
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = AppColors.background
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
         tableView.contentInset.bottom = 8
