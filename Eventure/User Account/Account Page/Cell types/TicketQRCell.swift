@@ -29,7 +29,7 @@ class TicketQRCell: UITableViewCell {
             label.textAlignment = .center
             label.text = ticket.typeName
             label.font = .systemFont(ofSize: 24, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -80,7 +80,7 @@ class TicketQRCell: UITableViewCell {
             }
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.textAlignment = .center
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

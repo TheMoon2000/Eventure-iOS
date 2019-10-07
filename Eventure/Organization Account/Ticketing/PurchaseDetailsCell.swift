@@ -51,7 +51,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.numberOfLines = 10
             label.text = ticket.username
             label.textAlignment = .right
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -84,7 +84,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.text = ticket.userEmail ?? "Unknown"
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -117,7 +117,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -149,7 +149,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.text = "\(ticket.quantity) " + noun
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -181,7 +181,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.text = ticket.paymentType.rawValue
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -213,7 +213,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.text = ticket.paymentDescription
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -246,7 +246,7 @@ class PurchaseDetailsCell: UITableViewCell {
                 label.text = ticket.notes
                 label.textAlignment = .right
                 label.font = .systemFont(ofSize: 16)
-                label.textColor = VALUE_COLOR
+                label.textColor = AppColors.value
                 label.translatesAutoresizingMaskIntoConstraints = false
                 addSubview(label)
                 

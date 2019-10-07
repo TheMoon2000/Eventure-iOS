@@ -20,11 +20,11 @@ class OrgSplitViewController: UISplitViewController, UISplitViewControllerDelega
 
         orgList = OrganizationsViewController()
         let listNV = UINavigationController(rootViewController: orgList)
-        listNV.navigationBar.barTintColor = NAVBAR_TINT
+        listNV.navigationBar.barTintColor = AppColors.navbar
         
         orgDetail = OrgDetailPage(organization: .empty)
         let detail = UINavigationController(rootViewController: orgDetail)
-        detail.navigationBar.barTintColor = NAVBAR_TINT
+        detail.navigationBar.barTintColor = AppColors.navbar
         viewControllers = [listNV, detail]
         
         delegate = self
@@ -36,7 +36,7 @@ class OrgSplitViewController: UISplitViewController, UISplitViewControllerDelega
         orgList.customPushHandler = { org in
             self.orgDetail = OrgDetailPage(organization: org)
             let detail = UINavigationController(rootViewController: self.orgDetail)
-            detail.navigationBar.barTintColor = NAVBAR_TINT
+            detail.navigationBar.barTintColor = AppColors.navbar
             DispatchQueue.main.async {
                 self.orgDetail.loadViewIfNeeded()
                 if self.orgDetail.tabStrip.buttonBarView != nil {

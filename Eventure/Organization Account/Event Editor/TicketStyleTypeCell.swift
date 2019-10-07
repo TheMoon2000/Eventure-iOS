@@ -118,7 +118,7 @@ class TicketStyleTypeCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 18, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             
             return label

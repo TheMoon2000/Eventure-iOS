@@ -23,7 +23,7 @@ class MajorCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.numberOfLines = 10
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false

@@ -99,7 +99,7 @@ class MainTabBarController: UITabBarController {
             let nav = UINavigationController(rootViewController: vc)
             
             /// REPLACE
-            nav.navigationBar.barTintColor = NAVBAR_TINT
+            nav.navigationBar.barTintColor = AppColors.navbar
          
             return nav
         }
@@ -118,7 +118,7 @@ class MainTabBarController: UITabBarController {
     
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
-            nav.navigationBar.barTintColor = NAVBAR_TINT
+            nav.navigationBar.barTintColor = AppColors.navbar
             
             return nav
         }

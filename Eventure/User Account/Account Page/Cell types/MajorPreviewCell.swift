@@ -36,7 +36,7 @@ class MajorPreviewCell: UITableViewCell {
             let label = UILabel()
             label.lineBreakMode = .byCharWrapping
             label.numberOfLines = 10
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -53,7 +53,7 @@ class MajorPreviewCell: UITableViewCell {
         if major == "Undeclared" {
             majorLabel.textColor = .gray
         } else {
-            majorLabel.textColor = .init(white: 0.1, alpha: 1)
+            majorLabel.textColor = AppColors.label
         }
         majorLabel.text = major
     }

@@ -59,7 +59,7 @@ class EventViewController: UIViewController, EventProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
         title = "Events"
         
         searchResultTable = EventSearchResults(parentVC: self)
@@ -135,7 +135,6 @@ class EventViewController: UIViewController, EventProvider {
             ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
             ec.scrollIndicatorInsets.top = topTabBg.frame.height
             ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
-            ec.backgroundColor = .init(white: 0.92, alpha: 1)
             ec.register(EventCell.classForCoder(), forCellWithReuseIdentifier: "event")
             ec.contentInsetAdjustmentBehavior = .always
             ec.translatesAutoresizingMaskIntoConstraints = false

@@ -91,7 +91,7 @@ class DescriptionEditPage: UIViewController {
         buttonStack = {
             
             let verticalLine = UIView()
-            verticalLine.backgroundColor = LINE_TINT
+            verticalLine.backgroundColor = AppColors.line
             verticalLine.translatesAutoresizingMaskIntoConstraints = false
             verticalLine.widthAnchor.constraint(equalToConstant: 1).isActive = true
             verticalLine.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -169,7 +169,7 @@ class DescriptionEditPage: UIViewController {
             tv.textColor = .gray
             tv.font = .systemFont(ofSize: 17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
+            tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(tv)
             

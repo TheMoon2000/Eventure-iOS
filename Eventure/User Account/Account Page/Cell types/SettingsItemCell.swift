@@ -47,7 +47,7 @@ class SettingsItemCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

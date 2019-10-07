@@ -35,9 +35,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     
     private var ticketLabel: UILabel!
     private(set) var ticketValue: UIButton!
-    
-    private var VALUE_COLOR: UIColor = .init(white: 0.1, alpha: 1)
-    
+        
     var heightConstraint: NSLayoutConstraint?
 
     required init(detailPage: EventDetailPage) {
@@ -49,7 +47,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         
         event.fetchHostInfo { org in
             self.hostLink.isUserInteractionEnabled = true
-            self.hostLink.setTitleColor(LINK_COLOR, for: .normal)
+            self.hostLink.setTitleColor(AppColors.link, for: .normal)
         }
         
         
@@ -70,7 +68,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         hostLabel = {
             let label = UILabel()
             label.text = "Host: "
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -108,7 +106,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         locationLabel = {
             let label = UILabel()
             label.text = "Location: "
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -141,7 +139,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         startLabel = {
             let label = UILabel()
             label.text = "Start time: "
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -173,7 +171,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         endLabel = {
             let label = UILabel()
             label.text = "Duration: "
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -207,7 +205,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         interestedLabel = {
             let label = UILabel()
             label.text = "Interested: "
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -238,7 +236,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         
         ticketLabel = {
             let label = UILabel()
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -281,7 +279,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         if User.current != nil {
             ticketLabel.text = "Tickets:"
             if event.requiresTicket {
-                ticketValue.setTitleColor(LINK_COLOR, for: .normal)
+                ticketValue.setTitleColor(AppColors.link, for: .normal)
                 ticketValue.addTarget(self, action: #selector(showTickets), for: .touchUpInside)
                 ticketValue.setTitle("Buy Tickets", for: .normal)
             } else {

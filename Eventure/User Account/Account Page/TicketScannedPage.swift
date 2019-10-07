@@ -84,7 +84,7 @@ class TicketScannedPage: UIViewController {
             let label = UILabel()
             label.text = ticket.eventName
             label.font = .systemFont(ofSize: 22, weight: .semibold)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.textAlignment = .center
             label.numberOfLines = 5
             label.translatesAutoresizingMaskIntoConstraints = false

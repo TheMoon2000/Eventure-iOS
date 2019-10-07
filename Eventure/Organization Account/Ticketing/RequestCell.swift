@@ -63,7 +63,7 @@ class RequestCell: UITableViewCell {
         message = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -76,7 +76,7 @@ class RequestCell: UITableViewCell {
         
         separator = {
             let view = UIView()
-            view.backgroundColor = LINE_TINT
+            view.backgroundColor = AppColors.line
             view.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(view)
             
@@ -106,7 +106,7 @@ class RequestCell: UITableViewCell {
         dateValue = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -135,7 +135,7 @@ class RequestCell: UITableViewCell {
         
         emailValue = {
             let button = UIButton(type: .system)
-            button.tintColor = LINK_COLOR
+            button.tintColor = AppColors.link
             button.titleLabel?.textAlignment = .right
             button.titleLabel?.numberOfLines = 3
             button.titleLabel?.font = .systemFont(ofSize: 16)
@@ -172,7 +172,7 @@ class RequestCell: UITableViewCell {
             label.numberOfLines = 20
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -193,7 +193,7 @@ class RequestCell: UITableViewCell {
             button.titleEdgeInsets.left = 8
             button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
             button.tintColor = GREEN
-            button.backgroundColor = PASSED_COLOR.withAlphaComponent(0.1)
+            button.backgroundColor = AppColors.passed.withAlphaComponent(0.1)
             button.translatesAutoresizingMaskIntoConstraints = false
                         
             button.addTarget(self, action: #selector(accept), for: .touchUpInside)
@@ -209,8 +209,8 @@ class RequestCell: UITableViewCell {
             button.imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             button.titleEdgeInsets.left = 5
             button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
-            button.tintColor = FATAL_COLOR
-            button.backgroundColor = FATAL_COLOR.withAlphaComponent(0.1)
+            button.tintColor = AppColors.fatal
+            button.backgroundColor = AppColors.fatal.withAlphaComponent(0.1)
             button.translatesAutoresizingMaskIntoConstraints = false
                         
             button.addTarget(self, action: #selector(reject), for: .touchUpInside)
@@ -234,7 +234,7 @@ class RequestCell: UITableViewCell {
         }()
         
         let line = UIView()
-        line.backgroundColor = LINE_TINT
+        line.backgroundColor = AppColors.line
         line.translatesAutoresizingMaskIntoConstraints = false
         addSubview(line)
         
@@ -276,7 +276,7 @@ class RequestCell: UITableViewCell {
         UIView.transition(with: self, duration: 0.3, options: .curveEaseInOut, animations: {
             self.acceptButton.isHidden = true
             self.declineButton.setTitle("DECLINED", for: .normal)
-            self.declineButton.backgroundColor = FATAL_COLOR.withAlphaComponent(0.12)
+            self.declineButton.backgroundColor = AppColors.fatal.withAlphaComponent(0.12)
             self.declineButton.setImage(UIImage(named: "cross"), for: .normal)
         }, completion: completion)
     }

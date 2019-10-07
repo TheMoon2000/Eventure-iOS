@@ -81,7 +81,7 @@ class TicketCell: UITableViewCell {
         
         separatorLine = {
             let line = UIView()
-            line.backgroundColor = LINE_TINT
+            line.backgroundColor = AppColors.line
             line.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(line)
             

@@ -48,7 +48,7 @@ class BuyTicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 0
             label.text = admissionType.typeName
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)

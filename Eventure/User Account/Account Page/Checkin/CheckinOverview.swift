@@ -109,7 +109,7 @@ class CheckinOverview: UIViewController {
             label.numberOfLines = 3
             label.text = event.hostTitle
             label.font = .systemFont(ofSize: 22, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)

@@ -139,7 +139,7 @@ class EventDetailPage: UIViewController {
         
         interestedButton = {
             let button = UIButton(type: .system)
-            button.tintColor = INTEREST_COLOR
+            button.tintColor = AppColors.interest
             button.isHidden = Organization.current != nil
             button.isEnabled = User.current != nil
             button.imageView?.contentMode = .scaleAspectFit

@@ -67,7 +67,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
             let iv = UIImageView()
             iv.alpha = 0
             iv.layer.borderWidth = 1
-            iv.layer.borderColor = LINE_TINT.cgColor
+            iv.layer.borderColor = AppColors.line.cgColor
             iv.backgroundColor = .init(white: 0.96, alpha: 1)
             iv.contentMode = .scaleAspectFill
             iv.clipsToBounds = true

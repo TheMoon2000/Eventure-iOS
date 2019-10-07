@@ -53,7 +53,7 @@ class UserScanner: ScannerViewController {
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.cameraPrompt.text = "No internet connection."
-                    self.cameraPrompt.textColor = WARNING_COLOR
+                    self.cameraPrompt.textColor = AppColors.warning
                     self.session.startRunning()
                 }
                 return
@@ -103,7 +103,7 @@ class UserScanner: ScannerViewController {
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.cameraPrompt.text = "No internet connection."
-                    self.cameraPrompt.textColor = WARNING_COLOR
+                    self.cameraPrompt.textColor = AppColors.warning
                     self.session.startRunning()
                 }
                 return

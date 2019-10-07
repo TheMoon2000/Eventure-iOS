@@ -86,7 +86,7 @@ class CheckinResults: UIViewController {
             label.text = event.title
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 22, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
             
@@ -185,7 +185,7 @@ class CheckinResults: UIViewController {
             label.lineBreakMode = .byWordWrapping
             label.text = event.hostTitle
             label.font = .systemFont(ofSize: 17.5, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(label)
             
@@ -414,7 +414,7 @@ class CheckinResults: UIViewController {
         let menu = CheckinSortSettings(parentVC: self)
         let nav = UINavigationController(rootViewController: menu)
         nav.navigationBar.tintColor = MAIN_TINT
-        nav.navigationBar.barTintColor = NAVBAR_TINT
+        nav.navigationBar.barTintColor = AppColors.navbar
         nav.modalPresentationStyle = .formSheet
         present(nav, animated: true)
     }

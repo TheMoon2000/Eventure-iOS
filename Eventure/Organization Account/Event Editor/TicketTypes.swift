@@ -116,7 +116,7 @@ class TicketTypes: UITableViewController {
             self.present(alert, animated: true)
         })
         
-        action.backgroundColor = FATAL_COLOR
+        action.backgroundColor = AppColors.fatal
         
         return [action]
     }

@@ -149,7 +149,7 @@ class TransferHistoryUser: UITableViewCell {
             let label = UILabel()
             label.text = user.username
             label.font = .systemFont(ofSize: 18, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.numberOfLines = 5
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

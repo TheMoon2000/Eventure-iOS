@@ -48,7 +48,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 19, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -61,7 +61,7 @@ class IssuedTicketCell: UITableViewCell {
         
         separator = {
             let line = UIView()
-            line.backgroundColor = LINE_TINT
+            line.backgroundColor = AppColors.line
             line.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(line)
             
@@ -92,7 +92,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 3
             label.textAlignment = .right
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -125,7 +125,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.textAlignment = .right
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -157,7 +157,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.textAlignment = .right
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -187,7 +187,7 @@ class IssuedTicketCell: UITableViewCell {
             } else {
                 status.text = "Redeemed"
             }
-            status.textColor = VALUE_COLOR
+            status.textColor = AppColors.value
             
             extraLabel.text = "Redeemed on:"
             extra.text = ticket.transactionDate?.readableString() ?? "Unknown"

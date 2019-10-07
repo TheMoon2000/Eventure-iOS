@@ -31,11 +31,11 @@ class EventCell: UICollectionViewCell {
         
         card = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
-            view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
+            view.layer.borderColor = AppColors.line.cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
@@ -89,6 +89,7 @@ class EventCell: UICollectionViewCell {
         
         interestBG = {
             let view = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            view.backgroundColor = AppColors.subview
             view.alpha = 0.7
             view.isHidden = User.current == nil
             view.layer.cornerRadius = 5
@@ -109,7 +110,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 21, weight: .bold)
             label.numberOfLines = 10
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.textAlignment = .left
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -143,6 +144,7 @@ class EventCell: UICollectionViewCell {
         timeLabel = {
             let label = UILabel()
             label.text = "When:"
+            label.textColor = AppColors.prompt
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -159,7 +161,7 @@ class EventCell: UICollectionViewCell {
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -176,6 +178,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.text = "Where:"
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -192,7 +195,7 @@ class EventCell: UICollectionViewCell {
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -208,6 +211,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.text = "Hosted by:"
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -225,7 +229,7 @@ class EventCell: UICollectionViewCell {
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             

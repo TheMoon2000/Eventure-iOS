@@ -98,7 +98,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         view.backgroundColor = .init(white: 0.94, alpha: 1)
         view.layer.cornerRadius = RADIUS
         view.layer.borderWidth = 1
-        view.layer.borderColor = LINE_TINT.cgColor
+        view.layer.borderColor = AppColors.line.cgColor
         view.layer.masksToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         addSubview(view)

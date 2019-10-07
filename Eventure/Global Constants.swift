@@ -53,18 +53,33 @@ enum NotificationKeys: String {
 let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
 let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
-let LINE_TINT = UIColor.init(white: 0.91, alpha: 1)
-let VALUE_COLOR = UIColor(white: 0.25, alpha: 1)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
-let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
-let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
-let FATAL_COLOR = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
-let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
-let INTEREST_COLOR = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
 
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
 let MAIN_TINT8 = UIColor(red: 255/255, green: 153/255, blue: 102/255, alpha: 1.0)
+
+struct AppColors {
+    static var fatal = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
+    static var warning = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
+    static var passed = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
+    static var interest = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
+    static var link = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
+    static var line = UIColor(named: "AppColors.line")!
+    static var label = UIColor(named: "AppColors.label")!
+    static var value = UIColor(named: "AppColors.value")!
+    static var prompt = UIColor(named: "AppColors.prompt")!
+    
+    /// The background color that should be used for most view controllers.
+    static var background = UIColor(named: "AppColors.background")!
+    
+    /// The background color for subviews.
+    static var subview = UIColor(named: "AppColors.subview")!
+    
+    /// The background color for navigation bars.
+    static var navbar = UIColor(named: "AppColors.navbar")!
+    
+}
 
 let SAMPLE_TEXT = """
 [This is a Markdown Link](https://www.google.com).
@@ -177,9 +192,6 @@ let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDom
 let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
 let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
 let MAJORS_PATH = ACCOUNT_DIR.path + "/" + "majors"
-
-/// Navigation bar background color
-let NAVBAR_TINT = UIColor.white
 
 /// Height between items in a vertical stack
 let VERTICAL_SPACING: CGFloat = 13

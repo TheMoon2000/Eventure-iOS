@@ -78,7 +78,7 @@ class CheckinTable: UIViewController {
             label.text = event.title
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 22, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
 
@@ -181,7 +181,7 @@ class CheckinTable: UIViewController {
             label.lineBreakMode = .byWordWrapping
             label.text = event.hostTitle
             label.font = .systemFont(ofSize: 17.5, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(label)
             

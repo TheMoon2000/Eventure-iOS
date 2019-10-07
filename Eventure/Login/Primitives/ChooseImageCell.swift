@@ -32,7 +32,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         overlay = {
             let overlay = UIView()
             overlay.layer.cornerRadius = 7
-            overlay.layer.borderColor = LINE_TINT.cgColor
+            overlay.layer.borderColor = AppColors.line.cgColor
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
@@ -147,7 +147,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         
         if highlighted {
             overlay.layer.borderWidth = 1
-            titleLabel.textColor = .init(white: 0.1, alpha: 1)
+            titleLabel.textColor = AppColors.label
         } else {
             overlay.layer.borderWidth = 0
             titleLabel.textColor = .init(white: 0.3, alpha: 1)

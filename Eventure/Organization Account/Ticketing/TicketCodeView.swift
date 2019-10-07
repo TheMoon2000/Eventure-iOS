@@ -24,7 +24,7 @@ class TicketCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 0
             label.textAlignment = .center
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 24, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

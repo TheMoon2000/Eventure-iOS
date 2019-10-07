@@ -81,7 +81,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         
         textfield = {
             let tf = UITextField()
-            tf.textColor = .init(white: 0.1, alpha: 1)
+            tf.textColor = AppColors.label
             tf.delegate = self
             tf.clearButtonMode = .whileEditing
             tf.returnKeyType = .next

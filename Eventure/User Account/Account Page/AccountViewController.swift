@@ -21,7 +21,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
         title = User.waitingForSync ? "Syncing..." : "Me"
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
@@ -281,11 +281,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.titleLabel.text = "Favorite Events"
         case (3, 1):
             cell.icon.image = #imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate)
-            cell.icon.tintColor = INTEREST_COLOR
+            cell.icon.tintColor = AppColors.interest
             cell.titleLabel.text = "Interested Events"
         case (3, 2):
             cell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
-            cell.icon.tintColor = LINK_COLOR
+            cell.icon.tintColor = AppColors.link
             cell.titleLabel.text = "My Tags"
         case (4, 0):
             let cell = UITableViewCell()

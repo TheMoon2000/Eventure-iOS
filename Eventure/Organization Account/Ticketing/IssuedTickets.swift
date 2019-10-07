@@ -327,7 +327,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             self.deleteRow(indexPath: indexPath)
         })
 
-        action.backgroundColor = FATAL_COLOR
+        action.backgroundColor = AppColors.fatal
         return [action]
     }
     

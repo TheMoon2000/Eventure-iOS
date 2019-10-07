@@ -182,7 +182,7 @@ class OrgEventCell: UICollectionViewCell {
             
             
             let attributes: [NSAttributedString.Key : Any] = [
-                .foregroundColor: LINK_COLOR,
+                .foregroundColor: AppColors.link,
                 .underlineStyle: true
             ]
             label.linkAttributes = attributes

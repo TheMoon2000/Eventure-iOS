@@ -33,7 +33,7 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
         
         changeCurrentIndexProgressive = { (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .init(white: 0.1, alpha: 1)
+            oldCell?.label.textColor = AppColors.label
             newCell?.label.textColor = MAIN_TINT
         }
         

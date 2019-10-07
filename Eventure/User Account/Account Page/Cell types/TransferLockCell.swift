@@ -28,7 +28,7 @@ class TransferLockCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Transfer lock"
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

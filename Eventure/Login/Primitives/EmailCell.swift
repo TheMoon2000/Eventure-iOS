@@ -37,13 +37,13 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         didSet {
             switch status {
             case .none:
-                overlay.layer.borderColor = LINE_TINT.cgColor
+                overlay.layer.borderColor = AppColors.line.cgColor
             case .fail:
-                overlay.layer.borderColor = FATAL_COLOR.cgColor
+                overlay.layer.borderColor = AppColors.fatal.cgColor
             case .disconnected:
-                overlay.layer.borderColor = WARNING_COLOR.cgColor
+                overlay.layer.borderColor = AppColors.warning.cgColor
             case .tick:
-                overlay.layer.borderColor = PASSED_COLOR.cgColor
+                overlay.layer.borderColor = AppColors.passed.cgColor
             }
         }
     }
@@ -73,7 +73,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             view.backgroundColor = .init(white: 0.94, alpha: 1)
             view.layer.cornerRadius = RADIUS
             view.layer.borderWidth = 1
-            view.layer.borderColor = LINE_TINT.cgColor
+            view.layer.borderColor = AppColors.line.cgColor
             view.layer.masksToBounds = true
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)

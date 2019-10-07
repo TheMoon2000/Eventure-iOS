@@ -50,7 +50,7 @@ class ChooseTagCell: UITableViewCell {
         overlay = {
             let overlay = UIView()
             overlay.layer.cornerRadius = 7
-            overlay.layer.borderColor = LINE_TINT.cgColor
+            overlay.layer.borderColor = AppColors.line.cgColor
             overlay.backgroundColor = .white
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
@@ -113,7 +113,7 @@ class ChooseTagCell: UITableViewCell {
         
         if highlighted {
             overlay.layer.borderWidth = 1
-            leftLabel.textColor = .init(white: 0.1, alpha: 1)
+            leftLabel.textColor = AppColors.label
             rightLabel.textColor = .lightGray
         } else {
             overlay.layer.borderWidth = 0

@@ -30,7 +30,7 @@ class EventCheckinOverview: UIViewController {
             let label = UILabel()
             label.text = "Event Check-in Code"
             label.textAlignment = .center
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 25, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -48,7 +48,7 @@ class EventCheckinOverview: UIViewController {
             label.text = "Present this QR code at check-in to collect information about who's attending your event."
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             

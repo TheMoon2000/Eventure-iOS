@@ -49,7 +49,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.numberOfLines = 10
             label.attributedText = ticket.hostName.attributedText(style: COMPACT_STYLE)
             label.textAlignment = .right
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -82,7 +82,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -114,7 +114,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = ticket.paymentType.rawValue
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -145,7 +145,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = String(format: "$%.02f", ticket.ticketPrice)
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -177,7 +177,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.text = String(format: "$%.02f", ticket.paymentAmount)
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -216,7 +216,7 @@ class TicketDetailInfoCell: UITableViewCell {
                 label.text = "The event host did not leave a note."
             }
             label.textAlignment = .right
-            label.textColor = VALUE_COLOR
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

@@ -77,7 +77,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
                 button.setTitleColor(.darkGray, for: .normal)
             } else {
                 button.setTitle(organization.website, for: .normal)
-                button.setTitleColor(LINK_COLOR, for: .normal)
+                button.setTitleColor(AppColors.link, for: .normal)
                 button.contentHorizontalAlignment = .right
             }
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -146,7 +146,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
             button.titleLabel?.textAlignment = .right
             button.setTitle(organization.contactEmail, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-            button.setTitleColor(LINK_COLOR, for: .normal)
+            button.setTitleColor(AppColors.link, for: .normal)
             button.contentHorizontalAlignment = .right
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)

@@ -99,7 +99,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             if gradCell.valueLabel.text!.isEmpty {
                 gradCell.valueLabel.text = "Not Set"
             } else {
-                gradCell.valueLabel.textColor = LINK_COLOR
+                gradCell.valueLabel.textColor = AppColors.link
             }
             section.append(gradCell)
             
@@ -109,7 +109,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.graduationYear = year
                 User.current?.graduationSeason = season
                 gradCell.valueLabel.text = User.current?.graduation ?? "Can't edit"
-                gradCell.valueLabel.textColor = LINK_COLOR
+                gradCell.valueLabel.textColor = AppColors.link
             }
             section.append(chooser)
             

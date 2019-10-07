@@ -110,7 +110,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         baseline = {
             let view = UIView()
-            view.backgroundColor = LINE_TINT
+            view.backgroundColor = AppColors.line
             view.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(view, belowSubview: valueText)
             

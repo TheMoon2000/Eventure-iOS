@@ -20,7 +20,7 @@ class SortSettingsCell: UITableViewCell {
         didSet {
             img.isHidden = !checked
             bgView.backgroundColor = checked ? UIColor.init(white: 0.98, alpha: 1) : .white
-            sortTitle.textColor = checked ? .init(white: 0.1, alpha: 1) : .darkGray
+            sortTitle.textColor = checked ? AppColors.label : .darkGray
         }
     }
 
@@ -66,7 +66,7 @@ class SortSettingsCell: UITableViewCell {
             let label = UILabel()
             label.alpha = 0.0
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             

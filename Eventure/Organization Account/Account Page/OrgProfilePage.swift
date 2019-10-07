@@ -117,7 +117,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             var section = [UITableViewCell]()
             let tagCell = SettingsItemCell()
             tagCell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
-            tagCell.icon.tintColor = LINK_COLOR
+            tagCell.icon.tintColor = AppColors.link
             tagCell.titleLabel.text = "Manage Tags"
             
             section.append(tagCell)

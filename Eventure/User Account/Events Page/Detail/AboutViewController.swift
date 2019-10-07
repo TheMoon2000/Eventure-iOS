@@ -32,7 +32,7 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
             tv.scrollIndicatorInsets = .init(top: 20, left: 0, bottom: 20, right: 0)
             tv.backgroundColor = .clear
             tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
+            tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.isEditable = false
             tv.isScrollEnabled = false
             tv.translatesAutoresizingMaskIntoConstraints = false
