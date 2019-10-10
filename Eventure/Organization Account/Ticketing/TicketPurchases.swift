@@ -46,7 +46,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         tableView.separatorStyle = .none
         tableView.contentInset.top = 6
         tableView.contentInset.bottom = 6
-        tableView.backgroundColor = AppColors.background
+        tableView.backgroundColor = AppColors.canvas
         tableView.register(CheckinUserCell().classForCoder, forCellReuseIdentifier: "user")
         
         loadingBG = view.addLoader()

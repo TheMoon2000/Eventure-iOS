@@ -27,7 +27,7 @@ class BuyTickets: UITableViewController {
         super.viewDidLoad()
         
         title = "Buy Tickets"
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
 
         tableView.separatorStyle = .none
         tableView.contentInset.top = 6

@@ -21,6 +21,8 @@ class MajorCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        backgroundColor = AppColors.background
+        
         titleLabel = {
             let label = UILabel()
             label.textColor = AppColors.label

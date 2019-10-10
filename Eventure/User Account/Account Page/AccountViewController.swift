@@ -289,11 +289,13 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.titleLabel.text = "My Tags"
         case (4, 0):
             let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
             let c = cell.heightAnchor.constraint(equalToConstant: 50)
             c.priority = .defaultHigh
             c.isActive = true
             
             let label = UILabel()
+            label.textColor = AppColors.label
             label.text = "About Eventure"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .center
@@ -306,11 +308,13 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             return cell
         case (4, 1):
             let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
             let c = cell.heightAnchor.constraint(equalToConstant: 50)
             c.priority = .defaultHigh
             c.isActive = true
             
             let label = UILabel()
+            label.textColor = AppColors.label
             label.text = User.current != nil ? "Log Out" : "Log In"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .center

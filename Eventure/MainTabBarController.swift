@@ -17,7 +17,7 @@ class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
         view.tintColor = MAIN_TINT
     }
     
@@ -100,6 +100,7 @@ class MainTabBarController: UITabBarController {
             
             /// REPLACE
             nav.navigationBar.barTintColor = AppColors.navbar
+            nav.navigationBar.isTranslucent = false
          
             return nav
         }

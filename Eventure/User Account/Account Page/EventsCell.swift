@@ -23,6 +23,7 @@ class EventsCell: UITableViewCell {
         
         //add arrow to each cell
         accessoryType = .disclosureIndicator
+        backgroundColor = AppColors.background
         
         icon = {
             let iv = UIImageView()
@@ -43,6 +44,7 @@ class EventsCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
+            label.textColor = AppColors.label
             label.numberOfLines = 10
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.lineBreakMode = .byWordWrapping
@@ -62,7 +64,7 @@ class EventsCell: UITableViewCell {
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 16)
-            label.textColor = UIColor.gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

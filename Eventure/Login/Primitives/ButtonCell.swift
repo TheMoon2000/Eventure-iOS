@@ -24,6 +24,7 @@ class ButtonCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = .clear
         button = makeButton()
         spinner = makeSpinner()
     }

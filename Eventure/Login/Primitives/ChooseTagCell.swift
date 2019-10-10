@@ -30,7 +30,7 @@ class ChooseTagCell: UITableViewCell {
         }
     }
     
-    private var overlay: UIView!
+    private(set) var overlay: UIView!
     private var leftLabel: UILabel!
     private(set) var rightLabel: UILabel!
     private var statusIcon: UIImageView!
@@ -51,7 +51,7 @@ class ChooseTagCell: UITableViewCell {
             let overlay = UIView()
             overlay.layer.cornerRadius = 7
             overlay.layer.borderColor = AppColors.line.cgColor
-            overlay.backgroundColor = .white
+            overlay.backgroundColor = AppColors.subview
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
@@ -66,7 +66,7 @@ class ChooseTagCell: UITableViewCell {
         leftLabel = {
             let label = UILabel()
             label.text = "Pick Tags..."
-            label.textColor = .darkGray
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -80,7 +80,7 @@ class ChooseTagCell: UITableViewCell {
         statusIcon = {
             let icon = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
             icon.contentMode = .scaleAspectFit
-            icon.tintColor = .lightGray
+            icon.tintColor = AppColors.prompt
             icon.translatesAutoresizingMaskIntoConstraints = false
             addSubview(icon)
             
@@ -114,11 +114,9 @@ class ChooseTagCell: UITableViewCell {
         if highlighted {
             overlay.layer.borderWidth = 1
             leftLabel.textColor = AppColors.label
-            rightLabel.textColor = .lightGray
         } else {
             overlay.layer.borderWidth = 0
-            leftLabel.textColor = .init(white: 0.3, alpha: 1)
-            rightLabel.textColor = .init(white: 0.75, alpha: 1)
+            leftLabel.textColor = AppColors.value
         }
     }
     

@@ -40,13 +40,13 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         super.viewDidLoad()
         
         title = "Events I Checked In"
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         
         myTableView = {
             let tv = UITableView(frame: .zero, style: .grouped)
             tv.dataSource = self
             tv.delegate = self
-            tv.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+            tv.backgroundColor = .clear
             view.addSubview(tv)
             //set location constraints of the tableview
             tv.translatesAutoresizingMaskIntoConstraints = false

@@ -17,11 +17,24 @@ class TicketQRCell: UITableViewCell {
     private var qrCode: UIImageView!
     private var activationLabel: UILabel!
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                qrCode.image = ticketInfo.QRCodeDark
+            } else {
+                qrCode.image = ticketInfo.QRCode
+            }
+        }
+    }
+    
     required init(ticket: Ticket) {
         super.init(style: .default, reuseIdentifier: nil)
         
         self.ticketInfo = ticket
         selectionStyle = .none
+        backgroundColor = AppColors.background
         
         ticketType = {
             let label = UILabel()
@@ -58,6 +71,13 @@ class TicketQRCell: UITableViewCell {
         
         qrCode = {
             let iv = UIImageView(image: ticket.QRCode)
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    iv.image = ticket.QRCodeDark
+                }
+            }
+            
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)

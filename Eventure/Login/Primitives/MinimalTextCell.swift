@@ -86,6 +86,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = .clear
         
         overlay = makeBackgroundOverlay()
         auxiliaryView = makeAuxiliaryView()
@@ -95,7 +96,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     
     private func makeBackgroundOverlay() -> UIView {
         let view = UIView()
-        view.backgroundColor = .init(white: 0.94, alpha: 1)
+        view.backgroundColor = AppColors.background
         view.layer.cornerRadius = RADIUS
         view.layer.borderWidth = 1
         view.layer.borderColor = AppColors.line.cgColor

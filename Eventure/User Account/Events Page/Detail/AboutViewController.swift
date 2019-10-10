@@ -21,7 +21,7 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
         
         self.event = detailPage.event
         self.detailPage = detailPage
-        view.backgroundColor = detailPage.view.backgroundColor
+        view.backgroundColor = AppColors.canvas
         
         textView = {
             let tv = UITextView()

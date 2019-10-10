@@ -31,7 +31,7 @@ class TicketCenter: UITableViewController {
         super.viewDidLoad()
         
         title = "Ticket Center"
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()
         tableView.contentInset.top = 6

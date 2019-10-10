@@ -41,7 +41,7 @@ class OrganizationsViewController: UIViewController {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Organizations"
         
         // Search bar setup
@@ -58,6 +58,13 @@ class OrganizationsViewController: UIViewController {
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    ev.effect = UIBlurEffect(style: .regular)
+                }
+            }
+            
             ev.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(ev)
             
@@ -99,6 +106,8 @@ class OrganizationsViewController: UIViewController {
             orgTable.contentInsetAdjustmentBehavior = .always
             orgTable.contentInset.top = 60
             orgTable.scrollIndicatorInsets.top = 60
+            orgTable.backgroundColor = .clear
+            orgTable.separatorColor = AppColors.line
             orgTable.register(OrganizationCell.classForCoder(), forCellReuseIdentifier: "org")
             orgTable.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(orgTable, belowSubview: topTabBg)

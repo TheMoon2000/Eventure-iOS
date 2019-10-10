@@ -67,7 +67,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 3
             label.font = .systemFont(ofSize: 15)
-            label.textColor = UIColor(white: 0.4, alpha: 1)
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -109,7 +109,7 @@ class TicketCell: UITableViewCell {
         
         dateLabel = {
             let label = UILabel()
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.text = "Date of event: "
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -125,7 +125,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 2
             label.textAlignment = .right
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -139,7 +139,7 @@ class TicketCell: UITableViewCell {
         
         paymentTypeLabel = {
             let label = UILabel()
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.text = "Payment type: "
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -155,7 +155,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 2
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -169,7 +169,7 @@ class TicketCell: UITableViewCell {
         
         countLabel = {
             let label = UILabel()
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.text = "Party size: "
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -185,7 +185,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 2
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)

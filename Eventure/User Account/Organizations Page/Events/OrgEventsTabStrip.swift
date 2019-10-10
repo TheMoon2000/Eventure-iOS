@@ -16,8 +16,8 @@ class OrgEventsTabStrip: ButtonBarPagerTabStripViewController {
     override func viewDidLoad() {
         
         // Do any additional setup after loading the view.
-        settings.style.buttonBarBackgroundColor = .white
-        settings.style.buttonBarItemBackgroundColor = .white
+        settings.style.buttonBarBackgroundColor = AppColors.tab
+        settings.style.buttonBarItemBackgroundColor = AppColors.tab
         settings.style.selectedBarBackgroundColor = MAIN_TINT
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0

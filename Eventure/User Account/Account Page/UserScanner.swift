@@ -108,14 +108,22 @@ class UserScanner: ScannerViewController {
                 }
                 return
             }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
+                if self?.cameraPrompt.textColor == LIGHT_RED {
+                    self?.cameraPrompt.text = self?.cameraDefaultText
+                    self?.cameraPrompt.textColor = .white
+                }
+            }
                         
             if let json = try? JSON(data: data!), json.dictionary != nil {
                 let ticket = Ticket(ticketInfo: json)
                 
-                if !ticket.transferable || (ticket.transferLocked && ticket.userID != -1) {
+                if ticket.userID != -1 && (!ticket.transferable || ticket.transferLocked) {
                     DispatchQueue.main.async {
                         let alert = UIAlertController(title: "Could not initiate ticket transfer", message: "The ticket you just scanned does not support transfer.", preferredStyle: .alert)
                         alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in
+                            
                             self.session.startRunning()
                         }))
                         self.present(alert, animated: true, completion: nil)
@@ -136,13 +144,6 @@ class UserScanner: ScannerViewController {
                     self.cameraPrompt.text = "There was an error loading the information for this ticket. Perhaps the event organizer invalidated it?"
                     self.cameraPrompt.textColor = LIGHT_RED
                     self.session.startRunning()
-                }
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) { [weak self] in
-                if self?.cameraPrompt.textColor == LIGHT_RED {
-                    self?.cameraPrompt.text = self?.cameraDefaultText
-                    self?.cameraPrompt.textColor = .white
                 }
             }
         }

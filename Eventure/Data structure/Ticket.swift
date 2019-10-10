@@ -338,6 +338,10 @@ class Ticket {
         return generateQRCode(from: APP_DOMAIN + "ticket?id=" + ticketID)
     }
     
+    var QRCodeDark: UIImage? {
+        return generateQRCode(from: APP_DOMAIN + "ticket?id=" + ticketID, dark: true)
+    }
+    
     
     static func updateTickets() {
         

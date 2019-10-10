@@ -17,6 +17,7 @@ class OrganizationCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         heightAnchor.constraint(greaterThanOrEqualToConstant: 55).isActive = true
+        backgroundColor = AppColors.background
         
         logoImage = {
             let iv = UIImageView()

@@ -17,6 +17,7 @@ class MajorPreviewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
+        backgroundColor = AppColors.background
         
         icon = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "comments"))
@@ -51,7 +52,7 @@ class MajorPreviewCell: UITableViewCell {
     
     func setMajor(major: String) {
         if major == "Undeclared" {
-            majorLabel.textColor = .gray
+            majorLabel.textColor = AppColors.prompt
         } else {
             majorLabel.textColor = AppColors.label
         }

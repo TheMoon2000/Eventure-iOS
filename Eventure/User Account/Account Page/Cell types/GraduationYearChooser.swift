@@ -26,6 +26,7 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
+        backgroundColor = AppColors.background
         
         picker = {
             let picker = UIPickerView()

@@ -30,17 +30,19 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(stringLiteral: self.title ?? "")
     }
+    
+    let sortFunction: (Ticket, Ticket) -> Bool = { t1, t2 in
+        if t1.transactionDate == nil { return false }
+        if t2.transactionDate == nil { return true }
+        return t1.transactionDate!.timeIntervalSince(t2.transactionDate!) >= 0
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.93, alpha: 1)
+        view.backgroundColor = AppColors.canvas
         
-        let allTickets = Ticket.userTickets.sorted { t1, t2 in
-            if t1.transactionDate == nil { return false }
-            if t2.transactionDate == nil { return true }
-            return t1.transactionDate!.timeIntervalSince(t2.transactionDate!) >= 0
-        }
+        let allTickets = Ticket.userTickets.sorted(by: sortFunction)
         if filter != nil {
             tickets = allTickets.filter { filter!($0) }
         } else {
@@ -142,7 +144,8 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
                     newTicket.orgLogo = self.logoCache[newTicket.ticketID]
                     tmp.append(newTicket)
                 }
-                self.tickets = tmp.filter { $0.userID == User.current?.userID && (self.filter == nil || self.filter!($0)) }
+                self.tickets = tmp.filter { self.filter == nil || self.filter!($0) }
+                self.tickets.sort(by: self.sortFunction)
                 DispatchQueue.main.async {
                     self.emptyLabel.text = self.tickets.isEmpty ? self.emptyText : ""
                     self.ticketsTable.reloadData()

@@ -89,7 +89,6 @@ class EventCell: UICollectionViewCell {
         
         interestBG = {
             let view = UIVisualEffectView(effect: UIBlurEffect(style: .light))
-            view.backgroundColor = AppColors.subview
             view.alpha = 0.7
             view.isHidden = User.current == nil
             view.layer.cornerRadius = 5

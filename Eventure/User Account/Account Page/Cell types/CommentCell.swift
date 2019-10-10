@@ -26,6 +26,8 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
         h.priority = .defaultHigh
         h.isActive = true
         
+        backgroundColor = AppColors.background
+        
         icon = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "comments"))
             iv.tintColor = MAIN_TINT

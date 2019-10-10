@@ -12,8 +12,8 @@ import XLPagerTabStrip
 class TicketTabView: ButtonBarPagerTabStripViewController {
     
     override func viewDidLoad() {
-        settings.style.buttonBarBackgroundColor = .white
-        settings.style.buttonBarItemBackgroundColor = .white
+        settings.style.buttonBarBackgroundColor = AppColors.navbar
+        settings.style.buttonBarItemBackgroundColor = AppColors.navbar
         settings.style.selectedBarBackgroundColor = MAIN_TINT
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0

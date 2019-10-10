@@ -39,8 +39,8 @@ class TicketDetails: UITableViewController {
         super.viewDidLoad()
 
         tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = .init(white: 0.95, alpha: 1)
-        tableView.separatorColor = .init(white: 0.85, alpha: 1)
+        tableView.backgroundColor = AppColors.canvas
+        tableView.separatorColor = AppColors.line
         tableView.sectionFooterHeight = 0
         tableView.sectionHeaderHeight = 40
         tableView.contentInset.bottom = 5

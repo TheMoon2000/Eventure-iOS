@@ -67,10 +67,11 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         self.parentVC = parentVC
         selectionStyle = .none
+        backgroundColor = .clear
         
         overlay = {
             let view = UIView()
-            view.backgroundColor = .init(white: 0.94, alpha: 1)
+            view.backgroundColor = AppColors.background
             view.layer.cornerRadius = RADIUS
             view.layer.borderWidth = 1
             view.layer.borderColor = AppColors.line.cgColor
@@ -104,7 +105,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             button.contentEdgeInsets.right = 12
             button.titleLabel?.font = .systemFont(ofSize: 16.5)
             button.setTitle("@berkeley.edu", for: .normal)
-            button.backgroundColor = .init(white: 0.98, alpha: 1)
+            button.backgroundColor = AppColors.tab
             button.translatesAutoresizingMaskIntoConstraints = false
             overlay.addSubview(button)
             
@@ -147,7 +148,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
     }
     
     @objc private func buttonPressed() {
-        addressButton.backgroundColor = .init(white: 0.96, alpha: 1)
+        addressButton.backgroundColor = AppColors.selected
     }
     
     @objc private func buttonLifted() {
@@ -156,7 +157,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             duration: 0.1,
             options: .curveEaseOut,
             animations: {
-                self.addressButton.backgroundColor = .init(white: 0.98, alpha: 1)
+                self.addressButton.backgroundColor = AppColors.tab
             },
             completion: nil)
     }

@@ -55,7 +55,7 @@ class CreateNewTicket: UITableViewController {
         tableView.contentInset.top = 6
         tableView.contentInset.bottom = 6
         tableView.keyboardDismissMode = .interactive
-        tableView.backgroundColor = AppColors.background
+        tableView.backgroundColor = AppColors.canvas
         
         let quantityCell: UITableViewCell = {
             let cell = DraftCapacityCell(title: "Ticket size:")

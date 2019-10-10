@@ -37,6 +37,7 @@ class GenderSelectionCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = .clear
         makeLabel()
         disclosure = makeDisclosure()
         genderIcon = makeGenderIcon()

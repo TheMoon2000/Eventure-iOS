@@ -40,7 +40,7 @@ class RegisterTableController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         
         tableView.tintColor = MAIN_TINT
         tableView.tableFooterView = UIView()
@@ -66,10 +66,11 @@ class RegisterTableController: UITableViewController {
             label.text = "New Account"
             label.font = .systemFont(ofSize: 28, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             
             let cell = UITableViewCell()
+            cell.backgroundColor = .clear
             cell.selectionStyle = .none
             cell.addSubview(label)
             

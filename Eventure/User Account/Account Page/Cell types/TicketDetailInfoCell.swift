@@ -27,12 +27,13 @@ class TicketDetailInfoCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = AppColors.background
         
         providerLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Ticket provider:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -64,7 +65,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Date of purchase:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -97,7 +98,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Payment type:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -129,7 +130,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Ticket price:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -160,7 +161,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Amount paid:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -197,7 +198,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Notes:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

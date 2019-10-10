@@ -33,7 +33,7 @@ class InitiateTicketRequest: UITableViewController {
         navigationItem.rightBarButtonItem = .init(title: "Send", style: .done, target: self, action: #selector(initiateRequest))
         
         title = "Initiate Ticket Request"
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
 
         tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()

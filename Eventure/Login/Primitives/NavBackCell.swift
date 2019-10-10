@@ -21,6 +21,8 @@ class NavBackCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = .clear
+
         let h = heightAnchor.constraint(equalToConstant: 40)
         h.priority = .defaultHigh
         h.isActive = true

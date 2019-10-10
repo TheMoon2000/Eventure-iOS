@@ -16,9 +16,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
     private var titleLabel: UILabel!
     private var logo: UIImageView!
     private var clearButton: UIButton!
-    
-    private var logoShadeColor = UIColor(white: 0.92, alpha: 1)
-    
+        
     var chooseImageHandler: ((UIImage?) -> ())?
 
     init(parentVC: UIViewController, sideInset: CGFloat = 30) {
@@ -27,11 +25,13 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         self.parentVC = parentVC
         
         selectionStyle = .none
+        backgroundColor = .clear
         heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         overlay = {
             let overlay = UIView()
             overlay.layer.cornerRadius = 7
+            overlay.backgroundColor = AppColors.background
             overlay.layer.borderColor = AppColors.line.cgColor
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
@@ -75,7 +75,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         logo = {
             let logo = UIImageView()
             logo.contentMode = .scaleAspectFit
-            logo.backgroundColor = logoShadeColor
+            logo.backgroundColor = AppColors.line
             logo.layer.borderWidth = 1
             logo.layer.borderColor = UIColor(white: 0.8, alpha: 1).cgColor
             logo.layer.cornerRadius = 5
@@ -133,7 +133,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
             duration: 0.2,
             options: .curveEaseOut,
             animations: {
-                self.logo.backgroundColor = self.logoShadeColor
+                self.logo.backgroundColor = AppColors.line
                 self.logo.image = nil
                 self.clearButton.isHidden = true
                 self.logo.layer.borderWidth = 1
@@ -150,7 +150,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
             titleLabel.textColor = AppColors.label
         } else {
             overlay.layer.borderWidth = 0
-            titleLabel.textColor = .init(white: 0.3, alpha: 1)
+            titleLabel.textColor = AppColors.value
         }
     }
     

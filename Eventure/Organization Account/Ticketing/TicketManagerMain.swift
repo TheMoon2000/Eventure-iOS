@@ -27,7 +27,7 @@ class TicketManagerMain: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createTicket))
 

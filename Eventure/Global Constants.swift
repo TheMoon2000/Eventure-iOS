@@ -20,8 +20,8 @@ import typealias CommonCrypto.CC_LONG
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "Eventure 1.0.4"
-let PASSWORD = "efd2d743b153e71e6244b2ebf4bb9e75"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
@@ -88,6 +88,9 @@ struct AppColors {
     
     /// Dark background for scrollviews.
     static var canvas = UIColor(named: "AppColors.canvas")!
+    
+    /// Background color for the tabs
+    static var tab = UIColor(named: "AppColors.tab")!
 }
 
 let SAMPLE_TEXT = """
@@ -512,7 +515,7 @@ extension UIView {
     }
 }
 
-func generateQRCode(from string: String) -> UIImage? {
+func generateQRCode(from string: String, dark: Bool = false) -> UIImage? {
     let data = string.data(using: String.Encoding.ascii)
     
     guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
@@ -523,8 +526,20 @@ func generateQRCode(from string: String) -> UIImage? {
     filter.setValue(data, forKey: "inputMessage")
     let transform = CGAffineTransform(scaleX: 10, y: 10)
     
-    guard let output = filter.outputImage?.transformed(by: transform) else {
+    guard var output = filter.outputImage?.transformed(by: transform) else {
         return nil
+    }
+    
+    if dark {
+        guard let colorInvertFilter = CIFilter(name: "CIColorInvert") else { return nil }
+        colorInvertFilter.setValue(output, forKey: "inputImage")
+        guard let inverted = colorInvertFilter.outputImage else { return nil }
+        output = inverted
+        
+        guard let maskToAlphaFilter = CIFilter(name: "CIMaskToAlpha") else { return nil }
+        maskToAlphaFilter.setValue(output, forKey: "inputImage")
+        guard let masked = maskToAlphaFilter.outputImage else { return nil }
+        output = masked
     }
     
     let context = CIContext()

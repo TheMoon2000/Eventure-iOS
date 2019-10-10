@@ -43,7 +43,7 @@ class OrgDetailPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         navigationController?.navigationBar.shadowImage = UIImage()
         
         var favImage = #imageLiteral(resourceName: "heart_empty")

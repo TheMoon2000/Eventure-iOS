@@ -22,6 +22,7 @@ class EmailProfileCell: UITableViewCell {
         self.parentVC = parentVC
         
         self.selectionStyle = .none
+        backgroundColor = AppColors.background
         
         let h = heightAnchor.constraint(equalToConstant: 55)
         h.priority = .defaultHigh
@@ -62,6 +63,7 @@ class EmailProfileCell: UITableViewCell {
         
         emailLabel = {
             let label = UILabel()
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

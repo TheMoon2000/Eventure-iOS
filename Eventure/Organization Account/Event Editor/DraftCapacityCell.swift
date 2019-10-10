@@ -20,7 +20,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
     required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        backgroundColor = AppColors.background
+        backgroundColor = AppColors.canvas
         selectionStyle = .none
         
         let h = heightAnchor.constraint(equalToConstant: 66)
