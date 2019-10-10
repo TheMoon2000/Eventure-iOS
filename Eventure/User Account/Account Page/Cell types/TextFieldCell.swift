@@ -39,6 +39,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         self.parentVC = parentVC
         
         self.selectionStyle = .none
+        backgroundColor = AppColors.background
         
         let h = heightAnchor.constraint(equalToConstant: 55)
         h.priority = .defaultHigh

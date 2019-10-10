@@ -733,6 +733,7 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
 
 func authorizationError(handler: (() -> ())? = nil) {
     let noticeScreen = UpdateNotice()
+    noticeScreen.modalPresentationStyle = .fullScreen
     UIApplication.topMostViewController?.present(noticeScreen, animated: true)
 }
 

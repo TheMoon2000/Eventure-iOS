@@ -20,7 +20,7 @@ class AboutPage: UIViewController {
         super.viewDidLoad()
 
         title = "About Eventure"
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         
         canvas = {
             let canvas = UIScrollView()
@@ -55,7 +55,7 @@ class AboutPage: UIViewController {
             let label = UILabel()
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
             label.text = "Eventure " + appVersion
-            label.textColor = .darkGray
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 20, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -68,6 +68,7 @@ class AboutPage: UIViewController {
         
         detailMessage = {
             let tv = UITextView()
+            tv.backgroundColor = .clear
             tv.delegate = self
             tv.isEditable = false
             tv.isScrollEnabled = false

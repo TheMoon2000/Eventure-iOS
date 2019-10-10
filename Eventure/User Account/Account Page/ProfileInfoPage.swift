@@ -45,6 +45,8 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         tableView.tableFooterView = UIView()
         tableView.tintColor = MAIN_TINT
         tableView.allowsSelection = cellsEditable
+    
+        view.backgroundColor = AppColors.canvas
         
         let section0: [UITableViewCell] = {
             var section = [UITableViewCell]()
