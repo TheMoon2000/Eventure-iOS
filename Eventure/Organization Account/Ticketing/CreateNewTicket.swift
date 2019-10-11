@@ -21,6 +21,8 @@ class CreateNewTicket: UITableViewController {
     private var spinnerItem: UIBarButtonItem!
     
     private var generateQuantity = 1
+    
+    var doneHandler: ((Bool) -> ())?
         
     required init(parentVC: IssuedTickets, ticketToEdit: Ticket? = nil) {
         super.init(nibName: nil, bundle: nil)
@@ -66,7 +68,6 @@ class CreateNewTicket: UITableViewController {
             cell.valueField.isUserInteractionEnabled = draftTicket.activationDate == nil
             cell.changeHandler = { tf in
                 self.draftTicket.quantity = Int(tf.text!) ?? 1
-                tf.text = String(self.draftTicket.quantity)
             }
             cell.returnHandler = { tf in
                 tf.resignFirstResponder()
@@ -189,11 +190,7 @@ class CreateNewTicket: UITableViewController {
                 }
             case "success":
                 DispatchQueue.main.async {
-                    if self.newTicket {
-                        self.parentVC.loadTickets()
-                    } else {
-                        self.parentVC.sortAndReload()
-                    }
+                    self.doneHandler?(self.newTicket)
                     self.navigationController?.popViewController(animated: true)
                 }
             default:

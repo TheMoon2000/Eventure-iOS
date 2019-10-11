@@ -40,7 +40,7 @@ class TransferLockCell: UITableViewCell {
         
         lockSwitch = {
             let s = UISwitch()
-            s.onTintColor = MAIN_TINT
+            s.onTintColor = AppColors.main
             s.translatesAutoresizingMaskIntoConstraints = false
             addSubview(s)
             

@@ -32,11 +32,11 @@ class FilterDateTableViewController: UITableViewController {
         
         title = "Filter Settings"
         
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
         
         navigationItem.leftBarButtonItem = .init(title: "Reset", style: .plain, target: self, action: #selector(reset))
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(close))

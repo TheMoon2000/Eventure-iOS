@@ -29,6 +29,7 @@ class PurchaseDetailsCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = AppColors.background
         
         recipientLabel = {
             let label = UILabel()

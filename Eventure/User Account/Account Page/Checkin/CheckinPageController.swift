@@ -27,7 +27,7 @@ class CheckinPageController: UIPageViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = "Loading..."
-        view.tintColor = MAIN_TINT
+        view.tintColor = AppColors.main
         view.backgroundColor = .white
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeCheckin))

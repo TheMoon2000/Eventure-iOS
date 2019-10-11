@@ -64,7 +64,7 @@ class TransferHistoryUser: UITableViewCell {
                     iv.image = newUser.profilePicture
                 }
             }
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 5
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit

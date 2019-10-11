@@ -22,7 +22,7 @@ class ProfilePreviewCell: UITableViewCell {
         
         icon = {
             let iv = UIImageView()
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
             iv.layer.masksToBounds = true
@@ -45,6 +45,7 @@ class ProfilePreviewCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
+            label.textColor = AppColors.label
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -56,7 +57,7 @@ class ProfilePreviewCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 16)
-            label.textColor = UIColor.gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             
             return label

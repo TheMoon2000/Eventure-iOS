@@ -88,7 +88,7 @@ class ActivateTicket: UIViewController {
             button.setTitle("Done", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
             button.tintColor = .white
-            button.backgroundColor = MAIN_TINT
+            button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
         
             button.translatesAutoresizingMaskIntoConstraints = false

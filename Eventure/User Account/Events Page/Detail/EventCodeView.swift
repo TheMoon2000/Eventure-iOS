@@ -69,7 +69,7 @@ class EventCodeView: UIView {
         orgLogo = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
             iv.layer.cornerRadius = 4
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false

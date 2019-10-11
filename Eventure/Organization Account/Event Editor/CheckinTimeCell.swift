@@ -66,7 +66,7 @@ class CheckinTimeCell: UITableViewCell {
             slider.alpha = 0.0
             slider.maximumTrackTintColor = .clear
             slider.minimumTrackTintColor = .clear
-            slider.thumbTintColor = MAIN_TINT
+            slider.thumbTintColor = AppColors.main
             slider.maximumValue = 100
             slider.value = 40.0
             

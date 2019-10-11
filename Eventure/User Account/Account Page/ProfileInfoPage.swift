@@ -20,6 +20,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     private var spinner: UIActivityIndicatorView!
     
     private(set) var userProfile: Profile!
+    private var PROMPT = "Let recruiters know more about you from event check-ins by filling out your profile information!"
     
     var cellsEditable: Bool { return userProfile.editable }
     
@@ -43,7 +44,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         tableView.contentInset.bottom = 10
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
         tableView.allowsSelection = cellsEditable
     
         view.backgroundColor = AppColors.canvas
@@ -386,7 +387,8 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         title.numberOfLines = 5
         title.lineBreakMode = .byWordWrapping
         title.textAlignment = .center
-        title.attributedText = "Let recruiters know more about you from event check-ins by filling out your profile information!".attributedText()
+        title.attributedText = PROMPT.attributedText()
+        title.textColor = AppColors.prompt
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(title)

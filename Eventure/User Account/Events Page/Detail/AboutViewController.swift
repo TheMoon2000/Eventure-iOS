@@ -25,7 +25,11 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
         
         textView = {
             let tv = UITextView()
-            tv.attributedText = event.eventDescription.attributedText()
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                tv.attributedText = event.eventDescription.attributedText(style: PLAIN_DARK)
+            } else {
+                tv.attributedText = event.eventDescription.attributedText()
+            }
             tv.contentInset.top = 20
             tv.contentInset.bottom = 20
             tv.delegate = self
@@ -49,16 +53,35 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
         
     }
     
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard UIApplication.shared.applicationState != .background else { return }
+                
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                textView.attributedText = event.eventDescription.attributedText(style: PLAIN_DARK)
+            } else if traitCollection.userInterfaceStyle == .light {
+                textView.attributedText = event.eventDescription.attributedText()
+            }
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        textView.attributedText = event.eventDescription.attributedText()
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            textView.attributedText = event.eventDescription.attributedText(style: PLAIN_DARK)
+        } else {
+            textView.attributedText = event.eventDescription.attributedText()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        detailPage.invisible.textView.attributedText = textView.attributedText
+        detailPage.invisible.textView?.attributedText = textView.attributedText
     }
     
     required init?(coder aDecoder: NSCoder) {

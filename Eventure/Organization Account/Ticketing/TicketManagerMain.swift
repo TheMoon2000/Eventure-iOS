@@ -66,7 +66,10 @@ class TicketManagerMain: UIViewController {
     }
     
     @objc private func createTicket() {
-        tabs.viewControllers.last?.loadViewIfNeeded()
+        
+        guard let issued = tabs.viewControllers.last as? IssuedTickets else { return }
+        
+        issued.loadViewIfNeeded()
         
         if (admissionType.quota ?? 0) > 0 && admissionType.quantitySold >= admissionType.quota! {
             let alert = UIAlertController(title: "You cannot distribute more tickets", message: "The number of existing tickets has already reached the quota you set for '\(admissionType.typeName)'. If you want to sell more tickets, you should first go to the event editor to increase the quota.", preferredStyle: .alert)
@@ -75,7 +78,11 @@ class TicketManagerMain: UIViewController {
             return
         }
         
-        let vc = CreateNewTicket(parentVC: tabs.viewControllers.last as! IssuedTickets)
+        let vc = CreateNewTicket(parentVC: issued)
+        vc.doneHandler = { new in
+            issued.loadTickets()
+            issued.tableView.contentOffset.y = 0
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
     

@@ -30,7 +30,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
         
         icon = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "comments"))
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = AppColors.main
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)

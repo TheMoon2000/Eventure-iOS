@@ -31,7 +31,7 @@ class DescriptionEditPage: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         view.backgroundColor = .white
-        view.tintColor = MAIN_TINT
+        view.tintColor = AppColors.main
         
         title = "Organization Description"
         
@@ -68,7 +68,7 @@ class DescriptionEditPage: UIViewController {
         
         editButton = {
             let button = UIButton(type: .system)
-            button.setTitleColor(MAIN_TINT, for: .normal)
+            button.setTitleColor(AppColors.main, for: .normal)
             button.setTitle("Edit", for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -182,8 +182,8 @@ class DescriptionEditPage: UIViewController {
             return tv
         }()
         
+        editButtonPressed()
         updateWordCount()
-        
         
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
@@ -237,8 +237,10 @@ class DescriptionEditPage: UIViewController {
 //    }
     
     @objc private func editButtonPressed() {
-        editButton.setTitleColor(MAIN_TINT, for: .normal)
-        previewButton.setTitleColor(.darkGray, for: .normal)
+        editButton.setTitleColor(AppColors.main, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        previewButton.setTitleColor(AppColors.control, for: .normal)
+        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         previewText.isHidden = true
         descriptionText.isHidden = false
         charCount.isHidden = false
@@ -255,8 +257,10 @@ class DescriptionEditPage: UIViewController {
             previewText.attributedText = descriptionText.text.attributedText()
         }
         
-        editButton.setTitleColor(.darkGray, for: .normal)
-        previewButton.setTitleColor(MAIN_TINT, for: .normal)
+        editButton.setTitleColor(AppColors.control, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        previewButton.setTitleColor(AppColors.main, for: .normal)
+        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         descriptionText.isHidden = true
         previewText.isHidden = false
         descriptionPlaceholder.isHidden = true

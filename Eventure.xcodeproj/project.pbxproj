@@ -1346,7 +1346,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1354,7 +1354,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1375,7 +1375,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1383,7 +1383,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

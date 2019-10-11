@@ -42,6 +42,7 @@ class EventImagePickerCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Cover Image:"
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

@@ -20,12 +20,12 @@ class DraftTimeLocationPage: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
         tableView.keyboardDismissMode = .interactive
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
 
         let startTopCell = DatePickerTopCell(title: "Start time:")
         if let startDate = draftPage.draft.startTime {

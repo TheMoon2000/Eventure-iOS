@@ -18,11 +18,11 @@ class OrgEventsTabStrip: ButtonBarPagerTabStripViewController {
         // Do any additional setup after loading the view.
         settings.style.buttonBarBackgroundColor = AppColors.tab
         settings.style.buttonBarItemBackgroundColor = AppColors.tab
-        settings.style.selectedBarBackgroundColor = MAIN_TINT
+        settings.style.selectedBarBackgroundColor = AppColors.main
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0
         settings.style.buttonBarMinimumLineSpacing = 0
-        settings.style.buttonBarItemTitleColor = MAIN_TINT
+        settings.style.buttonBarItemTitleColor = AppColors.main
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
         settings.style.buttonBarRightContentInset = 0
@@ -30,7 +30,7 @@ class OrgEventsTabStrip: ButtonBarPagerTabStripViewController {
         changeCurrentIndexProgressive = { [weak self] (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in
             guard changeCurrentIndex == true else { return }
             oldCell?.label.textColor = AppColors.label
-            newCell?.label.textColor = MAIN_TINT
+            newCell?.label.textColor = AppColors.main
         }
         
         super.viewDidLoad()

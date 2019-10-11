@@ -136,7 +136,7 @@ class LoginViewController: UIViewController {
         textfield.doInset()
         
         let ph = NSAttributedString(string: textfield.placeholder ?? "", attributes: [
-            .foregroundColor: AppColors.placeholder
+            .foregroundColor: UIColor(white: 0.83, alpha: 1)
         ])
         textfield.attributedPlaceholder = ph
     }

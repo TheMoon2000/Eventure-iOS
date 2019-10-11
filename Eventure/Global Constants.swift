@@ -16,8 +16,11 @@ import typealias CommonCrypto.CC_LONG
 
 // MARK: - Global constants
 
-/// The URL prefix for all the APIs
+/// The URL prefix for all the APIs.
 let API_BASE_URL = "https://api.eventure-app.com/"
+
+/// APIs related to mails are hosted in a seperate API cluster due to compatibility reasons with SendGrid's library.
+let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com"
 
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
@@ -50,8 +53,6 @@ enum NotificationKeys: String {
     case ticketTransferDeclined = "ticket transfer declined"
 }
 
-let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
-let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
@@ -59,16 +60,42 @@ let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
 let MAIN_TINT8 = UIColor(red: 255/255, green: 153/255, blue: 102/255, alpha: 1.0)
 
+/// A suite of custom colors used by the app, adjusted for both light and dark mode.
 struct AppColors {
+    /// The primary theme color of the app.
+    static var main = UIColor(named: "AppColors.main")!
+    
+    /// The disabled theme color.
+    static var mainDisabled = UIColor(named: "AppColors.mainDisabled")!
+    
+    /// A red color used for fatal errors.
     static var fatal = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
+    
+    /// A orange-yellow color used for warnings.
     static var warning = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
-    static var passed = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
+    
+    /// A light green color to indicate a passed state.
+    static var passed = UIColor(named: "AppColors.passed")!
+    
+    /// The yellow color for the interest button.
     static var interest = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
+    
+    /// The color used for hyperlinks.
     static var link = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
-    static var placeholder = UIColor(white: 0.83, alpha: 1)
+    
+    /// Placeholder text color.
+    static var placeholder = UIColor(named: "AppColors.placeholder")!
+    
+    /// A light gray color used for border lines.
     static var line = UIColor(named: "AppColors.line")!
+    
+    /// A dark gray color intended for title labels.
     static var label = UIColor(named: "AppColors.label")!
+    
+    /// A dark gray color (1/4 darkness) intended to display values.
     static var value = UIColor(named: "AppColors.value")!
+    
+    /// A medium gray color intended for secondary / supplementary text labels.
     static var prompt = UIColor(named: "AppColors.prompt")!
     
     /// The background color that should be used for most view controllers.
@@ -80,17 +107,29 @@ struct AppColors {
     /// The background color for a selected subview.
     static var selected = UIColor(named: "AppColors.selected")!
     
-    /// Background color for event previews.
+    /// The background color for event previews.
     static var card = UIColor(named: "AppColors.card")!
     
     /// The background color for navigation bars.
     static var navbar = UIColor(named: "AppColors.navbar")!
     
-    /// Dark background for scrollviews.
+    /// Dark background for scrollviews. In light mode, this is a very light gray.
     static var canvas = UIColor(named: "AppColors.canvas")!
     
-    /// Background color for the tabs
+    /// Background color for the tabs.
     static var tab = UIColor(named: "AppColors.tab")!
+    
+    /// Background color for grouped table views.
+    static var tableBG = UIColor(named: "AppColors.tableBG")!
+    
+    /// Plain text color, intended for event and organization descriptions.
+    static var plainText = UIColor(named: "AppColors.plainText")!
+    
+    /// Button colors.
+    static var control = UIColor(named: "AppColors.control")!
+    
+    /// A light gray tint used for disabled controls.
+    static var disabled = UIColor(named: "AppColors.disabled")!
 }
 
 let SAMPLE_TEXT = """
@@ -166,6 +205,8 @@ let PLAIN_STYLE =  """
     }
 """
 
+let PLAIN_DARK = PLAIN_STYLE.replacingOccurrences(of: "#525252", with: "#C4C4C5").replacingOccurrences(of: "#4A4A4A", with: "#D2D2D2")
+
 let COMPACT_STYLE = """
     body {
         font-family: -apple-system;
@@ -177,9 +218,11 @@ let COMPACT_STYLE = """
     }
 
     strong, em {
-        color: rgb(80, 80, 80);
+        color: #505050;
     }
 """
+
+let COMPACT_DARK = COMPACT_STYLE.replacingOccurrences(of: "#505050", with: "#D3D3D3").replacingOccurrences(of: "#6A6A6A", with: "#C0C0C0")
 
 let TITLE_STYLE = """
     body {
@@ -470,7 +513,11 @@ extension UIView {
     func addLoader() -> UIView {
         
         let loadingBG: UIVisualEffectView = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            var effect = UIBlurEffect(style: .light)
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                effect = UIBlurEffect(style: .regular)
+            }
+            let v = UIVisualEffectView(effect: effect)
             v.layer.cornerRadius = 12
             v.isHidden = true
             v.layer.masksToBounds = true

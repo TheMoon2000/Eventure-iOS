@@ -42,6 +42,7 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
         tableView.register(EventsCell.classForCoder(), forCellReuseIdentifier: "event")
     }

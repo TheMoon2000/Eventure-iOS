@@ -42,7 +42,7 @@ class DatePickerTopCell: UITableViewCell {
     required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        backgroundColor = AppColors.background
+        backgroundColor = .clear
         selectionStyle = .none
         
         bgView = {
@@ -66,6 +66,7 @@ class DatePickerTopCell: UITableViewCell {
         leftLabel = {
             let label = UILabel()
             label.text = title
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -100,7 +101,7 @@ class DatePickerTopCell: UITableViewCell {
             label.text = "No time selected"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
-            label.textColor = MAIN_TINT
+            label.textColor = AppColors.main
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

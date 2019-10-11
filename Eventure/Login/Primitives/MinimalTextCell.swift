@@ -120,7 +120,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     
     private func makeAuxiliaryView() -> UIButton {
         let aux = UIButton(type: .custom)
-        aux.tintColor = MAIN_TINT
+        aux.tintColor = AppColors.main
         aux.imageView?.contentMode = .scaleAspectFit
         aux.translatesAutoresizingMaskIntoConstraints = false
         

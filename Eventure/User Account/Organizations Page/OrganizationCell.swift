@@ -21,7 +21,7 @@ class OrganizationCell: UITableViewCell {
         
         logoImage = {
             let iv = UIImageView()
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 2
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit

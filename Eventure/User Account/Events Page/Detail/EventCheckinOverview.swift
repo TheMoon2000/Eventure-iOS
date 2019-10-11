@@ -20,7 +20,7 @@ class EventCheckinOverview: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.99, alpha: 1)
+        view.backgroundColor = AppColors.navbar
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "checkin_result"), style: .plain, target: self, action: #selector(viewResults))
         
@@ -60,7 +60,14 @@ class EventCheckinOverview: UIViewController {
         }()
 
         qrCode = {
-            let iv = UIImageView(image: generateQRCode(from: code))
+            let iv = UIImageView()
+            
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                iv.image = generateQRCode(from: code, dark: true)
+            } else {
+                iv.image = generateQRCode(from: code)
+            }
+            
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.isUserInteractionEnabled = true
             iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))

@@ -162,6 +162,15 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
                     self.mailTicket(ticket: self.tickets[indexPath.row])
                 }))
+                if tickets[indexPath.row].sent {
+                    alert.addAction(.init(title: "Mark as Unsent", style: .default, handler: { _ in
+                        self.markAsSent(row: indexPath.row)
+                    }))
+                } else {
+                    alert.addAction(.init(title: "Mark as Sent", style: .default, handler: { _ in
+                        self.markAsSent(row: indexPath.row, sent: true)
+                    }))
+                }
                 alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
                     self.deleteRow(indexPath: indexPath)
                 }))
@@ -268,6 +277,64 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         
     }
     
+    private func markAsSent(row: Int, sent: Bool = false) {
+        let ticket = tickets[row]
+        ticket.sent = sent
+        
+        loadingBG.isHidden = false
+        (loadingBG.subviews.last as? UILabel)?.text = "Updating..."
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/ToggleTicketSent",
+                           parameters: [
+                            "ticketId": ticket.ticketID,
+                            "sent": sent ? "1" : "0"
+                           ])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+                (self.loadingBG.subviews.last as? UILabel)?.text = "Loading..."
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                DispatchQueue.main.async {
+                    if let cell = self.tableView.cellForRow(at: [0, row]) as? IssuedTicketCell {
+                        cell.mailSent = sent
+                    }
+                }
+            default:
+                let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .cancel))
+                
+                DispatchQueue.main.async {
+                    self.present(alert, animated: true)
+                }
+            }
+            
+        }
+        
+        task.resume()
+    }
+    
     private func saveQRCode(ticket: Ticket) {
         
         guard let formatted = generateCode(from: ticket) else {
@@ -316,6 +383,14 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         tableView.deselectRow(at: indexPath, animated: false)
         parentVC.navigationItem.backBarButtonItem = .init(title: "Issued Tickets", style: .plain, target: nil, action: nil)
         let editor = CreateNewTicket(parentVC: self, ticketToEdit: tickets[indexPath.row])
+        editor.doneHandler = { new in
+            if new {
+                self.loadTickets()
+                self.tableView.contentOffset.y = 0
+            } else {
+                self.tableView.reloadRows(at: [indexPath], with: .none)
+            }
+        }
         navigationController?.pushViewController(editor, animated: true)
     }
     

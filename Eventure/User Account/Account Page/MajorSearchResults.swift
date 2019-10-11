@@ -24,6 +24,7 @@ class MajorSearchResults: UITableViewController, UISearchResultsUpdating {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = AppColors.tab
         tableView.tableFooterView = UIView()
         tableView.register(MajorCell.classForCoder(), forCellReuseIdentifier: "major")
         

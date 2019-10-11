@@ -21,14 +21,14 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Manage Account"
         
         myTableView = UITableView()
         myTableView.register(AccountCell.classForCoder(), forCellReuseIdentifier: "MyCell")
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false

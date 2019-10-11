@@ -70,7 +70,7 @@ class UpdateNotice: UIViewController {
             button.tintColor = .white
             button.setTitle("Update", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
-            button.backgroundColor = MAIN_TINT
+            button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)

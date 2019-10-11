@@ -32,14 +32,14 @@ class TicketStyleTypeCell: UITableViewCell {
                 subtitleLabel.attributedText = "The standard layout displays the event title, time of the event, and location of the event above the QR code. Ticket type is shown at the bottom of the code.".attributedText(style: COMPACT_STYLE)
             }
             subtitleLabel.font = .systemFont(ofSize: 14)
-            subtitleLabel.textColor = .gray
+            subtitleLabel.textColor = AppColors.prompt
         }
     }
     
     var checked = false {
         didSet {
             img.isHidden = !checked
-            bgView.backgroundColor = checked ? UIColor.init(white: 0.98, alpha: 1) : .white
+            bgView.backgroundColor = checked ? AppColors.selected : AppColors.subview
         }
     }
     
@@ -94,7 +94,7 @@ class TicketStyleTypeCell: UITableViewCell {
         
         layoutPreview = {
             let iv = UIImageView()
-            iv.tintColor = .init(white: 0.72, alpha: 1)
+            iv.tintColor = .lightGray
             iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(iv)
@@ -126,6 +126,7 @@ class TicketStyleTypeCell: UITableViewCell {
         
         subtitleLabel = {
             let label = UILabel()
+            label.textColor = AppColors.prompt
             label.numberOfLines = 0
             label.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +136,7 @@ class TicketStyleTypeCell: UITableViewCell {
         
         img = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "check").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = AppColors.main
             iv.isHidden = true
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false

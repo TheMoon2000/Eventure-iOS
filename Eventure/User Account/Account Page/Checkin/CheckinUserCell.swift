@@ -26,7 +26,6 @@ class CheckinUserCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 8
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -44,7 +43,7 @@ class CheckinUserCell: UITableViewCell {
         
         profilePicture = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 2
             iv.layer.masksToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
@@ -77,7 +76,7 @@ class CheckinUserCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 3
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -151,7 +150,7 @@ class CheckinUserCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
-        bgView.backgroundColor = highlighted ? .init(white: 0.96, alpha: 1) : .white
+        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -98,7 +98,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         addressButton = {
             let button = UIButton()
-            button.setTitleColor(MAIN_TINT, for: .normal)
+            button.setTitleColor(AppColors.main, for: .normal)
             button.layer.borderColor = overlay.layer.borderColor
             button.layer.borderWidth = 1
             button.contentEdgeInsets.left = 10

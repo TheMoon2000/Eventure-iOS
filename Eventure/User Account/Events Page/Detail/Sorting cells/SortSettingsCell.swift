@@ -78,7 +78,7 @@ class SortSettingsCell: UITableViewCell {
         
         img = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "check").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = AppColors.main
             iv.alpha = 0.0
             iv.isHidden = true
             iv.contentMode = .scaleAspectFit

@@ -64,7 +64,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
             button.imageView?.contentMode = .scaleAspectFit
             button.setImage(#imageLiteral(resourceName: "link").withRenderingMode(.alwaysTemplate), for: .normal)
             button.isEnabled = false
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             button.imageEdgeInsets.left = 8
             button.imageEdgeInsets.right = 8
             button.translatesAutoresizingMaskIntoConstraints = false

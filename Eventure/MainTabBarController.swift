@@ -18,7 +18,7 @@ class MainTabBarController: UITabBarController {
         
         // Do any additional setup after loading the view.
         view.backgroundColor = AppColors.background
-        view.tintColor = MAIN_TINT
+        view.tintColor = AppColors.main
     }
     
     func loadSupportedCampuses() {
@@ -109,7 +109,7 @@ class MainTabBarController: UITabBarController {
     
     private func setupOrganizationTabs() {
         
-        tabBar.tintColor = MAIN_TINT
+        tabBar.tintColor = AppColors.main
         
         let tab1 = OrgEventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Event Posts", image: #imageLiteral(resourceName: "post"), tag: 0)
@@ -120,6 +120,7 @@ class MainTabBarController: UITabBarController {
         viewControllers = [tab1, tab2].map {
             let nav = UINavigationController(rootViewController: $0)
             nav.navigationBar.barTintColor = AppColors.navbar
+            nav.navigationBar.isTranslucent = false
             
             return nav
         }

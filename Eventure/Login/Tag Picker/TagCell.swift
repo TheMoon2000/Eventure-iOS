@@ -18,7 +18,7 @@ class TagCell: UICollectionViewCell {
         
         bgTint = {
             let bg = UIView()
-            bg.backgroundColor = MAIN_TINT
+            bg.backgroundColor = AppColors.main
             bg.layer.cornerRadius = 0
             bg.layer.borderWidth = 1.5
             bg.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
@@ -63,7 +63,7 @@ class TagCell: UICollectionViewCell {
                     if self.isSelected {
                         self.bgTint.backgroundColor = MAIN_TINT_DARK
                     } else {
-                        self.bgTint.backgroundColor = MAIN_TINT
+                        self.bgTint.backgroundColor = AppColors.main
                     }
                 },
                 completion: nil)

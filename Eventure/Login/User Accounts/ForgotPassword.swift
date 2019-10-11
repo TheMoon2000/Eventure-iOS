@@ -23,7 +23,7 @@ class ForgotPassword: UITableViewController {
         tableView.separatorStyle = .none
         tableView.keyboardDismissMode = .interactive
         tableView.showsHorizontalScrollIndicator = false
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
         
         let navCell: UITableViewCell = {
             let cell = NavBackCell()

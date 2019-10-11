@@ -11,6 +11,7 @@ import UIKit
 class IssuedTicketCell: UITableViewCell {
     
     private var bgView: UIView!
+    private var emailIcon: UIImageView!
     private var ticketTitle: UILabel!
     private var separator: UIView!
     private var issuedDateLabel: UILabel!
@@ -19,6 +20,12 @@ class IssuedTicketCell: UITableViewCell {
     private var status: UILabel!
     private var extraLabel: UILabel!
     private var extra: UILabel!
+    
+    var mailSent = false {
+        didSet {
+            emailIcon.isHidden = !mailSent
+        }
+    }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -44,6 +51,22 @@ class IssuedTicketCell: UITableViewCell {
             return view
         }()
         
+        emailIcon = {
+            let iv = UIImageView(image: #imageLiteral(resourceName: "mail_sent").withRenderingMode(.alwaysTemplate))
+            iv.tintColor = AppColors.passed
+            iv.isHidden = true
+            iv.contentMode = .scaleAspectFit
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(iv)
+            
+            iv.widthAnchor.constraint(equalToConstant: 21).isActive = true
+            iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
+            iv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
+            iv.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 18).isActive = true
+            
+            return iv
+        }()
+        
         ticketTitle = {
             let label = UILabel()
             label.numberOfLines = 0
@@ -53,7 +76,7 @@ class IssuedTicketCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 16).isActive = true
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -16).isActive = true
+            label.rightAnchor.constraint(equalTo: emailIcon.leftAnchor, constant: -12).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 16).isActive = true
             
             return label
@@ -177,6 +200,7 @@ class IssuedTicketCell: UITableViewCell {
         let noun = ticket.quantity == 1 ? "ticket" : "tickets"
         ticketTitle.text = ticket.typeName + " (\(ticket.quantity) \(noun))"
         issuedDate.text = ticket.creationDate?.readableString() ?? "Unknown"
+        mailSent = ticket.sent
         if ticket.redeemCode != nil {
             status.text = "Not yet redeemed"
             extraLabel.text = "Redeem code:"

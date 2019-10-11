@@ -43,7 +43,7 @@ class AdmissionType {
         typeName = dictionary["Type name"]?.string ?? ""
         quota = dictionary["Quota"]?.int
         price = dictionary["Price"]?.double
-        notes = dictionary["Notes"]?.string ?? ""
+        notes = dictionary["Notes"]?.string?.decoded ?? ""
         currentRevenue = dictionary["Revenue"]?.double ?? 0.0
         quantitySold = dictionary["Quantity"]?.int ?? 0
     }
@@ -54,7 +54,7 @@ class AdmissionType {
         json.dictionaryObject?["Type name"] = typeName
         json.dictionaryObject?["Quota"] = quota
         json.dictionaryObject?["Price"] = price
-        json.dictionaryObject?["Notes"] = notes
+        json.dictionaryObject?["Notes"] = notes.encoded
         json.dictionaryObject?["Quantity"] = quantitySold
         
         // The revenue should not be saved

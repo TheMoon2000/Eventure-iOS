@@ -21,7 +21,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         title = User.waitingForSync ? "Syncing..." : "Me"
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))

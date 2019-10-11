@@ -32,7 +32,7 @@ class MajorList: UIViewController {
         super.viewDidLoad()
 
         title = "Areas of Study"
-        view.backgroundColor = .init(white: 0.96, alpha: 1)
+        view.backgroundColor = AppColors.canvas
         
         let searchResults = MajorSearchResults(parentVC: self)
         
@@ -40,7 +40,7 @@ class MajorList: UIViewController {
             let sc = UISearchController(searchResultsController: searchResults)
             sc.searchResultsUpdater = searchResults
             sc.searchBar.placeholder = "Search major / minor"
-            sc.searchBar.tintColor = MAIN_TINT
+            sc.searchBar.tintColor = AppColors.main
             navigationItem.hidesSearchBarWhenScrolling = false
             sc.obscuresBackgroundDuringPresentation = true
             
@@ -55,7 +55,7 @@ class MajorList: UIViewController {
         majorTable = {
             let tb = UITableView()
             tb.backgroundColor = .clear
-            tb.tintColor = MAIN_TINT
+            tb.tintColor = AppColors.main
             tb.tableFooterView = UIView()
             tb.delegate = self
             tb.dataSource = self
@@ -152,7 +152,7 @@ extension MajorList: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let container = UIView()
-        container.backgroundColor = .init(white: 0.96, alpha: 0.95)
+        container.backgroundColor = AppColors.canvas
         
         let label = UILabel()
         label.layoutMargins.left = 10

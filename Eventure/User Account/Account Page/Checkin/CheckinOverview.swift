@@ -89,7 +89,7 @@ class CheckinOverview: UIViewController {
         
         orgLogo = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 6
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
@@ -159,7 +159,7 @@ class CheckinOverview: UIViewController {
             let button = UIButton(type: .system)
             button.tintColor = .white
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
-            button.backgroundColor = MAIN_TINT
+            button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
             button.titleEdgeInsets.left = 20
             button.titleEdgeInsets.right = 20

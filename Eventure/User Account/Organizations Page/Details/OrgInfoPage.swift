@@ -29,7 +29,7 @@ class OrgInfoPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.navbar
         view.layoutIfNeeded()
         
         canvas = {
@@ -50,7 +50,7 @@ class OrgInfoPage: UIViewController {
             if iv.image == nil {
                 iv.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             }
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
             iv.isHidden = view.frame.height <= 500
@@ -106,7 +106,7 @@ class OrgInfoPage: UIViewController {
             let iv = UIImageView(image: organization.logoImage ?? #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
             iv.isHidden = true
             iv.contentMode = .scaleAspectFit
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.widthAnchor.constraint(equalToConstant: 75).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
@@ -123,7 +123,12 @@ class OrgInfoPage: UIViewController {
         
         line = {
             let line = UIView()
-            line.backgroundColor = .init(white: 0.93, alpha: 1)
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                line.alpha = 0.0
+            } else {
+                line.alpha = 0.8
+            }
+            line.backgroundColor = AppColors.line
             line.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(line)
             
@@ -157,6 +162,16 @@ class OrgInfoPage: UIViewController {
             
             return tabStrip
         }()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            line.alpha = 0.0
+        } else {
+            line.alpha = 0.8
+        }
     }
     
     @objc private func imageTapped() {

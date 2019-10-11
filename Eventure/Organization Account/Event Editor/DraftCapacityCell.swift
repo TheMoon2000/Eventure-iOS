@@ -48,6 +48,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
         leftLabel = {
             let label = UILabel()
             label.text = title
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

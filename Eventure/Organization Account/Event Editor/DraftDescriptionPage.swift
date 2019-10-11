@@ -31,8 +31,8 @@ class DraftDescriptionPage: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.background
-        view.tintColor = MAIN_TINT
+        view.backgroundColor = AppColors.canvas
+        view.tintColor = AppColors.main
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
@@ -125,7 +125,7 @@ class DraftDescriptionPage: UIViewController {
         
         editButton = {
             let button = UIButton(type: .system)
-            button.setTitleColor(MAIN_TINT, for: .normal)
+            button.setTitleColor(AppColors.main, for: .normal)
             button.setTitle("Edit", for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -136,7 +136,7 @@ class DraftDescriptionPage: UIViewController {
         
         previewButton = {
             let button = UIButton(type: .system)
-            button.setTitleColor(.darkGray, for: .normal)
+            button.setTitleColor(AppColors.control, for: .normal)
             button.setTitle("Preview", for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -169,7 +169,7 @@ class DraftDescriptionPage: UIViewController {
         descriptionText = {
             let tv = UITextView()
             tv.keyboardDismissMode = .onDrag
-            tv.textColor = .darkGray
+            tv.textColor = AppColors.plainText
             tv.isScrollEnabled = false
 
             textViewFormatter(tv: tv)
@@ -205,7 +205,6 @@ class DraftDescriptionPage: UIViewController {
             let label = UILabel()
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 18, weight: .medium)
-            label.textColor = .init(white: 0.8, alpha: 1)
             label.isHidden = !draftPage.draft.eventDescription.isEmpty
             label.text = "Here, describe your event within \(descriptionMaxLength) characters. Markdown is supported!"
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -225,7 +224,6 @@ class DraftDescriptionPage: UIViewController {
             tv.isEditable = false
             tv.delegate = self
             tv.isScrollEnabled = false
-            tv.textColor = .gray
             tv.font = .systemFont(ofSize: 17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = AppColors.link
@@ -248,6 +246,7 @@ class DraftDescriptionPage: UIViewController {
             descriptionText.becomeFirstResponder()
         }
         
+        editButtonPressed()
         updateWordCount()
     }
     
@@ -277,8 +276,10 @@ class DraftDescriptionPage: UIViewController {
     }
     
     @objc private func editButtonPressed() {
-        editButton.setTitleColor(MAIN_TINT, for: .normal)
-        previewButton.setTitleColor(.darkGray, for: .normal)
+        editButton.setTitleColor(AppColors.main, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        previewButton.setTitleColor(AppColors.control, for: .normal)
+        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         previewText.isHidden = true
         descriptionText.isHidden = false
         textViewDidChange(descriptionText)
@@ -292,14 +293,32 @@ class DraftDescriptionPage: UIViewController {
         if descriptionText.text.isEmpty {
             previewText.text = "No content."
         } else {
-            previewText.attributedText = descriptionText.text.attributedText()
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                    previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)
+            } else {
+                previewText.attributedText = descriptionText.text.attributedText()
+            }
         }
         
-        editButton.setTitleColor(.darkGray, for: .normal)
-        previewButton.setTitleColor(MAIN_TINT, for: .normal)
+        editButton.setTitleColor(AppColors.control, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        previewButton.setTitleColor(AppColors.main, for: .normal)
+        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         descriptionText.isHidden = true
         previewText.isHidden = false
         descriptionPlaceholder.isHidden = true
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard UIApplication.shared.applicationState != .background else { return }
+        
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)
+        } else {
+            previewText.attributedText = descriptionText.text.attributedText()
+        }
     }
 
 }
@@ -307,7 +326,7 @@ class DraftDescriptionPage: UIViewController {
 extension DraftDescriptionPage: UITextViewDelegate {
     
     private func updateWordCount() {
-        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? .darkGray : .red
+        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? AppColors.plainText : .red
         
         charCount.text = "\(descriptionText.text.count) / \(descriptionMaxLength) characters"
     }

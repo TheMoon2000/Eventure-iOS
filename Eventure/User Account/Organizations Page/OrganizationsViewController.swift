@@ -36,6 +36,17 @@ class OrganizationsViewController: UIViewController {
     // The search bar
     private let searchController = UISearchController(searchResultsController: nil)
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topTabBg.effect = UIBlurEffect(style: .regular)
+            } else {
+                topTabBg.effect = UIBlurEffect(style: .extraLight)
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +58,7 @@ class OrganizationsViewController: UIViewController {
         // Search bar setup
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Organizations"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -82,7 +93,7 @@ class OrganizationsViewController: UIViewController {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
-            tab.tintColor = MAIN_TINT
+            tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -101,13 +112,10 @@ class OrganizationsViewController: UIViewController {
             orgTable.dataSource = self
             orgTable.delegate = self
             orgTable.tableFooterView = UIView()
-            orgTable.separatorColor = .lightGray
-            orgTable.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
             orgTable.contentInsetAdjustmentBehavior = .always
             orgTable.contentInset.top = 60
             orgTable.scrollIndicatorInsets.top = 60
             orgTable.backgroundColor = .clear
-            orgTable.separatorColor = AppColors.line
             orgTable.register(OrganizationCell.classForCoder(), forCellReuseIdentifier: "org")
             orgTable.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(orgTable, belowSubview: topTabBg)

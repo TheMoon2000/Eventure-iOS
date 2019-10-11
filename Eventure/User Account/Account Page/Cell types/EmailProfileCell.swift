@@ -46,7 +46,7 @@ class EmailProfileCell: UITableViewCell {
             let button = UIButton(type: .system)
             button.imageView?.contentMode = .scaleAspectFit
             button.setImage(#imageLiteral(resourceName: "mail").withRenderingMode(.alwaysTemplate), for: .normal)
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             button.imageEdgeInsets.left = 8
             button.imageEdgeInsets.right = 8
             button.translatesAutoresizingMaskIntoConstraints = false

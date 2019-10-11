@@ -72,7 +72,7 @@ class EventCell: UICollectionViewCell {
             let button = UIButton(type: .system)
             button.isHidden = User.current == nil
             button.imageView?.contentMode = .scaleAspectFit
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             button.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             addSubview(button)

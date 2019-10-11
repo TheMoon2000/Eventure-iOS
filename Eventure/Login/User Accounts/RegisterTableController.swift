@@ -42,7 +42,7 @@ class RegisterTableController: UITableViewController {
 
         view.backgroundColor = AppColors.canvas
         
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.keyboardDismissMode = .interactive

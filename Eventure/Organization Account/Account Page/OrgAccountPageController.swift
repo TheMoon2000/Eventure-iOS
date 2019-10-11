@@ -21,12 +21,12 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
                 
         //Do any additional setup after loading the view.
         title = Organization.waitingForSync ? "Syncing..." : "Dashboard"
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
+        view.backgroundColor = AppColors.canvas
         
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = AppColors.tableBG
         self.view.addSubview(myTableView)
         
         
@@ -180,11 +180,13 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.valueLabel.text = "\(Organization.current!.subscribers.count)"
         case(3, 0):
             let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
             let h = cell.heightAnchor.constraint(equalToConstant: 50)
             h.priority = .defaultHigh
             h.isActive = true
             
             let label = UILabel()
+            label.textColor = AppColors.label
             label.text = "About Eventure"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .center
@@ -198,9 +200,11 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             
         case (3, 1):
             let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
             cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
 
             let label = UILabel()
+            label.textColor = AppColors.label
             label.text = "Log Out"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .center

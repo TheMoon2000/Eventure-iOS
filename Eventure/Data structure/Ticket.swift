@@ -26,6 +26,7 @@ class Ticket {
     var transferable: Bool
     var transferLocked: Bool
     var transferHistory = [Int]()
+    var sent = false
     
     var paymentInfo: String {
         switch paymentType {
@@ -93,6 +94,7 @@ class Ticket {
         paymentAmount = dictionary["Payment amount"]?.double ?? 0.0
         location = dictionary["Location"]?.string ?? "TBA"
         notes = dictionary["Notes"]?.string ?? ""
+        sent = (dictionary["Sent"]?.int ?? 0) == 1
         
         if let eventDateString = dictionary["Start time"]?.string {
             eventDate = DATE_FORMATTER.date(from: eventDateString)
@@ -143,6 +145,7 @@ class Ticket {
         main.dictionaryObject?["Location"] = location
         main.dictionaryObject?["Notes"] = notes
         main.dictionaryObject?["Code"] = redeemCode
+        main.dictionaryObject?["Sent"] = sent
         
         if activationDate != nil {
             main.dictionaryObject?["Activation date"] = DATE_FORMATTER.string(from: activationDate!)

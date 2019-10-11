@@ -93,7 +93,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         searchResults = EventSearchResults(parentVC: self)
         searchController = UISearchController(searchResultsController: searchResults)
         searchController.searchResultsUpdater = searchResults
-        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Your Events"
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
@@ -123,7 +123,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         
         topTab = {
             let tab = UISegmentedControl(items: ["Published", "Drafts"])
-            tab.tintColor = MAIN_TINT
+            tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -233,7 +233,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
         // refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
-        // refreshControl.tintColor = MAIN_TINT
+        // refreshControl.tintColor = AppColors.main
         
         // Fetch all events and draft events
         updateEvents()
@@ -365,7 +365,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         let editor = EventDraft(event: draftEvent)
         editor.orgEventView = self
         let nav = UINavigationController(rootViewController: editor)
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.tintColor = AppColors.main
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)

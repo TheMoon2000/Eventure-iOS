@@ -26,7 +26,7 @@ class TicketScannedPage: UIViewController {
         self.ticket = ticket
         self.parentVC = parentVC
         title = "Ticket Info"
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
     }
 
     override func viewDidLoad() {
@@ -47,7 +47,7 @@ class TicketScannedPage: UIViewController {
                     iv.image = ticketWithLogo.orgLogo
                 }
             }
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
             iv.layer.masksToBounds = true
@@ -67,7 +67,7 @@ class TicketScannedPage: UIViewController {
             let label = UILabel()
             label.text = ticket.hostName + "'s"
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.label
             label.textAlignment = .center
             label.numberOfLines = 5
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -103,7 +103,7 @@ class TicketScannedPage: UIViewController {
             label.text = "\(ticket.quantity) × \(ticket.typeName) Ticket"
             label.numberOfLines = 3
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -127,10 +127,10 @@ class TicketScannedPage: UIViewController {
             }
             button.tintColor = .white
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
-            button.backgroundColor = MAIN_TINT
+            button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
-            button.contentEdgeInsets.left = 32
-            button.contentEdgeInsets.right = 32
+            button.contentEdgeInsets.left = 35
+            button.contentEdgeInsets.right = 35
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)
             
@@ -285,7 +285,7 @@ class TicketScannedPage: UIViewController {
                 DispatchQueue.main.async {
                     self.claimButton.isUserInteractionEnabled = false
                     self.claimButton.setTitle("Request Pending...", for: .normal)
-                    self.claimButton.backgroundColor = MAIN_DISABLED
+                    self.claimButton.backgroundColor = AppColors.mainDisabled
                 }
             default:
                 let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)

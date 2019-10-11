@@ -124,17 +124,16 @@ class UserScanner: ScannerViewController {
                         let alert = UIAlertController(title: "Could not initiate ticket transfer", message: "The ticket you just scanned does not support transfer.", preferredStyle: .alert)
                         alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in
                             
-                            self.session.startRunning()
+                            self.session?.startRunning()
                         }))
                         self.present(alert, animated: true, completion: nil)
                     }
                     return
                 }
-                
-                let scannedPage = TicketScannedPage(ticket: ticket, parentVC: self)
-                let nav = PortraitNavigationController(rootViewController: scannedPage)
 
                 DispatchQueue.main.async {
+                    let scannedPage = TicketScannedPage(ticket: ticket, parentVC: self)
+                    let nav = PortraitNavigationController(rootViewController: scannedPage)
                     self.present(nav, animated: true) {
                         self.navigationController?.popViewController(animated: false)
                     }

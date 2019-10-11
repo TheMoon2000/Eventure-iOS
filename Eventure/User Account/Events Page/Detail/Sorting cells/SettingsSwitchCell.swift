@@ -66,7 +66,7 @@ class SettingsSwitchCell: UITableViewCell {
         
         switchItem = {
             let s = UISwitch()
-            s.onTintColor = MAIN_TINT
+            s.onTintColor = AppColors.main
             s.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(s)
             

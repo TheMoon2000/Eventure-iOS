@@ -25,8 +25,8 @@ class DraftTicketsPage: UITableViewController {
         super.viewDidLoad()
         
         tableView.separatorStyle = .none
-        tableView.backgroundColor = AppColors.background
-        tableView.tintColor = MAIN_TINT
+        tableView.backgroundColor = AppColors.canvas
+        tableView.tintColor = AppColors.main
         tableView.contentInset.top = 6
         tableView.contentInset.bottom = 6
 
@@ -60,7 +60,6 @@ class DraftTicketsPage: UITableViewController {
         switch indexPath.row {
         case 0:
             let cell = SettingsSwitchCell()
-            cell.backgroundColor = AppColors.background
             cell.titleLabel.text = "Enable ticketing"
             cell.enabled = draftPage.draft.requiresTicket
             cell.switchHandler = { on in

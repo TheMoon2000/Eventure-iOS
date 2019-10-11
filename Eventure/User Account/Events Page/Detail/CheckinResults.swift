@@ -164,7 +164,7 @@ class CheckinResults: UIViewController {
         
         orgLogo = {
             let iv = UIImageView(image: Organization.current?.logoImage ?? #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(iv)
@@ -413,8 +413,9 @@ class CheckinResults: UIViewController {
     func openSortMenu() {
         let menu = CheckinSortSettings(parentVC: self)
         let nav = UINavigationController(rootViewController: menu)
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.tintColor = AppColors.main
         nav.navigationBar.barTintColor = AppColors.navbar
+        nav.navigationBar.isTranslucent = false
         nav.modalPresentationStyle = .formSheet
         present(nav, animated: true)
     }

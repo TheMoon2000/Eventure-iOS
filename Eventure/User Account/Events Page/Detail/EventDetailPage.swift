@@ -50,7 +50,7 @@ class EventDetailPage: UIViewController {
         super.viewDidLoad()
         
         self.title = "Event Details"
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.navbar
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
                 
         if Organization.current == nil {
@@ -84,7 +84,7 @@ class EventDetailPage: UIViewController {
         coverImage = {
             let iv = UIImageView(image: event.eventVisual)
             iv.contentMode = .scaleAspectFill
-            iv.backgroundColor = MAIN_DISABLED
+            iv.backgroundColor = AppColors.mainDisabled
             iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
@@ -143,7 +143,7 @@ class EventDetailPage: UIViewController {
             button.isHidden = Organization.current != nil
             button.isEnabled = User.current != nil
             button.imageView?.contentMode = .scaleAspectFit
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             if User.current?.interestedEvents.contains(event.uuid) ?? false {
                 button.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
             } else {
@@ -195,17 +195,17 @@ class EventDetailPage: UIViewController {
             return tabStrip
         }()
         
-        /*
-        let white = UIView()
-        white.backgroundColor = .white
-        white.translatesAutoresizingMaskIntoConstraints = false
-        canvas.insertSubview(white, belowSubview: coverImage)
         
-        white.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        white.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        white.topAnchor.constraint(equalTo: canvas.topAnchor).isActive = true
-        white.bottomAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
-        */
+        let bottom = UIView()
+        bottom.backgroundColor = AppColors.canvas
+        bottom.translatesAutoresizingMaskIntoConstraints = false
+        canvas.insertSubview(bottom, belowSubview: coverImage)
+        
+        bottom.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        bottom.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        bottom.topAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
+        bottom.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
         
     }
     
@@ -382,8 +382,9 @@ class EventDetailPage: UIViewController {
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.tintColor = AppColors.main
         nav.navigationBar.barTintColor = AppColors.navbar
+        nav.navigationBar.isTranslucent = false
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true)
     }

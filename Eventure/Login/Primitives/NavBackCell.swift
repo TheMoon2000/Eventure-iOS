@@ -32,7 +32,7 @@ class NavBackCell: UITableViewCell {
     private func createButton() -> UIButton {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "back"), for: .normal)
-        button.tintColor = MAIN_TINT
+        button.tintColor = AppColors.main
         button.imageView?.contentMode = .scaleAspectFit
         button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false

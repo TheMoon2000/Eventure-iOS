@@ -44,12 +44,27 @@ class TagPickerView: UIViewController {
         if minPicks > selectedTags.count || maxPicks != nil && maxPicks! < selectedTags.count {
             continueButton.isUserInteractionEnabled = false
             UIView.animate(withDuration: 0.15) {
-                self.continueButton.backgroundColor = MAIN_DISABLED
+                self.continueButton.backgroundColor = AppColors.mainDisabled
             }
         } else {
             continueButton.isUserInteractionEnabled = true
             UIView.animate(withDuration: 0.15) {
-                self.continueButton.backgroundColor = MAIN_TINT
+                self.continueButton.backgroundColor = AppColors.main
+            }
+        }
+    }
+    
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topBanner.effect = UIBlurEffect(style: .dark)
+                bottomBanner.effect = UIBlurEffect(style: .dark)
+            } else {
+                topBanner.effect = UIBlurEffect(style: .extraLight)
+                bottomBanner.effect = UIBlurEffect(style: .extraLight)
             }
         }
     }
@@ -62,10 +77,17 @@ class TagPickerView: UIViewController {
         }
         
         title = "Tag Picker"
-        view.backgroundColor = .init(white: 0.95, alpha: 1)
+        view.backgroundColor = AppColors.canvas
         
         topBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    banner.effect = UIBlurEffect(style: .dark)
+                }
+            }
+            
             banner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(banner)
             
@@ -101,6 +123,7 @@ class TagPickerView: UIViewController {
                 label.text = customSubtitle ?? "Pick at least one. The more the better!"
                 label.textAlignment = .center
                 label.numberOfLines = 0
+                label.textColor = AppColors.label
                 label.font = .systemFont(ofSize: 16)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
@@ -151,6 +174,11 @@ class TagPickerView: UIViewController {
         
         bottomBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    banner.effect = UIBlurEffect(style: .dark)
+                }
+            }
             banner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(banner)
             
@@ -165,7 +193,7 @@ class TagPickerView: UIViewController {
             let button = UIButton()
             button.setTitle(customButtonTitle ?? "Continue", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-            button.backgroundColor = MAIN_DISABLED
+            button.backgroundColor = AppColors.mainDisabled
             button.isUserInteractionEnabled = false
             button.layer.cornerRadius = 25
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -192,7 +220,7 @@ class TagPickerView: UIViewController {
         
         loadingBG.isHidden = false
         
-        self.continueButton.backgroundColor = MAIN_DISABLED
+        self.continueButton.backgroundColor = AppColors.mainDisabled
         self.continueButton.isUserInteractionEnabled = false
         
         let url = URL.with(base: API_BASE_URL,
@@ -248,7 +276,7 @@ class TagPickerView: UIViewController {
                           duration: 0.2,
                           options: .curveEaseInOut,
                           animations: {
-                              self.continueButton.backgroundColor = MAIN_TINT
+                              self.continueButton.backgroundColor = AppColors.main
                           },
                           completion: nil)
     }

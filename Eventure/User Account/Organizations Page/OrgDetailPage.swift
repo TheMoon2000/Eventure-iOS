@@ -43,7 +43,7 @@ class OrgDetailPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.navbar
         navigationController?.navigationBar.shadowImage = UIImage()
         
         var favImage = #imageLiteral(resourceName: "heart_empty")
@@ -91,7 +91,7 @@ class OrgDetailPage: UIViewController {
                 // TODO: Replace with default logo image
                 thumbNail.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             }
-            thumbNail.tintColor = MAIN_DISABLED
+            thumbNail.tintColor = AppColors.mainDisabled
             thumbNail.translatesAutoresizingMaskIntoConstraints = false
             previewContainer.addSubview(thumbNail)
             
@@ -322,7 +322,7 @@ extension OrgDetailPage {
     
     @objc private func buttonPressed() {
         disclosureIndicator.image = #imageLiteral(resourceName: "disclosure_pressed")
-        previewContainer.backgroundColor = .init(white: 0.93, alpha: 1)
+        previewContainer.backgroundColor = AppColors.selected
     }
     
     @objc private func buttonLifted() {

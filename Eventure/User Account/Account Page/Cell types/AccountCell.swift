@@ -21,6 +21,7 @@ class AccountCell: UITableViewCell {
         
         //add arrow to each cell
         accessoryType = .disclosureIndicator
+        backgroundColor = AppColors.background
         
         heightAnchor.constraint(greaterThanOrEqualToConstant: 55).isActive = true
         

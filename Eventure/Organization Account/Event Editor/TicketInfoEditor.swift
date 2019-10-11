@@ -38,7 +38,7 @@ class TicketInfoEditor: UITableViewController {
         let typeCell = DraftCapacityCell(title: "Ticket type:")
         typeCell.valueField.placeholder = "e.g. General Admission"
         typeCell.valueField.text = admissionInfo.typeName
-        typeCell.valueField.textColor = MAIN_TINT
+        typeCell.valueField.textColor = AppColors.main
         typeCell.valueField.keyboardType = .default
         typeCell.valueField.autocapitalizationType = .words
         typeCell.valueField.returnKeyType = .next
@@ -86,7 +86,7 @@ class TicketInfoEditor: UITableViewController {
         
         let notesCell = DraftLocationCell()
         notesCell.promptLabel.text = "Additional notes (optional):"
-        notesCell.valueText.textColor = .darkGray
+        notesCell.valueText.textColor = AppColors.prompt
         notesCell.setPlaceholder(string: "e.g. Where should people buy tickets from you offline?")
         notesCell.valueText.insertText(admissionInfo.notes)
         notesCell.textChangeHandler = { tv in

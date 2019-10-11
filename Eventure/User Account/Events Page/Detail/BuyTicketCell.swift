@@ -80,10 +80,10 @@ class BuyTicketCell: UITableViewCell {
             if (admissionType.quota ?? 0) != 0 && admissionType.quota! <= admissionType.quantitySold {
                 button.setTitle("Sold out", for: .normal)
                 button.isUserInteractionEnabled = false
-                button.backgroundColor = MAIN_DISABLED
+                button.backgroundColor = AppColors.mainDisabled
             } else {
                 button.setTitle("Buy", for: .normal)
-                button.backgroundColor = MAIN_TINT
+                button.backgroundColor = AppColors.main
             }
             button.tintColor = .white
             button.contentEdgeInsets.left = 16

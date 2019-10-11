@@ -97,7 +97,7 @@ class EventDraft: UIPageViewController {
         progressIndicator = {
             let bar = UIProgressView(progressViewStyle: .bar)
             bar.trackTintColor = AppColors.line
-            bar.progressTintColor = MAIN_TINT
+            bar.progressTintColor = AppColors.main
             bar.translatesAutoresizingMaskIntoConstraints = false
             
             view.addSubview(bar)

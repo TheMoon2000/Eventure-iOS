@@ -27,8 +27,8 @@ class PurchaseDetails: UITableViewController {
         super.viewDidLoad()
 
         title = "Transaction Details"
-        view.backgroundColor = AppColors.canvas
         tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.backgroundColor = AppColors.canvas
         
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true

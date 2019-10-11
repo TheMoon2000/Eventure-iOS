@@ -59,12 +59,8 @@ class EventViewController: UIViewController, EventProvider {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        if #available(iOS 12.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                topTabBg.effect = UIBlurEffect(style: .regular)
-            } else {
-                topTabBg.effect = UIBlurEffect(style: .extraLight)
-            }
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            topTabBg.effect = UIBlurEffect(style: .regular)
         } else {
             topTabBg.effect = UIBlurEffect(style: .extraLight)
         }
@@ -84,7 +80,7 @@ class EventViewController: UIViewController, EventProvider {
             let sc = UISearchController(searchResultsController: searchResultTable)
             sc.searchResultsUpdater = searchResultTable
             sc.searchBar.placeholder = "Search Events"
-            sc.searchBar.tintColor = MAIN_TINT
+            sc.searchBar.tintColor = AppColors.main
             navigationItem.hidesSearchBarWhenScrolling = false
             sc.obscuresBackgroundDuringPresentation = true
             
@@ -97,7 +93,7 @@ class EventViewController: UIViewController, EventProvider {
         /*
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Events"
  */
 //      navigationItem.hidesSearchBarWhenScrolling = false
@@ -131,7 +127,7 @@ class EventViewController: UIViewController, EventProvider {
             if User.current == nil {
                 tab.setEnabled(false, forSegmentAt: 2)
             }
-            tab.tintColor = MAIN_TINT
+            tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -322,7 +318,7 @@ class EventViewController: UIViewController, EventProvider {
         /*
         let filter = FilterPageViewController()
         let nav = UINavigationController(rootViewController: filter)
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.tintColor = AppColors.main
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
@@ -330,8 +326,8 @@ class EventViewController: UIViewController, EventProvider {
         let filterTable = FilterDateTableViewController(parentVC: self)
         let nav = UINavigationController(rootViewController:
             filterTable)
-        nav.navigationBar.barTintColor = .white
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.barTintColor = AppColors.navbar
+        nav.navigationBar.tintColor = AppColors.main
         present(nav, animated: true)
     }
     
@@ -451,7 +447,7 @@ extension EventViewController {
         self.updateFiltered {
             self.spinner.startAnimating()
             self.spinnerLabel.isHidden = false
-            self.eventCatalog.reloadSections([0])
+            self.eventCatalog.reloadData()
             self.spinner.stopAnimating()
             self.spinnerLabel.isHidden = true
             self.emptyLabel.text = self.filteredEvents.isEmpty ? self.NO_EVENT : ""

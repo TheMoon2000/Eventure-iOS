@@ -14,6 +14,7 @@ class OrgEventCell: UICollectionViewCell {
     
     private var verticalSpacing: CGFloat = 14
     
+    private var event: Event!
     var parentVC: UIViewController?
     
     private var card: UIView!
@@ -202,10 +203,16 @@ class OrgEventCell: UICollectionViewCell {
     
     
     func setupCellWithEvent(event: Event, withImage: Bool = false) {
+        self.event = event
         titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
         locationText.text = event.location.isEmpty ? "TBA" : event.location
         descriptionText.setText(event.eventDescription.attributedText())
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+            }
+        }
         if event.eventDescription.isEmpty {
             descriptionText.setText("No description.".attributedText())
         }
@@ -230,7 +237,17 @@ class OrgEventCell: UICollectionViewCell {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
+        guard UIApplication.shared.applicationState != .background else { return }
+        
         card.layer.borderColor = AppColors.line.cgColor
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+            } else {
+                descriptionText.setText(event.eventDescription.attributedText())
+            }
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

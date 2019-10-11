@@ -20,13 +20,13 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
     }
     
     override func viewDidLoad() {
-        settings.style.buttonBarBackgroundColor = .white
-        settings.style.buttonBarItemBackgroundColor = .white
-        settings.style.selectedBarBackgroundColor = MAIN_TINT
+        settings.style.buttonBarBackgroundColor = AppColors.navbar
+        settings.style.buttonBarItemBackgroundColor = AppColors.navbar
+        settings.style.selectedBarBackgroundColor = AppColors.main
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0
         settings.style.buttonBarItemLeftRightMargin = 15
-        settings.style.buttonBarItemTitleColor = MAIN_TINT
+        settings.style.buttonBarItemTitleColor = AppColors.main
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
         settings.style.buttonBarRightContentInset = 0
@@ -34,7 +34,7 @@ class TicketManagerTabs: ButtonBarPagerTabStripViewController {
         changeCurrentIndexProgressive = { (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in
             guard changeCurrentIndex == true else { return }
             oldCell?.label.textColor = AppColors.label
-            newCell?.label.textColor = MAIN_TINT
+            newCell?.label.textColor = AppColors.main
         }
         
         super.viewDidLoad()

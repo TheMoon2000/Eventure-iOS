@@ -87,7 +87,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         activeRegion = {
             let region = UIView()
             region.layer.borderWidth = 1.5
-            region.layer.borderColor = MAIN_TINT.cgColor
+            region.layer.borderColor = AppColors.main.cgColor
             region.isUserInteractionEnabled = false
             region.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(region)

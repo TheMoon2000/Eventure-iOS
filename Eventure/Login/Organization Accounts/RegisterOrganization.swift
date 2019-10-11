@@ -32,7 +32,7 @@ class RegisterOrganization: UITableViewController {
         super.viewDidLoad()
 
         tableView.backgroundColor = AppColors.canvas
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
         tableView.tableFooterView = UIView()
         tableView.keyboardDismissMode = .interactive
         tableView.showsHorizontalScrollIndicator = false
@@ -261,7 +261,7 @@ class RegisterOrganization: UITableViewController {
             let cell = ButtonCell(width: 220)
             cell.button.setTitle("Register", for: .normal)
             cell.button.isEnabled = false
-            cell.button.backgroundColor = MAIN_TINT
+            cell.button.backgroundColor = AppColors.main
             cell.button.alpha = DISABLED_ALPHA
             cell.primaryAction = {
                 self.registerOrg()

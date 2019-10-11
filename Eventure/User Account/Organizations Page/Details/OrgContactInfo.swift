@@ -33,8 +33,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
-        hidesBottomBarWhenPushed = true
+        view.backgroundColor = AppColors.canvas
         
         canvas = {
             let sv = UIScrollView()
@@ -54,6 +53,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         websiteLabel = {
             let label = UILabel()
             label.text = "Website: "
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -68,17 +68,18 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         
         websiteLink = {
             let button = UIButton(type: .system)
-            button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
             button.titleLabel?.numberOfLines = 0
             button.titleLabel?.textAlignment = .right
             if organization.website.isEmpty {
                 button.setTitle("Unavailable", for: .normal)
                 button.isUserInteractionEnabled = false
-                button.setTitleColor(.darkGray, for: .normal)
+                button.setTitleColor(AppColors.value, for: .normal)
+                button.titleLabel?.font = .systemFont(ofSize: 17)
             } else {
                 button.setTitle(organization.website, for: .normal)
                 button.setTitleColor(AppColors.link, for: .normal)
                 button.contentHorizontalAlignment = .right
+                button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
             }
             button.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(button)
@@ -95,6 +96,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactNameLabel = {
             let label = UILabel()
             label.text = "Primary Contact:"
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -110,6 +112,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 5
+            label.textColor = AppColors.value
             label.text = organization.contactName
             if label.text!.isEmpty { label.text = "None" }
             label.font = .systemFont(ofSize: 17)
@@ -127,7 +130,8 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactEmailLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
-            label.text = "Email: "
+            label.text = "Email:"
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             

@@ -49,7 +49,7 @@ class TicketCell: UITableViewCell {
         
         orgLogo = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 3
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit

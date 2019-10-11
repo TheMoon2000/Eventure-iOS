@@ -63,7 +63,7 @@ class OrgFinishRegistration: UIViewController {
         
         button = {
             let button = UIButton(type: .system)
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             button.isHidden = true
             button.titleLabel?.font = .systemFont(ofSize: 19, weight: .medium)
             button.translatesAutoresizingMaskIntoConstraints = false

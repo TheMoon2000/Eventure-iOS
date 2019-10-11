@@ -22,7 +22,7 @@ class SubscribersCell: UITableViewCell {
         
         icon = {
             let iv = UIImageView()
-            iv.tintColor = MAIN_DISABLED
+            iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 5
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit

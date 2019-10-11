@@ -32,7 +32,7 @@ class SettingsItemCell: UITableViewCell {
         
         icon = {
             let iv = UIImageView()
-            iv.tintColor = MAIN_TINT
+            iv.tintColor = AppColors.main
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
