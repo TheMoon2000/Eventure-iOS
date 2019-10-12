@@ -162,16 +162,14 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 alert.addAction(.init(title: "Save QR Image", style: .default, handler: { _ in
                     self.saveQRCode(ticket: self.tickets[indexPath.row])
                 }))
-                alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
-                    self.cellToMail = self.tableView.cellForRow(at: indexPath) as? IssuedTicketCell
-                    self.mailTicket(ticket: self.tickets[indexPath.row],
-                                    indexPath: indexPath)
-                }))
                 if tickets[indexPath.row].sent {
                     alert.addAction(.init(title: "Mark as Unsent", style: .default, handler: { _ in
                         self.markAsSent(row: indexPath.row)
                     }))
                 } else {
+                    alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
+                        self.mailTicket(ticket: self.tickets[indexPath.row])
+                    }))
                     alert.addAction(.init(title: "Mark as Sent", style: .default, handler: { _ in
                         self.markAsSent(row: indexPath.row, sent: true)
                     }))
@@ -331,7 +329,6 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             "message": message
         ]
         
-        print(loadingBG.subviews)
         (loadingBG.contentView.subviews.last as? UILabel)?.text = "Sending..."
         loadingBG.isHidden = false
         
