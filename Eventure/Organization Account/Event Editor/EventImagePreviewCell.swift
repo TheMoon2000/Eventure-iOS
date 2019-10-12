@@ -7,19 +7,20 @@
 //
 
 import UIKit
+import TOCropViewController
 
 class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    private(set) var parentVC: UIViewController!
+    private(set) var parentVC: DraftOtherInfoPage!
     
     private var bgView: UIView!
     private(set) var previewImage: UIImageView!
-    private var captionLabel: UILabel!
+    private(set) var captionLabel: UILabel!
     private(set) var chooseImageLabel: UILabel!
     
     var updateImageHandler: ((UIImage?) -> ())?
     
-    init(parentVC: UIViewController) {
+    init(parentVC: DraftOtherInfoPage) {
         super.init(style: .default, reuseIdentifier: nil)
         
         self.parentVC = parentVC
@@ -29,16 +30,16 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
             
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -8)
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
@@ -64,12 +65,12 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
         
         previewImage = {
             let iv = UIImageView()
+            iv.alpha = 0
             iv.layer.borderWidth = 1
-            iv.layer.borderColor = LINE_TINT.cgColor
+            iv.layer.borderColor = AppColors.line.cgColor
             iv.backgroundColor = .init(white: 0.96, alpha: 1)
             iv.contentMode = .scaleAspectFill
             iv.clipsToBounds = true
-            iv.isUserInteractionEnabled = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
@@ -88,7 +89,9 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
             iv.centerXAnchor.constraint(equalTo: bgView.centerXAnchor).isActive = true
             iv.widthAnchor.constraint(lessThanOrEqualToConstant: 500).isActive = true
             iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
-            iv.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
+            let t = iv.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15)
+            t.priority = .defaultLow
+            t.isActive = true
             iv.bottomAnchor.constraint(equalTo: captionLabel.topAnchor, constant: -12).isActive = true
             
             iv.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(chooseImage)))
@@ -113,22 +116,67 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
     }
     
     @objc private func chooseImage() {
-        let picker = UIImagePickerController()
-        picker.sourceType = .savedPhotosAlbum
-        picker.delegate = self
-        parentVC.present(picker, animated: true, completion: nil)
+        
+        let alert = UIAlertController(title: "Update Event Cover Picture", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
+            let picker = UIImagePickerController()
+            picker.delegate = self
+            picker.sourceType = .photoLibrary
+            self.parentVC.present(picker, animated: true)
+        }))
+        alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
+            let picker = UIImagePickerController()
+            picker.delegate = self
+            picker.sourceType = .camera
+            self.parentVC.present(picker, animated: true)
+        }))
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = parentVC.tableView
+            let cellRect = parentVC.tableView.rectForRow(at: parentVC.tableView.indexPath(for: self)!)
+            popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+            popoverController.permittedArrowDirections = [.down, .up]
+        }
+        
+        parentVC.present(alert, animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        previewImage.image = (info[UIImagePickerController.InfoKey.originalImage] as? UIImage)?.sizeDown()
-        previewImage.backgroundColor = nil
-        chooseImageLabel.isHidden = true
-        updateImageHandler?(previewImage.image)
-        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        
+        let cropper = TOCropViewController(image: image)
+        cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
+        cropper.aspectRatioPreset = .preset3x2
+        cropper.aspectRatioLockEnabled = true
+        cropper.aspectRatioPickerButtonHidden = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.preset3x2.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
+//        picker.dismiss(animated: true, completion: nil)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 
+}
+
+
+extension EventImagePreviewCell: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        previewImage.image = image.sizeDown()
+        previewImage.backgroundColor = nil
+        chooseImageLabel.isHidden = true
+        updateImageHandler?(previewImage.image)
+
+        parentVC.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
+        parentVC.dismiss(animated: true, completion: nil)
+    }
 }

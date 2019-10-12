@@ -15,6 +15,7 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
     
     private var selected: Int = (User.current?.gender)!.rawValue
     private var new: Int = (User.current?.gender)!.rawValue
+    private var newIndexPath: IndexPath = []
     
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
@@ -73,12 +74,14 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        if newIndexPath != indexPath {
+            tableView.cellForRow(at: newIndexPath)?.accessoryType = .none
+        }
         new = indexPath.row - 1
+        newIndexPath = indexPath
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        tableView.cellForRow(at: indexPath)?.accessoryType = .none
-    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -91,10 +94,10 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
             cell.icon.image = UIImage(named: "unknown")
             cell.titleLabel.text = "Unspecified"
         case (0,1):
-            cell.icon.image = UIImage(named: "default male")
+            cell.icon.image = UIImage(named: "male")
             cell.titleLabel.text = "Male"
         case (0,2):
-            cell.icon.image = UIImage(named: "default_female")
+            cell.icon.image = UIImage(named: "female")
             cell.titleLabel.text = "Female"
         case (0,3):
             cell.icon.image = UIImage(named: "default_user")
@@ -106,7 +109,8 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
         
         if (indexPath.row == selected + 1) {
             cell.accessoryType = .checkmark
-            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+            new = indexPath.row - 1
+            newIndexPath = indexPath
         }
         
         return cell

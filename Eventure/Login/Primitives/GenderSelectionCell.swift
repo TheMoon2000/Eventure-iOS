@@ -37,6 +37,7 @@ class GenderSelectionCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = .clear
         makeLabel()
         disclosure = makeDisclosure()
         genderIcon = makeGenderIcon()
@@ -45,7 +46,7 @@ class GenderSelectionCell: UITableViewCell {
     private func makeLabel() {
         let label = UILabel()
         label.text = "Gender"
-        label.textColor = .init(white: 0.1, alpha: 1)
+        label.textColor = AppColors.label
         label.font = .systemFont(ofSize: 18.2, weight: .semibold)
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)

@@ -11,6 +11,7 @@ import UIKit
 class ChooseTagCell: UITableViewCell {
 
     private(set) var parentVC: UIViewController!
+    var maxPicks: Int? = 3
     
     var status: Status = .none {
         didSet {
@@ -29,7 +30,7 @@ class ChooseTagCell: UITableViewCell {
         }
     }
     
-    private var overlay: UIView!
+    private(set) var overlay: UIView!
     private var leftLabel: UILabel!
     private(set) var rightLabel: UILabel!
     private var statusIcon: UIImageView!
@@ -42,20 +43,22 @@ class ChooseTagCell: UITableViewCell {
         
         backgroundColor = .clear
         selectionStyle = .none
-        heightAnchor.constraint(equalToConstant: 60).isActive = true
+        let h = heightAnchor.constraint(equalToConstant: 70)
+        h.priority = .defaultHigh
+        h.isActive = true
         
         overlay = {
             let overlay = UIView()
             overlay.layer.cornerRadius = 7
-            overlay.layer.borderColor = LINE_TINT.cgColor
-            overlay.backgroundColor = .white
+            overlay.layer.borderColor = AppColors.line.cgColor
+            overlay.backgroundColor = AppColors.subview
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
             overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: sideInset).isActive = true
             overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -sideInset).isActive = true
-            overlay.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            overlay.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            overlay.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+            overlay.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
             
             return overlay
         }()
@@ -63,7 +66,7 @@ class ChooseTagCell: UITableViewCell {
         leftLabel = {
             let label = UILabel()
             label.text = "Pick Tags..."
-            label.textColor = .darkGray
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -77,7 +80,7 @@ class ChooseTagCell: UITableViewCell {
         statusIcon = {
             let icon = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
             icon.contentMode = .scaleAspectFit
-            icon.tintColor = .lightGray
+            icon.tintColor = AppColors.prompt
             icon.translatesAutoresizingMaskIntoConstraints = false
             addSubview(icon)
             
@@ -110,17 +113,15 @@ class ChooseTagCell: UITableViewCell {
         
         if highlighted {
             overlay.layer.borderWidth = 1
-            leftLabel.textColor = .init(white: 0.1, alpha: 1)
-            rightLabel.textColor = .lightGray
+            leftLabel.textColor = AppColors.label
         } else {
             overlay.layer.borderWidth = 0
-            leftLabel.textColor = .init(white: 0.3, alpha: 1)
-            rightLabel.textColor = .init(white: 0.75, alpha: 1)
+            leftLabel.textColor = AppColors.value
         }
     }
     
     func reloadTagPrompt(tags: Set<String>) {
-        if tags.count >= 1 && tags.count <= 3 {
+        if tags.count >= 1 && (maxPicks == nil || tags.count <= maxPicks!) {
             status = .done
             let tagword = tags.count == 1 ? "tag" : "tags"
             rightLabel.text = "\(tags.count) \(tagword) selected"

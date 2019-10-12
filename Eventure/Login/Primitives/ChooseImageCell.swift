@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TOCropViewController
 
 class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -15,9 +16,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
     private var titleLabel: UILabel!
     private var logo: UIImageView!
     private var clearButton: UIButton!
-    
-    private var logoShadeColor = UIColor(white: 0.92, alpha: 1)
-    
+        
     var chooseImageHandler: ((UIImage?) -> ())?
 
     init(parentVC: UIViewController, sideInset: CGFloat = 30) {
@@ -26,12 +25,14 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         self.parentVC = parentVC
         
         selectionStyle = .none
-        heightAnchor.constraint(equalToConstant: 65).isActive = true
+        backgroundColor = .clear
+        heightAnchor.constraint(equalToConstant: 70).isActive = true
         
         overlay = {
             let overlay = UIView()
             overlay.layer.cornerRadius = 7
-            overlay.layer.borderColor = LINE_TINT.cgColor
+            overlay.backgroundColor = AppColors.background
+            overlay.layer.borderColor = AppColors.line.cgColor
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
@@ -74,7 +75,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         logo = {
             let logo = UIImageView()
             logo.contentMode = .scaleAspectFit
-            logo.backgroundColor = logoShadeColor
+            logo.backgroundColor = AppColors.line
             logo.layer.borderWidth = 1
             logo.layer.borderColor = UIColor(white: 0.8, alpha: 1).cgColor
             logo.layer.cornerRadius = 5
@@ -97,12 +98,12 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         }
         
         let picker = UIImagePickerController()
-        picker.sourceType = .savedPhotosAlbum
-        picker.allowsEditing = true
+        picker.sourceType = .photoLibrary
         picker.delegate = self
         parentVC.present(picker, animated: true, completion: nil)
     }
     
+    /*
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         logo.image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage
         logo.backgroundColor = nil
@@ -110,6 +111,20 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         logo.layer.borderWidth = 0
         chooseImageHandler?(logo.image?.fixedOrientation())
         picker.dismiss(animated: true, completion: nil)
+    }*/
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        
+        let cropper = TOCropViewController(image: image)
+        cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
+        cropper.aspectRatioPreset = .presetSquare
+        cropper.aspectRatioLockEnabled = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
     }
     
     @objc private func clearImage() {
@@ -118,7 +133,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
             duration: 0.2,
             options: .curveEaseOut,
             animations: {
-                self.logo.backgroundColor = self.logoShadeColor
+                self.logo.backgroundColor = AppColors.line
                 self.logo.image = nil
                 self.clearButton.isHidden = true
                 self.logo.layer.borderWidth = 1
@@ -132,10 +147,10 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         
         if highlighted {
             overlay.layer.borderWidth = 1
-            titleLabel.textColor = .init(white: 0.1, alpha: 1)
+            titleLabel.textColor = AppColors.label
         } else {
             overlay.layer.borderWidth = 0
-            titleLabel.textColor = .init(white: 0.3, alpha: 1)
+            titleLabel.textColor = AppColors.value
         }
     }
     
@@ -143,4 +158,18 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         super.init(coder: aDecoder)
     }
 
+}
+
+
+extension ChooseImageCell: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        logo.image = image.fixedOrientation()
+        logo.backgroundColor = nil
+        clearButton.isHidden = false
+        logo.layer.borderWidth = 0
+        
+        chooseImageHandler?(logo.image!)
+        parentVC.dismiss(animated: true, completion: nil)
+    }
 }

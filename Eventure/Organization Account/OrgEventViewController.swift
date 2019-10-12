@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class OrgEventViewController: UIViewController {
+class OrgEventViewController: UIViewController, EventProvider {
     
     var showTopTab: Bool {
         return true
@@ -19,9 +19,9 @@ class OrgEventViewController: UIViewController {
         return Organization.current?.id
     }
     
-    var useRefreshControl: Bool {
-        return false
-    }
+    var useRefreshControl: Bool { return false }
+    
+    var EMPTY_STRING: String { return "No published events." }
     
     private let refreshControl = UIRefreshControl()
     private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
@@ -33,7 +33,8 @@ class OrgEventViewController: UIViewController {
     var lowerBound: Date?
     var upperBound: Date?
     
-    private let searchController = UISearchController(searchResultsController: nil)
+    private var searchController: UISearchController!
+    private var searchResults: EventSearchResults!
     
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
@@ -43,11 +44,18 @@ class OrgEventViewController: UIViewController {
     private var publishedLabel: UILabel!
     private var draftLabel: UILabel!
     
+    private var loadMoreLabel: UILabel!
+    private var shouldLoadMore = false
+    private(set) var eventsDisplayed = 20
+    
     var allEvents = Set<Event>() {
         didSet {
-            updateFiltered()
+            if !self.allEvents.isEmpty {
+                Organization.current?.numberOfEvents = self.allEvents.count
+            }
         }
     }
+    
     var allDrafts = Set<Event>() {
         didSet {
             updateFiltered()
@@ -57,17 +65,37 @@ class OrgEventViewController: UIViewController {
     /// An ordered list of events that should be shown.
     var filteredEvents = [Event]()
     
+    var eventsForSearch: [Event] {
+        return filteredEvents
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topTabBg.effect = UIBlurEffect(style: .regular)
+            } else {
+                topTabBg.effect = UIBlurEffect(style: .extraLight)
+            }
+        } else {
+            topTabBg.effect = UIBlurEffect(style: .extraLight)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Event Posts"
         
         // Search bar setup
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = MAIN_TINT
+        searchResults = EventSearchResults(parentVC: self)
+        searchController = UISearchController(searchResultsController: searchResults)
+        searchController.searchResultsUpdater = searchResults
+        searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Your Events"
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
@@ -75,20 +103,27 @@ class OrgEventViewController: UIViewController {
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    ev.effect = UIBlurEffect(style: .regular)
+                }
+            }
+            
             ev.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(ev)
             
             ev.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             ev.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             ev.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-            ev.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            ev.heightAnchor.constraint(equalToConstant: 50).isActive = true
             
             return ev
         }()
         
         topTab = {
             let tab = UISegmentedControl(items: ["Published", "Drafts"])
-            tab.tintColor = MAIN_TINT
+            tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -107,7 +142,9 @@ class OrgEventViewController: UIViewController {
         topTabBg.isHidden = !showTopTab
         
         eventCatalog = {
-            let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+            let layout = TopAlignedCollectionViewFlowLayout()
+            layout.footerReferenceSize = CGSize(width: 300, height: 50)
+            let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
             if useRefreshControl {
@@ -115,13 +152,14 @@ class OrgEventViewController: UIViewController {
             }
             ec.alwaysBounceVertical = true
             ec.contentInset.top = 8
-            ec.contentInset.bottom = 8
+            ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
+            ec.backgroundColor = AppColors.canvas
             if !topTabBg.isHidden {
                 ec.scrollIndicatorInsets.top = topTabBg.frame.height
                 ec.contentInset.top += topTabBg.frame.height
             }
-            ec.backgroundColor = .init(white: 0.92, alpha: 1)
             ec.register(OrgEventCell.classForCoder(), forCellWithReuseIdentifier: "org event")
+            ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
             ec.contentInsetAdjustmentBehavior = .always
             ec.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(ec, belowSubview: topTabBg)
@@ -194,8 +232,8 @@ class OrgEventViewController: UIViewController {
             }()
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
-        refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
-        refreshControl.tintColor = MAIN_TINT
+        // refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
+        // refreshControl.tintColor = AppColors.main
         
         // Fetch all events and draft events
         updateEvents()
@@ -221,35 +259,38 @@ class OrgEventViewController: UIViewController {
             spinner.startAnimating()
             spinnerLabel.isHidden = false
             allEvents.removeAll()
+            filteredEvents.removeAll()
             eventCatalog.reloadData()
             refreshControl.isEnabled = false
             refreshControl.isHidden = true
         }
         
+        func endRefreshing() {
+            if !pulled {
+                self.spinner.stopAnimating()
+                self.spinnerLabel.isHidden = true
+                self.refreshControl.isEnabled = true
+                self.refreshControl.isHidden = false
+            } else {
+                self.refreshControl.endRefreshing()
+            }
+        }
+        
         var parameters = [String : String]()
-        parameters["id"] = orgID
+        parameters["orgId"] = orgID
         
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: parameters)!
+                           API_Name: "events/List",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                if !pulled {
-                    self.spinner.stopAnimating()
-                    self.spinnerLabel.isHidden = true
-                    self.refreshControl.isEnabled = true
-                    self.refreshControl.isHidden = false
-                } else {
-                    self.refreshControl.endRefreshing()
-                }
-            }
-            
             guard error == nil else {
                 DispatchQueue.main.async {
+                    endRefreshing()
                     if self.allEvents.isEmpty {
                         self.publishedLabel.text = CONNECTION_ERROR
                     } else {
@@ -264,15 +305,19 @@ class OrgEventViewController: UIViewController {
                 var tmp = Set<Event>()
                 for eventJSON in eventsList {
                     let event = Event(eventInfo: eventJSON)
+                    event.getBanner(nil)
                     tmp.insert(event)
                 }
-                
                 DispatchQueue.main.async {
                     self.allEvents = tmp
-                    self.eventCatalog.reloadData()
-                    self.publishedLabel.text = self.allEvents.isEmpty ? "No Published Events" : ""
+                    self.updateFiltered {
+                        self.eventCatalog.reloadData()
+                        endRefreshing()
+                    }
+                    self.publishedLabel.text = self.allEvents.isEmpty ? self.EMPTY_STRING : ""
                 }
             } else {
+                endRefreshing()
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
                 
                 DispatchQueue.main.async {
@@ -295,8 +340,6 @@ class OrgEventViewController: UIViewController {
     }
     
     @objc private func changedTab() {
-        eventCatalog.reloadData()
-        
         let isDraftMode = topTab.selectedSegmentIndex == 1
         publishedLabel.isHidden = isDraftMode
         draftLabel.isHidden = !isDraftMode
@@ -310,8 +353,11 @@ class OrgEventViewController: UIViewController {
             spinner.alpha = 1.0
             spinnerLabel.alpha = 1.0
         }
-        
-        updateFiltered()
+        topTab.isUserInteractionEnabled = false
+        updateFiltered {
+            self.eventCatalog.reloadData()
+            self.topTab.isUserInteractionEnabled = true
+        }
     }
     
     @objc private func createNewEvent() {
@@ -319,7 +365,7 @@ class OrgEventViewController: UIViewController {
         let editor = EventDraft(event: draftEvent)
         editor.orgEventView = self
         let nav = UINavigationController(rootViewController: editor)
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.tintColor = AppColors.main
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
@@ -333,10 +379,10 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        let count = filteredEvents.count
+        let count = min(filteredEvents.count, eventsDisplayed)
         
         if topTab.selectedSegmentIndex == 0 {
-            publishedLabel.text = count == 0 && !spinner.isAnimating ? "No Published Events" : ""
+            publishedLabel.text = count == 0 && !spinner.isAnimating ? EMPTY_STRING : ""
         } else if topTab.selectedSegmentIndex == 1 {
             draftLabel.text = count == 0 ? "No Drafts" : ""
         }
@@ -365,7 +411,16 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         detailPage.event = filteredEvents[indexPath.row]
         navigationController?.pushViewController(detailPage, animated: true)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let v = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath)
+            return v
+        }
+        return UICollectionReusableView()
+    }
 }
+
 
 // MARK: - Extension on flow layout
 extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
@@ -390,6 +445,11 @@ extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let cell = OrgEventCell()
+        
+        guard indexPath.row < filteredEvents.count else {
+            return CGSize(width: 350, height: 550) // Arbitrary size
+        }
+        
         cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
@@ -449,27 +509,57 @@ extension OrgEventViewController {
 }
 
 
-extension OrgEventViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.main.async {
-            self.updateFiltered()
-            self.eventCatalog.reloadData()
-        }
-    }
-    
-    func updateFiltered() {
-        if topTab.selectedSegmentIndex == 0 {
-            filteredEvents = allEvents.filter { searchFilter(event: $0) && filterFunction($0) }
-            . sorted(by: { sortFunction(event1: $0, event2: $1) })
-        } else {
-            filteredEvents = allDrafts.filter { searchFilter(event: $0) }
-            . sorted(by: { sortFunction(event1: $0, event2: $1) })
+extension OrgEventViewController {
+
+    func updateFiltered(_ handler: (() -> ())? = nil) {
+        let tab = topTab.selectedSegmentIndex
+        DispatchQueue.global(qos: .default).async {
+            if tab == 0 {
+                self.filteredEvents = self.allEvents.filter { self.filterFunction($0)
+                }
+                . sorted { self.sortFunction(event1: $0, event2: $1) }
+            } else {
+                self.filteredEvents = self.allDrafts.sorted { self.sortFunction(event1: $0, event2: $1) }
+            }
+            DispatchQueue.main.async {
+                handler?()
+            }
         }
         
     }
+}
+
+extension OrgEventViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.contentSize.height - 50
+        let scrolled = scrollView.safeAreaLayoutGuide.layoutFrame.height + scrollView.contentOffset.y - 10
+        if height <= scrollView.safeAreaLayoutGuide.layoutFrame.height { return }
+        if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
+            if !filteredEvents.isEmpty && !spinner.isAnimating {
+                footer.textLabel.alpha = (scrolled - height) / 80
+                if eventsDisplayed < filteredEvents.count {
+                    if footer.textLabel.alpha >= 1 {
+                        footer.textLabel.text = "Release to load more"
+                        shouldLoadMore = true
+                    } else {
+                        footer.textLabel.text = "Load more..."
+                        shouldLoadMore = false
+                    }
+                } else {
+                    footer.textLabel.text = "No more events to load"
+                }
+            } else {
+                footer.textLabel.alpha = 0.0
+            }
+        }
+    }
     
-    func searchFilter(event: Event) -> Bool {
-        let searchString = searchController.searchBar.text!
-        return searchString.isEmpty || event.title.lowercased().contains(searchString.lowercased()) || event.eventDescription.lowercased().contains(searchString.lowercased())
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if shouldLoadMore {
+            shouldLoadMore = false
+            eventsDisplayed += 10
+            eventCatalog.reloadData()
+        }
     }
 }
+

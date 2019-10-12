@@ -8,10 +8,11 @@
 
 import SwiftyJSON
 import UIKit
+import TOCropViewController
 
-class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
     
-    private var myTableView: UITableView!
+    private(set) var myTableView: UITableView!
     
     private var currentImageView: UIImageView!
     private var profilePicture: UIImage!
@@ -20,14 +21,14 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.tableBG
         title = User.waitingForSync ? "Syncing..." : "Me"
 
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -44,10 +45,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        UIView.performWithoutAnimation {
-            self.myTableView.beginUpdates()
-            self.myTableView.endUpdates()
-        }
+        self.myTableView.reloadData()
     }
     
     deinit {
@@ -60,7 +58,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.title = "Me"
             self.navigationController?.navigationBar.setNeedsDisplay()
             UIView.performWithoutAnimation {
-                self.myTableView.reloadRows(at: [[1, 1]], with: .none)
+                self.myTableView.reloadRows(at: [[0, 0], [1, 1], [2, 2]], with: .none)
             }
         }
     }
@@ -69,28 +67,61 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath != [4, 0] {
+        if indexPath.section != 4 {
             guard User.current != nil else {
                 popLoginReminder()
-                return
+            return
             }
         }
         
         switch (indexPath.section, indexPath.row) {
+        case (0, 0):
+            let alert = UIAlertController(title: "Update Profile Picture", message: nil, preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .photoLibrary
+                self.present(picker, animated: true)
+            }))
+            alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .camera
+                self.present(picker, animated: true)
+            }))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = tableView
+                let cellRect = tableView.rectForRow(at: indexPath)
+                popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = .up
+            }
+            
+            present(alert, animated: true)
             
         case (1, 0): // if the user tries to change account information
             let personalInfo = PersonalInfoPage()
             personalInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(personalInfo, animated: true)
         case (1, 1):
-            let profileInfo = ProfileInfoPage()
+            let profileInfo = ProfileInfoPage(profile: User.current)
             profileInfo.parentVC = self
             profileInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(profileInfo, animated: true)
         case (2, 0):
-            let scanVC = ScannerViewController()
+            let scanVC = UserScanner()
+            scanVC.accountVC = self
             scanVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanVC, animated: true)
+        case (2, 1):
+            let checkedInPage = CheckedInEvents()
+            checkedInPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(checkedInPage, animated: true)
+        case (2, 2):
+            let ticketsPage = TicketsOverview()
+            ticketsPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(ticketsPage, animated: true)
         case (3,0):
             let likeEventsPage = LikedEvents()
             likeEventsPage.hidesBottomBarWhenPushed = true
@@ -107,31 +138,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             tagPicker.customButtonTitle = "Done"
             tagPicker.customContinueMethod = { tagPicker in
                 
-                tagPicker.spinner.removeFromSuperview()
-                
-                let loadingView: UIView = UIView()
-                loadingView.frame = CGRect(x:0, y:0, width:110, height:110)
-                loadingView.center = tagPicker.view.center
-                loadingView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
-                loadingView.clipsToBounds = true
-                loadingView.layer.cornerRadius = 10
-                
-                let label = UILabel()
-                label.text = "Updating..."
-                label.font = .systemFont(ofSize: 17, weight: .medium)
-                label.textColor = .white
-                label.translatesAutoresizingMaskIntoConstraints = false
-                loadingView.addSubview(label)
-                label.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
-                label.topAnchor.constraint(equalTo: loadingView.topAnchor,constant:80).isActive = true
-                
-                loadingView.addSubview(tagPicker.spinner)
-                tagPicker.view.addSubview(loadingView)
-                
-                tagPicker.spinner.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor).isActive = true
-                tagPicker.spinner.centerYAnchor.constraint(equalTo: loadingView.centerYAnchor, constant: -5).isActive = true
-                
-                tagPicker.spinner.startAnimating()
+                tagPicker.loadingBG.isHidden = false
                 
                 User.current!.tags = tagPicker.selectedTags
                 
@@ -150,7 +157,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                     data, response, error in
                     
                     DispatchQueue.main.async {
-                        self.navigationController?.popViewController(animated: true)
+                        tagPicker.loadingBG.isHidden = true
                     }
                     
                     guard error == nil else {
@@ -163,12 +170,17 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                     let msg = String(data: data!, encoding: .ascii) ?? ""
                     switch msg {
                     case INTERNAL_ERROR:
-                        serverMaintenanceError(vc: self)
+                        DispatchQueue.main.async {
+                            serverMaintenanceError(vc: self)
+                        }
                     case "success":
-                        print("successfully updated tags")
                         User.current!.tags = Set(tagsArray)
+                        DispatchQueue.main.async { self.navigationController?.popViewController(animated: true)
+                        }
                     default:
-                        break
+                        DispatchQueue.main.async {
+                            internetUnavailableError(vc: self)
+                        }
                     }
                 }
                 
@@ -181,21 +193,24 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             DispatchQueue.main.async {
                 tagPicker.selectedTags = User.current!.tags
             }
-            
-        case (4, 0): // if the log out/sign in button is clicked
+        case (4, 0):
+            let aboutPage = AboutPage()
+            aboutPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(aboutPage, animated: true)
+        case (4, 1): // if the log out/sign in button is clicked
             if (User.current == nil) {
                 let login = LoginViewController()
                 let nvc = InteractivePopNavigationController(rootViewController: login)
                 nvc.isNavigationBarHidden = true
                 login.navBar = nvc
-                present(nvc, animated: true, completion: nil)
+                present(nvc, animated: true)
             } else {
                 //pop out an alert window
-                let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
                     UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                     User.current = nil
-                    MainTabBarController.current.openScreen()
+                    MainTabBarController.current.openScreen(page: 2)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
                 self.present(alert, animated: true)
@@ -205,7 +220,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-
+    func openTickets() {
+        let ticketsPage = TicketsOverview()
+        ticketsPage.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(ticketsPage, animated: true)
+    }
     
     //create a cell for each table view row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -215,22 +234,29 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch (indexPath.section, indexPath.row) {
             
         case (0, 0):
-            cell.icon.image = User.current?.profilePicture
-            
-            cell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
-            
-            if cell.icon.image == nil && User.current != nil {
-                cell.icon.image = User.current!.gender == .male ? #imageLiteral(resourceName: "default male") : #imageLiteral(resourceName: "default_female")
-                cell.icon.isUserInteractionEnabled = true
-                profilePicture = cell.icon.image
-            } else {
-                cell.icon.image = #imageLiteral(resourceName: "unknown")
-                cell.icon.isUserInteractionEnabled = false
+            let profileCell = ProfilePreviewCell()
+            profileCell.icon.isUserInteractionEnabled = true
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
+            profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
+            if profileCell.titleLabel.text!.isEmpty {
+                profileCell.titleLabel.text = User.current!.email
             }
-            cell.imageWidthConstraint.constant = 65
-            cell.heightConstraint.constant = 100
-            cell.spacingConstraint.constant = 18
-            cell.titleLabel.text = "Profile Picture"
+            if let count = User.current?.numberOfAttendedEvents {
+                let noun = count == 1 ? "event" : "events"
+                profileCell.subtitleLabel.text = "\(count) " + noun + " attended"
+            } else {
+                profileCell.subtitleLabel.text = "Log in to access more features."
+            }
+            if let image = User.current?.profilePicture {
+                profileCell.icon.image = image
+            } else {
+                profileCell.icon.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
+                User.current?.getProfilePicture { userWithProfile in
+                    profileCell.icon.image = userWithProfile.profilePicture
+                }
+            }
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
+            return profileCell
         case (1, 0):
             cell.icon.image = #imageLiteral(resourceName: "default_user")
             cell.titleLabel.text = "Manage Account"
@@ -240,24 +266,55 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.valueLabel.text = User.current?.profileStatus
         case (2, 0):
             cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Scan Event Code"
+            cell.titleLabel.text = "Scan"
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Events I Checked in"
+        case (2, 2):
+            cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "My Tickets"
+            if User.current != nil {
+                cell.valueLabel.text = String(Ticket.userTickets.count) + " Total"
+            }
         case (3, 0):
             cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Favorite Events"
         case (3, 1):
-            cell.icon.image = #imageLiteral(resourceName: "star_filled")
+            cell.icon.image = #imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = AppColors.interest
             cell.titleLabel.text = "Interested Events"
         case (3, 2):
-            cell.icon.image = #imageLiteral(resourceName: "tag")
+            cell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = AppColors.link
             cell.titleLabel.text = "My Tags"
         case (4, 0):
             let cell = UITableViewCell()
-            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            cell.backgroundColor = AppColors.background
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
             
             let label = UILabel()
+            label.textColor = AppColors.label
+            label.text = "About Eventure"
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            return cell
+        case (4, 1):
+            let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
+            
+            let label = UILabel()
+            label.textColor = AppColors.label
             label.text = User.current != nil ? "Log Out" : "Log In"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .center
@@ -293,7 +350,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 2, 3, 1][section]
+        return [1, 2, 3, 3, 2][section]
     }
     
     //eliminate first section header
@@ -304,8 +361,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //full screen profile picture when tapped
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {
-        let fullScreen = ImageFullScreenPage(image: profilePicture)
-        present(fullScreen, animated: true, completion: nil)
+        if let profile = User.current?.profilePicture {
+            let fullScreen = ImageFullScreenPage(image: profile)
+            present(fullScreen, animated: false)
+        }
     }
     
     //exit profile picture fullscreen
@@ -332,4 +391,44 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.present(alert, animated: true)
     }
     
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        guard let original = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
+            self.dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        let cropper = TOCropViewController(image: original)
+        cropper.rotateButtonsHidden = true
+        cropper.resetButtonHidden = true
+        cropper.aspectRatioPickerButtonHidden = true
+        cropper.aspectRatioPreset = .presetSquare
+        cropper.aspectRatioLockEnabled = true
+        cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
+        cropper.delegate = self
+        picker.present(cropper, animated: true)
+    }
+    
 }
+
+extension AccountViewController: TOCropViewControllerDelegate {
+    func cropViewController(_ cropViewController: TOCropViewController, didCropTo image: UIImage, with cropRect: CGRect, angle: Int) {
+        
+        User.current?.uploadProfilePicture(new: image) { success in
+            if !success {
+                let warning = UIAlertController(title: "Unable to Update Profile Picture", message: nil, preferredStyle: .alert)
+                self.present(warning, animated: true, completion: nil)
+            }
+            self.myTableView.reloadRows(at: [[0, 0]], with: .none)
+        }
+        
+        self.myTableView.reloadRows(at: [[0, 0]], with: .none)
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
+        self.dismiss(animated: true, completion: nil)
+    }
+}
+

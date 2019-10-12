@@ -23,6 +23,8 @@ class LoginViewController: UIViewController {
     
     var navBar: UINavigationController?
     
+    private var MIN_HEIGHT: CGFloat = 450
+    
     // Make the status bar white
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -91,7 +93,7 @@ class LoginViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         rotated(frame: CGRect(origin: .zero, size: size))
         coordinator.animate(alongsideTransition: { context in
-            self.loginAsGuest.isHidden = size.height < 500
+            self.loginAsGuest.isHidden = size.height < self.MIN_HEIGHT
         }, completion: nil)
     }
     
@@ -122,6 +124,7 @@ class LoginViewController: UIViewController {
     
     private func prepareField(textfield: UITextField) {
         textfield.delegate = self
+        textfield.textColor = UIColor(white: 0.1, alpha: 1)
         textfield.autocorrectionType = .no
         textfield.autocapitalizationType = .none
         textfield.clearButtonMode = .whileEditing
@@ -131,12 +134,19 @@ class LoginViewController: UIViewController {
         textfield.layer.borderWidth = 1.4
         textfield.layer.cornerRadius = 4
         textfield.doInset()
+        
+        let ph = NSAttributedString(string: textfield.placeholder ?? "", attributes: [
+            .foregroundColor: UIColor(white: 0.83, alpha: 1)
+        ])
+        textfield.attributedPlaceholder = ph
     }
     
     
     /// Set up the UI elements from top to bottom.
     
     private func setupLogins() {
+        
+        view.layoutIfNeeded()
         
         // Logo image
         
@@ -168,14 +178,18 @@ class LoginViewController: UIViewController {
             let usr = UITextField()
             usr.placeholder = "Email / Organization ID"
             usr.keyboardType = .emailAddress
-            usr.adjustsFontSizeToFitWidth = true
             usr.textContentType = .emailAddress
             usr.returnKeyType = .next
             prepareField(textfield: usr)
             usr.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(usr)
             
-            usr.widthAnchor.constraint(equalToConstant: 240).isActive = true
+            usr.widthAnchor.constraint(lessThanOrEqualToConstant: 280).isActive = true
+            let w = usr.widthAnchor.constraint(equalToConstant: 260)
+            w.priority = .defaultHigh
+            w.isActive = true
+            usr.widthAnchor.constraint(greaterThanOrEqualToConstant: 220).isActive = true
+            usr.leftAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leftAnchor, constant: 65).isActive = true
             usr.heightAnchor.constraint(equalToConstant: 45).isActive = true
             usr.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             usr.topAnchor.constraint(equalTo: logo.bottomAnchor,
@@ -224,7 +238,7 @@ class LoginViewController: UIViewController {
             button.heightAnchor.constraint(equalToConstant: 50).isActive = true
             button.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             button.topAnchor.constraint(lessThanOrEqualTo: pswd.bottomAnchor, constant: 32).isActive = true
-            button.topAnchor.constraint(greaterThanOrEqualTo: pswd.bottomAnchor, constant: 20).isActive = true
+            button.topAnchor.constraint(greaterThanOrEqualTo: pswd.bottomAnchor, constant: 18).isActive = true
             
             // Actions
             button.addTarget(self,
@@ -241,6 +255,7 @@ class LoginViewController: UIViewController {
         
         loginAsGuest = {
             let button = UIButton(type: .system)
+            button.isHidden = view.frame.height < MIN_HEIGHT
             button.setTitle("Continue as Guest", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
             button.tintColor = .init(white: 1, alpha: 0.95)
@@ -372,10 +387,13 @@ class LoginViewController: UIViewController {
         //loginButton.backgroundColor = MAIN_TINT_DARK.withAlphaComponent(1.0)
         
         // Construct the URL parameters to be delivered
-        let loginParameters = [
+        var loginParameters = [
             "login": username,
             "password": password
         ]
+        
+        loginParameters["token"] = User.token
+        loginParameters["build"] = Bundle.main.infoDictionary?[kCFBundleVersionKey as String] as? String
         
         // Make the URL and URL request
         let apiURL = URL.with(base: API_BASE_URL,
@@ -428,7 +446,7 @@ class LoginViewController: UIViewController {
                     }
                 }
             } catch {
-                print("error parsing")
+                print("error parsing: " + String(data: data!, encoding: .utf8)!)
             }
         }
         task.resume()
@@ -447,9 +465,6 @@ class LoginViewController: UIViewController {
             } else {
                 MainTabBarController.current.openScreen()
             }
-            
-            UserDefaults.standard.setValue(true, forKey: USER_DEFAULT_CRED)
-            UserDefaults.standard.synchronize()
         }
         
         func handleOrgLogin(org: Organization) {
@@ -481,6 +496,12 @@ class LoginViewController: UIViewController {
             
             alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
             
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = loginButton
+                popoverController.sourceRect = CGRect(x: loginButton.bounds.midX, y: loginButton.bounds.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = .up
+            }
+            
             self.present(alert, animated: true, completion: nil)
         }
         
@@ -507,6 +528,11 @@ class LoginViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "User Account", style: .default, handler: handler))
         alert.addAction(UIAlertAction(title: "Organization Account", style: .default, handler: handler))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = registerButton
+            popoverController.sourceRect = CGRect(x: registerButton.frame.midX, y: registerButton.frame.minY, width: 0, height: 0)
+        }
         
         present(alert, animated: true, completion: nil)
         

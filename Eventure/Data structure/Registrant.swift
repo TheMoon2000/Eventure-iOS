@@ -10,15 +10,40 @@ import UIKit
 import SwiftyJSON
 
 /// An overview of a user's professional profile.
-class Registrant: Hashable {
+class Registrant: Hashable, Profile {
     
     let showProfile: Bool
     let checkedInDate: Date
 
-    let userID: Int
-    let orgID: String
-    let name: String
-    let major: String
+    var userID: Int
+    var orgID: String
+    var name: String
+    var displayedName: String
+    var majors = Set<Int>()
+    
+    var majorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
+    var shortMajorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
+    var email: String
+    var order: Int?
+    var currentCode: String?
     
     let graduationYear: Int?
     let graduationSeason: User.GraduationSeason?
@@ -32,14 +57,22 @@ class Registrant: Hashable {
     
     var profilePicture: UIImage?
     
+    var editable: Bool { return false }
+    
     init(json: JSON) {
         let dictionary = json.dictionaryValue
         
         showProfile = (dictionary["Show profile"]?.int ?? 1) == 1
         userID = dictionary["User ID"]?.int ?? -1
         orgID = dictionary["Organization"]?.string ?? "Unknown Organization"
-        name = dictionary["Full name"]?.string ?? "<No Name>"
-        major = dictionary["Major"]?.string ?? "Undecided"
+        name = dictionary["Full name"]?.string ?? ""
+        email = dictionary["Email"]?.string ?? "No email provided"
+        displayedName = dictionary["Displayed name"]?.string ?? ""
+        
+        if let majorString = dictionary["Major"]?.string {
+            majors = Set((JSON(parseJSON: majorString).arrayObject as? [Int] ?? []))
+        }
+        
         graduationYear = dictionary["Graduation year"]?.int
         graduationSeason = User.GraduationSeason(rawValue: dictionary["Graduation season"]?.string ?? "")
         resume = dictionary["Resume"]?.string ?? ""
@@ -54,6 +87,9 @@ class Registrant: Hashable {
         } else {
             checkedInDate = Date.distantFuture
         }
+        
+        // Only pending registrants have a code
+        currentCode = dictionary["Code"]?.string
     }
     
     /// Load the profile picture for a user.
@@ -74,9 +110,11 @@ class Registrant: Hashable {
                 return // Don't display any alert here
             }
             
-            self.profilePicture = UIImage(data: data!) ?? #imageLiteral(resourceName: "user_default")
-            DispatchQueue.main.async {
-                handler?(self)
+            self.profilePicture = UIImage(data: data!)
+            if self.profilePicture != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
             }
         }
         

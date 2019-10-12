@@ -33,8 +33,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
-        hidesBottomBarWhenPushed = true
+        view.backgroundColor = AppColors.canvas
         
         canvas = {
             let sv = UIScrollView()
@@ -54,34 +53,40 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         websiteLabel = {
             let label = UILabel()
             label.text = "Website: "
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 35).isActive = true
+            label.layoutIfNeeded()
+            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
             
             return label
         }()
         
         websiteLink = {
             let button = UIButton(type: .system)
-            button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+            button.titleLabel?.numberOfLines = 0
+            button.titleLabel?.textAlignment = .right
             if organization.website.isEmpty {
                 button.setTitle("Unavailable", for: .normal)
                 button.isUserInteractionEnabled = false
-                button.setTitleColor(.darkGray, for: .normal)
+                button.setTitleColor(AppColors.value, for: .normal)
+                button.titleLabel?.font = .systemFont(ofSize: 17)
             } else {
                 button.setTitle(organization.website, for: .normal)
-                button.setTitleColor(LINK_COLOR, for: .normal)
+                button.setTitleColor(AppColors.link, for: .normal)
                 button.contentHorizontalAlignment = .right
+                button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
             }
             button.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(button)
             
             button.leftAnchor.constraint(equalTo: websiteLabel.rightAnchor, constant: 15).isActive = true
-            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
-            button.centerYAnchor.constraint(equalTo: websiteLabel.centerYAnchor).isActive = true
+            button.titleLabel?.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            button.titleLabel?.topAnchor.constraint(equalTo: websiteLabel.topAnchor).isActive = true
             
             button.addTarget(self, action: #selector(loadWebsite), for: .touchUpInside)
             
@@ -91,12 +96,12 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactNameLabel = {
             let label = UILabel()
             label.text = "Primary Contact:"
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: websiteLabel.leftAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: websiteLabel.bottomAnchor, constant: 25).isActive = true
             label.layoutIfNeeded()
             label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
             
@@ -106,8 +111,10 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactNameText = {
             let label = UILabel()
             label.textAlignment = .right
-            label.numberOfLines = 3
+            label.numberOfLines = 5
+            label.textColor = AppColors.value
             label.text = organization.contactName
+            if label.text!.isEmpty { label.text = "None" }
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -115,6 +122,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
             label.leftAnchor.constraint(equalTo: contactNameLabel.rightAnchor, constant: 15).isActive = true
             label.rightAnchor.constraint(equalTo: websiteLink.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: contactNameLabel.topAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: websiteLink.titleLabel!.bottomAnchor, constant: 15).isActive = true
             
             return label
         }()
@@ -122,7 +130,8 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         contactEmailLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
-            label.text = "Email: "
+            label.text = "Email:"
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -137,16 +146,18 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         
         contactEmailLink = {
             let button = UIButton(type: .system)
+            button.titleLabel?.numberOfLines = 2
+            button.titleLabel?.textAlignment = .right
             button.setTitle(organization.contactEmail, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-            button.setTitleColor(LINK_COLOR, for: .normal)
+            button.setTitleColor(AppColors.link, for: .normal)
             button.contentHorizontalAlignment = .right
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)
             
             button.leftAnchor.constraint(equalTo: contactEmailLabel.rightAnchor, constant: 15).isActive = true
             button.rightAnchor.constraint(equalTo: websiteLink.rightAnchor).isActive = true
-            button.centerYAnchor.constraint(equalTo: contactEmailLabel.centerYAnchor).isActive = true
+            button.titleLabel?.topAnchor.constraint(equalTo: contactEmailLabel.topAnchor).isActive = true
             
             button.addTarget(self, action: #selector(openEmail), for: .touchUpInside)
             
@@ -156,7 +167,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
     
     @objc private func loadWebsite() {
         var link = organization.website.lowercased()
-        if !link.hasPrefix("http://") || !link.hasPrefix("https://") {
+        if !link.hasPrefix("http://") && !link.hasPrefix("https://") {
             link = "https://" + link
         }
         if let url = URL(string: link) {

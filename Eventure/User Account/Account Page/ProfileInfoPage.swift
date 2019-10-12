@@ -9,7 +9,7 @@
 import UIKit
 import SwiftyJSON
 
-class ProfileInfoPage: UITableViewController {
+class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     
     var parentVC: AccountViewController?
     
@@ -18,17 +18,36 @@ class ProfileInfoPage: UITableViewController {
     
     private var saveBarButton: UIBarButtonItem!
     private var spinner: UIActivityIndicatorView!
+    
+    private(set) var userProfile: Profile!
+    private var PROMPT = "Let recruiters know more about you from event check-ins by filling out your profile information!"
+    
+    var cellsEditable: Bool { return userProfile.editable }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    required init(profile: Profile?) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.userProfile = profile ?? User.current!
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "My Profile"
+        title = cellsEditable ? "My Profile" : "Registrant Profile"
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInset.top = 5
         tableView.contentInset.bottom = 10
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
+        tableView.tintColor = AppColors.main
+        tableView.allowsSelection = cellsEditable
+    
+        view.backgroundColor = AppColors.canvas
         
         let section0: [UITableViewCell] = {
             var section = [UITableViewCell]()
@@ -39,7 +58,8 @@ class ProfileInfoPage: UITableViewController {
             nameCell.textfield.textContentType = .name
             nameCell.textfield.autocapitalizationType = .words
             nameCell.textfield.enablesReturnKeyAutomatically = true
-            nameCell.textfield.text = User.current?.fullName
+            nameCell.textfield.text = userProfile.name
+            nameCell.textfield.returnKeyType = .done
             
             nameCell.changeHandler = { textfield in
                 User.current?.saveEnabled = false
@@ -51,58 +71,48 @@ class ProfileInfoPage: UITableViewController {
                 User.current?.fullName = textfield.text!
             }
             
-            nameCell.returnHandler = { textfield in
-                (self.contentCells[0][1] as! TextFieldCell).textfield.becomeFirstResponder()
-            }
-            
             section.append(nameCell)
             
-            let majorCell = TextFieldCell(parentVC: self)
-            majorCell.icon.image = #imageLiteral(resourceName: "major")
-            majorCell.textfield.placeholder = "(Intended) Major(s) and minor(s)"
-            majorCell.textfield.enablesReturnKeyAutomatically = true
-            majorCell.textfield.returnKeyType = .next
-            majorCell.textfield.text = User.current?.major
-            
-            
-            majorCell.changeHandler = { textfield in
-                User.current?.saveEnabled = false
-                User.current?.major = textfield.text!
-                User.current?.saveEnabled = true
+            if !cellsEditable {
+                let emailCell = EmailProfileCell(parentVC: self)
+                emailCell.emailLabel.text = userProfile.email
+                section.append(emailCell)
+            } else {
+                section.append(UITableViewCell())
             }
             
-            majorCell.endEditingHandler = { textfield in
-                User.current?.major = textfield.text!
+            if cellsEditable {
+                let majorCell = SettingsItemCell(withAccessory: true)
+                majorCell.icon.image = #imageLiteral(resourceName: "major")
+                majorCell.titleLabel.text = "Area(s) of study"
+                majorCell.valueLabel.numberOfLines = 1
+                section.append(majorCell)
+                
+            } else {
+                let majorCell = MajorPreviewCell()
+                majorCell.icon.image = #imageLiteral(resourceName: "major")
+                majorCell.setMajor(major: userProfile.majorDescription)
+                section.append(majorCell)
             }
             
-            majorCell.returnHandler = { textfield in
-                textfield.resignFirstResponder()
-                if User.current?.yearOfGraduation == nil {
-                    self.graduationCellExpanded = true
-                    self.refreshGradCell()
-                }
-            }
-            
-            section.append(majorCell)
-            
-            let gradCell = SettingsItemCell()
+            let gradCell = cellsEditable ? SettingsItemCell() : SettingsItemCell(withAccessory: false)
             gradCell.icon.image = #imageLiteral(resourceName: "graduation")
             gradCell.titleLabel.text = "Year of Graduation:"
-            gradCell.valueLabel.text = User.current!.graduation
-            if User.current!.graduation.isEmpty {
+            gradCell.valueLabel.text = userProfile.graduation
+            if gradCell.valueLabel.text!.isEmpty {
                 gradCell.valueLabel.text = "Not Set"
             } else {
-                gradCell.valueLabel.textColor = LINK_COLOR
+                gradCell.valueLabel.textColor = AppColors.link
             }
             section.append(gradCell)
             
             let chooser = GraduationYearChooser()
-            chooser.set(year: User.current?.yearOfGraduation, season: User.current?.seasonOfGraduation)
+            chooser.set(year: userProfile.graduationYear, season: userProfile.graduationSeason)
             chooser.selectionHandler = { year, season in
-                User.current?.yearOfGraduation = year
-                User.current?.seasonOfGraduation = season
-                gradCell.valueLabel.text = User.current!.graduation
-                gradCell.valueLabel.textColor = LINK_COLOR
+                User.current?.graduationYear = year
+                User.current?.graduationSeason = season
+                gradCell.valueLabel.text = User.current?.graduation ?? "Can't edit"
+                gradCell.valueLabel.textColor = AppColors.link
             }
             section.append(chooser)
             
@@ -122,7 +132,7 @@ class ProfileInfoPage: UITableViewController {
             resumeCell.textfield.keyboardType = .URL
             resumeCell.textfield.autocapitalizationType = .none
             resumeCell.textfield.enablesReturnKeyAutomatically = true
-            resumeCell.textfield.text = User.current?.resume
+            resumeCell.textfield.text = userProfile.resume
             resumeCell.textChanged()
             
             resumeCell.changeHandler = { textfield in
@@ -141,10 +151,6 @@ class ProfileInfoPage: UITableViewController {
             
             section.append(resumeCell)
             
-            if let resume = User.current?.resume {
-                resumeCell.textfield.text = resume
-            }
-            
             return section
         }()
         
@@ -154,12 +160,16 @@ class ProfileInfoPage: UITableViewController {
             var section = [UITableViewCell]()
             
             let linkedInCell = TextFieldCell(parentVC: self)
-            linkedInCell.textfield.placeholder = "LinkedIn page (optional)"
+            if cellsEditable {
+                linkedInCell.textfield.placeholder = "LinkedIn page (optional)"
+            } else {
+                linkedInCell.textfield.placeholder = "LinkedIn page"
+            }
             linkedInCell.icon.image = #imageLiteral(resourceName: "linkedin")
             linkedInCell.linkDetectionEnabled = true
             linkedInCell.textfield.keyboardType = .URL
             linkedInCell.textfield.autocapitalizationType = .none
-            linkedInCell.textfield.text = User.current?.linkedIn
+            linkedInCell.textfield.text = userProfile.linkedIn
             linkedInCell.textChanged()
             
             linkedInCell.changeHandler = { textfield in
@@ -180,12 +190,16 @@ class ProfileInfoPage: UITableViewController {
             
             
             let githubCell = TextFieldCell(parentVC: self)
-            githubCell.textfield.placeholder = "GitHub page (optional)"
+            if cellsEditable {
+                githubCell.textfield.placeholder = "GitHub page (optional)"
+            } else {
+                githubCell.textfield.placeholder = "GitHub page"
+            }
             githubCell.icon.image = #imageLiteral(resourceName: "github")
             githubCell.linkDetectionEnabled = true
             githubCell.textfield.keyboardType = .URL
             githubCell.textfield.autocapitalizationType = .none
-            githubCell.textfield.text = User.current?.github
+            githubCell.textfield.text = userProfile.github
             githubCell.textChanged()
             
             githubCell.changeHandler = { textfield in
@@ -214,8 +228,12 @@ class ProfileInfoPage: UITableViewController {
             
             let hobbyCell = TextFieldCell(parentVC: self)
             hobbyCell.icon.image = #imageLiteral(resourceName: "interests")
-            hobbyCell.textfield.placeholder = "Skills and interests (optional)"
-            hobbyCell.textfield.text = User.current!.interests
+            if cellsEditable {
+                hobbyCell.textfield.placeholder = "Skills and interests (optional)"
+            } else {
+                hobbyCell.textfield.placeholder = "Skills and interests"
+            }
+            hobbyCell.textfield.text = userProfile.interests
             
             hobbyCell.changeHandler = { textfield in
                 User.current?.saveEnabled = false
@@ -234,21 +252,23 @@ class ProfileInfoPage: UITableViewController {
             section.append(hobbyCell)
             
             let commentCell = CommentCell()
-            commentCell.commentText.insertText(User.current!.comments)
+            commentCell.commentText.insertText(userProfile.comments)
             commentCell.commentText.returnKeyType = .default
-            commentCell.textChangeHandler = { textView in
+            commentCell.commentText.isEditable = cellsEditable
+            commentCell.textChangeHandler = { [weak self] textView in
                 
                 User.current?.saveEnabled = false
                 User.current?.comments = textView.text
                 User.current?.saveEnabled = true
                 
                 UIView.performWithoutAnimation {
-                    self.tableView.beginUpdates()
-                    self.tableView.endUpdates()
+                    self?.tableView.beginUpdates()
+                    self?.tableView.endUpdates()
                 }
                 
+                
                 if textView.selectedRange.location == textView.text.count {
-                    self.tableView.scrollToRow(at: [3, 1], at: .bottom, animated: false)
+                    self?.tableView.scrollToRow(at: [3, 1], at: .bottom, animated: false)
                 }
             }
             
@@ -267,8 +287,10 @@ class ProfileInfoPage: UITableViewController {
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
         
-        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
-        navigationItem.rightBarButtonItem = saveBarButton
+        if cellsEditable {
+            saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
+            navigationItem.rightBarButtonItem = saveBarButton
+        }
     }
     
     @objc private func save(disappearing: Bool = false) {
@@ -292,9 +314,9 @@ class ProfileInfoPage: UITableViewController {
         
         var body = JSON()
         body.dictionaryObject?["Full name"] = user.fullName
-        body.dictionaryObject?["Graduation year"] = user.yearOfGraduation
-        body.dictionaryObject?["Graduation season"] = user.seasonOfGraduation?.rawValue
-        body.dictionaryObject?["Major"] = user.major
+        body.dictionaryObject?["Graduation year"] = user.graduationYear
+        body.dictionaryObject?["Graduation season"] = user.graduationSeason?.rawValue
+        body.dictionaryObject?["Major"] = user.majorEncoded
         body.dictionaryObject?["Resume"] = user.resume
         body.dictionaryObject?["LinkedIn"] = user.linkedIn
         body.dictionaryObject?["GitHub"] = user.github
@@ -357,13 +379,16 @@ class ProfileInfoPage: UITableViewController {
         
         if section != 0 { return nil }
         
+        if !cellsEditable { return nil }
+        
         let header = UIView()
         
         let title = UILabel()
         title.numberOfLines = 5
         title.lineBreakMode = .byWordWrapping
         title.textAlignment = .center
-        title.attributedText = "Let recruiters know more about you from event check-ins by filling out your profile information!".attributedText()
+        title.attributedText = PROMPT.attributedText()
+        title.textColor = AppColors.prompt
         title.font = .systemFont(ofSize: 16)
         title.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(title)
@@ -375,7 +400,7 @@ class ProfileInfoPage: UITableViewController {
         
         return header
     }
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return contentCells.count
@@ -387,8 +412,10 @@ class ProfileInfoPage: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath == [0, 3] {
+        if indexPath == [0, 4] {
             return graduationCellExpanded ? 220 : 0
+        } else if indexPath == [0, 1] {
+            return cellsEditable ? 0 : 55
         }
         return super.tableView(tableView, heightForRowAt: indexPath)
     }
@@ -403,6 +430,9 @@ class ProfileInfoPage: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
         case [0, 2]:
+            let ml = MajorList()
+            navigationController?.pushViewController(ml, animated: true)
+        case [0, 3]:
             view.endEditing(true)
             graduationCellExpanded.toggle()
             refreshGradCell()
@@ -412,7 +442,7 @@ class ProfileInfoPage: UITableViewController {
     }
     
     private func refreshGradCell() {
-        let chooserCell = contentCells[0][3] as! GraduationYearChooser
+        let chooserCell = contentCells[0][4] as! GraduationYearChooser
         chooserCell.picker.isUserInteractionEnabled = graduationCellExpanded
         
         UIView.animate(withDuration: 0.2) {

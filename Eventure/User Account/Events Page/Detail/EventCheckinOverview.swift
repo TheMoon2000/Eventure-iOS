@@ -15,21 +15,22 @@ class EventCheckinOverview: UIViewController {
     private var titleLabel: UILabel!
     private var subtitleLabel: UILabel!
     private var qrCode: UIImageView!
+    private var eventName: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.navbar
         navigationController?.navigationBar.shadowImage = UIImage()
+        navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "checkin_result"), style: .plain, target: self, action: #selector(viewResults))
         
-        let encrypted = NSString(string: event.uuid).aes256Encrypt(withKey: AES_KEY)
-        let code = URL_PREFIX + encrypted!
+        let code = APP_DOMAIN + "checkin?id=" + event.uuid
 
         titleLabel = {
             let label = UILabel()
             label.text = "Event Check-in Code"
             label.textAlignment = .center
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 25, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -47,7 +48,7 @@ class EventCheckinOverview: UIViewController {
             label.text = "Present this QR code at check-in to collect information about who's attending your event."
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
@@ -59,7 +60,14 @@ class EventCheckinOverview: UIViewController {
         }()
 
         qrCode = {
-            let iv = UIImageView(image: generateQRCode(from: code))
+            let iv = UIImageView()
+            
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                iv.image = generateQRCode(from: code, dark: true)
+            } else {
+                iv.image = generateQRCode(from: code)
+            }
+            
             iv.translatesAutoresizingMaskIntoConstraints = false
             iv.isUserInteractionEnabled = true
             iv.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(saveImage(_:))))
@@ -75,27 +83,33 @@ class EventCheckinOverview: UIViewController {
             
             return iv
         }()
-    }
-    
-    
-    func generateQRCode(from string: String) -> UIImage? {
-        let data = string.data(using: String.Encoding.ascii)
         
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            let transform = CGAffineTransform(scaleX: 3, y: 3)
-            
-            if let output = filter.outputImage?.transformed(by: transform) {
-                return UIImage(ciImage: output)
+        eventName = {
+            let label = UILabel()
+            let style: String
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                style = COMPACT_DARK
+            } else {
+                style = COMPACT_STYLE
             }
-        }
-        
-        return nil
+            label.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: style)
+            label.numberOfLines = 5
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+            
+            return label
+        }()
     }
+    
     
     @objc private func saveImage(_ gesture: UIGestureRecognizer) {
         
-        guard let qr = qrCode.image else {
+        guard qrCode.image != nil else {
             print("no image found")
             return
         }
@@ -104,21 +118,30 @@ class EventCheckinOverview: UIViewController {
             return
         }
         
+        let formatted = EventCodeView()
+        formatted.titleLabel.text = event.title
+        if let startTime = event.startTime {
+            formatted.subtitleLabel.text = Date.readableFormatter.string(from: startTime)
+        } else {
+            formatted.subtitleLabel.text = "Date: TBA"
+        }
+        formatted.qrCode.image = qrCode.image
+        formatted.orgTitle.text = event.hostTitle
+        formatted.translatesAutoresizingMaskIntoConstraints = false
+        formatted.layoutIfNeeded()
+        if let logo = Organization.current?.logoImage {
+            formatted.orgLogo.image = logo
+        }
+        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+        let qr = renderer.image { context in
+            formatted.layer.render(in: context.cgContext)
+        }
+        
         let alert = UIAlertController(title: "QR Code", message: nil, preferredStyle: .actionSheet)
         
         alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Save QR Code", style: .default, handler: { _ in
             UIImageWriteToSavedPhotosAlbum(qr, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
-            /*
-            PHPhotoLibrary.requestAuthorization { status in
-                guard status == .authorized else { return }
-                
-                PHPhotoLibrary.shared().performChanges({
-                    // Add the captured photo's file data as the main resource for the Photos asset.
-                    let creationRequest = PHAssetCreationRequest.forAsset()
-                    creationRequest.addResource(with: .photo, data: qrData, options: nil)
-                }, completionHandler: nil)
-            }*/
         }))
         
         present(alert, animated: true, completion: nil)
@@ -139,6 +162,33 @@ class EventCheckinOverview: UIViewController {
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
+    }
+    
+    @objc private func viewResults() {
+        let checkinResults = CheckinResults(event: event)
+        let nav = CheckinNavigationController(rootViewController: checkinResults)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        let style: String
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            style = COMPACT_DARK
+        } else {
+            style = COMPACT_STYLE
+        }
+        eventName.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: style)
     }
     
 }

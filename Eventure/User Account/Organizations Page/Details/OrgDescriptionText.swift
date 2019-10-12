@@ -8,24 +8,32 @@
 
 import UIKit
 import XLPagerTabStrip
+import SafariServices
 
 class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
     
+    var markdownRaw: String = ""
     var textView: UITextView!
     
     required init(text: String) {
         super.init(nibName: nil, bundle: nil)
         
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
+        markdownRaw = text
+        view.backgroundColor = AppColors.canvas
         
         textView = {
             let tv = UITextView()
-            tv.attributedText = text.attributedText()
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                tv.attributedText = text.attributedText(style: PLAIN_DARK)
+            } else {
+                tv.attributedText = text.attributedText()
+            }
             tv.textContainerInset = .init(top: 30, left: 30, bottom: 40, right: 30)
             tv.backgroundColor = .clear
             tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
+            tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.isEditable = false
+            tv.delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(tv)
             
@@ -45,8 +53,33 @@ class OrgDescriptionText: UIViewController, IndicatorInfoProvider {
         return IndicatorInfo(title: "About")
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard UIApplication.shared.applicationState != .background else { return }
+        
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            textView.attributedText = markdownRaw.attributedText(style: PLAIN_DARK)
+        } else {
+            textView.attributedText = markdownRaw.attributedText()
+        }
+    }
+    
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }
+
+extension OrgDescriptionText: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            self.present(vc, animated: true)
+            return false
+        }
+        
+        return true
+    }
+}
+

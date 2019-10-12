@@ -26,8 +26,6 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         field.returnKeyType = .next
         field.placeholder = "Email"
         field.autocorrectionType = .no
-        field.adjustsFontSizeToFitWidth = true
-        field.minimumFontSize = 9
         return field
     }()
     
@@ -39,13 +37,13 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         didSet {
             switch status {
             case .none:
-                overlay.layer.borderColor = LINE_TINT.cgColor
+                overlay.layer.borderColor = AppColors.line.cgColor
             case .fail:
-                overlay.layer.borderColor = FATAL_COLOR.cgColor
+                overlay.layer.borderColor = AppColors.fatal.cgColor
             case .disconnected:
-                overlay.layer.borderColor = WARNING_COLOR.cgColor
+                overlay.layer.borderColor = AppColors.warning.cgColor
             case .tick:
-                overlay.layer.borderColor = PASSED_COLOR.cgColor
+                overlay.layer.borderColor = AppColors.passed.cgColor
             }
         }
     }
@@ -69,13 +67,14 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         self.parentVC = parentVC
         selectionStyle = .none
+        backgroundColor = .clear
         
         overlay = {
             let view = UIView()
-            view.backgroundColor = .init(white: 0.94, alpha: 1)
+            view.backgroundColor = AppColors.background
             view.layer.cornerRadius = RADIUS
             view.layer.borderWidth = 1
-            view.layer.borderColor = LINE_TINT.cgColor
+            view.layer.borderColor = AppColors.line.cgColor
             view.layer.masksToBounds = true
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -99,13 +98,14 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         addressButton = {
             let button = UIButton()
-            button.setTitleColor(MAIN_TINT, for: .normal)
+            button.setTitleColor(AppColors.main, for: .normal)
             button.layer.borderColor = overlay.layer.borderColor
             button.layer.borderWidth = 1
-            button.titleEdgeInsets.right = 10
+            button.contentEdgeInsets.left = 10
+            button.contentEdgeInsets.right = 12
             button.titleLabel?.font = .systemFont(ofSize: 16.5)
             button.setTitle("@berkeley.edu", for: .normal)
-            button.backgroundColor = .init(white: 0.98, alpha: 1)
+            button.backgroundColor = AppColors.tab
             button.translatesAutoresizingMaskIntoConstraints = false
             overlay.addSubview(button)
             
@@ -113,9 +113,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             button.rightAnchor.constraint(equalTo: overlay.rightAnchor).isActive = true
             button.centerYAnchor.constraint(equalTo: overlay.centerYAnchor).isActive = true
             button.leftAnchor.constraint(equalTo: textField.rightAnchor, constant: 10).isActive = true
-            let c = button.widthAnchor.constraint(equalToConstant: button.intrinsicContentSize.width + 35)
-            c.priority = .defaultHigh
-            c.isActive = true
+            button.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             button.addTarget(self, action: #selector(buttonPressed), for: .touchDown)
             button.addTarget(self, action: #selector(buttonLifted), for: [.touchUpInside, .touchUpOutside, .touchCancel, .touchDragExit])
@@ -150,7 +148,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
     }
     
     @objc private func buttonPressed() {
-        addressButton.backgroundColor = .init(white: 0.96, alpha: 1)
+        addressButton.backgroundColor = AppColors.selected
     }
     
     @objc private func buttonLifted() {
@@ -159,7 +157,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             duration: 0.1,
             options: .curveEaseOut,
             animations: {
-                self.addressButton.backgroundColor = .init(white: 0.98, alpha: 1)
+                self.addressButton.backgroundColor = AppColors.tab
             },
             completion: nil)
     }
@@ -176,12 +174,17 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
         
         let chooseAction: ((UIAlertAction) -> ()) = { action in
             self.addressButton.setTitle(
-                "@" + Campus.supported[action.title!]!.fullName,
+                "@" + Campus.supported[action.title!]!.emailSuffix,
                 for: .normal)
         }
         
         for campus in Campus.supported {
             alert.addAction(.init(title: campus.key, style: .default, handler: chooseAction))
+        }
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = addressButton
+            popoverController.sourceRect = CGRect(x: addressButton.bounds.midX, y: addressButton.bounds.midY, width: 0, height: 0)
         }
         
         parentVC.present(alert, animated: true, completion: nil)

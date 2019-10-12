@@ -11,12 +11,19 @@ import UIKit
 class DraftLocationCell: UITableViewCell, UITextViewDelegate {
 
     private var bgView: UIView!
-    private var locationLabel: UILabel!
-    private(set) var locationText: UITextView!
+    private(set) var promptLabel: UILabel!
+    private(set) var valueText: UITextView!
     private var placeholder: UILabel!
     private var baseline: UIView!
     
+    var multiLine = true {
+        didSet {
+            valueText.returnKeyType = multiLine ? .default : .done
+        }
+    }
+    
     var textChangeHandler: ((UITextView) -> ())?
+    var returnHandler: ((UITextView) -> ())?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -26,47 +33,48 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 6).isActive = true
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -6)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
             return view
         }()
         
-        locationLabel = {
+        promptLabel = {
             let label = UILabel()
+            label.numberOfLines = 0
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.text = "Location:"
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
             
             return label
         }()
         
-        locationText = {
+        valueText = {
             let tv = UITextView()
             tv.font = .systemFont(ofSize: 17)
             tv.isScrollEnabled = false
             tv.delegate = self
             tv.backgroundColor = .clear
-            tv.keyboardDismissMode = .onDrag
             tv.autocorrectionType = .no
         
-            tv.textContainer.lineFragmentPadding = 0
+            tv.textContainer.lineFragmentPadding = 5
             
             let pStyle = NSMutableParagraphStyle()
-            pStyle.lineSpacing = 5
+            pStyle.lineSpacing = 4
             
             tv.typingAttributes = [
                 NSAttributedString.Key.paragraphStyle: pStyle,
@@ -76,9 +84,9 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tv)
             
-            tv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
-            tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
-            tv.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 5).isActive = true
+            tv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 10).isActive = true
+            tv.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -10).isActive = true
+            tv.topAnchor.constraint(equalTo: promptLabel.bottomAnchor, constant: 3).isActive = true
             tv.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -10).isActive = true
             
             return tv
@@ -86,38 +94,58 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         placeholder = {
             let label = UILabel()
+            label.numberOfLines = 10
             label.text = "TBA"
-            label.textColor = .init(white: 0.79, alpha: 1)
-            label.font = .systemFont(ofSize: 17)
+            label.textColor = .init(white: 0.8, alpha: 1)
             label.translatesAutoresizingMaskIntoConstraints = false
-            insertSubview(label, belowSubview: locationText)
+            insertSubview(label, belowSubview: valueText)
             
-            label.leftAnchor.constraint(equalTo: locationText.leftAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.topAnchor, constant: 8).isActive = true
+            label.leftAnchor.constraint(equalTo: valueText.leftAnchor, constant: 5).isActive = true
+            label.rightAnchor.constraint(equalTo: valueText.rightAnchor, constant: -5).isActive = true
+            label.topAnchor.constraint(equalTo: valueText.topAnchor, constant: 8).isActive = true
+            label.bottomAnchor.constraint(lessThanOrEqualTo: valueText.bottomAnchor, constant: -10).isActive = true
             
             return label
         }()
         
         baseline = {
             let view = UIView()
-            view.backgroundColor = LINE_TINT
+            view.backgroundColor = AppColors.line
             view.translatesAutoresizingMaskIntoConstraints = false
-            insertSubview(view, belowSubview: locationText)
+            insertSubview(view, belowSubview: valueText)
             
             view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-            view.leftAnchor.constraint(equalTo: locationText.leftAnchor).isActive = true
-            view.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
-            view.topAnchor.constraint(equalTo: locationText.bottomAnchor).isActive = true
+            view.leftAnchor.constraint(equalTo: valueText.leftAnchor).isActive = true
+            view.rightAnchor.constraint(equalTo: valueText.rightAnchor).isActive = true
+            view.topAnchor.constraint(equalTo: valueText.bottomAnchor).isActive = true
             
             return view
         }()
         
         
     }
+    
+    func setPlaceholder(string: String) {
+        placeholder.attributedText = string.attributedText(style: COMPACT_STYLE)
+        placeholder.textColor = .init(white: 0.8, alpha: 1)
+        placeholder.font = .systemFont(ofSize: 17)
+    }
 
     func textViewDidChange(_ textView: UITextView) {
         textChangeHandler?(textView)
         placeholder.isHidden = !textView.text.isEmpty
+    }
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if (text == "\n" && !multiLine) {
+            if returnHandler == nil {
+                textView.resignFirstResponder()
+            } else {
+                returnHandler?(textView)
+                return false
+            }
+        }
+        return true
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -9,15 +9,13 @@
 import UIKit
 
 class EventCell: UICollectionViewCell {
-    
-    private let verticalSpacing: CGFloat = 14
-    
+        
     private var event: Event!
     
     private var card: UIView!
     private var cover: UIImageView!
     private var interestBG: UIView!
-    private var interestedButton: UIButton!
+    private(set) var interestedButton: UIButton!
     
     private var timeLabel: UILabel!
     private var locationLabel: UILabel!
@@ -33,11 +31,11 @@ class EventCell: UICollectionViewCell {
         
         card = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.card
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
-            view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
+            view.layer.borderColor = AppColors.line.cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
@@ -74,7 +72,7 @@ class EventCell: UICollectionViewCell {
             let button = UIButton(type: .system)
             button.isHidden = User.current == nil
             button.imageView?.contentMode = .scaleAspectFit
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             button.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             addSubview(button)
@@ -90,7 +88,8 @@ class EventCell: UICollectionViewCell {
         }()
         
         interestBG = {
-            let view = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            let view = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            view.alpha = 0.7
             view.isHidden = User.current == nil
             view.layer.cornerRadius = 5
             view.layer.masksToBounds = true
@@ -110,7 +109,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 21, weight: .bold)
             label.numberOfLines = 10
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.textAlignment = .left
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -144,6 +143,7 @@ class EventCell: UICollectionViewCell {
         timeLabel = {
             let label = UILabel()
             label.text = "When:"
+            label.textColor = AppColors.prompt
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -160,7 +160,7 @@ class EventCell: UICollectionViewCell {
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -177,6 +177,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.text = "Where:"
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -193,12 +194,12 @@ class EventCell: UICollectionViewCell {
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: timeText.bottomAnchor, constant: verticalSpacing).isActive = true
+            label.topAnchor.constraint(equalTo: timeText.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             label.topAnchor.constraint(equalTo: locationLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
             
@@ -209,6 +210,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.text = "Hosted by:"
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -226,12 +228,12 @@ class EventCell: UICollectionViewCell {
             label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
-            label.textColor = .darkGray
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: eventHostLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: verticalSpacing).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
             label.topAnchor.constraint(equalTo: eventHostLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: card.rightAnchor, constant: -20).isActive = true
             label.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -20).isActive = true
@@ -241,51 +243,28 @@ class EventCell: UICollectionViewCell {
         
     }
     
-    @objc private func toggleInterested() {
-        toggle()
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
         
-        let parameters = [
-            "userId": String(User.current!.uuid),
-            "eventId": event.uuid,
-            "interested": interestedButton.imageView?.image == #imageLiteral(resourceName: "star_filled") ? "1" : "0"
-        ]
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/MarkEvent",
-                           parameters: parameters)!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    self.toggle()
-                }
-                return
-            }
-            
-            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
-            
-            if msg == INTERNAL_ERROR {
-                DispatchQueue.main.async {
-                    self.toggle()
-                }
-            }
-        }
-        
-        task.resume()
+        card.layer.borderColor = AppColors.line.cgColor
     }
     
-    private func toggle() {
+    @objc private func toggleInterested() {
+        let isInterested = toggle()
+        
+        User.current?.syncInterested(interested: isInterested, for: event, completion: nil)
+    }
+    
+    private func toggle() -> Bool {
         UISelectionFeedbackGenerator().selectionChanged()
         if !User.current!.interestedEvents.contains(event.uuid) {
             interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
             User.current?.interestedEvents.insert(event.uuid)
+            return true
         } else {
             interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
             User.current?.interestedEvents.remove(event.uuid)
+            return false
         }
     }
     
@@ -308,11 +287,11 @@ class EventCell: UICollectionViewCell {
         
         if event.eventVisual == nil {
             if withImage {
-                event.getCover { eventWithCover in
-                    self.setupCellWithEvent(event: eventWithCover)
+                event.getCover { [weak self] eventWithCover in
+                    self?.setupCellWithEvent(event: eventWithCover)
                 }
             }
-            cover.image = #imageLiteral(resourceName: "cover_placeholder")
+            cover.image = #imageLiteral(resourceName: "berkeley")
         } else {
             cover.image = event.eventVisual
         }

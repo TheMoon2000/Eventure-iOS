@@ -11,9 +11,10 @@ import UIKit
 class CheckinUserCell: UITableViewCell {
     
     private var bgView: UIView!
-    private var profilePicture: UIImageView!
-    private var nameLabel: UILabel!
-    private var majorLabel: UILabel!
+    private(set) var profilePicture: UIImageView!
+    private(set) var nameLabel: UILabel!
+    private(set) var majorLabel: UILabel!
+    private(set) var auxiliaryLabel: UILabel!
     private var registrant: Registrant?
     private(set) var placeLabel: UILabel!
 
@@ -25,7 +26,6 @@ class CheckinUserCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
             view.layer.cornerRadius = 8
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -42,12 +42,14 @@ class CheckinUserCell: UITableViewCell {
         }()
         
         profilePicture = {
-            let iv = UIImageView(image: #imageLiteral(resourceName: "guest.png").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = MAIN_TINT
+            let iv = UIImageView(image: #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate))
+            iv.tintColor = AppColors.mainDisabled
+            iv.layer.cornerRadius = 2
+            iv.layer.masksToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 24).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 25).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 15).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
@@ -64,7 +66,7 @@ class CheckinUserCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: profilePicture.rightAnchor, constant: 12).isActive = true
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -35).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -40).isActive = true
             label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 10).isActive = true
             
             return label
@@ -73,9 +75,8 @@ class CheckinUserCell: UITableViewCell {
         majorLabel = {
             let label = UILabel()
             label.numberOfLines = 3
-            label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -83,6 +84,20 @@ class CheckinUserCell: UITableViewCell {
             label.rightAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
             label.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5).isActive = true
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -10).isActive = true
+            
+            return label
+        }()
+        
+        auxiliaryLabel = {
+            let label = UILabel()
+            label.textAlignment = .right
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.topAnchor.constraint(equalTo: majorLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             
             return label
         }()
@@ -95,7 +110,7 @@ class CheckinUserCell: UITableViewCell {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -20).isActive = true
+            label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -18).isActive = true
             label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
             
             return label
@@ -105,11 +120,37 @@ class CheckinUserCell: UITableViewCell {
     
     func setup(registrant: Registrant) {
         self.registrant = registrant
-        nameLabel.text = registrant.userID == User.current!.uuid ? "(You) " + registrant.name : registrant.name
-        majorLabel.text = registrant.major
+        nameLabel.text = registrant.name
+        if nameLabel.text!.isEmpty { nameLabel.text = registrant.displayedName }
+        if nameLabel.text!.isEmpty { nameLabel.text = "Incognito" }
+        if let order = registrant.order {
+            self.placeLabel.text = String(order)
+        } else {
+            self.placeLabel.text = "?"
+        }
+        if let code = registrant.currentCode {
+            majorLabel.text = "Check-in code: \(code)"
+            bgView.backgroundColor = PENDING_TINT
+        } else if registrant.userID != -1 {
+            majorLabel.text = registrant.majorDescription
+            bgView.backgroundColor = AppColors.background
+        } else {
+            majorLabel.text = registrant.email
+            bgView.backgroundColor = AppColors.background
+        }
+        majorLabel.attributedText = majorLabel.text?.attributedText(style: COMPACT_STYLE)
+        majorLabel.textColor = AppColors.prompt
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
+        } else {
+            profilePicture.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
         }
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        
+        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -12,19 +12,24 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
 
     private var bgView: UIView!
     private var leftLabel: UILabel!
-    private var capacity: UITextField!
+    private(set) var valueField: UITextField!
     
     var changeHandler: ((UITextField) -> ())?
+    var returnHandler: ((UITextField) -> ())?
     
-    required init() {
+    required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        backgroundColor = EventDraft.backgroundColor
+        backgroundColor = AppColors.canvas
         selectionStyle = .none
+        
+        let h = heightAnchor.constraint(equalToConstant: 66)
+        h.priority = .defaultHigh
+        h.isActive = true
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -42,7 +47,8 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
         
         leftLabel = {
             let label = UILabel()
-            label.text = "Capacity (0 for unlimited):"
+            label.text = title
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -56,7 +62,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             return label
         }()
         
-        capacity = {
+        valueField = {
             let textfield = UITextField()
             textfield.textAlignment = .right
             textfield.keyboardType = .numberPad
@@ -70,21 +76,23 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             textfield.leftAnchor.constraint(equalTo: leftLabel.rightAnchor, constant: 10).isActive = true
             textfield.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
             textfield.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            textfield.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
-            textfield.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
             
-            textfield.addTarget(self, action: #selector(capacityChanged), for: .editingChanged)
+            textfield.addTarget(self, action: #selector(valueChanged), for: .editingChanged)
             
             return textfield
         }()
     }
 
-    @objc private func capacityChanged() {
-        changeHandler?(capacity)
+    @objc private func valueChanged() {
+        changeHandler?(valueField)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+        if returnHandler == nil {
+            textField.resignFirstResponder()
+        } else {
+            returnHandler?(textField)
+        }
         return true
     }
     

@@ -13,10 +13,22 @@ class CheckinNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationBar.tintColor = MAIN_TINT
+        navigationBar.tintColor = AppColors.main
         navigationBar.barTintColor = .white
     }
-    
+
+}
+
+class PortraitNavigationController: UINavigationController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        navigationBar.tintColor = AppColors.main
+        navigationBar.barTintColor = AppColors.navbar
+        navigationBar.isTranslucent = false
+    }
+
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
     }

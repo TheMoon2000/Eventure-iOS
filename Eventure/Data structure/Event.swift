@@ -13,24 +13,11 @@ class Event {
     static var current: Event?
     static var drafts = [Event]()    
     private static var cachedEvents = [String: [[String: Any]]]()
-
-    let readableFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "E, d MMM yyyy @ h:mm a"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
-    
-    let shortFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "E, d MMM @ h:mm a"
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
     
     var uuid: String
     var title: String
     var location: String
+    var checkinTime: Int // How many seconds before event starts
     var startTime: Date?
     var endTime: Date?
     var eventDescription: String
@@ -38,10 +25,31 @@ class Event {
     var hasVisual = false
     var hostID: String
     var hostTitle: String
-    var interestedList = [Int]()
-    var favoriteList = [Int]()
+    var interested = Set<Int>()
+    var favorited = Set<Int>()
     var tags = Set<String>()
+    var membersOnly = false
     var capacity = 0
+    var secureCheckin = false
+    var requiresTicket = false
+    var ticketStyle: QRStyle = .standard
+    var lastModified: Date?
+    
+    var hasBannerImage = false
+    var bannerImage: UIImage?
+    
+    /// An array containing all the ticket types for the event.
+    var admissionTypes = Set<AdmissionType>()
+    var admissionTypesEncoded: String {
+        var json = JSON()
+        for type in admissionTypes {
+            json[type.id] = type.encodedJSON
+        }
+        return json.rawString([.castNilToNSNull : true])!
+    }
+    
+    // Only used as a temporary storage
+    var hostInfo: Organization?
     
     var published: Bool
     var active: Bool
@@ -50,29 +58,24 @@ class Event {
     
     /// A description of the start time of the event.
     var timeDescription: String {
-        if startTime != nil {
-            if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: startTime!) {
-                return readableFormatter.string(from: startTime!)
-            } else {
-                return shortFormatter.string(from: startTime!)
-            }
-        } else {
-            return "Unspecified"
-        }
+        return startTime?.readableString() ?? "Unspecified"
     }
     
     /// A description of the duration of the event.
     var duration: String {
         let dc = DateComponentsFormatter()
         dc.allowedUnits = [.month, .weekOfMonth, .day, .hour, .minute]
-        dc.zeroFormattingBehavior = .dropLeading
+        dc.zeroFormattingBehavior = [.dropLeading, .dropTrailing]
         dc.maximumUnitCount = 2
         dc.unitsStyle = .full
         
         if startTime != nil && endTime != nil {
+            if endTime == startTime {
+                return "Unspecified"
+            }
             return dc.string(from: endTime!.timeIntervalSince(startTime!))!
         } else {
-            return "TBA"
+            return "Unspecified"
         }
     }
     
@@ -92,6 +95,7 @@ class Event {
     init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
         self.uuid = uuid
         self.title = title
+        self.checkinTime = 3600
         self.startTime = DATE_FORMATTER.date(from: startTime)
         self.endTime = DATE_FORMATTER.date(from: endTime)
         self.location = location
@@ -110,6 +114,8 @@ class Event {
         title = dictionary["Title"]?.string ?? ""
         location = dictionary["Location"]?.string ?? "TBA"
         if location.isEmpty { location = "TBA" }
+        
+        checkinTime = dictionary["Check-in time"]?.int ?? 3600
         
         if let startTimeString = dictionary["Start time"]?.string {
             self.startTime = DATE_FORMATTER.date(from: startTimeString)
@@ -131,9 +137,42 @@ class Event {
             }
         }
         
+        if let admissionTypes_raw = dictionary["Ticket types"]?.string {
+            var tmp = Set<AdmissionType>()
+            for (k, v) in JSON(parseJSON: admissionTypes_raw).dictionaryValue {
+                tmp.insert(AdmissionType(json: v, admissionID: k, eventID: uuid))
+            }
+            admissionTypes = tmp
+        }
+        
         active = (dictionary["Active"]?.int ?? 1) == 1
         hasVisual = (dictionary["Has cover"]?.int ?? 0) == 1
+        hasBannerImage = (dictionary["Has banner"]?.int ?? 0) == 1
         capacity = dictionary["Capacity"]?.int ?? 0
+        secureCheckin = (dictionary["Strict"]?.int ?? 0) == 1
+        requiresTicket = (dictionary["Requires ticket"]?.int ?? 0) == 1
+        
+        if let int_raw = dictionary["Interested"]?.string {
+            if let intArray = JSON(parseJSON: int_raw).arrayObject as? [Int] {
+                interested = Set(intArray)
+            }
+        }
+        
+        if let fav_raw = dictionary["Favorites"]?.string {
+            if let favArray = JSON(parseJSON: fav_raw).arrayObject as? [Int] {
+                favorited = Set(favArray)
+            }
+        }
+       
+        if let dateString = dictionary["Last modified"]?.string {
+            lastModified = DATE_FORMATTER.date(from: dateString)
+        }
+        
+        if let ticketStyleRaw = dictionary["Ticket QR style"]?.int {
+            if let style = QRStyle(rawValue: ticketStyleRaw) {
+                self.ticketStyle = style
+            }
+        }
     }
     
     static func readFromFile(path: String) -> [String: Set<Event>] {
@@ -148,7 +187,7 @@ class Event {
             print("WARNING: Cannot read event collection at \(path)!")
             return [:]
         }
-        
+                
         cachedEvents = collection
         
         for (id, eventList) in collection {
@@ -167,11 +206,8 @@ class Event {
                     let event: Event = Event(eventInfo: json)
                     var orgSpecificEvents: Set<Event> = events[id] ?? []
 
-                    // These two attributes need to be manually extracted from the JSON
-                    event.hostID = json.dictionary?["Host ID"]?.string ?? event.hostID
-                    event.hostTitle = json.dictionary?["Host title"]?.string ?? event.hostTitle
-                    
                     event.eventVisual = eventRawData["cover"] as? UIImage
+                    event.bannerImage = eventRawData["banner"] as? UIImage
                     orgSpecificEvents.insert(event)
                     
                     events[id] = orgSpecificEvents
@@ -195,6 +231,7 @@ class Event {
             
             eventRaw["main"] = mainEncrypted
             eventRaw["cover"] = event.eventVisual
+            eventRaw["banner"] = event.bannerImage
             
             collection.append(eventRaw)
         }
@@ -240,6 +277,34 @@ class Event {
         return ""
     }
     
+    /// Load the cover image for an event.
+    func getBanner(_ handler: ((Event) -> ())?) {
+        if !hasBannerImage { return }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEventBanner",
+                           parameters: ["eventId": uuid])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return // Don't display any alert here
+            }
+            
+            self.bannerImage = UIImage(data: data!)
+            if self.bannerImage != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
     
     /// Load the cover image for an event.
     func getCover(_ handler: ((Event) -> ())?) {
@@ -259,8 +324,49 @@ class Event {
             }
             
             self.eventVisual = UIImage(data: data!)
-            DispatchQueue.main.async {
-                handler?(self)
+            if self.eventVisual != nil {
+                DispatchQueue.main.async {
+                    handler?(self)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    /// Adds useful information such as quantity and revenue to the event's ticket information.
+    func updateAdmissionTypes(handler: ((Bool) -> ())?) {
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetTicketInfo",
+                           parameters: ["eventId": uuid])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+                        
+            if let json = try? JSON(data: data!).dictionaryValue {
+                var newTypes = Set<AdmissionType>()
+                
+                for (key, value) in json {
+                    newTypes.insert(AdmissionType(json: value, admissionID: key, eventID: self.uuid))
+                }
+                self.admissionTypes = newTypes
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
             }
         }
         
@@ -273,6 +379,8 @@ class Event {
         main.dictionaryObject?["uuid"] = uuid
         main.dictionaryObject?["Title"] = title
         main.dictionaryObject?["Location"] = location
+        
+        main.dictionaryObject?["Check-in time"] = checkinTime
         
         if startTime != nil {
             main.dictionaryObject?["Start time"] = DATE_FORMATTER.string(from: startTime!)
@@ -288,10 +396,35 @@ class Event {
         main.dictionaryObject?["Published"] = published ? 1 : 0
         main.dictionaryObject?["Tags"] = tags.description
         main.dictionaryObject?["Has cover"] = hasVisual
+        main.dictionaryObject?["Has banner"] = hasBannerImage
         main.dictionaryObject?["Active"] = active ? 1 : 0
         main.dictionaryObject?["Capacity"] = capacity
+        main.dictionaryObject?["Strict"] = secureCheckin
+        main.dictionaryObject?["Requires ticket"] = requiresTicket ? 1 : 0
+        main.dictionaryObject?["Ticket types"] = admissionTypesEncoded
+        main.dictionaryObject?["Ticket QR style"] = ticketStyle.rawValue
         
         return main
+    }
+    
+    static let lastestFirst: ((Event, Event) -> Bool) = { e1, e2 in
+        if e1.startTime == nil {
+            return false
+        } else if e2.startTime == nil {
+            return true
+        } else {
+            return e1.startTime! >= e2.startTime!
+        }
+    }
+    
+    static let oldestFirst: ((Event, Event) -> Bool) = { e1, e2 in
+        if e1.startTime == nil {
+            return false
+        } else if e2.startTime == nil {
+            return true
+        } else {
+            return e1.startTime! <= e2.startTime!
+        }
     }
     
     func copy() -> Event {
@@ -304,12 +437,40 @@ class Event {
         self.uuid = UUID().uuidString.lowercased()
     }
     
+    func fetchHostInfo(_ handler: ((Organization) -> ())?) {
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetOrgInfo",
+                           parameters: ["orgId": hostID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let json = try? JSON(data: data!) {
+                self.hostInfo = Organization(orgInfo: json)
+                DispatchQueue.main.async {
+                    handler?(self.hostInfo!)
+                }
+            }
+        }
+        
+        task.resume()
+    }
 }
 
 
 extension Event {
     enum Going: Int {
         case neutral = 0, interested, going
+    }
+    
+    enum QRStyle: Int {
+        case standard = 0, imageBelow
     }
 }
 

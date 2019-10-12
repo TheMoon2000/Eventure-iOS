@@ -15,15 +15,17 @@ class DraftTimeLocationPage: UITableViewController {
     
     var startTimeExpanded = false
     var endTimeExpanded = false
+    var checkinTimeExpanded = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
-        tableView.tintColor = MAIN_TINT
+        tableView.keyboardDismissMode = .interactive
+        tableView.tintColor = AppColors.main
 
         let startTopCell = DatePickerTopCell(title: "Start time:")
         if let startDate = draftPage.draft.startTime {
@@ -81,9 +83,27 @@ class DraftTimeLocationPage: UITableViewController {
             self?.draftPage.edited = true
         }
         
+        let checkinTopCell = DatePickerTopCell(title: "Check-in begins: ")
+        let checkinSliderCell = CheckinTimeCell()
+        
+        var tiers = [Int : String]()
+        checkinSliderCell.options.forEach { tiers[$0.timeInterval] = $0.label }
+        checkinTopCell.rightLabel.text = tiers[draftPage.draft.checkinTime] ?? tiers[3600]
+        checkinSliderCell.caption.text = checkinTopCell.rightLabel.text
+        checkinSliderCell.changeHandler = { [weak self] newInterval, newLabel in
+            checkinTopCell.rightLabel.text = newLabel
+            self?.draftPage.draft.checkinTime = newInterval
+            self?.tableView.beginUpdates()
+            self?.tableView.endUpdates()
+            self?.draftPage.edited = true
+        }
+        
+        contentCells.append(checkinTopCell)
+        contentCells.append(checkinSliderCell)
+        
         
         let locationCell = DraftLocationCell()
-        locationCell.locationText.insertText(draftPage.draft.location)
+        locationCell.valueText.insertText(draftPage.draft.location)
         locationCell.textChangeHandler = { [weak self] textView in
             UIView.performWithoutAnimation {
                 self?.tableView.beginUpdates()
@@ -119,6 +139,8 @@ class DraftTimeLocationPage: UITableViewController {
             return startTimeExpanded ? 220 : 0
         } else if indexPath.row == 3 {
             return endTimeExpanded ? 220 : 0
+        } else if indexPath.row == 5 && !checkinTimeExpanded {
+            return 0
         }
         
         return super.tableView(tableView, heightForRowAt: indexPath)
@@ -167,6 +189,24 @@ class DraftTimeLocationPage: UITableViewController {
             
             UIView.animate(withDuration: 0.2) {
                 bottomCell.datePicker.alpha = self.endTimeExpanded ? 1.0 : 0.0
+            }
+            
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        case 4:
+            checkinTimeExpanded.toggle()
+            
+            view.endEditing(true)
+            
+            let topCell = contentCells[4] as! DatePickerTopCell
+            checkinTimeExpanded ? topCell.expand() : topCell.collapse()
+            
+            let bottomCell = contentCells[5] as! CheckinTimeCell
+            bottomCell.slider.isUserInteractionEnabled = checkinTimeExpanded
+            
+            UIView.animate(withDuration: 0.2) {
+                bottomCell.slider.alpha = self.checkinTimeExpanded ? 1.0 : 0.0
+                bottomCell.sliderTicks.alpha = self.checkinTimeExpanded ? 1.0 : 0.0
             }
             
             tableView.beginUpdates()

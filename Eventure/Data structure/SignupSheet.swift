@@ -15,6 +15,7 @@ class SignupSheet {
     let orgID: String
     let name: String
     let capacity: Int
+    let checkinTime: Int
     var currentOccupied: Int
     var currentUserCheckedIn: Bool
     var createdDate: Date
@@ -26,6 +27,7 @@ class SignupSheet {
         orgID = dictionary["Organization"]?.string ?? ""
         name = dictionary["List name"]?.string ?? "Online Check-in"
         capacity = dictionary["Capacity"]?.int ?? 0
+        checkinTime = dictionary["Check-in time"]?.int ?? 3600
         
         if let dateString = dictionary["Created date"]?.string {
             createdDate = DATE_FORMATTER.date(from: dateString) ?? Date(timeIntervalSinceReferenceDate: 0)

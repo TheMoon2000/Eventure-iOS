@@ -17,9 +17,13 @@ class OrganizationCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         heightAnchor.constraint(greaterThanOrEqualToConstant: 55).isActive = true
+        backgroundColor = AppColors.background
         
         logoImage = {
             let iv = UIImageView()
+            iv.tintColor = AppColors.mainDisabled
+            iv.layer.cornerRadius = 2
+            iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
@@ -36,11 +40,11 @@ class OrganizationCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17)
             label.numberOfLines = 3
-            label.lineBreakMode = .byTruncatingTail
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: logoImage.rightAnchor, constant: 20).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
             
@@ -51,16 +55,15 @@ class OrganizationCell: UITableViewCell {
     func setup(with org: Organization) {
         
         orgTitle.text = org.title
-        logoImage.image = org.logoImage
         
         if org.logoImage == nil {
+            // Set logo to default placeholder
+            logoImage.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             org.getLogoImage { orgWithLogo in
                 self.setup(with: orgWithLogo)
             }
-            // Set logo to default placeholder
-            logoImage.backgroundColor = LINE_TINT
         } else {
-            logoImage.backgroundColor = .clear
+            logoImage.image = org.logoImage
         }
     }
     

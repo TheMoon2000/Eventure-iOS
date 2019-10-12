@@ -1,0 +1,6 @@
+framework module SwiftLoggly {
+  umbrella header "SwiftLoggly-umbrella.h"
+
+  export *
+  module * { export * }
+}

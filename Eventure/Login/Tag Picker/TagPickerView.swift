@@ -18,14 +18,13 @@ class TagPickerView: UIViewController {
     private var subtitleLabel: UILabel!
     private var bottomBanner: UIVisualEffectView!
     private var continueButton: UIButton!
-    
-    var spinner: UIActivityIndicatorView!
-    var spinnerLabel: UILabel!
+    private(set) var loadingBG: UIView!
     
     var customContinueMethod: ((TagPickerView) -> ())?
     var customTitle: String?
     var customSubtitle: String?
     var customButtonTitle: String?
+    var minPicks = 1
     var maxPicks: Int?
     
     var tagPicker: UICollectionView!
@@ -42,15 +41,30 @@ class TagPickerView: UIViewController {
     var customDisappearHandler: ((Set<String>) -> ())?
     
     private func updateUI() {
-        if selectedTags.isEmpty || maxPicks != nil && maxPicks! < selectedTags.count {
+        if minPicks > selectedTags.count || maxPicks != nil && maxPicks! < selectedTags.count {
             continueButton.isUserInteractionEnabled = false
             UIView.animate(withDuration: 0.15) {
-                self.continueButton.backgroundColor = MAIN_DISABLED
+                self.continueButton.backgroundColor = AppColors.mainDisabled
             }
         } else {
             continueButton.isUserInteractionEnabled = true
             UIView.animate(withDuration: 0.15) {
-                self.continueButton.backgroundColor = MAIN_TINT
+                self.continueButton.backgroundColor = AppColors.main
+            }
+        }
+    }
+    
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topBanner.effect = UIBlurEffect(style: .dark)
+                bottomBanner.effect = UIBlurEffect(style: .dark)
+            } else {
+                topBanner.effect = UIBlurEffect(style: .extraLight)
+                bottomBanner.effect = UIBlurEffect(style: .extraLight)
             }
         }
     }
@@ -63,10 +77,17 @@ class TagPickerView: UIViewController {
         }
         
         title = "Tag Picker"
-        view.backgroundColor = .init(white: 0.95, alpha: 1)
+        view.backgroundColor = AppColors.canvas
         
         topBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    banner.effect = UIBlurEffect(style: .dark)
+                }
+            }
+            
             banner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(banner)
             
@@ -80,12 +101,11 @@ class TagPickerView: UIViewController {
                 let label = UILabel()
                 label.text = customTitle ?? "What Interests You?"
                 label.textAlignment = .center
-                label.lineBreakMode = .byWordWrapping
                 label.numberOfLines = 0
                 if customSubtitle == "" {
                     label.font = .systemFont(ofSize: 23, weight: .medium)
                 } else {
-                    label.font = .systemFont(ofSize: 26, weight: .semibold)
+                    label.font = .systemFont(ofSize: 25, weight: .semibold)
                 }
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
@@ -101,13 +121,16 @@ class TagPickerView: UIViewController {
             subtitleLabel = {
                 let label = UILabel()
                 label.text = customSubtitle ?? "Pick at least one. The more the better!"
+                label.textAlignment = .center
                 label.numberOfLines = 0
+                label.textColor = AppColors.label
                 label.font = .systemFont(ofSize: 16)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
                 
                 label.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10).isActive = true
-                label.centerXAnchor.constraint(equalTo: banner.centerXAnchor).isActive = true
+                label.leftAnchor.constraint(equalTo: titleLabel.leftAnchor).isActive = true
+                label.rightAnchor.constraint(equalTo: titleLabel.rightAnchor).isActive = true
                 
                 if label.text!.isEmpty {
                     label.bottomAnchor.constraint(equalTo: banner.bottomAnchor, constant: -20).isActive = true
@@ -123,7 +146,6 @@ class TagPickerView: UIViewController {
             return banner
         }()
         
-
         tagPicker = {
             let picker = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             picker.backgroundColor = .clear
@@ -146,37 +168,17 @@ class TagPickerView: UIViewController {
             
             return picker
         }()
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.startAnimating()
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: -5).isActive = true
-
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Fetching tags..."
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: topBanner.frame.height / 2).isActive = true
         
         bottomBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    banner.effect = UIBlurEffect(style: .dark)
+                }
+            }
             banner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(banner)
             
@@ -191,7 +193,7 @@ class TagPickerView: UIViewController {
             let button = UIButton()
             button.setTitle(customButtonTitle ?? "Continue", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-            button.backgroundColor = MAIN_DISABLED
+            button.backgroundColor = AppColors.mainDisabled
             button.isUserInteractionEnabled = false
             button.layer.cornerRadius = 25
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -216,7 +218,9 @@ class TagPickerView: UIViewController {
 
     private func loadTags() {
         
-        self.continueButton.backgroundColor = MAIN_DISABLED
+        loadingBG.isHidden = false
+        
+        self.continueButton.backgroundColor = AppColors.mainDisabled
         self.continueButton.isUserInteractionEnabled = false
         
         let url = URL.with(base: API_BASE_URL,
@@ -246,8 +250,7 @@ class TagPickerView: UIViewController {
                 } else {
                     self.tags = json?["tags"]!.arrayObject as! [String]
                     DispatchQueue.main.async {
-                        self.spinner.stopAnimating()
-                        self.spinnerLabel.isHidden = true
+                        self.loadingBG.isHidden = true
                         self.tagPicker.reloadSections(IndexSet(arrayLiteral: 0))
                         self.updateUI()
                     }
@@ -273,16 +276,18 @@ class TagPickerView: UIViewController {
                           duration: 0.2,
                           options: .curveEaseInOut,
                           animations: {
-                              self.continueButton.backgroundColor = MAIN_TINT
+                              self.continueButton.backgroundColor = AppColors.main
                           },
                           completion: nil)
     }
     
-    @objc private func completePickingTags() {
+    @objc func completePickingTags() {
         if customContinueMethod != nil {
             customContinueMethod?(self)
             return
         }
+        
+        loadingBG.isHidden = false
         
         let url = URL(string: API_BASE_URL + "account/UpdateTags")!
         var request = URLRequest(url: url)
@@ -368,20 +373,28 @@ extension TagPickerView: UICollectionViewDelegate {
 
 extension TagPickerView: UICollectionViewDelegateFlowLayout {
     
-    static let width: CGFloat = 120
+    var tagWidth: CGFloat {
+        if usableWidth < 150 {
+            return usableWidth - 5
+        } else {
+            let numFit = floor(usableWidth / 120)
+            return ((usableWidth - 2.5) / numFit) - 2.5
+        }
+    }
     
     var usableWidth: CGFloat {
         return tagPicker.safeAreaLayoutGuide.layoutFrame.width
     }
     
     var equalSpacing: CGFloat {
-        let rowCount = floor(usableWidth / TagPickerView.width)
-        let extraSpace = usableWidth - rowCount * TagPickerView.width
-        return extraSpace / (rowCount + 1)
+        let rowCount = floor(usableWidth / tagWidth)
+        let extraSpace = usableWidth - rowCount * tagWidth
+        
+        return (extraSpace - 1) / (rowCount + 1)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: TagPickerView.width, height: TagPickerView.width)
+        return CGSize(width: tagWidth, height: tagWidth)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

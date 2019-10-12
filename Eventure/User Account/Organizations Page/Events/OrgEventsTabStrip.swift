@@ -16,21 +16,21 @@ class OrgEventsTabStrip: ButtonBarPagerTabStripViewController {
     override func viewDidLoad() {
         
         // Do any additional setup after loading the view.
-        settings.style.buttonBarBackgroundColor = .white
-        settings.style.buttonBarItemBackgroundColor = .white
-        settings.style.selectedBarBackgroundColor = MAIN_TINT
+        settings.style.buttonBarBackgroundColor = AppColors.tab
+        settings.style.buttonBarItemBackgroundColor = AppColors.tab
+        settings.style.selectedBarBackgroundColor = AppColors.main
         settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
         settings.style.selectedBarHeight = 2.0
         settings.style.buttonBarMinimumLineSpacing = 0
-        settings.style.buttonBarItemTitleColor = MAIN_TINT
+        settings.style.buttonBarItemTitleColor = AppColors.main
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
         settings.style.buttonBarRightContentInset = 0
         
         changeCurrentIndexProgressive = { [weak self] (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .init(white: 0.1, alpha: 1)
-            newCell?.label.textColor = MAIN_TINT
+            oldCell?.label.textColor = AppColors.label
+            newCell?.label.textColor = AppColors.main
         }
         
         super.viewDidLoad()
@@ -42,7 +42,7 @@ class OrgEventsTabStrip: ButtonBarPagerTabStripViewController {
         let pastEvents = PastEvents(detailPage: detailPage)
         let upcomingEvents = UpcomingEvents(detailPage: detailPage)
         
-        return [pastEvents, upcomingEvents]
+        return [upcomingEvents, pastEvents]
     }
 
 }

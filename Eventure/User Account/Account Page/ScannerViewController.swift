@@ -12,21 +12,23 @@ import SwiftyJSON
 
 class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    private var session:AVCaptureSession!
-    private var device: AVCaptureDevice!
+    private(set) var session:AVCaptureSession!
+    private(set) var device: AVCaptureDevice!
     private var screenWidth : CGFloat!
     private var screenHeight: CGFloat!
     
     private var activeRegion: UIView!
-    private var cameraPrompt: UILabel!
-    private var spinner: UIActivityIndicatorView!
-    private var torchSwitch: UIButton!
-    private var cameraDefaultText = "Place QR code within to scan!"
-    private var lastZoomFactor: CGFloat = 1.0
+    private(set) var cameraPrompt: UILabel!
+    private(set) var spinner: UIActivityIndicatorView!
+    private(set) var torchSwitch: UIButton!
+    private(set) var cameraDefaultText = "Place QR code within to scan!"
+    private(set) var lastZoomFactor: CGFloat = 1.0
     
     private var TORCH_ON = "Let there be light"
     private var TORCH_OFF = "Tap to turn off flashlight"
-    private var INVALID_CODE = "Oops, this QR code is not a valid event code."
+    var INVALID_CODE: String {
+        return "Oops, this QR code is not recognized by Eventure."
+    }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
@@ -38,6 +40,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         super.viewDidLoad()
         
         title = "Scan Code"
+        view.backgroundColor = .white
         navigationItem.rightBarButtonItem = .init(title: "Album", style: .plain, target: self, action: #selector(pickLocalImage))
         
         setupViews()
@@ -65,27 +68,45 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         device = newDevice
         setCamera(device: device)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+                
+        session?.startRunning()
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.all)
+    }
     /// We need to make four views that block the area that is NOT part of the active scanning area.
     private func setupViews() {
         
         activeRegion = {
             let region = UIView()
             region.layer.borderWidth = 1.5
-            region.layer.borderColor = MAIN_TINT.cgColor
+            region.layer.borderColor = AppColors.main.cgColor
             region.isUserInteractionEnabled = false
             region.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(region)
             
-            region.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 50).isActive = true
-            region.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -50).isActive = true
+            let left = region.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 50)
+            left.priority = .defaultHigh
+            left.isActive = true
+            
+            let right = region.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -50)
+            right.priority = .defaultHigh
+            right.isActive = true
+            
+            region.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            region.widthAnchor.constraint(lessThanOrEqualToConstant: 400).isActive = true
             region.widthAnchor.constraint(equalTo: region.heightAnchor).isActive = true
             region.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
             
             return region
         }()
-        
-        activeRegion.layoutIfNeeded()
         
         let wallColor = UIColor(white: 0.1, alpha: 0.6)
         
@@ -190,6 +211,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             return button
         }()
         
+        view.layoutIfNeeded()
     }
     
     
@@ -223,7 +245,11 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                 //扫描区域
                 
                 //rectOfInterest 属性中x和y互换，width和height互换。
-                output.rectOfInterest = activeRegion.frame
+                output.rectOfInterest = CGRect(
+                    x: activeRegion.frame.origin.y / view.bounds.height,
+                    y: activeRegion.frame.origin.x / view.bounds.width,
+                    width: activeRegion.frame.height / view.bounds.height,
+                    height: activeRegion.frame.width / view.bounds.width)
             }
             
             
@@ -303,22 +329,37 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         }
     }
     
+    func detectQRCode(_ image: UIImage?) -> String? {
+        if let image = image, let ciImage = CIImage.init(image: image) {
+            var options: [String: Any]
+            let context = CIContext()
+            options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
+            let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
+            if ciImage.properties.keys.contains((kCGImagePropertyOrientation as String)){
+                options = [CIDetectorImageOrientation: ciImage.properties[(kCGImagePropertyOrientation as String)] ?? 1]
+            }else {
+                options = [CIDetectorImageOrientation: 1]
+            }
+            let features = qrDetector?.features(in: ciImage, options: options)
+            
+            return (features?.first as? CIQRCodeFeature)?.messageString
+        }
+        return nil
+    }
+    
     //扫描完成的代理
     
     private var lastReturnDate = Date(timeIntervalSinceReferenceDate: 0)
     
-    
-    private func decryptDataString(_ string: String) -> String? {
-        guard string.hasPrefix(URL_PREFIX) else { return nil }
-        
-        let encrypted = string[string.index(string.startIndex, offsetBy: URL_PREFIX.count)...]
-        
-        if let decrypted = NSString(string: String(encrypted)).aes256Decrypt(withKey: AES_KEY) {
-            
-            return decrypted
-        }
-        
+    /// Override this
+    func decryptDataString(_ string: String) -> String? {
         return nil
+    }
+    
+    func resetDisplay() {
+        spinner.stopAnimating()
+        self.cameraPrompt.text = self.cameraDefaultText
+        self.cameraPrompt.textColor = .white
     }
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
@@ -337,28 +378,21 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             return decryptDataString(dataString) ?? ""
         }
         
-        let filtered = parsed.filter { !$0.isEmpty }
-        
         let thisDate = Date()
         lastReturnDate = thisDate
+
+        let filtered = parsed.filter { !$0.isEmpty }
         
-        if let eventID = filtered.first {
-            
-            session?.stopRunning()
-            spinner.startAnimating()
-            
-            cameraPrompt.text = "Event code scanned! Processing..."
-            cameraPrompt.textColor = .white
-            
-            presentCheckinForm(eventID: eventID)
+        if let decrypted = filtered.first {
+            processDecryptedCode(string: decrypted)
         } else {
             cameraPrompt.text = INVALID_CODE
             cameraPrompt.textColor = LIGHT_RED
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                if thisDate == self.lastReturnDate {
-                    self.cameraPrompt.text = self.cameraDefaultText
-                    self.cameraPrompt.textColor = .white
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                if thisDate == self?.lastReturnDate {
+                    self?.cameraPrompt.text = self?.cameraDefaultText
+                    self?.cameraPrompt.textColor = .white
                 }
             }
         }
@@ -367,59 +401,17 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         
     }
     
-    func presentCheckinForm(eventID: String) {
+    func processDecryptedCode(string: String) {
+        // Override this...
+        session?.stopRunning()
+        spinner.startAnimating()
         
-        print("presenting check-in form for \(eventID)")
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetEvent",
-                           parameters: ["uuid": eventID])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-            }
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    self.cameraPrompt.text = "No internet connection."
-                    self.cameraPrompt.textColor = WARNING_COLOR
-                    self.session.startRunning()
-                }
-                return
-            }
-            
-            if let json = try? JSON(data: data!) {
-                let event = Event(eventInfo: json)
-                let checkinForm = CheckinPageController(event: event)
-                DispatchQueue.main.async {
-                    self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true) {
-                        self.navigationController?.popViewController(animated: false)
-                    }
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.cameraPrompt.text = "The event you scanned does not exist or has been deleted by its host organization."
-                    self.cameraPrompt.textColor = LIGHT_RED
-                }
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
-                if self.cameraPrompt.textColor == LIGHT_RED {
-                    self.cameraPrompt.text = self.cameraDefaultText
-                    self.cameraPrompt.textColor = .white
-                }
-            }
-        }
-        
-        task.resume()
+        cameraPrompt.text = "Code scanned! Processing..."
+        cameraPrompt.textColor = .white
+        UISelectionFeedbackGenerator().selectionChanged()
     }
     
-    @objc private func pickLocalImage() {
+    @objc func pickLocalImage() {
         guard UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) else {
             return
         }
@@ -433,35 +425,9 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     override var shouldAutorotate: Bool {
         return false
     }
+    
 }
-
 
 extension ScannerViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
-        if let message = detectQRCode(image), let eventUUID = decryptDataString(message) {
-            picker.dismiss(animated: true)
-            presentCheckinForm(eventID: eventUUID)
-        }
-    }
     
-    func detectQRCode(_ image: UIImage?) -> String? {
-        if let image = image, let ciImage = CIImage.init(image: image){
-            var options: [String: Any]
-            let context = CIContext()
-            options = [CIDetectorAccuracy: CIDetectorAccuracyHigh]
-            let qrDetector = CIDetector(ofType: CIDetectorTypeQRCode, context: context, options: options)
-            if ciImage.properties.keys.contains((kCGImagePropertyOrientation as String)){
-                options = [CIDetectorImageOrientation: ciImage.properties[(kCGImagePropertyOrientation as String)] ?? 1]
-            }else {
-                options = [CIDetectorImageOrientation: 1]
-            }
-            let features = qrDetector?.features(in: ciImage, options: options)
-            
-            return (features?.first as? CIQRCodeFeature)?.messageString
-        }
-        return nil
-    }
 }
-

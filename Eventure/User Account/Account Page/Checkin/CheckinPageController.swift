@@ -27,7 +27,7 @@ class CheckinPageController: UIPageViewController {
         super.viewDidLoad()
         
         self.navigationItem.title = "Loading..."
-        view.tintColor = MAIN_TINT
+        view.tintColor = AppColors.main
         view.backgroundColor = .white
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeCheckin))
@@ -81,7 +81,6 @@ class CheckinPageController: UIPageViewController {
                 DispatchQueue.main.async {
                     serverMaintenanceError(vc: self) { self.dismiss(animated: true, completion: nil) }
                 }
-                return
             }
             
         }
@@ -98,11 +97,16 @@ class CheckinPageController: UIPageViewController {
         let vc: UIViewController
         
         if !sheetInfo!.currentUserCheckedIn {
-            navigationItem.title = "Checkin Overview"
-            vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+            if (event.startTime! > Date()) {
+                navigationItem.title = "Event Registration"
+                vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+            } else {
+                navigationItem.title = "Checkin Overview"
+                vc = CheckinOverview(parentVC: self, event: event, sheetInfo: sheetInfo!)
+            }
         } else {
-            navigationItem.title = nil
-            vc = CheckinTable(event: event, sheet: self.sheetInfo!)
+            navigationItem.title = ""
+            vc = CheckinTable(event: event)
         }
         spinner.stopAnimating()
         self.setViewControllers([vc], direction: .forward, animated: true)
@@ -113,7 +117,9 @@ class CheckinPageController: UIPageViewController {
     }
     
     func flipPage() {
-        
+        let vc = CheckinTable(event: event)
+        navigationItem.title = ""
+        self.setViewControllers([vc], direction: .forward, animated: true)
     }
     
 

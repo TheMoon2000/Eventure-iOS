@@ -31,8 +31,8 @@ class RegisterOrganization: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.backgroundColor = .white
-        tableView.tintColor = MAIN_TINT
+        tableView.backgroundColor = AppColors.canvas
+        tableView.tintColor = AppColors.main
         tableView.tableFooterView = UIView()
         tableView.keyboardDismissMode = .interactive
         tableView.showsHorizontalScrollIndicator = false
@@ -51,10 +51,11 @@ class RegisterOrganization: UITableViewController {
             label.text = "New Organization"
             label.font = .systemFont(ofSize: 27, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             
             let cell = UITableViewCell()
+            cell.backgroundColor = .clear
             cell.selectionStyle = .none
             cell.addSubview(label)
             
@@ -120,6 +121,7 @@ class RegisterOrganization: UITableViewController {
         
         // 1.3 (4)
         let tagCell = ChooseTagCell(parentVC: self)
+        tagCell.overlay.backgroundColor = AppColors.background
         pageCells.append(tagCell)
         
         // 1.4 (5)
@@ -259,7 +261,7 @@ class RegisterOrganization: UITableViewController {
             let cell = ButtonCell(width: 220)
             cell.button.setTitle("Register", for: .normal)
             cell.button.isEnabled = false
-            cell.button.backgroundColor = MAIN_TINT
+            cell.button.backgroundColor = AppColors.main
             cell.button.alpha = DISABLED_ALPHA
             cell.primaryAction = {
                 self.registerOrg()

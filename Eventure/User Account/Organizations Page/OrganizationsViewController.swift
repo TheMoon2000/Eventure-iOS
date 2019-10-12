@@ -25,6 +25,8 @@ class OrganizationsViewController: UIViewController {
         }
     }
     
+    var customPushHandler: ((Organization) -> ())?
+    
     private var filteredOrgs = [Organization]()
     
     private var isFiltering: Bool {
@@ -34,18 +36,29 @@ class OrganizationsViewController: UIViewController {
     // The search bar
     private let searchController = UISearchController(searchResultsController: nil)
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topTabBg.effect = UIBlurEffect(style: .regular)
+            } else {
+                topTabBg.effect = UIBlurEffect(style: .extraLight)
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Organizations"
         
         // Search bar setup
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Organizations"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -56,13 +69,20 @@ class OrganizationsViewController: UIViewController {
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    ev.effect = UIBlurEffect(style: .regular)
+                }
+            }
+            
             ev.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(ev)
             
             ev.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             ev.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             ev.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-            ev.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            ev.heightAnchor.constraint(equalToConstant: 50).isActive = true
             
             return ev
         }()
@@ -73,7 +93,7 @@ class OrganizationsViewController: UIViewController {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
-            tab.tintColor = MAIN_TINT
+            tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -81,6 +101,8 @@ class OrganizationsViewController: UIViewController {
             tab.leftAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
+            
+            tab.addTarget(self, action: #selector(selectionChanged), for: .valueChanged)
             
             return tab
         }()
@@ -90,11 +112,10 @@ class OrganizationsViewController: UIViewController {
             orgTable.dataSource = self
             orgTable.delegate = self
             orgTable.tableFooterView = UIView()
-            orgTable.separatorColor = .lightGray
-            orgTable.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
             orgTable.contentInsetAdjustmentBehavior = .always
             orgTable.contentInset.top = 60
             orgTable.scrollIndicatorInsets.top = 60
+            orgTable.backgroundColor = .clear
             orgTable.register(OrganizationCell.classForCoder(), forCellReuseIdentifier: "org")
             orgTable.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(orgTable, belowSubview: topTabBg)
@@ -151,14 +172,18 @@ class OrganizationsViewController: UIViewController {
         loadOrganizations()
     }
     
+    @objc private func selectionChanged() {
+        updateFiltered()
+    }
+    
     
     @objc private func loadOrganizations() {
         
         spinner.startAnimating()
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
-        organizations.removeAll()
-        self.orgTable.reloadData()
+        filteredOrgs.removeAll()
+        orgTable.reloadData()
         
         navigationItem.rightBarButtonItem?.isEnabled = false
         
@@ -238,35 +263,53 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.row])
-        orgDetail.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(orgDetail, animated: true)
+        if customPushHandler != nil {
+            customPushHandler?(filteredOrgs[indexPath.row])
+        } else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.row])
+            orgDetail.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(orgDetail, animated: true)
+        }
     }
 }
 
 extension OrganizationsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.main.async {
-            self.updateFiltered()
-            self.orgTable.reloadData()
-        }
+        self.updateFiltered()
     }
     
     private func updateFiltered() {
         let searchText = searchController.searchBar.text!.lowercased()
-        filteredOrgs = organizations.filter { (org: Organization) -> Bool in
-            let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
-            var condition = true
-            if tabName == "Recommended" {
-                condition = !org.tags.intersection(User.current!.tags).isEmpty
-            } else if tabName == "Subscribed" {
-                // TODO: detect subscription
+        let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
+        DispatchQueue.global(qos: .default).async {
+            self.filteredOrgs = self.organizations.filter { (org: Organization) -> Bool in
+                
+                var contains = false
+                
+                for target in [org.title, org.orgDescription] {
+                    if target.lowercased().contains(searchText) {
+                        contains = true
+                    }
+                }
+                
+                if !contains && !searchText.isEmpty { return false }
+                
+                if tabName == "Recommended" {
+                    return !org.tags.intersection(User.current!.tags).isEmpty
+                } else if tabName == "Subscribed" {
+                    return User.current?.subscriptions.contains(org.id) ?? false
+                }
+                
+                return true
             }
             
-            return condition && (searchText.isEmpty || org.title.lowercased().contains(searchText))
+            self.filteredOrgs.sort(by: { $0.title.lowercased() < $1.title.lowercased() })
+            
+            DispatchQueue.main.async {
+                self.orgTable.reloadSections([0], with: .none)
+            }
         }
         
-        filteredOrgs.sort(by: { $0.title < $1.title })
     }
 }

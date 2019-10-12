@@ -12,7 +12,11 @@ import SwiftyJSON
 
 class OrgDetailPage: UIViewController {
     
-    var organization: Organization!
+    var organization: Organization! {
+        didSet {
+            blockBG?.isHidden = !organization.title.isEmpty
+        }
+    }
     
     private var previewContainer: UIView!
     private var thumbNail: UIImageView!
@@ -24,8 +28,11 @@ class OrgDetailPage: UIViewController {
     private var expandButton: UIButton!
     private var disclosureIndicator: UIImageView!
     
-    private var tabStrip: ButtonBarPagerTabStripViewController!
+    private(set) var tabStrip: ButtonBarPagerTabStripViewController!
     private var tabTopConstraint: NSLayoutConstraint!
+    
+    private var blockBG: UIView!
+    private var blockText: UILabel!
     
     required init(organization: Organization) {
         super.init(nibName: nil, bundle: nil)
@@ -36,14 +43,16 @@ class OrgDetailPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.navbar
         navigationController?.navigationBar.shadowImage = UIImage()
         
         var favImage = #imageLiteral(resourceName: "heart_empty")
         if User.current != nil && organization.subscribers.contains(User.current!.uuid) {
             favImage = #imageLiteral(resourceName: "heart")
         }
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(subscribe(_:)))
+        
+        let rightButton = UIBarButtonItem(image: favImage, style: .plain, target: self, action: #selector(subscribe(_:)))
+        navigationItem.rightBarButtonItem = rightButton
         navigationItem.rightBarButtonItem?.isEnabled = User.current != nil
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Overview", style: .plain, target: nil, action: nil)
         
@@ -75,12 +84,14 @@ class OrgDetailPage: UIViewController {
                     self.thumbNail.image = orgWithImage.logoImage
                 }
             }
-            
+            thumbNail.layer.cornerRadius = 5
+            thumbNail.layer.masksToBounds = true
             thumbNail.contentMode = .scaleAspectFit
             if thumbNail.image == nil {
                 // TODO: Replace with default logo image
-                thumbNail.backgroundColor = LINE_TINT
+                thumbNail.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             }
+            thumbNail.tintColor = AppColors.mainDisabled
             thumbNail.translatesAutoresizingMaskIntoConstraints = false
             previewContainer.addSubview(thumbNail)
             
@@ -123,8 +134,8 @@ class OrgDetailPage: UIViewController {
                 let label = UILabel()
                 label.font = .systemFont(ofSize: 16.5)
                 label.textColor = .lightGray
-                label.text = "Loading member info..."
-                label.text = "Active Members: \(organization.members.count)"
+                let noun = organization.subscribers.count == 1 ? "Subscriber" : "Subscribers"
+                label.text = "\(organization.subscribers.count) " + noun
                 label.textColor = .gray
 
                 label.translatesAutoresizingMaskIntoConstraints = false
@@ -148,7 +159,6 @@ class OrgDetailPage: UIViewController {
         
         expandButton = {
             let button = UIButton()
-            button.isEnabled = false
             button.translatesAutoresizingMaskIntoConstraints = false
             previewContainer.addSubview(button)
             
@@ -186,6 +196,34 @@ class OrgDetailPage: UIViewController {
             tabStrip.didMove(toParent: self)
             
             return tabStrip
+        }()
+        
+        blockBG = {
+            let b = UIView()
+            b.backgroundColor = AppColors.background
+            b.translatesAutoresizingMaskIntoConstraints = false
+            b.isHidden = !organization.title.isEmpty
+            view.addSubview(b)
+            
+            b.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            b.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            b.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            b.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            return b
+        }()
+        
+        blockText = {
+            let label = UILabel()
+            label.text = "Nothing to show."
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            blockBG.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: blockBG.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: blockBG.centerYAnchor).isActive = true
+            
+            return label
         }()
     }
     
@@ -250,16 +288,11 @@ class OrgDetailPage: UIViewController {
                         toggle(false) // Toggle back to the original state
                     }
                 }
-            } else if msg != "success" {
-                DispatchQueue.main.async {
-                    toggle(false)
-                }
             }
         }
         
         task.resume()
     }
-    
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
@@ -289,7 +322,7 @@ extension OrgDetailPage {
     
     @objc private func buttonPressed() {
         disclosureIndicator.image = #imageLiteral(resourceName: "disclosure_pressed")
-        previewContainer.backgroundColor = .init(white: 0.93, alpha: 1)
+        previewContainer.backgroundColor = AppColors.selected
     }
     
     @objc private func buttonLifted() {

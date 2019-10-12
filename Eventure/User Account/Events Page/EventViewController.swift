@@ -9,72 +9,125 @@
 import UIKit
 import SwiftyJSON
 
-class EventViewController: UIViewController {
+class EventViewController: UIViewController, EventProvider {
     
     private var isFiltering: Bool {
         return searchController.isActive && !searchController.searchBar.text!.isEmpty
     }
     
     // The search bar
-    private let searchController = UISearchController(searchResultsController: nil)
-
+    private var searchResultTable: EventSearchResults!
+    private var searchController: UISearchController!
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
     private var eventCatalog: UICollectionView!
     private var spinner: UIActivityIndicatorView!
     private var spinnerLabel: UILabel!
     private var emptyLabel: UILabel!
+    private var loadMoreLabel: UILabel!
+    private var shouldLoadMore = false
     
-    private var shouldFilter: Bool = false
+    private static var upToDate: Bool = false
     public static var chosenTags = Set<String>()
-    public static var start = Date.distantPast
-    public static var end = Date.distantFuture
     
-    private(set) var allEvents = [Event]() {
-        didSet {
-            self.updateFiltered()
+    public static var start: Date? {
+        didSet (oldValue) {
+            let originalBound = oldValue ?? Date()
+            let newBound = start ?? Date()
+            upToDate = upToDate && newBound >= originalBound
         }
     }
-    private var filteredEvents = [Event]()
+    
+    public static var end: Date? {
+        didSet (oldValue) {
+            let originalBound = oldValue ?? .distantFuture
+            let newBound = end ?? .distantFuture
+            upToDate = upToDate && newBound <= originalBound
+        }
+    }
+    
+    private var NO_EVENT = "No events to show."
+    
+    private(set) var allEvents = [Event]()
+    private(set) var filteredEvents = [Event]()
+    private(set) var eventsDisplayed = 20
+   
+    var eventsForSearch: [Event] {
+        return filteredEvents
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            topTabBg.effect = UIBlurEffect(style: .regular)
+        } else {
+            topTabBg.effect = UIBlurEffect(style: .extraLight)
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Events"
         
+        searchResultTable = EventSearchResults(parentVC: self)
+        
         // Search bar setup
+                
+        searchController = {
+            let sc = UISearchController(searchResultsController: searchResultTable)
+            sc.searchResultsUpdater = searchResultTable
+            sc.searchBar.placeholder = "Search Events"
+            sc.searchBar.tintColor = AppColors.main
+            navigationItem.hidesSearchBarWhenScrolling = false
+            sc.obscuresBackgroundDuringPresentation = true
+            
+            navigationItem.searchController = sc
+            return sc
+        }()
+        
+        definesPresentationContext = true
+        
+        /*
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = MAIN_TINT
+        searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Events"
-        navigationItem.searchController = searchController
+ */
 //      navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(updateEvents))
         
         topTabBg = {
+            
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+            
+            if #available(iOS 12.0, *) {
+                if traitCollection.userInterfaceStyle == .dark {
+                    ev.effect = UIBlurEffect(style: .regular)
+                }
+            }
             ev.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(ev)
             
             ev.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             ev.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             ev.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-            ev.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            ev.heightAnchor.constraint(equalToConstant: 50).isActive = true
             
             return ev
         }()
         
         topTab = {
             let tab = UISegmentedControl(items: ["All Events", "Trending", "Recommended"])
+            tab.setEnabled(false, forSegmentAt: 1)
             if User.current == nil {
-                tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
-            tab.tintColor = MAIN_TINT
+            tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -83,20 +136,23 @@ class EventViewController: UIViewController {
             tab.rightAnchor.constraint(equalTo: topTabBg.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             tab.centerYAnchor.constraint(equalTo: topTabBg.centerYAnchor).isActive = true
             
-            tab.addTarget(self, action: #selector(updateEvents), for: .valueChanged)
+            tab.addTarget(self, action: #selector(refilter), for: .valueChanged)
             return tab
         }()
         
         topTabBg.layoutIfNeeded()
         
         eventCatalog = {
-           let ec = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+            let layout = TopAlignedCollectionViewFlowLayout()
+            layout.footerReferenceSize = CGSize(width: 300, height: 50)
+            let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
+            ec.backgroundColor = AppColors.canvas
             ec.contentInset.top = topTabBg.frame.height + 8
-            ec.contentInset.bottom = 8
+            ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
             ec.scrollIndicatorInsets.top = topTabBg.frame.height
-            ec.backgroundColor = .init(white: 0.92, alpha: 1)
+            ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
             ec.register(EventCell.classForCoder(), forCellWithReuseIdentifier: "event")
             ec.contentInsetAdjustmentBehavior = .always
             ec.translatesAutoresizingMaskIntoConstraints = false
@@ -114,6 +170,7 @@ class EventViewController: UIViewController {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
             spinner.color = .lightGray
             spinner.hidesWhenStopped = true
+            spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(spinner)
             
@@ -152,14 +209,17 @@ class EventViewController: UIViewController {
         }()
         
         updateEvents()
-        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
     }
     
-    @objc private func filteredByUser() {
-        shouldFilter = true
-        self.updateEvents()
+    /// Refreshes the displayed events, fetching data from the server if needed.
+    func fetchEventsIfNeeded() {
+        if !EventViewController.upToDate {
+            updateEvents()
+        } else {
+            refilter()
+        }
     }
-
     
     @objc private func updateEvents() {
         //shouldFilter = false
@@ -169,54 +229,76 @@ class EventViewController: UIViewController {
         spinner.startAnimating()
         spinnerLabel.isHidden = false
         emptyLabel.text = ""
-        allEvents.removeAll()
-        self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+        filteredEvents.removeAll()
+        self.eventCatalog.reloadData()
         
         var parameters = [String : String]()
         if User.current != nil {
             parameters["userId"] = String(User.current!.uuid)
             parameters["userEmail"] = User.current!.email
         }
-            
+        if let start = EventViewController.start {
+            parameters["lowerBound"] = DATE_FORMATTER.string(from: start)
+        } else {
+            parameters["lowerBound"] = DATE_FORMATTER.string(from: Date())
+        }
+        if let end = EventViewController.end {
+            parameters["upperBound"] = DATE_FORMATTER.string(from: end)
+        } else {
+            parameters["upperBound"] = DATE_FORMATTER.string(from: .distantFuture)
+        }
+                
+        
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: parameters)!
+                           API_Name: "events/List",
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
+        
+        func stop() {
+            self.spinner.stopAnimating()
+            self.spinnerLabel.isHidden = true
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
+        }
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
-                self.navigationItem.rightBarButtonItem?.isEnabled = true
-            }
-            
             guard error == nil else {
                 DispatchQueue.main.async {
                     self.emptyLabel.text = CONNECTION_ERROR
+                    stop()
                     internetUnavailableError(vc: self)
                 }
                 return
             }
             
             if let eventsList = try? JSON(data: data!).arrayValue {
-                var tmp = [Event]()
-                for event in eventsList {
-                    tmp.append(Event(eventInfo: event))
-                }
-                tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
-                    return e1.startTime as Date! < e2.startTime as Date!
-                })
-                DispatchQueue.main.async {
+                DispatchQueue.global(qos: .default).async {
+                    var tmp = [Event]()
+                    for event in eventsList {
+                        tmp.append(Event(eventInfo: event))
+                    }
+                    tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
+                        return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)
+                    })
+                    EventViewController.upToDate = true
                     self.allEvents = tmp
-                    self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
-                    self.eventCatalog.reloadSections(IndexSet(arrayLiteral: 0))
+                    DispatchQueue.main.async {
+                        self.updateFiltered() {
+                            self.eventCatalog.reloadSections([0])
+                            stop()
+                            if tmp.isEmpty {
+                                self.emptyLabel.text = self.NO_EVENT
+                            }
+                        }
+                    }
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
 
                 DispatchQueue.main.async {
+                    stop()
                     self.emptyLabel.text = SERVER_ERROR
                 }
                 
@@ -233,12 +315,20 @@ class EventViewController: UIViewController {
     
     @objc private func openOptions() {
         // TODO: filtering options here
+        /*
         let filter = FilterPageViewController()
         let nav = UINavigationController(rootViewController: filter)
-        nav.navigationBar.tintColor = MAIN_TINT
+        nav.navigationBar.tintColor = AppColors.main
         nav.navigationBar.barTintColor = .white
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
+        */
+        let filterTable = FilterDateTableViewController(parentVC: self)
+        let nav = UINavigationController(rootViewController:
+            filterTable)
+        nav.navigationBar.barTintColor = AppColors.navbar
+        nav.navigationBar.tintColor = AppColors.main
+        present(nav, animated: true)
     }
     
 
@@ -249,15 +339,15 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredEvents.count
-    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return min(filteredEvents.count, eventsDisplayed)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: indexPath) as! EventCell
+        guard indexPath.row < filteredEvents.count else {
+            return UICollectionViewCell()
+        }
+        
         cell.setupCellWithEvent(event: filteredEvents[indexPath.row], withImage: true)
         
         return cell
@@ -266,8 +356,17 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let detailPage = EventDetailPage()
-        detailPage.hidesBottomBarWhenPushed = true
+        detailPage.interestedStatusChanged = { status in
+            if let cell = collectionView.cellForItem(at: indexPath) as? EventCell {
+                if status {
+                    cell.interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+                } else {
+                    cell.interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+                }
+            }
+        }
         detailPage.event = filteredEvents[indexPath.row]
+        detailPage.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(detailPage, animated: true)
     }
 }
@@ -295,8 +394,15 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        guard indexPath.row < filteredEvents.count else {
+            return CGSize(width: 340, height: 500)
+        }
+        
+        let event = filteredEvents[indexPath.row]
+        
         let cell = EventCell()
-        cell.setupCellWithEvent(event: filteredEvents[indexPath.row])
+        cell.setupCellWithEvent(event: event)
         return CGSize(width: cardWidth,
                       height: cell.preferredHeight(width: cardWidth))
     }
@@ -315,53 +421,108 @@ extension EventViewController: UICollectionViewDelegateFlowLayout {
                             bottom: equalSpacing,
                             right: 8)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let v = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer", for: indexPath)
+            return v
+        }
+        return UICollectionReusableView()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            self.eventCatalog?.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
+    }
 }
 
 
-extension EventViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        DispatchQueue.main.async {
-            self.updateFiltered()
+extension EventViewController {
+    
+    @objc func refilter() {
+        self.emptyLabel.text = ""
+        self.updateFiltered {
+            self.spinner.startAnimating()
+            self.spinnerLabel.isHidden = false
             self.eventCatalog.reloadData()
+            self.spinner.stopAnimating()
+            self.spinnerLabel.isHidden = true
+            self.emptyLabel.text = self.filteredEvents.isEmpty ? self.NO_EVENT : ""
         }
     }
     
-    private func updateFiltered() {
-        let searchText = searchController.searchBar.text!.lowercased()
-        var cnt = 0
-        filteredEvents = allEvents.filter { (event: Event) -> Bool in
-            let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
-            var condition = true
-            if tabName == "All Events" {
-                if (shouldFilter) {
-                    if (EventViewController.chosenTags.count > 0) {
-                        print(EventViewController.chosenTags)
-                        condition = !event.tags.intersection(EventViewController.chosenTags).isEmpty
-                    }
-                    condition = condition && event.startTime! >= EventViewController.start
-                    condition = condition && event.endTime! <= EventViewController.end
-                    cnt += 1
-                    if (cnt == allEvents.count) {
-                        EventViewController.chosenTags.removeAll()
-                        EventViewController.start = Date.distantPast
-                        EventViewController.end = Date.distantFuture
-                        shouldFilter = false
-                    }
+    func updateFiltered(handler: (() -> ())? = nil) {
+//        var cnt = 0
+        let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: .now() + 0.1) {
+            self.filteredEvents = self.allEvents.filter { (event: Event) -> Bool in
+                
+                if event.startTime == nil || event.endTime == nil { return false }
+                if event.startTime! < (EventViewController.start ?? Date()) {
+                    return false
                 }
+                
+                if let end = EventViewController.end, event.endTime! > end {
+                    return false
+                }
+                
+                if !EventViewController.chosenTags.isEmpty && event.tags.intersection(EventViewController.chosenTags).isEmpty {
+                    return false
+                }
+                
+                if tabName == "Recommended" {
+                    // If the current tab is 'Recommended', the current user must be logged in
+                    if event.tags.intersection(User.current!.tags).isEmpty {
+                        return false
+                    }
+                } else if tabName == "Trending" {
+                    // TODO: Replace with code to filter out non-trending events
+                }
+
+                return true
             }
-            else if tabName == "Recommended" {
-                // If the current tab is 'Recommended', the current user must be logged in
-                condition = !event.tags.intersection(User.current!.tags).isEmpty
-            } else if tabName == "Trending" {
-                // TODO: Replace with code to filter out non-trending events
+            print("\(self.allEvents.count) events, \(self.filteredEvents.count) visible")
+            // TODO: Apply sorting algorithm depending on user settings
+            self.filteredEvents.sort(by: { $0.startTime! < $1.startTime! })
+            DispatchQueue.main.async {
+                handler?()
             }
-            condition = condition && Date() <= event.startTime!
-            return condition && (searchText.isEmpty || event.title.lowercased().contains(searchText) || event.eventDescription.lowercased().contains(searchText))
         }
-        print("\(allEvents.count) events, \(filteredEvents.count) visible")
-        // TODO: Apply sorting algorithm depending on user settings
-        filteredEvents.sort(by: { $0.startTime as Date! < $1.startTime as Date! })
     }
     
    
+}
+
+
+extension EventViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.contentSize.height - 50
+        let scrolled = scrollView.safeAreaLayoutGuide.layoutFrame.height + scrollView.contentOffset.y - 10
+        if height <= scrollView.safeAreaLayoutGuide.layoutFrame.height { return }
+        if let footer = eventCatalog?.supplementaryView(forElementKind: UICollectionView.elementKindSectionFooter, at: [0, 0]) as? EventFooterView {
+            footer.textLabel.alpha = (scrolled - height) / 70
+            if eventsDisplayed < filteredEvents.count {
+                if footer.textLabel.alpha >= 1 {
+                    footer.textLabel.text = "Release to load more"
+                    shouldLoadMore = true
+                } else {
+                    footer.textLabel.text = "Load more..."
+                    shouldLoadMore = false
+                }
+            } else {
+                footer.textLabel.text = "No more events to load"
+            }
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if shouldLoadMore {
+            shouldLoadMore = false
+            eventsDisplayed += 20
+            eventCatalog.reloadSections([0])
+        }
+    }
 }

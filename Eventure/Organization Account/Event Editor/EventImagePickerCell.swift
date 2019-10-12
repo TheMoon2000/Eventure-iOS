@@ -23,16 +23,16 @@ class EventImagePickerCell: UITableViewCell {
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
             view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 10).isActive = true
             view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -10).isActive = true
-            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+            view.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 8).isActive = true
             
-            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -10)
+            let bottomConstraint = view.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -8)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
@@ -42,6 +42,7 @@ class EventImagePickerCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Cover Image:"
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -55,7 +56,6 @@ class EventImagePickerCell: UITableViewCell {
         indicator = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
             iv.tintColor = .lightGray
-            iv.alpha = DISABLED_ALPHA
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
@@ -83,7 +83,7 @@ class EventImagePickerCell: UITableViewCell {
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        bgView.backgroundColor = highlighted ? UIColor(white: 0.97, alpha: 1) : .white
+        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
     }
     
     required init?(coder aDecoder: NSCoder) {

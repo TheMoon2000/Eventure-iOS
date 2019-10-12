@@ -25,9 +25,9 @@ class DatePickerTopCell: UITableViewCell {
     }()
 
     private var bgView: UIView!
-    private var leftLabel: UILabel!
-    private var indicator: UIView!
-    private var rightLabel: UILabel!
+    private(set) var leftLabel: UILabel!
+    private(set) var indicator: UIView!
+    private(set) var rightLabel: UILabel!
     
     var displayedDate = Date() {
         didSet {
@@ -42,12 +42,12 @@ class DatePickerTopCell: UITableViewCell {
     required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
         
-        backgroundColor = EventDraft.backgroundColor
+        backgroundColor = .clear
         selectionStyle = .none
         
         bgView = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -66,6 +66,7 @@ class DatePickerTopCell: UITableViewCell {
         leftLabel = {
             let label = UILabel()
             label.text = title
+            label.textColor = AppColors.label
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -97,17 +98,22 @@ class DatePickerTopCell: UITableViewCell {
         rightLabel = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.text = "Any time"
+            label.text = "No time selected"
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
-            label.textColor = MAIN_TINT
+            label.textColor = AppColors.main
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: leftLabel.rightAnchor, constant: 8).isActive = true
             label.rightAnchor.constraint(equalTo: indicator.leftAnchor, constant: -5).isActive = true
-            label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 15).isActive = true
-            label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -15).isActive = true
+            label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
+            let t = label.topAnchor.constraint(equalTo: bgView.topAnchor, constant: 17)
+            t.priority = .defaultLow
+            t.isActive = true
+            let b = label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -17)
+            b.priority = .defaultLow
+            b.isActive = true
             
             return label
         }()
@@ -126,7 +132,7 @@ class DatePickerTopCell: UITableViewCell {
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        bgView.backgroundColor = highlighted ? UIColor(white: 0.97, alpha: 1) : .white
+        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
     }
 
     

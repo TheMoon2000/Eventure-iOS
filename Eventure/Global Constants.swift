@@ -16,8 +16,11 @@ import typealias CommonCrypto.CC_LONG
 
 // MARK: - Global constants
 
-/// The URL prefix for all the APIs
+/// The URL prefix for all the APIs.
 let API_BASE_URL = "https://api.eventure-app.com/"
+
+/// APIs related to mails are hosted in a seperate API cluster due to compatibility reasons with SendGrid's library.
+let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
@@ -25,28 +28,109 @@ let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
-let CONNECTION_ERROR = "Connection Error"
-let SERVER_ERROR = "Server Error"
+let UNAUTHORIZED_ERROR = "unauthorized"
+let CONNECTION_ERROR = "Connection error"
+let SERVER_ERROR = "Server error"
+let APP_STORE_LINK = "https://apps.apple.com/app/id1478542362"
+let APP_DOMAIN = "https://eventure-app.com/"
 
-let USER_DEFAULT_CRED = "CREDENTIAL"
 let KEY_ACCOUNT_TYPE = "Account Type"
 let ACCOUNT_TYPE_USER = "User"
 let ACCOUNT_TYPE_ORG = "Org"
 
 let URL_PREFIX = "eventure://"
 
-let MAIN_TINT = UIColor(red: 1.0, green: 120/255, blue: 104/255, alpha: 1.0)
-let MAIN_DISABLED = UIColor(red: 1.0, green: 179/255, blue: 168/255, alpha: 0.9)
+/// Notification types
+enum NotificationKeys: String {
+    case oneTimeCode = "one-time code"
+    case generalNotice = "general notice"
+    case ticketActivation = "ticket activation"
+    case ticketRedemption = "ticket redemption"
+    case ticketRequest = "ticket request"
+    case ticketRequestApproved = "ticket request approved"
+    case ticketTransferRequest = "ticket transfer request"
+    case ticketTransferApproved = "ticket transfer approved"
+    case ticketTransferDeclined = "ticket transfer declined"
+}
+
 let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
-let LINE_TINT = UIColor.init(white: 0.9, alpha: 1)
-let LINK_COLOR = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
-let WARNING_COLOR = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
-let FATAL_COLOR = UIColor(red: 224/255, green: 33/255, blue: 0, alpha: 1)
-let PASSED_COLOR = UIColor(red: 155/255, green: 216/255, blue: 143/255, alpha: 1)
+let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
 let MAIN_TINT8 = UIColor(red: 255/255, green: 153/255, blue: 102/255, alpha: 1.0)
+
+/// A suite of custom colors used by the app, adjusted for both light and dark mode.
+struct AppColors {
+    /// The primary theme color of the app.
+    static var main = UIColor(named: "AppColors.main")!
+    
+    /// The disabled theme color.
+    static var mainDisabled = UIColor(named: "AppColors.mainDisabled")!
+    
+    /// A red color used for fatal errors.
+    static var fatal = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
+    
+    /// A orange-yellow color used for warnings.
+    static var warning = UIColor(red: 243/255, green: 213/255, blue: 34/255, alpha: 1)
+    
+    /// A light green color to indicate a passed state.
+    static var passed = UIColor(named: "AppColors.passed")!
+    
+    /// The yellow color for the interest button.
+    static var interest = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
+    
+    /// The color used for hyperlinks.
+    static var link = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
+    
+    /// Placeholder text color.
+    static var placeholder = UIColor(named: "AppColors.placeholder")!
+    
+    /// A light gray color used for border lines.
+    static var line = UIColor(named: "AppColors.line")!
+    
+    /// A dark gray color intended for title labels.
+    static var label = UIColor(named: "AppColors.label")!
+    
+    /// A dark gray color (1/4 darkness) intended to display values.
+    static var value = UIColor(named: "AppColors.value")!
+    
+    /// A medium gray color intended for secondary / supplementary text labels.
+    static var prompt = UIColor(named: "AppColors.prompt")!
+    
+    /// The background color that should be used for most view controllers.
+    static var background = UIColor(named: "AppColors.background")!
+    
+    /// The background color for subviews.
+    static var subview = UIColor(named: "AppColors.subview")!
+    
+    /// The background color for a selected subview.
+    static var selected = UIColor(named: "AppColors.selected")!
+    
+    /// The background color for event previews.
+    static var card = UIColor(named: "AppColors.card")!
+    
+    /// The background color for navigation bars.
+    static var navbar = UIColor(named: "AppColors.navbar")!
+    
+    /// Dark background for scrollviews. In light mode, this is a very light gray.
+    static var canvas = UIColor(named: "AppColors.canvas")!
+    
+    /// Background color for the tabs.
+    static var tab = UIColor(named: "AppColors.tab")!
+    
+    /// Background color for grouped table views.
+    static var tableBG = UIColor(named: "AppColors.tableBG")!
+    
+    /// Plain text color, intended for event and organization descriptions.
+    static var plainText = UIColor(named: "AppColors.plainText")!
+    
+    /// Button colors.
+    static var control = UIColor(named: "AppColors.control")!
+    
+    /// A light gray tint used for disabled controls.
+    static var disabled = UIColor(named: "AppColors.disabled")!
+}
 
 let SAMPLE_TEXT = """
 [This is a Markdown Link](https://www.google.com).
@@ -62,37 +146,57 @@ let PLAIN_STYLE =  """
         font-size: 17px;
         line-height: 1.5;
         letter-spacing: 1.5%;
-        color: #5A5A5A;
-        margin-bottom: 10px;
+        color: #525252;
+        margin-bottom: 12px;
     }
+
+    li {
+        margin-bottom: 8px;
+    }
+
+    strong, em {
+        color: #4A4A4A;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
 
     h1, h2, h3, h4, h5, h6 {
         font-family: -apple-system;
         font-weight: 600;
-        letter-spacing: 1%;
+        letter-spacing: 1.5%;
         color: rgb(255, 120, 104);
+        line-height: 1.4;
     }
 
     h1 {
         font-size: 23px;
+        margin-bottom: 14px;
     }
 
     h2 {
         font-size: 22px;
+        margin-bottom: 13.5px;
     }
 
     h3 {
         font-size: 21px;
+        margin-bottom: 13px;
     }
 
     h4 {
         font-size: 20px;
+        margin-bottom: 12.5px;
     }
 
     h5 {
         font-size: 19px;
+        margin-bottom: 12px;
     }
     h6 {
+        margin-bottom: 11px;
         font-size: 18px;
     }
 
@@ -101,14 +205,37 @@ let PLAIN_STYLE =  """
     }
 """
 
+let PLAIN_DARK = PLAIN_STYLE.replacingOccurrences(of: "#525252", with: "#C4C4C5").replacingOccurrences(of: "#4A4A4A", with: "#D2D2D2")
+
 let COMPACT_STYLE = """
     body {
         font-family: -apple-system;
         font-size: 16px;
         line-height: 1.25;
         letter-spacing: 1%;
-        color: #5A5A5A;
+        color: #6A6A6A;
         margin-bottom: 10px;
+    }
+
+    strong, em {
+        color: #505050;
+    }
+"""
+
+let COMPACT_DARK = COMPACT_STYLE.replacingOccurrences(of: "#505050", with: "#D3D3D3").replacingOccurrences(of: "#6A6A6A", with: "#C0C0C0")
+
+let TITLE_STYLE = """
+    body {
+        font-family: -apple-system;
+        font-size: 18px;
+        line-height: 1.4;
+        letter-spacing: 1%;
+        color: #505050;
+        margin-bottom: 10px;
+    }
+
+    strong, em {
+        color: #303030;
     }
 """
 
@@ -118,9 +245,11 @@ let DRAFTS_PATH = FileManager.default.urls(for: .documentDirectory, in: .userDom
 let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("Account", isDirectory: true)
 
 let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
+let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
+let MAJORS_PATH = ACCOUNT_DIR.path + "/" + "majors"
 
-/// Navigation bar background color
-let NAVBAR_TINT = UIColor.white
+/// Height between items in a vertical stack
+let VERTICAL_SPACING: CGFloat = 13
 
 /// Alpha value for disabled UI elements.
 let DISABLED_ALPHA: CGFloat = 0.5
@@ -130,7 +259,7 @@ let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
     config.requestCachePolicy = .reloadIgnoringLocalCacheData
     config.urlCache = nil
-    config.timeoutIntervalForRequest = 8.0
+    config.timeoutIntervalForRequest = 20.0
     return URLSession(configuration: config)
 }()
 
@@ -151,6 +280,13 @@ let YEAR_FORMATTER: DateFormatter = {
     return formatter
 }()
 
+let WEEK_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "EEE"
+    formatter.locale = Locale(identifier: "en_US")
+    return formatter
+}()
+
 /// A formatter to get the current month in string format.
 let DAY_FORMATTER: DateFormatter = {
     let formatter = DateFormatter()
@@ -166,7 +302,7 @@ extension String {
     
     /// URL encode.
     var encoded: String {
-        return self.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? self
+        return self.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
     }
     
     /// URL decode.
@@ -183,7 +319,6 @@ extension String {
     /// Markdown-formatted text.
     func attributedText(style: String = PLAIN_STYLE) -> NSAttributedString {
         if isEmpty { return NSAttributedString() }
-        
         if let d = try? Down(markdownString: self).toAttributedString(.default, stylesheet: style) {
             if d.string.isEmpty {
                 return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
@@ -212,6 +347,65 @@ extension String {
         return digestData.map { String(format: "%02hhx", $0) }.joined()
     }
 
+}
+
+extension Date {
+    
+    static let readableFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM yyyy @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    static let shortFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "E, d MMM @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    static let todayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "'Today' @ h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    static let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    /// Truncates the hour, minute and second components of the date.
+    var midnight: Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter.date(from: formatter.string(from: self))!
+    }
+    
+    func readableString() -> String {
+        if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {
+            return Date.readableFormatter.string(from: self)
+        } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: self) {
+            return Date.shortFormatter.string(from: self)
+        } else {
+            return Date.todayFormatter.string(from: self)
+        }
+    }
+    
+    func inlineString() -> String {
+        if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {
+            return "on " + Date.readableFormatter.string(from: self)
+        } else if DAY_FORMATTER.string(from: Date()) != DAY_FORMATTER.string(from: self) {
+            return "on " + Date.shortFormatter.string(from: self)
+        } else {
+            return "at " + Date.timeFormatter.string(from: self)
+        }
+    }
 }
 
 extension URL {
@@ -278,6 +472,31 @@ extension URLRequest {
     }
 }
 
+class TopAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let attributes = super.layoutAttributesForElements(in: rect)?
+            .map { $0.copy() } as? [UICollectionViewLayoutAttributes]
+        
+        attributes?
+            .reduce([CGFloat: (CGFloat, [UICollectionViewLayoutAttributes])]()) {
+                guard $1.representedElementCategory == .cell else { return $0 }
+                return $0.merging([ceil($1.center.y): ($1.frame.origin.y, [$1])]) {
+                    ($0.0 < $1.0 ? $0.0 : $1.0, $0.1 + $1.1)
+                }
+            }
+            .values.forEach { minY, line in
+                line.forEach {
+                    $0.frame = $0.frame.offsetBy(
+                        dx: 0,
+                        dy: minY - $0.frame.origin.y
+                    )
+                }
+        }
+        
+        return attributes
+    }
+}
+
 extension UIView {
     
     /// Extension method that finds the optimal height for the view, given its current width.
@@ -289,6 +508,93 @@ extension UIView {
         self.removeConstraint(widthConstraint)
         return height
     }
+    
+    /// Insert a standardized loading view into the target view.
+    func addLoader() -> UIVisualEffectView {
+        
+        let loadingBG: UIVisualEffectView = {
+            var effect = UIBlurEffect(style: .light)
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                effect = UIBlurEffect(style: .regular)
+            }
+            let v = UIVisualEffectView(effect: effect)
+            v.layer.cornerRadius = 12
+            v.isHidden = true
+            v.layer.masksToBounds = true
+            v.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(v)
+            
+            v.widthAnchor.constraint(equalToConstant: 110).isActive = true
+            v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
+            
+            return v
+        }()
+        
+        let spinner: UIActivityIndicatorView = {
+            let spinner = UIActivityIndicatorView(style: .whiteLarge)
+            spinner.color = .gray
+            spinner.startAnimating()
+            spinner.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(spinner)
+            
+            spinner.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
+            spinner.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor, constant: -10).isActive = true
+            
+            return spinner
+        }()
+        
+        let _: UILabel = {
+            let label = UILabel()
+            label.text = "Loading..."
+            label.textAlignment = .center
+            label.font = .systemFont(ofSize: 15)
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            loadingBG.contentView.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8).isActive = true
+            
+            return label
+        }()
+        
+        return loadingBG
+    }
+}
+
+func generateQRCode(from string: String, dark: Bool = false) -> UIImage? {
+    let data = string.data(using: String.Encoding.ascii)
+    
+    guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
+        print("WARNING: Unable to find QR Generator filter")
+        return nil
+    }
+    
+    filter.setValue(data, forKey: "inputMessage")
+    let transform = CGAffineTransform(scaleX: 10, y: 10)
+    
+    guard var output = filter.outputImage?.transformed(by: transform) else {
+        return nil
+    }
+    
+    if dark {
+        guard let colorInvertFilter = CIFilter(name: "CIColorInvert") else { return nil }
+        colorInvertFilter.setValue(output, forKey: "inputImage")
+        guard let inverted = colorInvertFilter.outputImage else { return nil }
+        output = inverted
+        
+        guard let maskToAlphaFilter = CIFilter(name: "CIMaskToAlpha") else { return nil }
+        maskToAlphaFilter.setValue(output, forKey: "inputImage")
+        guard let masked = maskToAlphaFilter.outputImage else { return nil }
+        output = masked
+    }
+    
+    let context = CIContext()
+    guard let cg = context.createCGImage(output, from: output.extent) else {
+        return UIImage(ciImage: output)
+    }
+    
+    return UIImage(cgImage: cg)
 }
 
 
@@ -373,27 +679,56 @@ extension UIImage {
         return UIImage(cgImage: cgImage)
     }
     
-    
-    func sizeDown(maxWidth: CGFloat = 500.0) -> UIImage {
+    func sizeDownData(maxWidth: CGFloat = 400.0) -> Data {
         
-        /*
-        var currentQuality: CGFloat = 1.0
-        var currentData = jpegData(compressionQuality: 1.0)
-        
-        while (currentData?.count ?? 0 && currentQuality > 0.01) > 200000 {
-            currentQuality *= 0.85
-            currentData = jpegData(compressionQuality: currentQuality)
-        }*/
+        var imageToResize = self
+        let originalSize = imageToResize.pngData()?.count
         
         if size.width > maxWidth {
             let newSize = CGSize(width: maxWidth, height: maxWidth / size.width * size.height)
             let renderer = UIGraphicsImageRenderer(size: newSize)
-            return renderer.image { context in
+            imageToResize = renderer.image { context in
                 self.draw(in: CGRect(origin: .zero, size: newSize))
             }
         }
         
-        return self
+        var currentQuality: CGFloat = 1.0
+        var currentData = imageToResize.jpegData(compressionQuality: 1.0)
+        
+        while (currentData?.count ?? 0) > 500000 && currentQuality > 0.05 {
+            currentQuality *= 0.8
+            currentData = imageToResize.jpegData(compressionQuality: currentQuality)
+        }
+        
+        print("Image reduced from \(originalSize) to \(currentData?.count)")
+        
+        return currentData!
+    }
+    
+    func sizeDown(maxWidth: CGFloat = 400.0) -> UIImage {
+        return UIImage(data: sizeDownData(maxWidth: maxWidth), scale: 0.8)!
+    }
+}
+
+extension UIApplication {
+    /// The top most view controller
+    static var topMostViewController: UIViewController? {
+        return UIApplication.shared.keyWindow?.rootViewController?.visibleViewController
+    }
+}
+
+extension UIViewController {
+    /// The visible view controller from a given view controller
+    var visibleViewController: UIViewController? {
+        if let navigationController = self as? UINavigationController {
+            return navigationController.topViewController?.visibleViewController
+        } else if let tabBarController = self as? UITabBarController {
+            return tabBarController.selectedViewController?.visibleViewController
+        } else if let presentedViewController = presentedViewController {
+            return presentedViewController.visibleViewController
+        } else {
+            return self
+        }
     }
 }
 
@@ -407,7 +742,19 @@ let CACHES = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask
 // MARK: - Standard alerts
 
 func serverMaintenanceError(vc: UIViewController, handler: (() -> ())? = nil) {
-    let alert = UIAlertController(title: "Expected Error", message: "Oops, looks like our server is unavailable or under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
+    let alert = UIAlertController(title: "Unexpected error", message: "Oops, looks like the feature you tried to access is unavailable or is currently under maintenance. We're very sorry for the inconvenience and we hope that you will come back later.", preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
+        action in
+        DispatchQueue.main.async {
+            handler?()
+        }
+    }))
+    
+    vc.present(alert, animated: true, completion: nil)
+}
+
+func genericError(vc: UIViewController, handler: (() -> ())? = nil) {
+    let alert = UIAlertController(title: "Unexpected error", message: "An error has occurred.", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
         action in
         DispatchQueue.main.async {
@@ -431,8 +778,17 @@ func internetUnavailableError(vc: UIViewController, handler: (() -> ())? = nil) 
     vc.present(alert, animated: true, completion: nil)
 }
 
+func authorizationError(handler: (() -> ())? = nil) {
+    let noticeScreen = UpdateNotice()
+    noticeScreen.modalPresentationStyle = .fullScreen
+    UIApplication.topMostViewController?.present(noticeScreen, animated: true)
+}
+
 // MARK: - Notifications
 let USER_SYNC_SUCCESS = Notification.Name("user sync success")
 let USER_SYNC_FAILED = Notification.Name("user sync failed")
 let ORG_SYNC_SUCCESS = Notification.Name("org sync success")
 let ORG_SYNC_FAILED = Notification.Name("org sync failed")
+let TICKET_ACTIVATED = Notification.Name("ticket activated")
+let NEW_TICKET_REQUEST = Notification.Name("new ticket request")
+let TICKET_TRANSFER_STATUS = Notification.Name(rawValue: "ticket transfer status")

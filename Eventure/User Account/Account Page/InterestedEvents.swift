@@ -26,7 +26,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private var today = [Event]()
     private var tomorrow = [Event]()
-    private var thisWeek = [Event]()
+    private var last7Days = [Event]()
     private var future = [Event]()
     private var past = [Event]()
     
@@ -87,12 +87,12 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -139,8 +139,10 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         if event.eventVisual != nil {
             cell.icon.image = event.eventVisual
+        } else if !event.hasVisual {
+            cell.icon.image = #imageLiteral(resourceName: "berkeley")
         } else {
-            cell.icon.image = UIImage(named: "cover_placeholder")
+            cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
         }
         return cell
     }
@@ -229,33 +231,37 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func groupEventsTime() {
         
-        let today = Date()
-        let calender = Calendar.current
+        let todayMidnight = Date().midnight
         for event in eventDictionaryList {
-            let eventDate = event.startTime
-            let eventDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: eventDate!)
-            let todayDateComponents = calender.dateComponents([.year, .month, .day, .hour, .minute, .second], from: today)
-            let isSameYear = eventDateComponents.year == todayDateComponents.year
-            let isSameMonth = eventDateComponents.month == todayDateComponents.month
-            let isSameDay = eventDateComponents.day == todayDateComponents.day
             
-            if (isSameDay && isSameYear && isSameMonth) {
+            if event.startTime == nil {
+                self.past.append(event)
+                continue
+            }
+
+            let eventMidnight = event.startTime!.midnight
+            let offset = eventMidnight.timeIntervalSince(todayMidnight)
+            
+            if todayMidnight.compare(eventMidnight) == .orderedSame {
                 self.today.append(event)
-            } else if (isSameYear && isSameMonth && (eventDateComponents.day! - todayDateComponents.day! == 1)) {
-                self.tomorrow.append(event)
-            } else if (isSameYear && isSameMonth && (eventDateComponents.day! - todayDateComponents.day! <= 7)) {
-                self.thisWeek.append(event)
-            } else if (eventDate! > today) {
+            } else if offset == 24 * 3600 {
+                self.tomorrow.append(event) // Exactly tomorrow
+            } else if offset > 24 * 3600 {
                 self.future.append(event)
+            } else if offset >= -7 * 86400 {
+                self.last7Days.append(event)
             } else {
                 self.past.append(event)
             }
         }
-        self.today = self.today.sorted(by: { $0.startTime! < $1.startTime! })
-        self.tomorrow = self.tomorrow.sorted(by: { $0.startTime! < $1.startTime! })
-        self.thisWeek = self.thisWeek.sorted(by: { $0.startTime! < $1.startTime! })
-        self.future = self.future.sorted(by: { $0.startTime! < $1.startTime! })
-        self.past = self.past.sorted(by: { $0.startTime! > $1.startTime! })
+        
+        // Sort all the groups
+        today.sort { Event.oldestFirst($0, $1) }
+        tomorrow.sort { Event.oldestFirst($0, $1) }
+        last7Days.sort { Event.lastestFirst($0, $1) }
+        future.sort { Event.oldestFirst($0, $1) }
+        past.sort { Event.lastestFirst($0, $1) }
+        
         
         if self.today.count > 0 {
             sections += 1
@@ -269,15 +275,15 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
             displayedEvents.append(self.tomorrow)
             rowsForSection.append(self.tomorrow.count)
         }
-        if self.thisWeek.count > 0 {
+        if self.last7Days.count > 0 {
             sections += 1
-            labels.append("This Week")
-            displayedEvents.append(self.thisWeek)
-            rowsForSection.append(self.thisWeek.count)
+            labels.append("Last 7 days")
+            displayedEvents.append(self.last7Days)
+            rowsForSection.append(self.last7Days.count)
         }
         if self.future.count > 0 {
             sections += 1
-            labels.append("In the future...")
+            labels.append("Coming up")
             displayedEvents.append(self.future)
             rowsForSection.append(self.future.count)
         }
@@ -295,7 +301,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     func clearAll() {
         today.removeAll()
         tomorrow.removeAll()
-        thisWeek.removeAll()
+        last7Days.removeAll()
         future.removeAll()
         past.removeAll()
         

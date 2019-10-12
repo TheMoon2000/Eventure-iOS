@@ -268,6 +268,7 @@ public class UICheckbox: UIControl {
 
     @objc private func handleTapGesture(recognizer: UITapGestureRecognizer) {
         isChecked = !isChecked
+        //print("here")
         valueChanged?(isChecked)
         sendActions(for: .valueChanged)
 
@@ -299,8 +300,8 @@ extension UICheckbox {
         }
         self.borderWidth = 1.5
         self.checkmarkSize = 0.56
-        self.checkmarkColor = MAIN_TINT
-        self.checkedBorderColor = MAIN_DISABLED
+        self.checkmarkColor = AppColors.main
+        self.checkedBorderColor = AppColors.mainDisabled
         self.uncheckedBorderColor = .init(white: 0.87, alpha: 1)
     }
 }

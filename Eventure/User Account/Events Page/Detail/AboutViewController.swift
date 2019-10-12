@@ -8,10 +8,11 @@
 
 import UIKit
 import XLPagerTabStrip
+import SafariServices
 
 class AboutViewController: UIViewController, IndicatorInfoProvider {
 
-    private var event: Event!
+    var event: Event!
     var detailPage: EventDetailPage!
     private(set) var textView: UITextView!
     
@@ -20,17 +21,22 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
         
         self.event = detailPage.event
         self.detailPage = detailPage
-        view.backgroundColor = detailPage.view.backgroundColor
+        view.backgroundColor = AppColors.canvas
         
         textView = {
             let tv = UITextView()
-            tv.attributedText = event.eventDescription.attributedText()
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                tv.attributedText = event.eventDescription.attributedText(style: PLAIN_DARK)
+            } else {
+                tv.attributedText = event.eventDescription.attributedText()
+            }
             tv.contentInset.top = 20
             tv.contentInset.bottom = 20
+            tv.delegate = self
             tv.scrollIndicatorInsets = .init(top: 20, left: 0, bottom: 20, right: 0)
             tv.backgroundColor = .clear
             tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
+            tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.isEditable = false
             tv.isScrollEnabled = false
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -47,16 +53,35 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
         
     }
     
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard UIApplication.shared.applicationState != .background else { return }
+                
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                textView.attributedText = event.eventDescription.attributedText(style: PLAIN_DARK)
+            } else if traitCollection.userInterfaceStyle == .light {
+                textView.attributedText = event.eventDescription.attributedText()
+            }
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        textView.attributedText = event.eventDescription.attributedText()
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            textView.attributedText = event.eventDescription.attributedText(style: PLAIN_DARK)
+        } else {
+            textView.attributedText = event.eventDescription.attributedText()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        detailPage.invisible.textView.attributedText = textView.attributedText
+        detailPage.invisible.textView?.attributedText = textView.attributedText
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -77,4 +102,17 @@ class AboutViewController: UIViewController, IndicatorInfoProvider {
     }
     */
 
+}
+
+
+extension AboutViewController: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            self.present(vc, animated: true)
+            return false
+        }
+        
+        return true
+    }
 }

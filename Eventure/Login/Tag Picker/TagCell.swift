@@ -18,7 +18,7 @@ class TagCell: UICollectionViewCell {
         
         bgTint = {
             let bg = UIView()
-            bg.backgroundColor = MAIN_TINT
+            bg.backgroundColor = AppColors.main
             bg.layer.cornerRadius = 0
             bg.layer.borderWidth = 1.5
             bg.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
@@ -35,11 +35,12 @@ class TagCell: UICollectionViewCell {
         
         tagLabel = {
             let label = UILabel()
-            label.lineBreakMode = .byWordWrapping
+            label.lineBreakMode = .byCharWrapping
             label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 13
             label.textAlignment = .center
             label.textColor = .white
-            label.numberOfLines = 0
+            label.numberOfLines = 3
             label.font = .systemFont(ofSize: 16, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -62,7 +63,7 @@ class TagCell: UICollectionViewCell {
                     if self.isSelected {
                         self.bgTint.backgroundColor = MAIN_TINT_DARK
                     } else {
-                        self.bgTint.backgroundColor = MAIN_TINT
+                        self.bgTint.backgroundColor = AppColors.main
                     }
                 },
                 completion: nil)

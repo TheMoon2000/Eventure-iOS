@@ -14,7 +14,6 @@ class CheckinTable: UIViewController {
     private let refreshControl = UIRefreshControl()
     
     private var event: Event!
-    private var sheetInfo: SignupSheet!
     private var banner: UIVisualEffectView!
     
     private var emptyLabel: UILabel!
@@ -28,23 +27,36 @@ class CheckinTable: UIViewController {
     private var orgTitle: UILabel!
     
     private var orgInfo: Organization?
+    private var registrantProfiles = [Int: UIImage]()
     
     var sortedRegistrants = [Registrant]()
     
-    required init(event: Event, sheet: SignupSheet) {
+    required init(event: Event) {
         super.init(nibName: nil, bundle: nil)
         
         self.event = event
-        self.sheetInfo = sheet
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.view.backgroundColor = .clear
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        navigationController?.view.backgroundColor = nil
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.view.backgroundColor = .clear
         view.backgroundColor = .init(white: 0.92, alpha: 1)
+        navigationController?.navigationBar.shadowImage = UIImage()
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
@@ -62,12 +74,11 @@ class CheckinTable: UIViewController {
         
         checkinTitle = {
             let label = UILabel()
-            label.numberOfLines = 3
-            label.lineBreakMode = .byWordWrapping
+            label.numberOfLines = 5
             label.text = event.title
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 22, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
 
@@ -80,9 +91,8 @@ class CheckinTable: UIViewController {
         
         checkinSubtitle = {
             let label = UILabel()
-            
+            label.text = "Loading..."
             label.numberOfLines = 5
-            label.lineBreakMode = .byWordWrapping
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 16.5)
             label.textColor = .darkGray
@@ -146,12 +156,16 @@ class CheckinTable: UIViewController {
         }()
         
         orgLogo = {
-            let iv = UIImageView(image: #imageLiteral(resourceName: "unknown"))
+            let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
+            iv.tintColor = AppColors.mainDisabled
+            iv.layer.cornerRadius = 5
+            iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
+            iv.layer.cornerRadius = 5
             iv.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 30).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 32).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.leftAnchor.constraint(greaterThanOrEqualTo: bottomBanner.leftAnchor, constant: 15).isActive = true
             iv.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -167,13 +181,13 @@ class CheckinTable: UIViewController {
             label.lineBreakMode = .byWordWrapping
             label.text = event.hostTitle
             label.font = .systemFont(ofSize: 17.5, weight: .medium)
-            label.textColor = .init(white: 0.1, alpha: 1)
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 10).isActive = true
+            label.leftAnchor.constraint(equalTo: orgLogo.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(lessThanOrEqualTo: bottomBanner.rightAnchor, constant: -20).isActive = true
-            label.centerXAnchor.constraint(equalTo: bottomBanner.centerXAnchor, constant: 20).isActive = true
+            label.centerXAnchor.constraint(equalTo: bottomBanner.centerXAnchor, constant: 22).isActive = true
             label.centerYAnchor.constraint(equalTo: bottomBanner.safeAreaLayoutGuide.centerYAnchor).isActive = true
             label.topAnchor.constraint(greaterThanOrEqualTo: bottomBanner.topAnchor, constant: 12).isActive = true
             label.bottomAnchor.constraint(lessThanOrEqualTo: bottomBanner.bottomAnchor, constant: -12).isActive = true
@@ -184,23 +198,35 @@ class CheckinTable: UIViewController {
         refreshRegistrants()
         loadOrganizationInfo()
         
-        DispatchQueue.main.async {
-            self.checkinTable.contentInset.top = self.banner.frame.height - UIApplication.shared.statusBarFrame.height * 2
-            self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
-        }
+        view.layoutIfNeeded()
+        layoutTableInset()
+    }
+    
+    private func layoutTableInset() {
+        
+        let topPadding = self.checkinTable.adjustedContentInset.top - self.checkinTable.contentInset.top
+        
+        self.checkinTable.contentInset.top = self.banner.frame.height - topPadding + 6
+        
+        self.checkinTable.scrollIndicatorInsets.top = self.checkinTable.contentInset.top
+        
+        checkinTable.contentInset.bottom = bottomBanner.frame.height + 6
+               checkinTable.scrollIndicatorInsets.bottom = checkinTable.contentInset.bottom
     }
     
     
     private func reloadStats() {
-        let word = sheetInfo.currentOccupied == 1 ? "person" : "people"
-        if sheetInfo.capacity == 0 {
-            checkinSubtitle.text = "\(sheetInfo.currentOccupied) \(word) checked in"
+        if event.capacity == 0 {
+            let word = sortedRegistrants.count == 1 ? "person" : "people"
+            checkinSubtitle.text = "\(sortedRegistrants.count) \(word) checked in"
         } else {
-            checkinSubtitle.text = "\(sheetInfo.currentOccupied) / \(sheetInfo.capacity) \(word) checked in."
+            let word = event.capacity == 1 ? "person" : "people"
+            checkinSubtitle.text = "\(sortedRegistrants.count) / \(event.capacity) \(word) checked in."
         }
+        view.layoutIfNeeded()
     }
     
-    @objc private func refreshRegistrants() {
+    @objc private func refreshRegistrants(stealth: Bool = false) {
         let parameters = [
             "sheetId": event.uuid,
             "orgId": event.hostID
@@ -215,14 +241,18 @@ class CheckinTable: UIViewController {
             data, response, error in
             
             DispatchQueue.main.async {
-                self.checkinTable.refreshControl = self.refreshControl
+                if self.checkinTable.refreshControl == nil {
+                    self.checkinTable.refreshControl = self.refreshControl
+                }
                 self.refreshControl.endRefreshing()
             }
             
             guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self) {
-                        self.dismiss(animated: true)
+                if !stealth {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self) {
+                            self.dismiss(animated: true)
+                        }
                     }
                 }
                 return
@@ -231,12 +261,15 @@ class CheckinTable: UIViewController {
             if let json = try? JSON(data: data!).arrayValue {
                 var tmp = Set<Registrant>()
                 for registrantData in json {
-                    tmp.insert(Registrant(json: registrantData))
+                    let registrant = Registrant(json: registrantData)
+                    registrant.profilePicture = self.registrantProfiles[registrant.userID]
+                    if registrant.currentCode == nil {
+                        tmp.insert(registrant)
+                    }
                 }
-                self.sheetInfo.currentOccupied = tmp.count
                 
                 self.sortedRegistrants = tmp.sorted { r1, r2 in
-                    r1.checkedInDate.timeIntervalSince(r1.checkedInDate) <= 0
+                    r1.checkedInDate.timeIntervalSince(r2.checkedInDate) <= 0
                 }
                 
                 DispatchQueue.main.async {
@@ -249,9 +282,11 @@ class CheckinTable: UIViewController {
                     self.checkinTable.reloadData()
                 }
             } else {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self) {
-                        self.dismiss(animated: true)
+                if !stealth {
+                    DispatchQueue.main.async {
+                        serverMaintenanceError(vc: self) {
+                            self.dismiss(animated: true)
+                        }
                     }
                 }
             }
@@ -309,6 +344,14 @@ class CheckinTable: UIViewController {
         return .portrait
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { _ in
+            self.layoutTableInset()
+        }, completion: nil)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -325,7 +368,14 @@ extension CheckinTable: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "user") as! CheckinUserCell
         
-        cell.setup(registrant: sortedRegistrants[indexPath.row])
+        let current = sortedRegistrants[indexPath.row]
+        if current.profilePicture == nil {
+            current.getProfilePicture { new in
+                self.registrantProfiles[new.userID] = new.profilePicture
+                cell.profilePicture.image = new.profilePicture
+            }
+        }
+        cell.setup(registrant: current)
         cell.placeLabel.text = String(indexPath.row + 1)
         
         return cell

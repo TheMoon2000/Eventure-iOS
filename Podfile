@@ -7,6 +7,12 @@ target 'Eventure' do
   pod 'Down'
   pod 'XLPagerTabStrip'
   pod 'TTTAttributedLabel'
+  pod 'TOCropViewController'
+  pod 'SwiftCSVExport'
+  pod 'SwiftLoggly', '~> 1.0'
+  # pod 'Braintree'
+  # pod 'Braintree/DataCollector'
+  # pod 'Braintree/Venmo'
 end
 
 target 'EventureAPITests' do

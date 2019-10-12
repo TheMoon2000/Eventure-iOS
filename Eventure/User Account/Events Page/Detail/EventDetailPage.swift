@@ -28,6 +28,7 @@ class EventDetailPage: UIViewController {
     /// The event which the current view controller displays.
     var event: Event!
     
+    var interestedStatusChanged: ((Bool) -> ())?
     var orgEventView: OrgEventViewController?
     
     private var hideBlankImages = true
@@ -49,9 +50,9 @@ class EventDetailPage: UIViewController {
         super.viewDidLoad()
         
         self.title = "Event Details"
-        view.backgroundColor = .init(white: 0.95, alpha: 1)
+        view.backgroundColor = AppColors.navbar
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
-        
+                
         if Organization.current == nil {
             rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "heart_empty"), style: .plain, target: self, action: #selector(changedFavoriteStatus))
             rightButton.isEnabled = User.current != nil
@@ -83,7 +84,7 @@ class EventDetailPage: UIViewController {
         coverImage = {
             let iv = UIImageView(image: event.eventVisual)
             iv.contentMode = .scaleAspectFill
-            iv.backgroundColor = MAIN_DISABLED
+            iv.backgroundColor = AppColors.mainDisabled
             iv.clipsToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
@@ -105,8 +106,14 @@ class EventDetailPage: UIViewController {
             right.isActive = true
             
             if event.eventVisual == nil {
-                emptyImageHeightConstraint = iv.heightAnchor.constraint(equalToConstant: 0)
-                emptyImageHeightConstraint.isActive = true
+                if event.hasVisual {
+                    iv.image = #imageLiteral(resourceName: "cover_placeholder")
+                    event.getCover { withImage in
+                        iv.image = withImage.eventVisual
+                    }
+                } else {
+                    iv.image = #imageLiteral(resourceName: "berkeley")
+                }
             }
             
             iv.isUserInteractionEnabled = true
@@ -118,33 +125,48 @@ class EventDetailPage: UIViewController {
         eventTitle = {
             let label = UILabel()
             label.numberOfLines = 10
-            label.lineBreakMode = .byWordWrapping
             label.text = event.title
             label.font = .systemFont(ofSize: 20, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
             label.topAnchor.constraint(equalTo: coverImage.bottomAnchor, constant: 25).isActive = true
 //            label.bottomAnchor.constraint(equalTo: canvas.bottomAnchor, constant: -300).isActive = true
 
             return label
         }()
         
+        interestedButton = {
+            let button = UIButton(type: .system)
+            button.tintColor = AppColors.interest
+            button.isHidden = Organization.current != nil
+            button.isEnabled = User.current != nil
+            button.imageView?.contentMode = .scaleAspectFit
+            button.tintColor = AppColors.main
+            if User.current?.interestedEvents.contains(event.uuid) ?? false {
+                button.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
+            } else {
+                button.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
+            }
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
+            
+            button.centerYAnchor.constraint(equalTo: eventTitle.centerYAnchor).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 35).isActive = true
+            button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
+            button.leftAnchor.constraint(equalTo: eventTitle.rightAnchor, constant: 15).isActive = true
+            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
+            
+            button.addTarget(self, action: #selector(interestedAction), for: .touchUpInside)
+            
+            return button
+        }()
+        
         
         view.layoutIfNeeded()
         
         tabStrip = {
-            let tabStrip = EventDetailTabStrip(detailPage: self)
-            tabStrip.view.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(tabStrip.view)
-            
-            tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-            tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
-            
-            tabStrip.view.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
             
             let vc = AboutViewController(detailPage: self)
             vc.view.isHidden = true
@@ -155,6 +177,16 @@ class EventDetailPage: UIViewController {
             
             invisible = vc
             
+            let tabStrip = EventDetailTabStrip(detailPage: self)
+            tabStrip.view.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(tabStrip.view)
+            
+            tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
+            
+            tabStrip.view.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
+            
             tabStrip.view.heightAnchor.constraint(equalTo: vc.view.heightAnchor, constant: 70).isActive = true
             
             addChild(tabStrip)
@@ -163,15 +195,17 @@ class EventDetailPage: UIViewController {
             return tabStrip
         }()
         
-        let white = UIView()
-        white.backgroundColor = .white
-        white.translatesAutoresizingMaskIntoConstraints = false
-        canvas.insertSubview(white, belowSubview: coverImage)
         
-        white.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        white.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        white.topAnchor.constraint(equalTo: canvas.topAnchor).isActive = true
-        white.bottomAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
+        let bottom = UIView()
+        bottom.backgroundColor = AppColors.canvas
+        bottom.translatesAutoresizingMaskIntoConstraints = false
+        canvas.insertSubview(bottom, belowSubview: coverImage)
+        
+        bottom.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        bottom.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        bottom.topAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
+        bottom.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
         
     }
     
@@ -251,31 +285,41 @@ class EventDetailPage: UIViewController {
             emptyImageHeightConstraint?.isActive = false
             coverImage.image = event.eventVisual
         }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        self.orgEventView?.eventCatalog?.reloadData()
-    }
-    
-    
-    @objc private func goingAction() {
-        if goingButton.currentImage == #imageLiteral(resourceName: "star_empty") {
-            goingButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
-            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
-        } else {
-            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        if let v = tabStrip.viewControllers.last as? OtherViewController {
+            v.event = self.event
+            v.refreshValues()
         }
         
+        if let v = tabStrip.viewControllers.first as? AboutViewController {
+            v.event = self.event
+        }
     }
     
     @objc private func interestedAction() {
-        if interestedButton.currentImage == #imageLiteral(resourceName: "cross") {
-            interestedButton.setImage(#imageLiteral(resourceName: "check"), for: .normal)
-            goingButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+        UISelectionFeedbackGenerator().selectionChanged()
+        let status: Bool
+        if User.current!.interestedEvents.contains(event.uuid) {
+            interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
+            User.current?.interestedEvents.remove(event.uuid)
+            event.interested.remove(User.current!.uuid)
+            status = false
         } else {
-            interestedButton.setImage(#imageLiteral(resourceName: "cross"), for: .normal)
+            self.interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
+            User.current?.interestedEvents.insert(event.uuid)
+            event.interested.insert(User.current!.uuid)
+            status = true
+        }
+        
+        if let v = tabStrip.viewControllers.last as? OtherViewController {
+            v.interestedText.text = String(event.interested.count)
+        }
+        
+        interestedStatusChanged?(status)
+    
+        User.current?.syncInterested(interested: status, for: event) { success in
+            if !success {
+                internetUnavailableError(vc: self)
+            }
         }
         
     }
@@ -286,15 +330,22 @@ class EventDetailPage: UIViewController {
             self.openEditor()
         }))
         
-        alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
-            let checkin = EventCheckinOverview()
-            checkin.event = self.event
-            self.navigationController?.pushViewController(checkin, animated: true)
-        }))
-        
-        alert.addAction(.init(title: "Event Statistics", style: .default))
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.barButtonItem = rightButton
+        }
         
         if self.event.published {
+            alert.addAction(.init(title: "Check-in Info", style: .default, handler: { action in
+                let checkin = EventCheckinOverview()
+                checkin.event = self.event
+                self.navigationController?.pushViewController(checkin, animated: true)
+            }))
+            if self.event.requiresTicket {
+                alert.addAction(.init(title: "Ticket Center", style: .default, handler: { action in
+                    let center = TicketCenter(parentVC: self)
+                    self.navigationController?.pushViewController(center, animated: true)
+                }))
+            }
             alert.addAction(.init(title: "Remove Event", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to permanently remove this published event. There is no going back.", preferredStyle: .alert)
                 warning.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
@@ -303,6 +354,7 @@ class EventDetailPage: UIViewController {
                 })
                 self.present(warning, animated: true)
             })
+            
         } else {
             alert.addAction(.init(title: "Delete Draft", style: .destructive) { _ in
                 let warning = UIAlertController(title: "Are you sure?", message: "You are about to delete this local draft. This process cannot be undone.", preferredStyle: .alert)
@@ -330,8 +382,9 @@ class EventDetailPage: UIViewController {
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
-        nav.navigationBar.tintColor = MAIN_TINT
-        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.tintColor = AppColors.main
+        nav.navigationBar.barTintColor = AppColors.navbar
+        nav.navigationBar.isTranslucent = false
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true)
     }

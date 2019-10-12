@@ -8,11 +8,13 @@
 
 import UIKit
 import TTTAttributedLabel
+import SafariServices
 
 class OrgEventCell: UICollectionViewCell {
     
     private var verticalSpacing: CGFloat = 14
     
+    private var event: Event!
     var parentVC: UIViewController?
     
     private var card: UIView!
@@ -32,11 +34,11 @@ class OrgEventCell: UICollectionViewCell {
         
         card = {
             let view = UIView()
-            view.backgroundColor = .white
+            view.backgroundColor = AppColors.card
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
-            view.layer.borderColor = UIColor(white: 0.85, alpha: 1).cgColor
+            view.layer.borderColor = AppColors.line.cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
@@ -139,7 +141,6 @@ class OrgEventCell: UICollectionViewCell {
         locationText = {
             let label = UILabel()
             label.numberOfLines = 5
-            label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17)
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -182,7 +183,7 @@ class OrgEventCell: UICollectionViewCell {
             
             
             let attributes: [NSAttributedString.Key : Any] = [
-                .foregroundColor: LINK_COLOR,
+                .foregroundColor: AppColors.link,
                 .underlineStyle: true
             ]
             label.linkAttributes = attributes
@@ -202,20 +203,50 @@ class OrgEventCell: UICollectionViewCell {
     
     
     func setupCellWithEvent(event: Event, withImage: Bool = false) {
+        self.event = event
         titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
         locationText.text = event.location.isEmpty ? "TBA" : event.location
-        self.descriptionText.setText(event.eventDescription.attributedText())
-        
+        descriptionText.setText(event.eventDescription.attributedText())
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+            }
+        }
+        if event.eventDescription.isEmpty {
+            descriptionText.setText("No description.".attributedText())
+        }
         if event.eventVisual == nil {
             if withImage {
-                event.getCover { eventWithCover in
-                    self.setupCellWithEvent(event: eventWithCover)
+                if event.hasVisual {
+                    cover.image = #imageLiteral(resourceName: "cover_placeholder")
+                    event.getCover { [weak self] eventWithCover in
+                        if let image = eventWithCover.eventVisual {
+                            self?.cover.image = image
+                        }
+                    }
+                } else {
+                    cover.image = #imageLiteral(resourceName: "berkeley")
                 }
             }
-            cover.image = #imageLiteral(resourceName: "cover_placeholder")
         } else {
             cover.image = event.eventVisual
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard UIApplication.shared.applicationState != .background else { return }
+        
+        card.layer.borderColor = AppColors.line.cgColor
+        
+        if #available(iOS 12.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+            } else {
+                descriptionText.setText(event.eventDescription.attributedText())
+            }
         }
     }
     
@@ -230,7 +261,8 @@ extension OrgEventCell: TTTAttributedLabelDelegate {
         let alert = UIAlertController(title: "Open Link?", message: "You will be redirected to " + url.absoluteString, preferredStyle: .alert)
         alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Go", style: .default, handler: { action in
-            UIApplication.shared.open(url, options: [:])
+            let vc = SFSafariViewController(url: url)
+            self.parentVC?.present(vc, animated: true)
         }))
         parentVC?.present(alert, animated: true, completion: nil)
     }
@@ -242,13 +274,8 @@ extension OrgEventCell: TTTAttributedLabelDelegate {
         
         switch result.resultType {
         case NSTextCheckingResult.CheckingType.phoneNumber:
-            alert.title = "Make a call?"
-            alert.message = result.phoneNumber
             let url = URL(string: "tel://" + result.phoneNumber!)!
-            alert.addAction(.init(title: "Call", style: .default, handler: {
-                action in
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            }))
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         default:
             break
         }

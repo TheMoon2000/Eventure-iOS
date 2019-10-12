@@ -24,11 +24,11 @@ class FinishRegistration: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = UIColor(white: 0.75, alpha: 1)
+            spinner.color = .lightGray
             spinner.hidesWhenStopped = true
             spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -47,7 +47,7 @@ class FinishRegistration: UIViewController {
             label.numberOfLines = 2
             label.text = "Creating your Account..."
             label.font = .systemFont(ofSize: 18)
-            label.textColor = UIColor(white: 0.3, alpha: 1)
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
@@ -63,7 +63,7 @@ class FinishRegistration: UIViewController {
         
         button = {
             let button = UIButton(type: .system)
-            button.tintColor = MAIN_TINT
+            button.tintColor = AppColors.main
             button.isHidden = true
             button.titleLabel?.font = .systemFont(ofSize: 19, weight: .medium)
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -140,11 +140,6 @@ class FinishRegistration: UIViewController {
     /// Initiates an API call to `account/Register` with the information provided by the user.
     
     private func createAccount() {
-        
-        // Add `displayedName` parameter if it's initially empty
-        if registrationData.displayName.isEmpty {
-            registrationData.displayName = registrationData.email
-        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/Register",

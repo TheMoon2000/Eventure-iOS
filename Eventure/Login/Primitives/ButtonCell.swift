@@ -24,6 +24,7 @@ class ButtonCell: UITableViewCell {
         super.init(style: .default, reuseIdentifier: nil)
         
         selectionStyle = .none
+        backgroundColor = .clear
         button = makeButton()
         spinner = makeSpinner()
     }
@@ -32,7 +33,7 @@ class ButtonCell: UITableViewCell {
         let button = UIButton(type: .system)
         button.setTitle("Sign Up", for: .normal)
         button.tintColor = .white
-        button.backgroundColor = MAIN_TINT
+        button.backgroundColor = AppColors.main
         button.titleLabel?.font = .systemFont(ofSize: 18.5, weight: .semibold)
         button.layer.cornerRadius = 26
         button.clipsToBounds = true
@@ -81,7 +82,7 @@ class ButtonCell: UITableViewCell {
     
     @objc private func primaryButtonLifted(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2) {
-            sender.backgroundColor = MAIN_TINT
+            sender.backgroundColor = AppColors.main
         }
     }
     

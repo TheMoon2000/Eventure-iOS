@@ -40,9 +40,9 @@ class RegisterTableController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.keyboardDismissMode = .interactive
@@ -66,10 +66,11 @@ class RegisterTableController: UITableViewController {
             label.text = "New Account"
             label.font = .systemFont(ofSize: 28, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             
             let cell = UITableViewCell()
+            cell.backgroundColor = .clear
             cell.selectionStyle = .none
             cell.addSubview(label)
             
@@ -416,7 +417,7 @@ class RegisterTableController: UITableViewController {
     // Helper methods
     
     @objc private func showDisplayNameHelp() {
-        let alert = UIAlertController(title: "Display Name", message: "This is the name that other users will see from you. It doesn't need to be unique. If you leave this field blank, your email address will be used instead.", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "Display Name", message: "This is the name that other users will see from you. It doesn't need to be unique, and it's recommended that you provide one. If you leave this field blank, your email address or your system-generated ID will be displayed instead.", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }

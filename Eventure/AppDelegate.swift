@@ -8,12 +8,20 @@
 
 import UIKit
 import CoreData
+import UserNotifications
+import SwiftyJSON
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    static var suppressNotifications = false
+    
+    var orientationLock = UIInterfaceOrientationMask.all
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return self.orientationLock
+    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
@@ -22,14 +30,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let entrypoint = MainTabBarController()
         MainTabBarController.current = entrypoint
         window?.rootViewController = entrypoint
+        entrypoint.loginSetup()
         
         window?.makeKeyAndVisible()
-                
-        //entry view first presents the nav controller rooted at loginviewcontroller, later it will be dismissed upon successful login
-        //DO NOT move this before makeKeyAndVisible(), otheriwse entrypoint would not be recognized as rootview and unable to push
-        entrypoint.loginSetup()
+        
+        application.applicationIconBadgeNumber = 0
+        
+        if User.current == nil && Organization.current == nil && !UserDefaults.standard.bool(forKey: "Has logged in") {
+            let login = LoginViewController()
+            let nvc = InteractivePopNavigationController(rootViewController: login)
+            nvc.isNavigationBarHidden = true
+            login.navBar = nvc
+            nvc.modalPresentationStyle = .fullScreen
+            entrypoint.present(nvc, animated: false)
+            UserDefaults.standard.setValue(true, forKey: "Has logged in")
+        }
+        
+        registerForPushNotifications()
+        
+        if let notification = launchOptions?[.remoteNotification] as? [String: Any], let aps = notification["aps"] {
+            handleAPSPacket(packet: JSON(aps))
+        }
+        
         return true
     }
+    
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -100,5 +125,152 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+    func registerForPushNotifications() {
+        UNUserNotificationCenter.current().delegate = self
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
+            (granted, error) in
+            
+            guard granted else { return }
+            // 2. Attempt registration for remote notifications on the main thread
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
+        // 1. Convert device token to string
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+        let token = tokenParts.joined()
+        // 2. Print device token to use for PNs payloads
+        print("Device Token: \(token)")
+        User.token = token
+        
+        // 3. Register for notification actions
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        // 1. Print out error if PNs registration not successful
+        print("Failed to register for remote notifications with error: \(error)")
+        User.token = "no token"
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        
+        guard userInfo["aps"] != nil else { return }
+        
+        handleAPSPacket(packet: JSON(userInfo["aps"]!))
+    }
+    
+    func handleAPSPacket(packet: JSON) {
+        
+        if AppDelegate.suppressNotifications { return }
+        
+        let info = packet.dictionaryValue
+        
+        guard let type = info["type"]?.string, let keyType = NotificationKeys(rawValue: type) else {
+            print("WARNING: Notification type is not defined or unrecognized")
+            return
+        }
+        
+        switch keyType {
+        case .oneTimeCode:
+            guard let code = info["code"]?.string else { return }
+            guard let username = info["name"]?.string else { return }
+            guard let title_base64 = info["list name"]?.string, let titleData = Data(base64Encoded: title_base64) else {
+                print("WARNING: Cannot parse APS packet: \(info)")
+                return
+            }
+            
+            guard let title = String(data: titleData, encoding: .utf8) else { return }
+            
+            let alert = UIAlertController(title: "New check-in request", message: "User '\(username)' would like to check-in for '\(title)'. The 6-digit verification code is \(code).", preferredStyle: .alert)
+            alert.addAction(.init(title: "Done", style: .cancel))
+            UIApplication.topMostViewController?.present(alert, animated: true, completion: nil)
+        case .generalNotice:
+            guard let alertInfo = info["alert"]?.dictionary else { return }
+            guard let title = alertInfo["title"]?.string else { return }
+            guard let body = alertInfo["body"]?.string else { return }
+            
+            let alert = UIAlertController(title: title, message: body, preferredStyle: .alert)
+            alert.addAction(.init(title: "Dismiss", style: .cancel))
+            UIApplication.topMostViewController?.present(alert, animated: true)
+        case .ticketActivation:
+            NotificationCenter.default.post(name: TICKET_ACTIVATED, object: packet.dictionaryObject as? [String : String])
+        case .ticketRequest:
+            NotificationCenter.default.post(name: NEW_TICKET_REQUEST, object: nil)
+        case .ticketTransferRequest:
+            print(info)
+            guard let alertMsg = info["alert"]?.dictionary?["body"]?.string else { return }
+            guard let requesterID = info["Requester ID"]?.int else { return }
+            guard let ticketID = info["Ticket ID"]?.string else { return }
+            
+            let alert = UIAlertController(title: "Ticket transfer request", message: alertMsg + "\n\n" + "If you approve this ticket transfer, the requester will immediately become the new owner of this ticket. Please confirm that you have received all necessary payments (if any) before proceeding.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Decline", style: .cancel, handler: { _ in
+                self.respondToTransferRequest(ticketID: ticketID, approve: false, newOwner: requesterID)
+            }))
+            alert.addAction(.init(title: "Approve", style: .default, handler: { _ in
+                self.respondToTransferRequest(ticketID: ticketID, approve: true, newOwner: requesterID)
+            }))
+            UIApplication.topMostViewController?.present(alert, animated: true)
+        case .ticketTransferApproved, .ticketTransferDeclined:
+            let approved = keyType == .ticketTransferApproved
+            let ticketID = info["Ticket ID"]?.string ?? ""
+            NotificationCenter.default.post(name: TICKET_TRANSFER_STATUS, object: (approved, ticketID))
+        default:
+            print(info)
+        }
+    }
+    
+    @objc private func respondToTransferRequest(ticketID: String, approve: Bool, newOwner: Int) {
+        
+        let parameters = [
+            "ticketId": ticketID,
+            "approve": approve ? "1" : "0",
+            "newOwner": String(newOwner)
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/RespondTransferRequest",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: UIApplication.topMostViewController!)
+                }
+                return
+            }
+        }
+        
+        task.resume()
+    }
+    
+}
+
+extension AppDelegate {
+    struct AppUtility {
+        static func lockOrientation(_ orientation: UIInterfaceOrientationMask) {
+            if let delegate = UIApplication.shared.delegate as? AppDelegate {
+                delegate.orientationLock = orientation
+            }
+        }
+        
+        static func lockOrientation(_ orientation: UIInterfaceOrientationMask, andRotateTo rotateOrientation:UIInterfaceOrientation) {
+            self.lockOrientation(orientation)
+            UIDevice.current.setValue(rotateOrientation.rawValue, forKey: "orientation")
+        }
+    }
 }
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class DraftDescriptionPage: UIViewController {
     
@@ -30,8 +31,8 @@ class DraftDescriptionPage: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
-        view.tintColor = MAIN_TINT
+        view.backgroundColor = AppColors.canvas
+        view.tintColor = AppColors.main
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         
@@ -51,6 +52,7 @@ class DraftDescriptionPage: UIViewController {
             let sv = UIScrollView()
             sv.alwaysBounceVertical = true
             sv.addGestureRecognizer(tap)
+            sv.keyboardDismissMode = .interactive
             sv.contentInsetAdjustmentBehavior = .always
             sv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(sv)
@@ -109,7 +111,7 @@ class DraftDescriptionPage: UIViewController {
         
         separatorLine = {
             let line = UIView()
-            line.backgroundColor = LINE_TINT
+            line.backgroundColor = AppColors.line
             line.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(line)
             
@@ -123,7 +125,7 @@ class DraftDescriptionPage: UIViewController {
         
         editButton = {
             let button = UIButton(type: .system)
-            button.setTitleColor(MAIN_TINT, for: .normal)
+            button.setTitleColor(AppColors.main, for: .normal)
             button.setTitle("Edit", for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -134,7 +136,7 @@ class DraftDescriptionPage: UIViewController {
         
         previewButton = {
             let button = UIButton(type: .system)
-            button.setTitleColor(.darkGray, for: .normal)
+            button.setTitleColor(AppColors.control, for: .normal)
             button.setTitle("Preview", for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -146,7 +148,7 @@ class DraftDescriptionPage: UIViewController {
         buttonStack = {
             
             let verticalLine = UIView()
-            verticalLine.backgroundColor = LINE_TINT
+            verticalLine.backgroundColor = AppColors.line
             verticalLine.translatesAutoresizingMaskIntoConstraints = false
             verticalLine.widthAnchor.constraint(equalToConstant: 1).isActive = true
             verticalLine.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -166,16 +168,12 @@ class DraftDescriptionPage: UIViewController {
         
         descriptionText = {
             let tv = UITextView()
-            tv.backgroundColor = nil
-            tv.isScrollEnabled = false
             tv.keyboardDismissMode = .onDrag
-            tv.font = .systemFont(ofSize: 18)
-            tv.textColor = .darkGray
-            tv.allowsEditingTextAttributes = false
+            tv.textColor = AppColors.plainText
+            tv.isScrollEnabled = false
+
+            textViewFormatter(tv: tv)
             
-            let pStyle = NSMutableParagraphStyle()
-            pStyle.lineSpacing = 2
-            tv.typingAttributes[NSAttributedString.Key.paragraphStyle] = pStyle
             tv.insertText(draftPage.draft.eventDescription)
             tv.delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -207,7 +205,6 @@ class DraftDescriptionPage: UIViewController {
             let label = UILabel()
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 18, weight: .medium)
-            label.textColor = .init(white: 0.8, alpha: 1)
             label.isHidden = !draftPage.draft.eventDescription.isEmpty
             label.text = "Here, describe your event within \(descriptionMaxLength) characters. Markdown is supported!"
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -225,11 +222,11 @@ class DraftDescriptionPage: UIViewController {
             tv.isHidden = true
             tv.backgroundColor = nil
             tv.isEditable = false
+            tv.delegate = self
             tv.isScrollEnabled = false
-            tv.textColor = .gray
             tv.font = .systemFont(ofSize: 17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
-            tv.linkTextAttributes[.foregroundColor] = LINK_COLOR
+            tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(tv)
             
@@ -249,7 +246,18 @@ class DraftDescriptionPage: UIViewController {
             descriptionText.becomeFirstResponder()
         }
         
+        editButtonPressed()
         updateWordCount()
+    }
+    
+    func textViewFormatter(tv: UITextView) {
+        tv.backgroundColor = nil
+        tv.font = .systemFont(ofSize: 18)
+        tv.allowsEditingTextAttributes = false
+        
+        let pStyle = NSMutableParagraphStyle()
+        pStyle.lineSpacing = 2
+        tv.typingAttributes[NSAttributedString.Key.paragraphStyle] = pStyle
     }
     
     deinit {
@@ -268,8 +276,10 @@ class DraftDescriptionPage: UIViewController {
     }
     
     @objc private func editButtonPressed() {
-        editButton.setTitleColor(MAIN_TINT, for: .normal)
-        previewButton.setTitleColor(.darkGray, for: .normal)
+        editButton.setTitleColor(AppColors.main, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        previewButton.setTitleColor(AppColors.control, for: .normal)
+        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         previewText.isHidden = true
         descriptionText.isHidden = false
         textViewDidChange(descriptionText)
@@ -277,21 +287,38 @@ class DraftDescriptionPage: UIViewController {
     }
     
     @objc private func previewButtonPressed() {
-        
         view.endEditing(true)
         charCount.isHidden = true
         
         if descriptionText.text.isEmpty {
             previewText.text = "No content."
         } else {
-            previewText.attributedText = descriptionText.text.attributedText()
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                    previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)
+            } else {
+                previewText.attributedText = descriptionText.text.attributedText()
+            }
         }
         
-        editButton.setTitleColor(.darkGray, for: .normal)
-        previewButton.setTitleColor(MAIN_TINT, for: .normal)
+        editButton.setTitleColor(AppColors.control, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        previewButton.setTitleColor(AppColors.main, for: .normal)
+        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         descriptionText.isHidden = true
         previewText.isHidden = false
         descriptionPlaceholder.isHidden = true
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        guard UIApplication.shared.applicationState != .background else { return }
+        
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)
+        } else {
+            previewText.attributedText = descriptionText.text.attributedText()
+        }
     }
 
 }
@@ -299,7 +326,7 @@ class DraftDescriptionPage: UIViewController {
 extension DraftDescriptionPage: UITextViewDelegate {
     
     private func updateWordCount() {
-        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? .darkGray : .red
+        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? AppColors.plainText : .red
         
         charCount.text = "\(descriptionText.text.count) / \(descriptionMaxLength) characters"
     }
@@ -318,28 +345,29 @@ extension DraftDescriptionPage: UITextViewDelegate {
             scrollToCursor()
         }
     }
-    
-    func textViewDidChangeSelection(_ textView: UITextView) {
-        if textView == descriptionText {
-            scrollToCursor()
-        }
-    }
+//
+//    func textViewDidChangeSelection(_ textView: UITextView) {
+//        if textView == descriptionText {
+//            scrollToCursor()
+//        }
+//    }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if textView == descriptionText {
-            scrollToCursor()
+            DispatchQueue.main.async {
+                self.scrollToCursor()
+            }
         }
     }
     
     func scrollToCursor() {
         var range = NSRange()
         range.location = descriptionText.selectedRange.location
-        range.length = descriptionText.text.count - descriptionText.selectedRange.location
+        range.length = descriptionText.text.count -  descriptionText.selectedRange.upperBound
         let front = NSString(string: descriptionText.text).replacingCharacters(in: range, with: "")
         let imaginary = UITextView(frame: descriptionText.bounds)
-        imaginary.font = .systemFont(ofSize: 18)
-        imaginary.text = front
-        imaginary.textContainer.lineFragmentPadding = 0
+        textViewFormatter(tv: imaginary)
+        imaginary.attributedText = NSAttributedString(string: front, attributes: imaginary.typingAttributes)
         
         let required = descriptionText.frame.origin.y + imaginary.contentSize.height + 10
         let displayHeight = canvas.contentOffset.y + canvas.frame.height - canvas.contentInset.bottom
@@ -355,6 +383,17 @@ extension DraftDescriptionPage: UITextViewDelegate {
         }
         return true
     }
+    
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
+            let vc = SFSafariViewController(url: URL)
+            draftPage.present(vc, animated: true)
+            return false
+        }
+        
+        return true
+    }
+
 }
 
 

@@ -9,34 +9,41 @@
 import UIKit
 
 class FilterDateTableViewController: UITableViewController {
-    var filterPage: FilterPageViewController!
+    
+    private var parentVC: EventViewController!
+    
     var contentCells = [UITableViewCell]()
-    
-    private(set) var start = Date() {
-        didSet {
-            self.updateStart()
-        }
-    }
-    
-    private(set) var end = Date() {
-        didSet {
-            self.updateEnd()
-        }
-    }
     
     var startTimeExpanded = false
     var endTimeExpanded = false
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    required init(parentVC: EventViewController) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.parentVC = parentVC
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = FilterPageViewController.backgroundColor
+        title = "Filter Settings"
+        
+        view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.contentInset.top = 8
-        tableView.tintColor = MAIN_TINT
+        tableView.tintColor = AppColors.main
+        
+        navigationItem.leftBarButtonItem = .init(title: "Reset", style: .plain, target: self, action: #selector(reset))
+        navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(close))
         
         let startTopCell = DatePickerTopCell(title: "Start time:")
+        
+        startTopCell.rightLabel.text = "Present"
         contentCells.append(startTopCell)
         
         
@@ -45,7 +52,12 @@ class FilterDateTableViewController: UITableViewController {
             
             let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
-            cell.datePicker.date = rounded
+            if let start = EventViewController.start {
+                cell.datePicker.date = start
+                startTopCell.displayedDate = cell.datePicker.date
+            } else {
+                cell.datePicker.date = rounded
+            }
             
             return cell
         }()
@@ -53,6 +65,7 @@ class FilterDateTableViewController: UITableViewController {
         contentCells.append(startBottomCell)
         
         let endTopCell = DatePickerTopCell(title: "End time:")
+        endTopCell.rightLabel.text = "Distant future"
         contentCells.append(endTopCell)
         
         let endBottomCell: DatePickerBottomCell = {
@@ -60,50 +73,62 @@ class FilterDateTableViewController: UITableViewController {
             
             let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
-            cell.datePicker.date = rounded
-            
-            cell.dateChangedHandler = { [weak self] date in
-                endTopCell.displayedDate = date
-                self?.end = date
-                self?.filterPage.edited = true
-                
+            if let end = EventViewController.end {
+                cell.datePicker.date = end
+                endTopCell.displayedDate = cell.datePicker.date
+            } else {
+                cell.datePicker.date = rounded
             }
+            
             
             return cell
         }()
         
+        startBottomCell.dateChangedHandler = { newDate in
+            startTopCell.displayedDate = newDate
+            EventViewController.start = newDate
+            let minimumUpperbound = newDate.addingTimeInterval(3600)
+            let currentUpperbound = EventViewController.end ?? .distantFuture
+            if currentUpperbound < newDate {
+                endBottomCell.datePicker.setDate(minimumUpperbound, animated: true)
+                endBottomCell.dateChangedHandler?(minimumUpperbound)
+            }
+        }
+        
+        endBottomCell.dateChangedHandler = { date in
+            endTopCell.displayedDate = date
+            EventViewController.end = date
+            let maximumLowerbound = date.addingTimeInterval(-3600)
+            let currentLowerbound = EventViewController.start ?? Date()
+            if currentLowerbound > date {
+                startBottomCell.datePicker.setDate(maximumLowerbound, animated: true)
+                startBottomCell.dateChangedHandler?(maximumLowerbound)
+            }
+        }
+        
         contentCells.append(endBottomCell)
         
-        
-        startBottomCell.dateChangedHandler = { [weak self] date in
-            startTopCell.displayedDate = date
-            self?.start = date
-            /*let minimumEndTime = date.addingTimeInterval(300)
-            endBottomCell.datePicker.minimumDate = minimumEndTime
-            if endTopCell.displayedDate.timeIntervalSince(date) < 300 {
-                endBottomCell.datePicker.setDate(date.addingTimeInterval(7200), animated: false)
-                endBottomCell.dateChangedHandler!(date.addingTimeInterval(7200))
-            }*/
-            self?.filterPage.edited = true
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        filterPage.currentPage = 0
-    }
-    
-    private func updateStart() {
-        EventViewController.start = start
-    }
-    
-    private func updateEnd() {
-        EventViewController.end = end
+        let tagPickerCell = ChooseTagCell(parentVC: self, sideInset: 10)
+        tagPickerCell.maxPicks = nil
+        tagPickerCell.reloadTagPrompt(tags: EventViewController.chosenTags)
+        contentCells.append(tagPickerCell)
     }
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    @objc private func close() {
+        parentVC.fetchEventsIfNeeded()
+        self.dismiss(animated: true)
+    }
+    
+    @objc private func reset() {
+        EventViewController.chosenTags.removeAll()
+        EventViewController.start = nil
+        EventViewController.end = nil
+        self.dismiss(animated: true)
+        parentVC.fetchEventsIfNeeded()
     }
     
     // MARK: - Table view data source & delegate
@@ -169,6 +194,32 @@ class FilterDateTableViewController: UITableViewController {
             
             tableView.beginUpdates()
             tableView.endUpdates()
+        case 4:
+            let tagPicker = TagPickerView()
+            tagPicker.customTitle = "Filter events by tags"
+            tagPicker.customSubtitle = "Only events that match at least one of your selected tags will be shown."
+            tagPicker.maxPicks = nil
+            tagPicker.minPicks = 0
+            tagPicker.customButtonTitle = "Done"
+            tagPicker.customContinueMethod = { tagPicker in
+                (self.contentCells.last as! ChooseTagCell).status = .done
+                self.navigationController?.popViewController(animated: true)
+            }
+            
+            tagPicker.customDisappearHandler = { [ weak self ] tags in
+                EventViewController.chosenTags = tagPicker.selectedTags
+                if let tagCell = (self?.contentCells.last as? ChooseTagCell) {
+                    tagCell.reloadTagPrompt(tags: tags)
+                }
+            }
+            
+            tagPicker.errorHandler = {
+                self.navigationController?.popViewController(animated: true)
+            }
+            
+            tagPicker.selectedTags = EventViewController.chosenTags
+            
+            navigationController?.pushViewController(tagPicker, animated: true)
         default:
             break
         }

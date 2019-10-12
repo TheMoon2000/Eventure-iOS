@@ -16,7 +16,7 @@ class SeparatorView: UIView {
         heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         let separator = UIView()
-        separator.backgroundColor = LINE_TINT
+        separator.backgroundColor = AppColors.line
         separator.translatesAutoresizingMaskIntoConstraints = false
         addSubview(separator)
         

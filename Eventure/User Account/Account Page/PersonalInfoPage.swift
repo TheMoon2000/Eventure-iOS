@@ -21,14 +21,14 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.canvas
         title = "Manage Account"
         
         myTableView = UITableView()
         myTableView.register(AccountCell.classForCoder(), forCellReuseIdentifier: "MyCell")
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -104,7 +104,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         } else if indexPath.row == 2 {
             pushToModifyPage(type: .email)
         } else if indexPath.row == 3 {
-            var genderPage = changeGender()
+            let genderPage = changeGender()
             navigationController?.pushViewController(genderPage, animated: true)
         }
     }
@@ -122,9 +122,9 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     func pushToModifyPage(type: Types) {
         let modifyAccount: GenericOneFieldPage
         if type == .displayedName {
-            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName)
+            modifyAccount = GenericOneFieldPage(fieldName: "Displayed Name", fieldDefault: User.current!.displayedName, type: .displayedName)
         } else {
-            modifyAccount = .init(fieldName: "Email Address", fieldDefault: User.current!.email)
+            modifyAccount = .init(fieldName: "Email Address", fieldDefault: User.current!.email, type: .email)
         }
         
         modifyAccount.submitAction = { inputField, spinner in
@@ -158,14 +158,14 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                     return
                 }
                 
-                let msg = String(data: data!, encoding: .utf8)!
+                let msg = String(data: data!, encoding: .utf8)
                 
                 if msg == INTERNAL_ERROR {
                     DispatchQueue.main.async {
                         serverMaintenanceError(vc: self)
                     }
                     return
-                } else {
+                } else if msg == "success" {
                     DispatchQueue.main.async {
                         if type == .displayedName {
                             User.current?.displayedName = inputField.text!
@@ -173,6 +173,12 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
                             User.current!.email = inputField.text!
                         }
                         self.navigationController?.popViewController(animated: true)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                        alert.addAction(.init(title: "OK", style: .cancel))
+                        self.present(alert, animated: true)
                     }
                 }
             }

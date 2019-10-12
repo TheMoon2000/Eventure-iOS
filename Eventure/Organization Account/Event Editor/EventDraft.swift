@@ -12,10 +12,10 @@ class EventDraft: UIPageViewController {
     
     var orgEventView: OrgEventViewController?
     var detailPage: EventDetailPage?
-    
-    static let backgroundColor: UIColor = .init(white: 0.94, alpha: 1)
-    
+        
     var edited = false
+    var imageEdited = false
+    var bannerEdited = false
     
     var isEditingExistingEvent = false
     var currentPage = -1 {
@@ -23,7 +23,8 @@ class EventDraft: UIPageViewController {
             navigationItem.title = [
                 "1. What's Happening?",
                 "2. When and Where?",
-                "3. Other Information"
+                "3. Ticket Information",
+                "4. Other Information"
             ][currentPage]
             
             let percentage = Float(currentPage + 1) / Float(pages.count)
@@ -62,7 +63,7 @@ class EventDraft: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = EventDraft.backgroundColor
+        view.backgroundColor = AppColors.background
         dataSource = self
         
         // Prepare for transition progress detection
@@ -83,6 +84,10 @@ class EventDraft: UIPageViewController {
         tlPage.draftPage = self
         pages.append(tlPage)
         
+        let tkPage = DraftTicketsPage()
+        tkPage.draftPage = self
+        pages.append(tkPage)
+        
         let otherPage = DraftOtherInfoPage()
         otherPage.draftPage = self
         pages.append(otherPage)
@@ -91,8 +96,8 @@ class EventDraft: UIPageViewController {
         // Set up progress indicator in the navigation bar.
         progressIndicator = {
             let bar = UIProgressView(progressViewStyle: .bar)
-            bar.trackTintColor = .init(white: 0.9, alpha: 1)
-            bar.progressTintColor = MAIN_TINT
+            bar.trackTintColor = AppColors.line
+            bar.progressTintColor = AppColors.main
             bar.translatesAutoresizingMaskIntoConstraints = false
             
             view.addSubview(bar)
@@ -254,15 +259,25 @@ class EventDraft: UIPageViewController {
             "title": draft.title,
             "description": draft.eventDescription,
             "location": draft.location,
+            "checkinTime": String(draft.checkinTime),
             "startTime": DATE_FORMATTER.string(from: draft.startTime!),
             "endTime": DATE_FORMATTER.string(from: draft.endTime!),
             "public": "1",
             "tags": draft.tags.description,
-            "capacity": String(draft.capacity)
+            "capacity": String(draft.capacity),
+            "strict": draft.secureCheckin ? "1" : "0",
+            "requiresTicket": draft.requiresTicket ? "1" : "0",
+            "ticketTypes": draft.admissionTypesEncoded,
+            "ticketStyle": String(draft.ticketStyle.rawValue)
         ]
         
         var fileData = [String : Data]()
-        fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDown().jpegData(compressionQuality: 0.6)
+        if imageEdited {
+            fileData["cover"] = draft.eventVisual?.fixedOrientation().sizeDownData(maxWidth: 500)
+        }
+        if bannerEdited {
+            fileData["banner"] = draft.bannerImage?.fixedOrientation().sizeDownData(maxWidth: 500)
+        }
         
         request.addMultipartBody(parameters: parameters, files: fileData)
         request.addAuthHeader()
@@ -270,11 +285,10 @@ class EventDraft: UIPageViewController {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                self.navigationItem.rightBarButtonItem = doneButton
-            }
-            
             guard error == nil else {
+                DispatchQueue.main.async {
+                    self.navigationItem.rightBarButtonItem = doneButton
+                }
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self)
                 }
@@ -285,20 +299,24 @@ class EventDraft: UIPageViewController {
             switch msg {
             case INTERNAL_ERROR:
                 DispatchQueue.main.async {
+                    self.navigationItem.rightBarButtonItem = doneButton
                     serverMaintenanceError(vc: self)
                 }
             case "success":
+                self.draft.published = true
+                self.draft.lastModified = Date()
                 EventDraft.removeDraft(uuid: self.draft.uuid) { remaining in
+
                     var published: Set<Event> = self.orgEventView?.allEvents ?? []
+                    published.remove(self.draft)
                     published.insert(self.draft)
                     
-                    self.detailPage?.event = self.draft
-                    
                     DispatchQueue.main.async {
+                        self.detailPage?.event = self.draft
                         self.orgEventView?.allEvents = published
                         self.orgEventView?.allDrafts = remaining
-                        self.orgEventView?.updateFiltered()
                         self.orgEventView?.eventCatalog.reloadData()
+                        self.navigationItem.rightBarButtonItem = doneButton
                         self.dismiss(animated: true, completion: nil)
                     }
                 }
@@ -306,6 +324,7 @@ class EventDraft: UIPageViewController {
             default:
                 warning.message = msg
                 DispatchQueue.main.async {
+                    self.navigationItem.rightBarButtonItem = doneButton
                     self.present(warning, animated: true, completion: nil)
                 }
             }

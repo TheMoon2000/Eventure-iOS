@@ -16,7 +16,7 @@ class ImageFullScreenPage: UIViewController {
     required init(image: UIImage) {
         super.init(nibName: nil, bundle: nil)
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.navbar
         
         canvas = {
             let sv = UIScrollView()
