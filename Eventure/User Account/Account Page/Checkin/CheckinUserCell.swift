@@ -133,13 +133,13 @@ class CheckinUserCell: UITableViewCell {
             bgView.backgroundColor = PENDING_TINT
         } else if registrant.userID != -1 {
             majorLabel.text = registrant.majorDescription
-            bgView.backgroundColor = .white
+            bgView.backgroundColor = AppColors.background
         } else {
             majorLabel.text = registrant.email
-            bgView.backgroundColor = .white
+            bgView.backgroundColor = AppColors.background
         }
         majorLabel.attributedText = majorLabel.text?.attributedText(style: COMPACT_STYLE)
-        majorLabel.textColor = .gray
+        majorLabel.textColor = AppColors.prompt
         if registrant.profilePicture != nil {
             profilePicture.image = registrant.profilePicture
         } else {
