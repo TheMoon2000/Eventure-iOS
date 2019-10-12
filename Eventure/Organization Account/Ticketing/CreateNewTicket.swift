@@ -35,9 +35,11 @@ class CreateNewTicket: UITableViewController {
             draftTicket.admissionID = parentVC.admissionType.id
             draftTicket.ticketPrice = parentVC.admissionType.price ?? 0.0
             draftTicket.paymentType = .issued
+            self.title = "Add Tickets"
         } else {
             newTicket = false
             draftTicket = ticketToEdit!
+            self.title = "Edit Ticket"
         }
         
         let spinner = UIActivityIndicatorView()
@@ -49,7 +51,6 @@ class CreateNewTicket: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Edit Ticket"
         buttonItem = .init(title: "Done", style: .done, target: self, action: #selector(done))
         navigationItem.rightBarButtonItem = buttonItem
 
@@ -106,7 +107,9 @@ class CreateNewTicket: UITableViewController {
             
             return cell
         }()
-        contentCells.append(quantityCell)
+        if (newTicket) {
+            contentCells.append(quantityCell)
+        }
         
         let emailCell: UITableViewCell = {
             let cell = DraftLocationCell()
@@ -166,8 +169,8 @@ class CreateNewTicket: UITableViewController {
     }
     
     @objc private func done() {
-        
-        if let quota = parentVC.admissionType.quota, quota > 0 && parentVC.admissionType.quantitySold + draftTicket.quantity > quota {
+        var multiple = newTicket ? salesBundle.count : 1
+        if let quota = parentVC.admissionType.quota, quota > 0 && parentVC.admissionType.quantitySold + (draftTicket.quantity * multiple) > quota {
             let alert = UIAlertController(title: "You are overselling tickets!", message: "You are about to create more tickets than the quota for '\(parentVC.admissionType.typeName)'! If you would like to add these tickets, please first go to the event editor and increase the quota for this ticket type. The current quota is \(quota).", preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))
             self.present(alert, animated: true)
@@ -176,9 +179,14 @@ class CreateNewTicket: UITableViewController {
 
         navigationItem.rightBarButtonItem = spinnerItem
         //print(draftTicket.salesID.description)
-        for id in self.salesBundle {
-            self.createTicketsWithBundle(uuid: id)
+        if (newTicket) {
+            for id in self.salesBundle {
+                self.createTicketsWithBundle(uuid: id)
+            }
+        } else {
+            self.createTicketsWithBundle(uuid: draftTicket.ticketID)
         }
+        
         
     }
     private func createTicketsWithBundle(uuid: String) {
