@@ -86,7 +86,13 @@ class EventCheckinOverview: UIViewController {
         
         eventName = {
             let label = UILabel()
-            label.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: COMPACT_STYLE)
+            let style: String
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                style = COMPACT_DARK
+            } else {
+                style = COMPACT_STYLE
+            }
+            label.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: style)
             label.numberOfLines = 5
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -171,6 +177,18 @@ class EventCheckinOverview: UIViewController {
         let nav = CheckinNavigationController(rootViewController: checkinResults)
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        let style: String
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            style = COMPACT_DARK
+        } else {
+            style = COMPACT_STYLE
+        }
+        eventName.attributedText = "The code above is for **\(event.title)** by *\(event.hostTitle)*.".attributedText(style: style)
     }
     
 }

@@ -20,7 +20,7 @@ import typealias CommonCrypto.CC_LONG
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// APIs related to mails are hosted in a seperate API cluster due to compatibility reasons with SendGrid's library.
-let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com"
+let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
 let USERNAME = "__replace__"
@@ -510,7 +510,7 @@ extension UIView {
     }
     
     /// Insert a standardized loading view into the target view.
-    func addLoader() -> UIView {
+    func addLoader() -> UIVisualEffectView {
         
         let loadingBG: UIVisualEffectView = {
             var effect = UIBlurEffect(style: .light)
