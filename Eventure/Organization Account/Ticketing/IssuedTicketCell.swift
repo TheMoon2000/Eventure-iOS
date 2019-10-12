@@ -203,8 +203,8 @@ class IssuedTicketCell: UITableViewCell {
         mailSent = ticket.sent
         if ticket.redeemCode != nil {
             status.text = "Not yet redeemed"
-            extraLabel.text = "Redeem code:"
-            extra.text = ticket.redeemCode ?? "Error"
+            extraLabel.text = "Ticket Recipient:"
+            extra.text = ticket.userEmail ?? "Error"
         } else {
             if ticket.username != nil {
                 status.text = "Redeemed by \(ticket.username!)"
@@ -213,8 +213,8 @@ class IssuedTicketCell: UITableViewCell {
             }
             status.textColor = AppColors.value
             
-            extraLabel.text = "Redeemed on:"
-            extra.text = ticket.transactionDate?.readableString() ?? "Unknown"
+            //extraLabel.text = "Redeemed on:"
+            //extra.text = ticket.transactionDate?.readableString() ?? "Unknown"
         }
         
     }
