@@ -213,8 +213,8 @@ class IssuedTicketCell: UITableViewCell {
             }
             status.textColor = AppColors.value
             
-            //extraLabel.text = "Redeemed on:"
-            //extra.text = ticket.transactionDate?.readableString() ?? "Unknown"
+            extraLabel.text = "Redeemed on:"
+            extra.text = ticket.transactionDate?.readableString() ?? "Unknown"
         }
         
     }
