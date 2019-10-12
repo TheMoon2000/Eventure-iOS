@@ -101,7 +101,7 @@ class CreateNewTicket: UITableViewController {
                 tf.resignFirstResponder()
             }
             if !newTicket {
-                cell.valueField.text = String(draftTicket.salesID.count > 0 ? draftTicket.salesID.count : 1)
+                cell.valueField.text = String(draftTicket.quantity)
             }
             
             return cell

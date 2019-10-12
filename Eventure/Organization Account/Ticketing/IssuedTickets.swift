@@ -168,7 +168,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                     }))
                 } else {
                     alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
-                        self.mailTicket(ticket: self.tickets[indexPath.row])
+                        self.mailTicket(ticket: self.tickets[indexPath.row], indexPath: indexPath)
                     }))
                     alert.addAction(.init(title: "Mark as Sent", style: .default, handler: { _ in
                         self.markAsSent(row: indexPath.row, sent: true)
