@@ -21,6 +21,7 @@ class CreateNewTicket: UITableViewController {
     private var spinnerItem: UIBarButtonItem!
     
     private var generateQuantity = 1
+    private var salesBundle = [String]()
     
     var doneHandler: ((Bool) -> ())?
         
@@ -59,7 +60,7 @@ class CreateNewTicket: UITableViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.backgroundColor = AppColors.canvas
         
-        let quantityCell: UITableViewCell = {
+        let sizeCell: UITableViewCell = {
             let cell = DraftCapacityCell(title: "Ticket size:")
             cell.valueField.placeholder = "1"
             cell.valueField.returnKeyType = .next
@@ -78,6 +79,33 @@ class CreateNewTicket: UITableViewController {
             
             return cell
         }()
+        contentCells.append(sizeCell)
+        
+        let quantityCell: UITableViewCell = {
+            let cell = DraftCapacityCell(title: "How many tickets:")
+            cell.valueField.placeholder = "1"
+            cell.valueField.returnKeyType = .next
+            cell.valueField.autocapitalizationType = .none
+            cell.valueField.autocorrectionType = .no
+            cell.valueField.isUserInteractionEnabled = draftTicket.activationDate == nil
+            cell.changeHandler = { tf in
+                self.generateQuantity = Int(tf.text!) ?? 0
+                self.salesBundle.removeAll()
+                if (self.generateQuantity > 0) {
+                    for _ in 1...self.generateQuantity{
+                        self.salesBundle.append(UUID().uuidString.lowercased())
+                    }
+                }
+            }
+            cell.returnHandler = { tf in
+                tf.resignFirstResponder()
+            }
+            if !newTicket {
+                cell.valueField.text = String(draftTicket.salesID.count > 0 ? draftTicket.salesID.count : 1)
+            }
+            
+            return cell
+        }()
         contentCells.append(quantityCell)
         
         let emailCell: UITableViewCell = {
@@ -90,7 +118,7 @@ class CreateNewTicket: UITableViewController {
             cell.valueText.autocapitalizationType = .none
             cell.valueText.autocorrectionType = .no
             if draftTicket.transactionDate == nil {
-                cell.promptLabel.text = "Recipient email (Leave blank if this ticket can be redeemed by anyone with the code):"
+                cell.promptLabel.text = "Recipient email"
             } else {
                 cell.promptLabel.text = "The ticket has already been claimed by the user associated with the email below and cannot be modified further."
                 cell.valueText.isEditable = false
@@ -147,10 +175,17 @@ class CreateNewTicket: UITableViewController {
         }
 
         navigationItem.rightBarButtonItem = spinnerItem
+        //print(draftTicket.salesID.description)
+        for id in self.salesBundle {
+            self.createTicketsWithBundle(uuid: id)
+        }
         
+    }
+    private func createTicketsWithBundle(uuid: String) {
         var parameters = [
             "eventId": parentVC.event.uuid,
-            "ticketId": draftTicket.ticketID,
+            "ticketId": uuid,
+            "salesId": "",
             "quantity": String(draftTicket.quantity),
             "admissionId": draftTicket.admissionID,
             "price": String(draftTicket.ticketPrice),
@@ -159,7 +194,8 @@ class CreateNewTicket: UITableViewController {
         ]
         
         if draftTicket.userEmail?.isValidEmail() ?? false {
-            parameters["email"] = draftTicket.userEmail
+            //print(draftTicket.userEmail)
+            parameters["email"] = draftTicket.userEmail!
         }
                 
         let url = URL.with(base: API_BASE_URL,

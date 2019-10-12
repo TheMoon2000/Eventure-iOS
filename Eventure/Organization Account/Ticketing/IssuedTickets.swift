@@ -159,14 +159,14 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 alert.addAction(.init(title: "Save QR Image", style: .default, handler: { _ in
                     self.saveQRCode(ticket: self.tickets[indexPath.row])
                 }))
-                alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
-                    self.mailTicket(ticket: self.tickets[indexPath.row])
-                }))
                 if tickets[indexPath.row].sent {
                     alert.addAction(.init(title: "Mark as Unsent", style: .default, handler: { _ in
                         self.markAsSent(row: indexPath.row)
                     }))
                 } else {
+                    alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
+                        self.mailTicket(ticket: self.tickets[indexPath.row])
+                    }))
                     alert.addAction(.init(title: "Mark as Sent", style: .default, handler: { _ in
                         self.markAsSent(row: indexPath.row, sent: true)
                     }))
@@ -268,6 +268,9 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
 """
         
         let composer = MFMailComposeViewController()
+        if let email = ticket.userEmail {
+            composer.setToRecipients([email])
+        }
         composer.setMessageBody(body, isHTML: true)
         composer.setSubject("Ticket receipt for “\(event.title)”")
         composer.addAttachmentData(qr.pngData()!, mimeType: "image/png", fileName: "ticket")
