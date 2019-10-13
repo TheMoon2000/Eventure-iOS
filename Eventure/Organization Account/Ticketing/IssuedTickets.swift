@@ -21,6 +21,8 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     
     /// Incomplete registrant information, only using it as a data structure to hold partial information
     var tickets = [Ticket]()
+    var conglomeratedTickets = [Ticket]()
+    var conglomeratedIndexPath = [IndexPath]()
     
     private var rc = UIRefreshControl()
     private var emptyLabel: UILabel!
@@ -251,6 +253,16 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         return nil
     }
     
+    private func congolmerate(recipientEmail: String) {
+        conglomeratedTickets = tickets.filter { t -> Bool in
+            (t.userEmail == recipientEmail && t.sent == false && t.transactionDate == nil)
+        }
+        for t in conglomeratedTickets {
+            self.markAsSent(ticket: t, sent: true, stealth: true)
+        }
+        print(conglomeratedTickets.count)
+    }
+    
     private func mailTicket(ticket: Ticket, indexPath: IndexPath) {
         guard MFMailComposeViewController.canSendMail() else {
             return
@@ -287,7 +299,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             if let recipient = ticket.userEmail, !recipient.isEmpty {
                 self.sendSystemEmail(indexPath: indexPath,
                                      recipient: recipient,
-                                     qr: qr)
+                                     qr: [qr])
             } else {
                 let alert = UIAlertController(title: "Who should receive this ticket?", message: "Please enter their email address.", preferredStyle: .alert)
                 alert.addTextField { tf in
@@ -300,7 +312,55 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                     let recipient = alert.textFields![0].text ?? ""
                     self.sendSystemEmail(indexPath: indexPath,
                                          recipient: recipient,
-                                         qr: qr)
+                                         qr: [qr])
+                }))
+                self.present(alert, animated: true, completion: nil)
+            }
+        }))
+        
+        alert.addAction(.init(title: "Send All Tickets For This Recipient", style: .default, handler: { _ in
+            if let recipient = ticket.userEmail, !recipient.isEmpty {
+                self.congolmerate(recipientEmail: recipient)
+                var qrs = [UIImage]()
+                for ct in self.conglomeratedTickets {
+                    guard let formatted = self.generateCode(from: ct) else {
+                        return
+                    }
+                    let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+                    let qr = renderer.image { context in
+                        formatted.layer.render(in: context.cgContext)
+                    }
+                    qrs.append(qr)
+                }
+                
+                self.sendSystemEmail(indexPath: indexPath,
+                                     recipient: recipient,
+                                     qr: qrs)
+            } else {
+                let alert = UIAlertController(title: "Who should receive this ticket?", message: "Please enter their email address.", preferredStyle: .alert)
+                alert.addTextField { tf in
+                    tf.placeholder = "oski.bear@berkeley.edu"
+                    tf.keyboardType = .emailAddress
+                    tf.autocapitalizationType = .none
+                }
+                alert.addAction(.init(title: "Cancel", style: .cancel))
+                alert.addAction(.init(title: "Send", style: .default, handler: { _ in
+                    let recipient = alert.textFields![0].text ?? ""
+                    self.congolmerate(recipientEmail: recipient)
+                    var qrs = [UIImage]()
+                    for ct in self.conglomeratedTickets {
+                        guard let formatted = self.generateCode(from: ct) else {
+                            return
+                        }
+                        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+                        let qr = renderer.image { context in
+                            formatted.layer.render(in: context.cgContext)
+                        }
+                        qrs.append(qr)
+                    }
+                    self.sendSystemEmail(indexPath: indexPath,
+                                         recipient: recipient,
+                                         qr: qrs)
                 }))
                 self.present(alert, animated: true, completion: nil)
             }
@@ -316,7 +376,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         
     }
     
-    private func sendSystemEmail(indexPath: IndexPath, recipient: String, qr: UIImage) {
+    private func sendSystemEmail(indexPath: IndexPath, recipient: String, qr: [UIImage]) {
         
         let message = """
         <a style="float:right" href="\(APP_STORE_LINK)"><img src="\(APP_DOMAIN)static/assets/logo.jpg" style="width:60px; height:60px" title="Eventure app" alt="Eventure"></a><br><div style="clear:both">
@@ -328,15 +388,21 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             "recipient": recipient,
             "message": message
         ]
+        var files = [String : Data]()
+        for i in 1...qr.count {
+            files["ticket \(i)"] = qr[i - 1].pngData()
+        }
+        print(files.count)
         
         (loadingBG.contentView.subviews.last as? UILabel)?.text = "Sending..."
         loadingBG.isHidden = false
+        
         
         let url = URL(string: MAIL_API_BASE_URL + "MailTicket")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addMultipartBody(parameters: parameters,
-                                 files: ["ticket": qr.pngData()!])
+                                 files: files)
         request.addAuthHeader()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
@@ -378,6 +444,10 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     
     private func markAsSent(row: Int, sent: Bool = false, stealth: Bool = false) {
         let ticket = tickets[row]
+        self.markAsSent(ticket: ticket, sent: sent, stealth: stealth)
+    }
+    
+    private func markAsSent(ticket: Ticket, sent: Bool = false, stealth: Bool = false) {
         ticket.sent = sent
         
         if !stealth {
@@ -420,9 +490,10 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 }
             case "success":
                 DispatchQueue.main.async {
-                    if let cell = self.tableView.cellForRow(at: [0, row]) as? IssuedTicketCell {
+                    /*if let cell = self.tableView.cellForRow(at: [0, row]) as? IssuedTicketCell {
                         cell.mailSent = sent
-                    }
+                    }*/
+                    self.refresh()
                 }
             default:
                 let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
@@ -434,7 +505,6 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             }
             
         }
-        
         task.resume()
     }
     
