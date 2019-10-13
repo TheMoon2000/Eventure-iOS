@@ -21,6 +21,8 @@ class IssuedTicketCell: UITableViewCell {
     private var extraLabel: UILabel!
     private var extra: UILabel!
     
+    private var ticket: Ticket!
+    
     var mailSent = false {
         didSet {
             emailIcon.isHidden = !mailSent
@@ -197,6 +199,7 @@ class IssuedTicketCell: UITableViewCell {
     }
     
     func setup(ticket: Ticket) {
+        self.ticket = ticket
         let noun = ticket.quantity == 1 ? "ticket" : "tickets"
         ticketTitle.text = ticket.typeName + " (\(ticket.quantity) \(noun))"
         issuedDate.text = ticket.creationDate?.readableString() ?? "Unknown"
