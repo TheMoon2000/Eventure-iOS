@@ -89,9 +89,11 @@ class CreateNewTicket: UITableViewController {
             cell.valueField.autocapitalizationType = .none
             cell.valueField.autocorrectionType = .no
             cell.valueField.isUserInteractionEnabled = draftTicket.activationDate == nil
+            self.salesBundle.append(draftTicket.ticketID) //safety measure, default is 1 if user doesn't change quantity
             cell.changeHandler = { tf in
-                self.generateQuantity = Int(tf.text!) ?? 0
+                self.generateQuantity = Int(tf.text!) ?? 1
                 self.salesBundle.removeAll()
+                print(self.generateQuantity)
                 if (self.generateQuantity > 0) {
                     for _ in 1...self.generateQuantity{
                         self.salesBundle.append(UUID().uuidString.lowercased())
@@ -101,10 +103,6 @@ class CreateNewTicket: UITableViewController {
             cell.returnHandler = { tf in
                 tf.resignFirstResponder()
             }
-            if !newTicket {
-                cell.valueField.text = String(draftTicket.quantity)
-            }
-            
             return cell
         }()
         if (newTicket) {
@@ -169,7 +167,7 @@ class CreateNewTicket: UITableViewController {
     }
     
     @objc private func done() {
-        var multiple = newTicket ? salesBundle.count : 1
+        let multiple = newTicket ? salesBundle.count : 1
         if let quota = parentVC.admissionType.quota, quota > 0 && parentVC.admissionType.quantitySold + (draftTicket.quantity * multiple) > quota {
             let alert = UIAlertController(title: "You are overselling tickets!", message: "You are about to create more tickets than the quota for '\(parentVC.admissionType.typeName)'! If you would like to add these tickets, please first go to the event editor and increase the quota for this ticket type. The current quota is \(quota).", preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))
@@ -179,6 +177,8 @@ class CreateNewTicket: UITableViewController {
 
         navigationItem.rightBarButtonItem = spinnerItem
         //print(draftTicket.salesID.description)
+        
+        var creationResult = ""
         if (newTicket) {
             for id in self.salesBundle {
                 self.createTicketsWithBundle(uuid: id)
@@ -186,10 +186,13 @@ class CreateNewTicket: UITableViewController {
         } else {
             self.createTicketsWithBundle(uuid: draftTicket.ticketID)
         }
+        if (creationResult == "") {
+            self.navigationController?.popViewController(animated: true)
+        }
         
         
     }
-    private func createTicketsWithBundle(uuid: String) {
+    private func createTicketsWithBundle(uuid: String){
         var parameters = [
             "eventId": parentVC.event.uuid,
             "ticketId": uuid,
@@ -235,7 +238,7 @@ class CreateNewTicket: UITableViewController {
             case "success":
                 DispatchQueue.main.async {
                     self.doneHandler?(self.newTicket)
-                    self.navigationController?.popViewController(animated: true)
+                    //self.navigationController?.popViewController(animated: true)
                 }
             default:
                 DispatchQueue.main.async {
