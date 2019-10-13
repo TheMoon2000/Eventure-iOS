@@ -106,7 +106,7 @@ class IssuedTicketCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: separator.leftAnchor).isActive = true
             label.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 15).isActive = true
-            label.setContentCompressionResistancePriority(.required, for: .horizontal)
+            label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width).isActive = true
             
             return label
         }()
@@ -213,8 +213,8 @@ class IssuedTicketCell: UITableViewCell {
             }
             status.textColor = AppColors.value
             
-            //extraLabel.text = "Redeemed on:"
-            //extra.text = ticket.transactionDate?.readableString() ?? "Unknown"
+            extraLabel.text = "Redeemed on:"
+            extra.text = ticket.transactionDate?.readableString() ?? "Unknown"
         }
         
     }

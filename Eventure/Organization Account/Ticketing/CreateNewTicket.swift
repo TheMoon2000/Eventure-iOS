@@ -92,7 +92,7 @@ class CreateNewTicket: UITableViewController {
                 self.generateQuantity = Int(tf.text!) ?? 0
                 self.salesBundle.removeAll()
                 if (self.generateQuantity > 0) {
-                    for _ in 1...self.generateQuantity{
+                    for _ in 1...self.generateQuantity {
                         self.salesBundle.append(UUID().uuidString.lowercased())
                     }
                 }
@@ -185,7 +185,6 @@ class CreateNewTicket: UITableViewController {
         var parameters = [
             "eventId": parentVC.event.uuid,
             "ticketId": uuid,
-            "salesId": "",
             "quantity": String(draftTicket.quantity),
             "admissionId": draftTicket.admissionID,
             "price": String(draftTicket.ticketPrice),
