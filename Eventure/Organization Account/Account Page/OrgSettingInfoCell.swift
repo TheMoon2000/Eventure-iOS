@@ -21,6 +21,7 @@ class OrgSettingInfoCell: UITableViewCell {
         
         //add arrow to each cell
         accessoryType = .disclosureIndicator
+        backgroundColor = AppColors.background
         
         heightAnchor.constraint(greaterThanOrEqualToConstant: 55).isActive = true
         
@@ -41,14 +42,14 @@ class OrgSettingInfoCell: UITableViewCell {
         function = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17)
-            label.numberOfLines = 2
-            label.lineBreakMode = .byTruncatingTail
+            label.numberOfLines = 3
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: functionImage.rightAnchor, constant: 20).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -58,15 +59,15 @@ class OrgSettingInfoCell: UITableViewCell {
             label.font = .systemFont(ofSize: 17)
             label.numberOfLines = 3
             label.textColor = UIColor.gray
-            label.lineBreakMode = .byTruncatingTail
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .right
             addSubview(label)
             
-            label.leftAnchor.constraint(equalTo: function.rightAnchor, constant: 100).isActive = true
+            label.leftAnchor.constraint(equalTo: function.rightAnchor, constant: 15).isActive = true
             label.rightAnchor.constraint(equalTo: rightAnchor, constant: -40).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor,constant: 15).isActive = true
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         } ()

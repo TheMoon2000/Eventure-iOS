@@ -26,10 +26,10 @@ class TicketInfoEditor: UITableViewController {
         
         title = "Edit"
 
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         tableView.separatorStyle = .none
-        tableView.contentInset.top = 8
-        tableView.contentInset.bottom = 8
+        tableView.contentInset.top = 6
+        tableView.contentInset.bottom = 6
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
         

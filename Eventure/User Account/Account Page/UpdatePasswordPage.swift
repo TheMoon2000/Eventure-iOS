@@ -19,6 +19,7 @@ class UpdatePasswordPage: UITableViewController {
         super.init(nibName: nil, bundle: nil)
         
         tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.backgroundColor = AppColors.canvas
         navigationItem.rightBarButtonItem = .init(title: "Update", style: .done, target: self, action: #selector(updatePassword))
         
         passwordCell = {

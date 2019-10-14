@@ -16,8 +16,8 @@ class Ticket {
     
     var ticketID: String
     var userID: Int
-    var username: String?
-    var userEmail: String?
+    var username: String
+    var userEmail: String
     var eventID: String
     var eventName: String
     var hostName: String
@@ -67,9 +67,9 @@ class Ticket {
         
         ticketID = dictionary["Ticket ID"]?.string ?? ""
         userID = dictionary["User ID"]?.int ?? -1
-        userEmail = dictionary["Email"]?.string
-        username = dictionary["Displayed name"]?.string
-        if username == nil {
+        userEmail = dictionary["Email"]?.string ?? ""
+        username = dictionary["Displayed name"]?.string ?? ""
+        if username.isEmpty {
             username = userEmail
         }
         transferable = (dictionary["Transferable"]?.int ?? 0) == 1

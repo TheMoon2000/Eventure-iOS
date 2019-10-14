@@ -21,15 +21,15 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
-        title = "Manage Account"
+        view.backgroundColor = AppColors.canvas
+        title = "Organization Info"
         
         myTableView = UITableView()
         myTableView.contentInset.top = 10
         myTableView.register(OrgSettingInfoCell.classForCoder(), forCellReuseIdentifier: "MyCell")
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false

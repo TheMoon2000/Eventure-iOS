@@ -30,13 +30,15 @@ class ChooseTagCell: UITableViewCell {
         }
     }
     
+    private var loginStyle = false
+    
     private(set) var overlay: UIView!
     private var leftLabel: UILabel!
     private(set) var rightLabel: UILabel!
     private var statusIcon: UIImageView!
     private var disclosure: UIImageView!
 
-    required init(parentVC: UIViewController, sideInset: CGFloat = 30) {
+    required init(parentVC: UIViewController, sideInset: CGFloat = 30, loginStyle: Bool = false) {
         super.init(style: .default, reuseIdentifier: nil)
         
         self.parentVC = parentVC
@@ -111,12 +113,20 @@ class ChooseTagCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
-        if highlighted {
-            overlay.layer.borderWidth = 1
-            leftLabel.textColor = AppColors.label
+        if loginStyle {
+            if highlighted {
+                overlay.layer.borderWidth = 1
+                leftLabel.textColor = AppColors.label
+            } else {
+                overlay.layer.borderWidth = 0
+                leftLabel.textColor = AppColors.value
+            }
         } else {
-            overlay.layer.borderWidth = 0
-            leftLabel.textColor = AppColors.value
+            if highlighted {
+                overlay.backgroundColor = AppColors.selected
+            } else {
+                overlay.backgroundColor = AppColors.subview
+            }
         }
     }
     

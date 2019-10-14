@@ -120,10 +120,12 @@ class TicketScannedPage: UIViewController {
         
         claimButton = {
             let button = UIButton(type: .system)
-            if ticket.userID != -1 {
+            if ticket.userID != -1 && ticket.userID != User.current?.userID {
                 button.setTitle("Request Ticket Transfer", for: .normal)
+                button.addTarget(self, action: #selector(initiateRequest), for: .touchUpInside)
             } else {
                 button.setTitle("Claim Ticket", for: .normal)
+                button.addTarget(self, action: #selector(claimTicket), for: .touchUpInside)
             }
             button.tintColor = .white
             button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
@@ -144,13 +146,7 @@ class TicketScannedPage: UIViewController {
             button.widthAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
             button.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
             button.topAnchor.constraint(greaterThanOrEqualTo: quantity.bottomAnchor, constant: 30).isActive = true
-            
-            if ticket.userID != -1 {
-                button.addTarget(self, action: #selector(initiateRequest), for: .touchUpInside)
-            } else {
-                button.addTarget(self, action: #selector(claimTicket), for: .touchUpInside)
-            }
-                        
+      
             return button
         }()
         

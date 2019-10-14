@@ -44,7 +44,7 @@ class TagPickerView: UIViewController {
         if minPicks > selectedTags.count || maxPicks != nil && maxPicks! < selectedTags.count {
             continueButton.isUserInteractionEnabled = false
             UIView.animate(withDuration: 0.15) {
-                self.continueButton.backgroundColor = AppColors.mainDisabled
+                self.continueButton.backgroundColor = MAIN_DISABLED
             }
         } else {
             continueButton.isUserInteractionEnabled = true
@@ -58,14 +58,12 @@ class TagPickerView: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        if #available(iOS 12.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                topBanner.effect = UIBlurEffect(style: .dark)
-                bottomBanner.effect = UIBlurEffect(style: .dark)
-            } else {
-                topBanner.effect = UIBlurEffect(style: .extraLight)
-                bottomBanner.effect = UIBlurEffect(style: .extraLight)
-            }
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            topBanner.effect = UIBlurEffect(style: .dark)
+            bottomBanner.effect = UIBlurEffect(style: .dark)
+        } else {
+            topBanner.effect = UIBlurEffect(style: .extraLight)
+            bottomBanner.effect = UIBlurEffect(style: .extraLight)
         }
     }
 
@@ -77,15 +75,13 @@ class TagPickerView: UIViewController {
         }
         
         title = "Tag Picker"
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.background
         
         topBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
             
-            if #available(iOS 12.0, *) {
-                if traitCollection.userInterfaceStyle == .dark {
-                    banner.effect = UIBlurEffect(style: .dark)
-                }
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                banner.effect = UIBlurEffect(style: .dark)
             }
             
             banner.translatesAutoresizingMaskIntoConstraints = false
@@ -193,7 +189,7 @@ class TagPickerView: UIViewController {
             let button = UIButton()
             button.setTitle(customButtonTitle ?? "Continue", for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-            button.backgroundColor = AppColors.mainDisabled
+            button.backgroundColor = MAIN_DISABLED
             button.isUserInteractionEnabled = false
             button.layer.cornerRadius = 25
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -266,7 +262,7 @@ class TagPickerView: UIViewController {
                           duration: 0.2,
                           options: .curveEaseInOut,
                           animations: {
-                              self.continueButton.backgroundColor = MAIN_TINT_DARK
+                              self.continueButton.backgroundColor = AppColors.mainDark
                           },
                           completion: nil)
     }

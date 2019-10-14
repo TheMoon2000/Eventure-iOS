@@ -119,9 +119,33 @@ class UserScanner: ScannerViewController {
             if let json = try? JSON(data: data!), json.dictionary != nil {
                 let ticket = Ticket(ticketInfo: json)
                 
-                if ticket.userID != -1 && (!ticket.transferable || ticket.transferLocked) {
+                if ticket.userID == -1 && !ticket.userEmail.isEmpty && User.current?.email != ticket.userEmail {
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Cannot claim ticket!", message: "You are not the intended recipient of this ticket.", preferredStyle: .alert)
+                        alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in
+                            
+                            self.session?.startRunning()
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                    return
+                }
+                
+                if ticket.userID != -1 && ticket.userID != User.current?.userID && (!ticket.transferable || ticket.transferLocked) {
                     DispatchQueue.main.async {
                         let alert = UIAlertController(title: "Could not initiate ticket transfer", message: "The ticket you just scanned does not support transfer.", preferredStyle: .alert)
+                        alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in
+                            
+                            self.session?.startRunning()
+                        }))
+                        self.present(alert, animated: true, completion: nil)
+                    }
+                    return
+                }
+                
+                if ticket.redeemCode == nil && ticket.userID == User.current?.userID {
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "You are already the owner of this ticket", message: "There is no point in scanning it again.", preferredStyle: .alert)
                         alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in
                             
                             self.session?.startRunning()

@@ -21,10 +21,8 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     //counts the number of subscribers
     private var subscriberCount = 0
     private var myTableView: UITableView!
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
     private var backGroundLabel: UILabel!
-    
+    private var loadingBG: UIView!
     
     private var subscriberDictionaryList = Set<User>()
     private var sortedSubscribers = [User]()
@@ -35,55 +33,31 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         
         title = "Subscribers"
         
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -5).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Updating..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         backGroundLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
+            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 10).isActive = true
             
             return label
         }()
         
         retreiveSubscribers()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.tableBG
         
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self
         myTableView.delegate = self
-        myTableView.backgroundColor = UIColor.init(white: 0.95, alpha: 1)
+        myTableView.backgroundColor = .clear
         self.view.addSubview(myTableView)
         //set location constraints of the tableview
         myTableView.translatesAutoresizingMaskIntoConstraints = false
@@ -92,8 +66,6 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
-        self.view.bringSubviewToFront(spinnerLabel)
-        self.view.bringSubviewToFront(spinner)
         self.view.bringSubviewToFront(backGroundLabel)
         
     }
@@ -139,13 +111,10 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     
-    
-    
-    //Done
     func retreiveSubscribers() {
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
         backGroundLabel.text = ""
+        
+        loadingBG.isHidden = false
         
         var parameters = [String: String]()
         parameters["orgId"] = String(Organization.current!.id)
@@ -160,8 +129,7 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
             data, response, error in
             
             DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
+                self.loadingBG.isHidden = true
             }
             
             guard error == nil else {
@@ -191,7 +159,7 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
                     } else {
                         self.backGroundLabel.text = ""
                     }
-                    self.myTableView.reloadSections([0], with: .none)
+                    self.myTableView.reloadData()
                 }
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")

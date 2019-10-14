@@ -115,13 +115,15 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
                 var newRecords = [(Registrant, Ticket)]()
                 for purchase in json.array! {
                     let ticket = Ticket(ticketInfo: purchase)
-                    if ticket.userID == -1 { continue }
                     let registrant = Registrant(json: purchase)
+                    if registrant.email.isEmpty { continue }
                     registrant.profilePicture = self.profileCache[registrant.userID]
                     
                     newRecords.append((registrant, ticket))
                 }
-                self.purchases = newRecords
+                self.purchases = newRecords.sorted(by: { info1, info2 in
+                    return (info1.1.creationDate ?? Date.distantPast).timeIntervalSince(info2.1.creationDate ?? Date.distantPast) >= 0
+                })
                 DispatchQueue.main.async {
                     self.emptyLabel.text = self.purchases.isEmpty ? "No purchase records" : ""
                     self.tableView.reloadData()
@@ -156,6 +158,9 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         }
         if cell.nameLabel.text!.isEmpty {
             cell.nameLabel.text = purchaseInfo.registrant.email
+        }
+        if cell.nameLabel.text!.isEmpty {
+            cell.nameLabel.text = "No email provided"
         }
         cell.auxiliaryLabel.text = purchaseInfo.ticket.paymentDescription
         

@@ -87,13 +87,11 @@ class PurchaseDetails: UITableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        if historyUsers.isEmpty { return 0 }
-        if !ticket.transferable { return 1 }
-        return 2
+        return ticket.transferable ? 2 : 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [historyUsers.isEmpty ? 0 : 1, historyUsers.count][section]
+        return [1, historyUsers.count][section]
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

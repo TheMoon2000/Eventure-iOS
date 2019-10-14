@@ -138,6 +138,11 @@ class TicketCenter: UITableViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        updateQuantities(pulled: true)
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

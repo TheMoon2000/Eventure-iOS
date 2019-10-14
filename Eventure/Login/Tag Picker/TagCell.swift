@@ -21,7 +21,11 @@ class TagCell: UICollectionViewCell {
             bg.backgroundColor = AppColors.main
             bg.layer.cornerRadius = 0
             bg.layer.borderWidth = 1.5
-            bg.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                bg.layer.borderColor = UIColor(white: 0.1, alpha: 0.4).cgColor
+            } else {
+                bg.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
+            }
             bg.translatesAutoresizingMaskIntoConstraints = false
             addSubview(bg)
             
@@ -61,12 +65,22 @@ class TagCell: UICollectionViewCell {
                 options: .curveEaseOut,
                 animations: {
                     if self.isSelected {
-                        self.bgTint.backgroundColor = MAIN_TINT_DARK
+                        self.bgTint.backgroundColor = AppColors.mainDark
                     } else {
                         self.bgTint.backgroundColor = AppColors.main
                     }
                 },
                 completion: nil)
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            bgTint.layer.borderColor = UIColor(white: 0.1, alpha: 0.4).cgColor
+        } else {
+            bgTint.layer.borderColor = UIColor(white: 1, alpha: 0.4).cgColor
         }
     }
     

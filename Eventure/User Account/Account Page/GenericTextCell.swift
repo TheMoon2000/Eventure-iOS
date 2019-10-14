@@ -18,8 +18,9 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
 
     required init(title: String) {
         super.init(style: .default, reuseIdentifier: nil)
+        
         selectionStyle = .none
-        backgroundColor = .white
+        backgroundColor = AppColors.background
         
         heightAnchor.constraint(equalToConstant: 50).isActive = true
         
@@ -41,7 +42,7 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
             field.clearButtonMode = .whileEditing
             field.returnKeyType = .done
             field.font = .systemFont(ofSize: 17)
-            field.textColor = .darkGray
+            field.textColor = AppColors.value
             field.delegate = self
             field.enablesReturnKeyAutomatically = true
             field.translatesAutoresizingMaskIntoConstraints = false

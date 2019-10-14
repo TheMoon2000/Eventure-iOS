@@ -79,7 +79,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             tv.typingAttributes = [
                 NSAttributedString.Key.paragraphStyle: pStyle,
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
-                NSAttributedString.Key.foregroundColor: MAIN_TINT_DARK
+                NSAttributedString.Key.foregroundColor: AppColors.mainDark
             ]
             tv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tv)
@@ -96,7 +96,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             let label = UILabel()
             label.numberOfLines = 10
             label.text = "TBA"
-            label.textColor = .init(white: 0.8, alpha: 1)
+            label.textColor = AppColors.placeholder
             label.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(label, belowSubview: valueText)
             
@@ -127,7 +127,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     
     func setPlaceholder(string: String) {
         placeholder.attributedText = string.attributedText(style: COMPACT_STYLE)
-        placeholder.textColor = .init(white: 0.8, alpha: 1)
+        placeholder.textColor = AppColors.placeholder
         placeholder.font = .systemFont(ofSize: 17)
     }
 

@@ -207,15 +207,18 @@ class OrgEventCell: UICollectionViewCell {
         titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
         locationText.text = event.location.isEmpty ? "TBA" : event.location
-        descriptionText.setText(event.eventDescription.attributedText())
-        if #available(iOS 12.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+            if event.eventDescription.isEmpty {
+                descriptionText.setText("No description.".attributedText(style: PLAIN_DARK))
+            }
+        } else {
+            descriptionText.setText(event.eventDescription.attributedText())
+            if event.eventDescription.isEmpty {
+                descriptionText.setText("No description.".attributedText())
             }
         }
-        if event.eventDescription.isEmpty {
-            descriptionText.setText("No description.".attributedText())
-        }
+        
         if event.eventVisual == nil {
             if withImage {
                 if event.hasVisual {
@@ -241,12 +244,10 @@ class OrgEventCell: UICollectionViewCell {
         
         card.layer.borderColor = AppColors.line.cgColor
         
-        if #available(iOS 12.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
-            } else {
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
+        } else {
                 descriptionText.setText(event.eventDescription.attributedText())
-            }
         }
     }
     

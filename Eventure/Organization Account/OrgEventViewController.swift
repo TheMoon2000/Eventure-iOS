@@ -366,7 +366,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         editor.orgEventView = self
         let nav = UINavigationController(rootViewController: editor)
         nav.navigationBar.tintColor = AppColors.main
-        nav.navigationBar.barTintColor = .white
+        nav.navigationBar.barTintColor = AppColors.navbar
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
     }

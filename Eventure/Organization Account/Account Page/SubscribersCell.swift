@@ -20,6 +20,8 @@ class SubscribersCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
+        backgroundColor = AppColors.background
+        
         icon = {
             let iv = UIImageView()
             iv.tintColor = AppColors.mainDisabled

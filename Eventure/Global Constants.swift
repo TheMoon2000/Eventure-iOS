@@ -23,8 +23,8 @@ let API_BASE_URL = "https://api.eventure-app.com/"
 let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "Eventure 1.0.5"
-let PASSWORD = "8005d0864aa27ed7b7d2ab1abcf2ef47"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
@@ -53,7 +53,8 @@ enum NotificationKeys: String {
     case ticketTransferDeclined = "ticket transfer declined"
 }
 
-let MAIN_TINT_DARK = UIColor(red: 230/255, green: 94/255, blue: 75/255, alpha: 1)
+/// Legacy main disabled color.
+let MAIN_DISABLED = UIColor(red: 1.0, green: 168/255, blue: 150/255, alpha: 0.6)
 let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 
@@ -67,6 +68,9 @@ struct AppColors {
     
     /// The disabled theme color.
     static var mainDisabled = UIColor(named: "AppColors.mainDisabled")!
+    
+    /// The darker theme color.
+    static var mainDark = UIColor(named: "AppColors.mainDark")!
     
     /// A red color used for fatal errors.
     static var fatal = UIColor(red: 230/255, green: 33/255, blue: 15/255, alpha: 1)
@@ -300,12 +304,12 @@ let DAY_FORMATTER: DateFormatter = {
 
 extension String {
     
-    /// URL encode.
+    /// URL encoded string.
     var encoded: String {
         return self.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
     }
     
-    /// URL decode.
+    /// URL decoded string.
     var decoded: String {
         return self.removingPercentEncoding ?? self
     }

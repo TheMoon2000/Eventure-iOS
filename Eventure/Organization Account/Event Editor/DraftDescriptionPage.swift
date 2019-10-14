@@ -31,7 +31,7 @@ class DraftDescriptionPage: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.background
         view.tintColor = AppColors.main
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -86,7 +86,7 @@ class DraftDescriptionPage: UIViewController {
             
             tv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 15).isActive = true
             tv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
-            tv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 22).isActive = true
+            tv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 20).isActive = true
             tv.heightAnchor.constraint(greaterThanOrEqualToConstant: 30).isActive = true
             
             
@@ -96,7 +96,7 @@ class DraftDescriptionPage: UIViewController {
         titlePlaceholder = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 24, weight: .medium)
-            label.textColor = .init(white: 0.8, alpha: 1)
+            label.textColor = AppColors.placeholder
             label.isHidden = !draftPage.draft.title.isEmpty
             label.text = "My Event Title"
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -207,6 +207,7 @@ class DraftDescriptionPage: UIViewController {
             label.font = .systemFont(ofSize: 18, weight: .medium)
             label.isHidden = !draftPage.draft.eventDescription.isEmpty
             label.text = "Here, describe your event within \(descriptionMaxLength) characters. Markdown is supported!"
+            label.textColor = AppColors.placeholder
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.insertSubview(label, belowSubview: descriptionText)
             
@@ -242,7 +243,7 @@ class DraftDescriptionPage: UIViewController {
         
         if titleText.text.isEmpty {
             titleText.becomeFirstResponder()
-        } else if descriptionText.text.isEmpty {
+        } else {
             descriptionText.becomeFirstResponder()
         }
         
@@ -292,6 +293,7 @@ class DraftDescriptionPage: UIViewController {
         
         if descriptionText.text.isEmpty {
             previewText.text = "No content."
+            previewText.textColor = .gray
         } else {
             if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
                     previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)
@@ -313,6 +315,8 @@ class DraftDescriptionPage: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         
         guard UIApplication.shared.applicationState != .background else { return }
+        guard previewText != nil else { return }
+        
         
         if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
                 previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)

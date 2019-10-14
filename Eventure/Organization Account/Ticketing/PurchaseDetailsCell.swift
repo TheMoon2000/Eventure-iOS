@@ -14,6 +14,8 @@ class PurchaseDetailsCell: UITableViewCell {
     private var recipient: UILabel!
     private var emailLabel: UILabel!
     private var emailValue: UILabel!
+    private var creationDateLabel: UILabel!
+    private var creationDate: UILabel!
     private var paymentDateLabel: UILabel!
     private var paymentDate: UILabel!
     private var paymentTypeLabel: UILabel!
@@ -35,7 +37,7 @@ class PurchaseDetailsCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Ticket recipient:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -50,7 +52,12 @@ class PurchaseDetailsCell: UITableViewCell {
         recipient = {
             let label = UILabel()
             label.numberOfLines = 10
-            label.text = ticket.username
+            label.font = .systemFont(ofSize: 16)
+            if ticket.username.isEmpty {
+                label.text = "Unknown"
+            } else {
+                label.text = ticket.username
+            }
             label.textAlignment = .right
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -59,6 +66,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: recipientLabel.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             label.topAnchor.constraint(equalTo: recipientLabel.topAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -67,7 +75,7 @@ class PurchaseDetailsCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Recipient email:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -82,7 +90,11 @@ class PurchaseDetailsCell: UITableViewCell {
         emailValue = {
             let label = UILabel()
             label.numberOfLines = 3
-            label.text = ticket.userEmail ?? "Unknown"
+            if ticket.userEmail.isEmpty {
+                label.text = "Unknown"
+            } else {
+                label.text = ticket.userEmail
+            }
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
             label.textColor = AppColors.value
@@ -92,15 +104,16 @@ class PurchaseDetailsCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: emailLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: emailLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
         
-        paymentDateLabel = {
+        creationDateLabel = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.text = "Transaction date:"
-            label.textColor = .gray
+            label.text = "Creation date:"
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -112,10 +125,44 @@ class PurchaseDetailsCell: UITableViewCell {
             return label
         }()
         
+        creationDate = {
+            let label = UILabel()
+            label.numberOfLines = 2
+            label.text = ticket.creationDate?.readableString() ?? "Unknown"
+            label.textAlignment = .right
+            label.font = .systemFont(ofSize: 16)
+            label.textColor = AppColors.value
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: creationDateLabel.rightAnchor, constant: 12).isActive = true
+            label.topAnchor.constraint(equalTo: creationDateLabel.topAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+            
+            return label
+        }()
+        
+        paymentDateLabel = {
+            let label = UILabel()
+            label.font = .systemFont(ofSize: 16)
+            label.text = "Transaction date:"
+            label.textColor = AppColors.prompt
+            label.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            label.topAnchor.constraint(equalTo: creationDate.bottomAnchor, constant: VERTICAL_SPACING).isActive = true
+            
+            label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width).isActive = true
+            
+            return label
+        }()
+        
         paymentDate = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
+            label.text = ticket.transactionDate?.readableString() ?? "Pending validation"
             label.textAlignment = .right
             label.font = .systemFont(ofSize: 16)
             label.textColor = AppColors.value
@@ -125,6 +172,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: paymentDateLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: paymentDateLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -133,7 +181,7 @@ class PurchaseDetailsCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Quantity:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -157,6 +205,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: quantityLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: quantityLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -165,7 +214,7 @@ class PurchaseDetailsCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Payment type:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -189,6 +238,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: paymentTypeLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: paymentTypeLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -197,7 +247,7 @@ class PurchaseDetailsCell: UITableViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
             label.text = "Amount paid:"
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -221,6 +271,7 @@ class PurchaseDetailsCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: amountPaidLabel.rightAnchor, constant: 12).isActive = true
             label.topAnchor.constraint(equalTo: amountPaidLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()
@@ -230,7 +281,7 @@ class PurchaseDetailsCell: UITableViewCell {
                 let label = UILabel()
                 label.font = .systemFont(ofSize: 16)
                 label.text = "Note:"
-                label.textColor = .gray
+                label.textColor = AppColors.prompt
                 label.translatesAutoresizingMaskIntoConstraints = false
                 addSubview(label)
                 
@@ -254,6 +305,7 @@ class PurchaseDetailsCell: UITableViewCell {
                 label.leftAnchor.constraint(equalTo: notesLabel.rightAnchor, constant: 12).isActive = true
                 label.topAnchor.constraint(equalTo: notesLabel.topAnchor).isActive = true
                 label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+                label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
                 
                 return label
             }()

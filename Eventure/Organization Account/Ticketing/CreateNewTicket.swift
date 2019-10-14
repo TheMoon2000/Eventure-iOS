@@ -67,7 +67,7 @@ class CreateNewTicket: UITableViewController {
             cell.valueField.returnKeyType = .next
             cell.valueField.autocapitalizationType = .none
             cell.valueField.autocorrectionType = .no
-            cell.valueField.isUserInteractionEnabled = draftTicket.activationDate == nil
+            cell.valueField.isUserInteractionEnabled = draftTicket.transactionDate == nil
             cell.changeHandler = { tf in
                 self.draftTicket.quantity = Int(tf.text!) ?? 1
             }
@@ -113,7 +113,7 @@ class CreateNewTicket: UITableViewController {
             let cell = DraftLocationCell()
             cell.setPlaceholder(string: "Optional")
             cell.multiLine = false
-            cell.valueText.insertText(draftTicket.userEmail ?? "")
+            cell.valueText.insertText(draftTicket.userEmail)
             cell.valueText.returnKeyType = .next
             cell.valueText.keyboardType = .emailAddress
             cell.valueText.autocapitalizationType = .none
@@ -121,7 +121,7 @@ class CreateNewTicket: UITableViewController {
             if draftTicket.transactionDate == nil {
                 cell.promptLabel.text = "Recipient email"
             } else {
-                cell.promptLabel.text = "The ticket has already been claimed by the user associated with the email below and cannot be modified further."
+                cell.promptLabel.text = "The ticket has already been claimed and cannot be modified further."
                 cell.valueText.isEditable = false
             }
             cell.returnHandler = { tv in
@@ -178,34 +178,28 @@ class CreateNewTicket: UITableViewController {
         navigationItem.rightBarButtonItem = spinnerItem
         //print(draftTicket.salesID.description)
         
-        var creationResult = ""
-        if (newTicket) {
-            for id in self.salesBundle {
-                self.createTicketsWithBundle(uuid: id)
-            }
+        if newTicket {
+            createTicketsWithBundle(uuid: salesBundle)
         } else {
-            self.createTicketsWithBundle(uuid: draftTicket.ticketID)
+            createTicketsWithBundle(uuid: [draftTicket.ticketID])
         }
-        if (creationResult == "") {
-            self.navigationController?.popViewController(animated: true)
-        }
-        
         
     }
-    private func createTicketsWithBundle(uuid: String){
+    
+    private func createTicketsWithBundle(uuid: [String]) {
         var parameters = [
             "eventId": parentVC.event.uuid,
-            "ticketId": uuid,
+            "ticketArray": uuid.description.encoded,
             "quantity": String(draftTicket.quantity),
             "admissionId": draftTicket.admissionID,
-            "price": String(draftTicket.ticketPrice),
+            "price": String(draftTicket.ticketPrice * Double(draftTicket.quantity)),
             "transferable": draftTicket.transferable ? "1" : "0",
-            "notes": draftTicket.notes
+            "notes": draftTicket.notes,
+            "email": draftTicket.userEmail
         ]
         
-        if draftTicket.userEmail?.isValidEmail() ?? false {
-            //print(draftTicket.userEmail)
-            parameters["email"] = draftTicket.userEmail!
+        if draftTicket.userEmail.isValidEmail() {
+            parameters["email"] = draftTicket.userEmail
         }
                 
         let url = URL.with(base: API_BASE_URL,
@@ -237,7 +231,7 @@ class CreateNewTicket: UITableViewController {
             case "success":
                 DispatchQueue.main.async {
                     self.doneHandler?(self.newTicket)
-                    //self.navigationController?.popViewController(animated: true)
+                    self.navigationController?.popViewController(animated: true)
                 }
             default:
                 DispatchQueue.main.async {

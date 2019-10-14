@@ -30,7 +30,7 @@ class DescriptionEditPage: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
         view.tintColor = AppColors.main
         
         title = "Organization Description"
@@ -79,7 +79,7 @@ class DescriptionEditPage: UIViewController {
         
         previewButton = {
             let button = UIButton(type: .system)
-            button.setTitleColor(.darkGray, for: .normal)
+            button.setTitleColor(AppColors.control, for: .normal)
             button.setTitle("Preview", for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -89,7 +89,6 @@ class DescriptionEditPage: UIViewController {
         }()
         
         buttonStack = {
-            
             let verticalLine = UIView()
             verticalLine.backgroundColor = AppColors.line
             verticalLine.translatesAutoresizingMaskIntoConstraints = false
@@ -112,7 +111,7 @@ class DescriptionEditPage: UIViewController {
         descriptionText = {
             let tv = UITextView()
             tv.isScrollEnabled = false
-            tv.textColor = .darkGray
+            tv.textColor = AppColors.plainText
             
             textViewFormatter(tv: tv)
             
@@ -133,7 +132,7 @@ class DescriptionEditPage: UIViewController {
             let label = UILabel()
             label.numberOfLines = 0
             label.font = .systemFont(ofSize: 18, weight: .medium)
-            label.textColor = .init(white: 0.8, alpha: 1)
+            label.textColor = AppColors.placeholder
             label.isHidden = !Organization.current!.orgDescription.isEmpty //Fix Me
             label.text = "Please give a brief description of your club within \(descriptionMaxLength) characters."
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -166,7 +165,7 @@ class DescriptionEditPage: UIViewController {
             tv.backgroundColor = nil
             tv.isEditable = false
             tv.isScrollEnabled = false
-            tv.textColor = .gray
+            tv.textColor = AppColors.plainText
             tv.font = .systemFont(ofSize: 17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = AppColors.link
@@ -253,6 +252,8 @@ class DescriptionEditPage: UIViewController {
         
         if descriptionText.text.isEmpty {
             previewText.text = "No content."
+        } else if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            previewText.attributedText = descriptionText.text.attributedText(style: PLAIN_DARK)
         } else {
             previewText.attributedText = descriptionText.text.attributedText()
         }
@@ -298,7 +299,7 @@ class DescriptionEditPage: UIViewController {
 extension DescriptionEditPage: UITextViewDelegate {
     
     private func updateWordCount() {
-        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? .darkGray : .red
+        descriptionText.textColor = descriptionText.text.count <= descriptionMaxLength ? AppColors.plainText : .red
         charCount.text = "\(descriptionText.text.count) / \(descriptionMaxLength) characters"
     }
     

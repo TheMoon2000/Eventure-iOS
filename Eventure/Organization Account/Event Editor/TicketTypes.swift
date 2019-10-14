@@ -21,7 +21,7 @@ class TicketTypes: UITableViewController {
         self.draftPage = draftPage
         
         title = "Ticket Types"
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         sortedAdmissionTypes = draftPage.draft.admissionTypes.sorted { t1, t2 in
             (t1.price ?? 0.0) >= (t2.price ?? 0.0)
         }

@@ -66,7 +66,7 @@ class Registrant: Hashable, Profile {
         userID = dictionary["User ID"]?.int ?? -1
         orgID = dictionary["Organization"]?.string ?? "Unknown Organization"
         name = dictionary["Full name"]?.string ?? ""
-        email = dictionary["Email"]?.string ?? "No email provided"
+        email = dictionary["Email"]?.string ?? ""
         displayedName = dictionary["Displayed name"]?.string ?? ""
         
         if let majorString = dictionary["Major"]?.string {

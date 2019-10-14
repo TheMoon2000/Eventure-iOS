@@ -166,14 +166,15 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 }))
                 if tickets[indexPath.row].sent {
                     alert.addAction(.init(title: "Mark as Unsent", style: .default, handler: { _ in
-                        self.markAsSent(row: indexPath.row)
+                        self.markAsSent(tickets: [self.tickets[indexPath.row]])
                     }))
                 } else {
                     alert.addAction(.init(title: "Email Ticket", style: .default, handler: { _ in
                         self.mailTicket(ticket: self.tickets[indexPath.row], indexPath: indexPath)
                     }))
                     alert.addAction(.init(title: "Mark as Sent", style: .default, handler: { _ in
-                        self.markAsSent(row: indexPath.row, sent: true)
+                        self.markAsSent(tickets: [self.tickets[indexPath.row]], sent: true)
+                        self.markAsSent(tickets: [self.tickets[indexPath.row]])
                     }))
                 }
                 alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
@@ -253,18 +254,12 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         return nil
     }
     
-    private func congolmerate(recipientEmail: String) {
-        conglomeratedTickets = tickets.filter { t -> Bool in
-            (t.userEmail == recipientEmail && t.sent == false && t.transactionDate == nil)
-        }
-        for t in conglomeratedTickets {
-            self.markAsSent(ticket: t, sent: true, stealth: true)
-        }
-        print(conglomeratedTickets.count)
-    }
     
     private func mailTicket(ticket: Ticket, indexPath: IndexPath) {
         guard MFMailComposeViewController.canSendMail() else {
+            let alert = UIAlertController(title: "Your device is not set up for mail", message: "Either your device does not support Apple's default mail service, or you have not configured any mail accounts on your device.", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            present(alert, animated: true)
             return
         }
         
@@ -277,7 +272,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             formatted.layer.render(in: context.cgContext)
         }
         
-        let alert = UIAlertController(title: "How would you like to mail this ticket?", message: "You can either send the ticket through our no-reply email, or configure the email use your own email address.", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "How would you like to mail this ticket?", message: "You can either send the ticket through our no-reply email, or configure the email use your own email address. If you want to distribute all the tickets for this recipient, we could automate the procedure for you too.", preferredStyle: .actionSheet)
         alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Configure Custom Mail", style: .default, handler: { _ in
             let body = """
@@ -296,9 +291,9 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         }))
         
         alert.addAction(.init(title: "Send System Email", style: .default, handler: { _ in
-            if let recipient = ticket.userEmail, !recipient.isEmpty {
-                self.sendSystemEmail(indexPath: indexPath,
-                                     recipient: recipient,
+            if !ticket.userEmail.isEmpty {
+                self.sendSystemEmail(ticketList: [ticket],
+                                     recipient: ticket.userEmail,
                                      qr: [qr])
             } else {
                 let alert = UIAlertController(title: "Who should receive this ticket?", message: "Please enter their email address.", preferredStyle: .alert)
@@ -310,7 +305,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 alert.addAction(.init(title: "Cancel", style: .cancel))
                 alert.addAction(.init(title: "Send", style: .default, handler: { _ in
                     let recipient = alert.textFields![0].text ?? ""
-                    self.sendSystemEmail(indexPath: indexPath,
+                    self.sendSystemEmail(ticketList: [ticket],
                                          recipient: recipient,
                                          qr: [qr])
                 }))
@@ -319,22 +314,25 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         }))
         
         alert.addAction(.init(title: "Send All Tickets For This Recipient", style: .default, handler: { _ in
-            if let recipient = ticket.userEmail, !recipient.isEmpty {
-                self.congolmerate(recipientEmail: recipient)
+            if !ticket.userEmail.isEmpty {
+                var ticketList = [Ticket]()
                 var qrs = [UIImage]()
-                for ct in self.conglomeratedTickets {
-                    guard let formatted = self.generateCode(from: ct) else {
-                        return
+                for t in self.tickets {
+                    if t.userEmail == ticket.userEmail && !t.sent && t.transactionDate == nil {
+                        guard let formatted = self.generateCode(from: t) else {
+                            return
+                        }
+                        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+                        let qr = renderer.image { context in
+                            formatted.layer.render(in: context.cgContext)
+                        }
+                        qrs.append(qr)
+                        ticketList.append(t)
                     }
-                    let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
-                    let qr = renderer.image { context in
-                        formatted.layer.render(in: context.cgContext)
-                    }
-                    qrs.append(qr)
                 }
                 
-                self.sendSystemEmail(indexPath: indexPath,
-                                     recipient: recipient,
+                self.sendSystemEmail(ticketList: ticketList,
+                                     recipient: ticket.userEmail,
                                      qr: qrs)
             } else {
                 let alert = UIAlertController(title: "Who should receive this ticket?", message: "Please enter their email address.", preferredStyle: .alert)
@@ -346,19 +344,22 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 alert.addAction(.init(title: "Cancel", style: .cancel))
                 alert.addAction(.init(title: "Send", style: .default, handler: { _ in
                     let recipient = alert.textFields![0].text ?? ""
-                    self.congolmerate(recipientEmail: recipient)
+                    var ticketList = [Ticket]()
                     var qrs = [UIImage]()
-                    for ct in self.conglomeratedTickets {
-                        guard let formatted = self.generateCode(from: ct) else {
-                            return
+                    for ticket in self.tickets {
+                        if ticket.userEmail == recipient && !ticket.sent && ticket.transactionDate == nil {
+                            guard let formatted = self.generateCode(from: ticket) else {
+                                return
+                            }
+                            let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
+                            let qr = renderer.image { context in
+                                formatted.layer.render(in: context.cgContext)
+                            }
+                            qrs.append(qr)
+                            ticketList.append(ticket)
                         }
-                        let renderer = UIGraphicsImageRenderer(bounds: formatted.bounds)
-                        let qr = renderer.image { context in
-                            formatted.layer.render(in: context.cgContext)
-                        }
-                        qrs.append(qr)
                     }
-                    self.sendSystemEmail(indexPath: indexPath,
+                    self.sendSystemEmail(ticketList: ticketList,
                                          recipient: recipient,
                                          qr: qrs)
                 }))
@@ -370,33 +371,51 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             popoverController.sourceView = tableView
             let cellRect = tableView.rectForRow(at: indexPath)
             popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+            print(indexPath)
         }
         
         present(alert, animated: true)
         
     }
     
-    private func sendSystemEmail(indexPath: IndexPath, recipient: String, qr: [UIImage]) {
+    private func sendSystemEmail(ticketList: [Ticket], recipient: String, qr: [UIImage]) {
         
-        let message = """
-        <a style="float:right" href="\(APP_STORE_LINK)"><img src="\(APP_DOMAIN)static/assets/logo.jpg" style="width:60px; height:60px" title="Eventure app" alt="Eventure"></a><br><div style="clear:both">
-        Hi there!<br><br>Thank you for supporting <em>\(event.title)</em>. Here is your digital ticket, which contains detailed information about when and where it will take place. If you have an iOS device, we recommend that you <b>scan this QR code</b> with <a href="\(APP_STORE_LINK)">Eventure</a>, which will automatically validate your ownership and sync the ticket to your account. Otherwise, please take a moment to visit <a href="https://eventure-app.com/ticket?id=\(tickets[indexPath.row].ticketID)">this link</a> and fill out your contact information. This will help the event organizer to assign ownership identity to this ticket, which is <b>essential</b> for its validation.<br><br>Best regards,<br>Eventure Development Team</div>
-        """
+        let message: String
+
+        if ticketList.count == 1 {
+            message = """
+            <a style="float:right" href="\(APP_STORE_LINK)"><img src="\(APP_DOMAIN)static/assets/logo.jpg" style="width:60px; height:60px" title="Eventure app" alt="Eventure"></a><br><div style="clear:both">
+            Hi there!<br><br>Thank you for supporting <em>\(event.title)</em>. Here is your digital ticket, which contains detailed information about when and where it will take place. If you have an iOS device, we recommend that you <b>scan this QR code</b> with <a href="\(APP_STORE_LINK)">Eventure</a>, which will automatically validate your ownership and sync the ticket to your account. Otherwise, please take a moment to visit <a href="https://eventure-app.com/ticket?id=\(ticketList[0].ticketID)">this link</a> and fill out your contact information. This will help the event organizer to assign ownership identity to this ticket, which is <b>essential</b> for its validation.<br><br>Best regards,<br>Eventure Development Team</div>
+            """
+        } else {
+            
+            var links = ""
+            for i in 0..<ticketList.count {
+                let ticketID = ticketList[i].ticketID
+                links.append("<b>Ticket \(i)</b>:  <a href=\"https://eventure-app.com/ticket?id=" + ticketID + "\">Validation link</a><br>")
+            }
+            
+            message = """
+            <a style="float:right" href="\(APP_STORE_LINK)"><img src="\(APP_DOMAIN)static/assets/logo.jpg" style="width:60px; height:60px" title="Eventure app" alt="Eventure"></a><br><div style="clear:both">
+            Hi there!<br><br>Thank you for supporting <em>\(event.title)</em>. Here are your \(ticketList.count) digital tickets, each with detailed information about when and where the event will take place. For people in your party that have an iOS device, we recommend that they <b>scan their tickets</b> with <a href="\(APP_STORE_LINK)">Eventure</a>, which will automatically validate their ownership and sync their tickets to their accounts. Otherwise, please ask them to to visit the corresponding links for their tickets and fill out their contact information:<br><br>\(links)<br>This will help the event organizer to assign owner   ship identity to these tickets, which is <b>essential</b> for their validation.<br><br>Best regards,<br>Eventure Development Team</div>
+            """
+        }
+        
+        let plural = ticketList.count == 1 ? "" : "s"
         
         let parameters = [
-            "subject": "Ticket Receipt for \(event.title)",
+            "subject": "Ticket Receipt\(plural) for \(event.title)",
             "recipient": recipient,
             "message": message
         ]
+        
         var files = [String : Data]()
         for i in 1...qr.count {
             files["ticket \(i)"] = qr[i - 1].pngData()
         }
-        print(files.count)
         
         (loadingBG.contentView.subviews.last as? UILabel)?.text = "Sending..."
         loadingBG.isHidden = false
-        
         
         let url = URL(string: MAIL_API_BASE_URL + "MailTicket")!
         var request = URLRequest(url: url)
@@ -408,14 +427,11 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                self.loadingBG.isHidden = true
-                (self.loadingBG.contentView.subviews.last as? UILabel)?.text = "Loading..."
-            }
-            
             guard error == nil else {
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self)
+                    self.loadingBG.isHidden = true
+                    (self.loadingBG.contentView.subviews.last as? UILabel)?.text = "Loading..."
                 }
                 return
             }
@@ -424,32 +440,24 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             switch msg {
             case "success":
                 DispatchQueue.main.async {
-                    self.tickets[indexPath.row].sent = true
-                    if let cell = self.tableView.cellForRow(at: indexPath) as? IssuedTicketCell {
-                        cell.mailSent = true
-                    }
-                    self.markAsSent(row: indexPath.row, sent: true, stealth: true)
+                    self.markAsSent(tickets: ticketList, sent: true)
                 }
             default:
                 let alert = UIAlertController(title: "Could not mail ticket", message: msg, preferredStyle: .alert)
                 alert.addAction(.init(title: "OK", style: .cancel))
                 DispatchQueue.main.async {
                     self.present(alert, animated: true)
+                    self.loadingBG.isHidden = true
+                    (self.loadingBG.contentView.subviews.last as? UILabel)?.text = "Loading..."
                 }
             }
         }
         
         task.resume()
     }
-    
-    private func markAsSent(row: Int, sent: Bool = false, stealth: Bool = false) {
-        let ticket = tickets[row]
-        self.markAsSent(ticket: ticket, sent: sent, stealth: stealth)
-    }
-    
-    private func markAsSent(ticket: Ticket, sent: Bool = false, stealth: Bool = false) {
-        ticket.sent = sent
-        
+
+    private func markAsSent(tickets: [Ticket], sent: Bool = false, stealth: Bool = false) {
+                
         if !stealth {
             loadingBG.isHidden = false
             (loadingBG.subviews.last as? UILabel)?.text = "Updating..."
@@ -458,11 +466,12 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ToggleTicketSent",
                            parameters: [
-                            "ticketId": ticket.ticketID,
                             "sent": sent ? "1" : "0"
                            ])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
+        request.httpMethod = "POST"
+        request.httpBody = tickets.map { $0.ticketID }.description.data(using: .utf8)
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
@@ -490,10 +499,8 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 }
             case "success":
                 DispatchQueue.main.async {
-                    /*if let cell = self.tableView.cellForRow(at: [0, row]) as? IssuedTicketCell {
-                        cell.mailSent = sent
-                    }*/
-                    self.refresh()
+                    tickets.forEach { $0.sent = sent }
+                    self.tableView.reloadData()
                 }
             default:
                 let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
@@ -561,7 +568,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                 self.loadTickets()
                 self.tableView.contentOffset.y = 0
             } else {
-                self.tableView.reloadRows(at: [indexPath], with: .none)
+                self.tableView.reloadData()
             }
         }
         navigationController?.pushViewController(editor, animated: true)
@@ -652,9 +659,9 @@ extension IssuedTickets: MFMailComposeViewControllerDelegate, UINavigationContro
         
         if result == .sent || result == .saved {
             cellToMail?.mailSent = true
-            if let ticket = ticketToMail, let index = tickets.firstIndex(of: ticket) {
+            if let ticket = ticketToMail {
                 ticket.sent = true
-                markAsSent(row: index, sent: true, stealth: true)
+                markAsSent(tickets: [ticket], sent: true, stealth: true)
             }
         }
         
