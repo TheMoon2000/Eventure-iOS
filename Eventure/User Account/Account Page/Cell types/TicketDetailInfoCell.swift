@@ -40,7 +40,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
             
-            label.widthAnchor.constraint(equalToConstant: label.intrinsicContentSize.width).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
@@ -57,6 +57,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.leftAnchor.constraint(equalTo: providerLabel.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             label.topAnchor.constraint(equalTo: providerLabel.topAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         }()

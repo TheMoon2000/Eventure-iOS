@@ -322,7 +322,7 @@ extension OrgDetailPage {
     
     @objc private func buttonPressed() {
         disclosureIndicator.image = #imageLiteral(resourceName: "disclosure_pressed")
-        previewContainer.backgroundColor = AppColors.selected
+        previewContainer.backgroundColor = AppColors.background
     }
     
     @objc private func buttonLifted() {

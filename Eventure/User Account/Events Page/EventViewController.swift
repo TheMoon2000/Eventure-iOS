@@ -328,6 +328,7 @@ class EventViewController: UIViewController, EventProvider {
             filterTable)
         nav.navigationBar.barTintColor = AppColors.navbar
         nav.navigationBar.tintColor = AppColors.main
+        nav.navigationBar.isTranslucent = false
         present(nav, animated: true)
     }
     
