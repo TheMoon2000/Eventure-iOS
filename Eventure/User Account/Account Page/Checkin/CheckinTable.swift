@@ -41,27 +41,46 @@ class CheckinTable: UIViewController {
         super.viewWillAppear(animated)
         
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.view.backgroundColor = .clear
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        navigationController?.navigationBar.shadowImage = nil
         navigationController?.view.backgroundColor = nil
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        let effect: UIVisualEffect
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            effect = UIBlurEffect(style: .dark)
+        } else {
+            effect = UIBlurEffect(style: .light)
+        }
+        banner.effect = effect
+        bottomBanner.effect = effect
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
-        navigationController?.navigationBar.shadowImage = UIImage()
+        view.backgroundColor = AppColors.canvas
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
         banner = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            let effect: UIVisualEffect
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                effect = UIBlurEffect(style: .dark)
+            } else {
+                effect = UIBlurEffect(style: .light)
+            }
+            let v = UIVisualEffectView(effect: effect)
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             
@@ -95,7 +114,7 @@ class CheckinTable: UIViewController {
             label.numberOfLines = 5
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 16.5)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
             
@@ -130,7 +149,7 @@ class CheckinTable: UIViewController {
             label.isHidden = true
             label.text = "Loading registrants..."
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -143,7 +162,13 @@ class CheckinTable: UIViewController {
         }()
         
         bottomBanner = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            let effect: UIVisualEffect
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                effect = UIBlurEffect(style: .dark)
+            } else {
+                effect = UIBlurEffect(style: .light)
+            }
+            let v = UIVisualEffectView(effect: effect)
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             

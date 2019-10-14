@@ -14,18 +14,17 @@ class CheckinNavigationController: UINavigationController {
         super.viewDidLoad()
 
         navigationBar.tintColor = AppColors.main
-        navigationBar.barTintColor = .white
+        navigationBar.barTintColor = AppColors.navbar
+        navigationBar.isTranslucent = true
     }
 
 }
 
-class PortraitNavigationController: UINavigationController {
-
+class PortraitNavigationController: CheckinNavigationController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        navigationBar.tintColor = AppColors.main
-        navigationBar.barTintColor = AppColors.navbar
+        
         navigationBar.isTranslucent = false
     }
 

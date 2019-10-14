@@ -58,7 +58,7 @@ class CheckinSortSettings: UITableViewController {
         }
         contentCells.append(ascendingSwitch)
         
-        if checkinTableVC.event.secureCheckin {
+        if checkinTableVC.sortedRegistrants.count > checkinTableVC.filteredRegistrants.count {
             let pendingSwitch = SettingsSwitchCell()
             pendingSwitch.titleLabel.text = "Show pending registrants"
             pendingSwitch.enabled = checkinTableVC.showPending

@@ -62,9 +62,11 @@ class UserScanner: ScannerViewController {
             if let json = try? JSON(data: data!) {
                 let event = Event(eventInfo: json)
                 event.getCover(nil)
-                let checkinForm = CheckinPageController(event: event)
                 DispatchQueue.main.async {
-                    self.present(CheckinNavigationController(rootViewController: checkinForm), animated: true) {
+                    let checkinForm = CheckinPageController(event: event)
+                    let nav = CheckinNavigationController(rootViewController: checkinForm)
+                    nav.modalPresentationStyle = .fullScreen
+                    self.present(nav, animated: true) {
                         self.navigationController?.popViewController(animated: false)
                     }
                 }
@@ -118,18 +120,6 @@ class UserScanner: ScannerViewController {
                         
             if let json = try? JSON(data: data!), json.dictionary != nil {
                 let ticket = Ticket(ticketInfo: json)
-                
-                if ticket.userID == -1 && !ticket.userEmail.isEmpty && User.current?.email != ticket.userEmail {
-                    DispatchQueue.main.async {
-                        let alert = UIAlertController(title: "Cannot claim ticket!", message: "You are not the intended recipient of this ticket.", preferredStyle: .alert)
-                        alert.addAction(.init(title: "OK", style: .cancel, handler: { _ in
-                            
-                            self.session?.startRunning()
-                        }))
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                    return
-                }
                 
                 if ticket.userID != -1 && ticket.userID != User.current?.userID && (!ticket.transferable || ticket.transferLocked) {
                     DispatchQueue.main.async {

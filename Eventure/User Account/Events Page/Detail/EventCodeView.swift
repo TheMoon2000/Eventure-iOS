@@ -19,6 +19,8 @@ class EventCodeView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        backgroundColor = AppColors.navbar
+                
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
@@ -87,7 +89,7 @@ class EventCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 5
             label.font = .systemFont(ofSize: 17.5, weight: .medium)
-            label.textColor = .init(white: 0.15, alpha: 1)
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

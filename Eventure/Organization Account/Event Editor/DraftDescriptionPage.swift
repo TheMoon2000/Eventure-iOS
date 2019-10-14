@@ -243,7 +243,7 @@ class DraftDescriptionPage: UIViewController {
         
         if titleText.text.isEmpty {
             titleText.becomeFirstResponder()
-        } else {
+        } else if descriptionText.text.isEmpty {
             descriptionText.becomeFirstResponder()
         }
         
@@ -283,7 +283,9 @@ class DraftDescriptionPage: UIViewController {
         previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         previewText.isHidden = true
         descriptionText.isHidden = false
+        let tmp = draftPage.edited
         textViewDidChange(descriptionText)
+        draftPage.edited = tmp
         charCount.isHidden = false
     }
     

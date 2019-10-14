@@ -115,11 +115,11 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
                 event.eventVisual = currentRecord.coverImage
                 event.hasVisual = currentRecord.hasCover
                 
-                let detailPage = EventDetailPage()
-                detailPage.hidesBottomBarWhenPushed = true
-                detailPage.event = event
 
                 DispatchQueue.main.async {
+                    let detailPage = EventDetailPage()
+                    detailPage.hidesBottomBarWhenPushed = true
+                    detailPage.event = event
                     self.navigationController?.pushViewController(detailPage, animated: true)
                 }
                 

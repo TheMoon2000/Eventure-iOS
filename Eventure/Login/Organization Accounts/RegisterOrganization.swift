@@ -371,6 +371,7 @@ class RegisterOrganization: UITableViewController {
     @objc private func registerOrg() {
         let finishScreen = OrgFinishRegistration()
         finishScreen.regVC = self
+        finishScreen.modalPresentationStyle = .fullScreen
         finishScreen.registrationData = registrationData
         
         present(finishScreen, animated: true, completion: nil)

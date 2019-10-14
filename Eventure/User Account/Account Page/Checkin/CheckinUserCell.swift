@@ -130,7 +130,7 @@ class CheckinUserCell: UITableViewCell {
         }
         if let code = registrant.currentCode {
             majorLabel.text = "Check-in code: \(code)"
-            bgView.backgroundColor = PENDING_TINT
+            bgView.backgroundColor = AppColors.pending
         } else if registrant.userID != -1 {
             majorLabel.text = registrant.majorDescription
             bgView.backgroundColor = AppColors.background
@@ -150,7 +150,11 @@ class CheckinUserCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
-        bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
+        if registrant?.currentCode != nil {
+            bgView.backgroundColor = AppColors.pending
+        } else {
+            bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

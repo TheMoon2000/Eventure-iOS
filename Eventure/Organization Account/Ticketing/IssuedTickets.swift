@@ -195,7 +195,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
     
     private func generateCode(from ticket: Ticket) -> UIView? {
         
-        guard let qrCode = generateQRCode(from: APP_DOMAIN + "ticket?id=" + ticket.ticketID) else {
+        guard let _ = generateQRCode(from: APP_DOMAIN + "ticket?id=" + ticket.ticketID) else {
             let alert = UIAlertController(title: "Error generating QR code", message: "You device does not support QR code generation!", preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))
             present(alert, animated: true)
@@ -210,7 +210,11 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             } else {
                 formatted.subtitleLabel.text = "TBA | " + event.location
             }
-            formatted.qrCode.image = qrCode
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                formatted.qrCode.image = ticket.QRCodeDark
+            } else {
+                formatted.qrCode.image = ticket.QRCode
+            }
             let noun = ticket.quantity == 1 ? "Ticket" : "Tickets"
             formatted.ticketType.text = "\(ticket.quantity) × \(ticket.typeName) " + noun
             formatted.redeemCode.text = "Redeem code: \(ticket.redeemCode ?? "Unavailable")"
@@ -240,7 +244,11 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
             }
             
             let qr = TicketImageBelowQR(banner: banner)
-            qr.qrCode.image = qrCode
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                qr.qrCode.image = ticket.QRCodeDark
+            } else {
+                qr.qrCode.image = ticket.QRCode
+            }
             qr.redeemCode.text = "Redeem code: \(ticket.redeemCode ?? "Unavailable")"
             qr.translatesAutoresizingMaskIntoConstraints = false
             qr.layoutIfNeeded()

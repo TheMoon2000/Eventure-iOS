@@ -20,6 +20,8 @@ class TicketCodeView: UIView {
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
+        backgroundColor = AppColors.navbar
+        
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
@@ -69,9 +71,9 @@ class TicketCodeView: UIView {
         
         orgLogo = {
             let iv = UIImageView()
-            iv.backgroundColor = .white
+            iv.backgroundColor = AppColors.navbar
             iv.layer.cornerRadius = 4
-            iv.layer.borderColor = UIColor(white: 0.94, alpha: 1).cgColor
+            iv.layer.borderColor = AppColors.canvas.cgColor
             iv.layer.borderWidth = 1
             iv.layer.masksToBounds = true
             iv.contentMode = .scaleAspectFit
@@ -107,7 +109,7 @@ class TicketCodeView: UIView {
             label.numberOfLines = 2
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 16, weight: .medium)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

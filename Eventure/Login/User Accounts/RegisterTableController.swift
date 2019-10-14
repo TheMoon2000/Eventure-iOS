@@ -202,6 +202,7 @@ class RegisterTableController: UITableViewController {
             cell.primaryAction = {
                 let finishRegVC = FinishRegistration()
                 finishRegVC.regVC = self
+                finishRegVC.modalPresentationStyle = .fullScreen
                 finishRegVC.registrationData = self.registrationData
                 self.present(finishRegVC, animated: true, completion: nil)
             }

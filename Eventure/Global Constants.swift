@@ -55,7 +55,6 @@ enum NotificationKeys: String {
 
 /// Legacy main disabled color.
 let MAIN_DISABLED = UIColor(red: 1.0, green: 168/255, blue: 150/255, alpha: 0.6)
-let PENDING_TINT = UIColor(red: 1, green: 240/255, blue: 215/255, alpha: 1)
 let LIGHT_RED = UIColor(red: 1, green: 100/255, blue: 90/255, alpha: 1)
 
 let MAIN_TINT6 = UIColor(red: 236/255, green: 110/255, blue: 173/255, alpha: 1.0)
@@ -80,6 +79,9 @@ struct AppColors {
     
     /// A light green color to indicate a passed state.
     static var passed = UIColor(named: "AppColors.passed")!
+    
+    /// The color that indicates a registrant pending check-in.
+    static var pending = UIColor(named: "AppColors.pending")!
     
     /// The yellow color for the interest button.
     static var interest = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)

@@ -58,10 +58,23 @@ class CheckinResults: UIViewController {
         self.event = event
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        let effect: UIVisualEffect
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            effect = UIBlurEffect(style: .dark)
+        } else {
+            effect = UIBlurEffect(style: .light)
+        }
+        banner.effect = effect
+        bottomBanner.effect = effect
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .init(white: 0.92, alpha: 1)
+        view.backgroundColor = AppColors.canvas
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(closeSheet))
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "settings"), style: .plain, target: self, action: #selector(more))
@@ -69,7 +82,13 @@ class CheckinResults: UIViewController {
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
         
         banner = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            let effect: UIVisualEffect
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                effect = UIBlurEffect(style: .dark)
+            } else {
+                effect = UIBlurEffect(style: .light)
+            }
+            let v = UIVisualEffectView(effect: effect)
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             
@@ -103,7 +122,7 @@ class CheckinResults: UIViewController {
             label.numberOfLines = 5
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 16.5)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
             
@@ -138,7 +157,7 @@ class CheckinResults: UIViewController {
             let label = UILabel()
             label.text = "Loading registrants..."
             label.font = .systemFont(ofSize: 17)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -151,7 +170,13 @@ class CheckinResults: UIViewController {
         }()
         
         bottomBanner = {
-            let v = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+            let effect: UIVisualEffect
+            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+                effect = UIBlurEffect(style: .dark)
+            } else {
+                effect = UIBlurEffect(style: .light)
+            }
+            let v = UIVisualEffectView(effect: effect)
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
             
