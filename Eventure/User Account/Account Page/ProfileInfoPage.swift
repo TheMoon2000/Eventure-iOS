@@ -65,10 +65,16 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.saveEnabled = false
                 User.current?.fullName = textfield.text!
                 User.current?.saveEnabled = true
+                self.needsResave()
             }
             
             nameCell.endEditingHandler = { textfield in
                 User.current?.fullName = textfield.text!
+                self.save()
+            }
+            
+            nameCell.returnHandler = { textfield in
+                textfield.resignFirstResponder()
             }
             
             section.append(nameCell)
@@ -86,6 +92,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 majorCell.icon.image = #imageLiteral(resourceName: "major")
                 majorCell.titleLabel.text = "Area(s) of study"
                 majorCell.valueLabel.numberOfLines = 1
+                majorCell.valueLabel.text = "\(userProfile.majors.count) selected"
                 section.append(majorCell)
                 
             } else {
@@ -113,6 +120,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.graduationSeason = season
                 gradCell.valueLabel.text = User.current?.graduation ?? "Can't edit"
                 gradCell.valueLabel.textColor = AppColors.link
+                self.needsResave()
             }
             section.append(chooser)
             
@@ -139,10 +147,12 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.saveEnabled = false
                 User.current?.resume = textfield.text!
                 User.current?.saveEnabled = true
+                self.needsResave()
             }
             
             resumeCell.endEditingHandler = { textfield in
                 User.current?.resume = textfield.text!
+                self.save()
             }
             
             resumeCell.returnHandler = { textfield in
@@ -176,10 +186,12 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.saveEnabled = false
                 User.current?.linkedIn = textfield.text!
                 User.current?.saveEnabled = true
+                self.needsResave()
             }
             
             linkedInCell.endEditingHandler = { textfield in
                 User.current?.linkedIn = textfield.text!
+                self.save()
             }
             
             linkedInCell.returnHandler = { textfield in
@@ -206,10 +218,12 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.saveEnabled = false
                 User.current?.github = textfield.text!
                 User.current?.saveEnabled = true
+                self.needsResave()
             }
             
             githubCell.endEditingHandler = { textfield in
                 User.current?.github = textfield.text!
+                self.save()
             }
             
             githubCell.returnHandler = { textfield in
@@ -239,10 +253,12 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.saveEnabled = false
                 User.current?.interests = textfield.text!
                 User.current?.saveEnabled = true
+                self.needsResave()
             }
             
             hobbyCell.endEditingHandler = { textfield in
                 User.current?.interests = textfield.text!
+                self.save()
             }
             
             hobbyCell.returnHandler = { textfield in
@@ -260,10 +276,11 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
                 User.current?.saveEnabled = false
                 User.current?.comments = textView.text
                 User.current?.saveEnabled = true
+                self?.needsResave()
                 
                 UIView.performWithoutAnimation {
-                    self?.tableView.beginUpdates()
-                    self?.tableView.endUpdates()
+                    // self?.tableView.beginUpdates()
+                    // self?.tableView.endUpdates()
                 }
                 
                 
@@ -275,6 +292,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             
             commentCell.textEndEditingHandler = { text in
                 User.current?.comments = text
+                self.save()
             }
             
             section.append(commentCell)
@@ -283,28 +301,37 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         }()
         
         contentCells.append(section3)
-        
-        spinner = UIActivityIndicatorView(style: .gray)
-        spinner.startAnimating()
-        
+
+        saveBarButton = .init(title: "Saved", style: .done, target: self, action: #selector(saveButtonPressed))
+        saveBarButton.isEnabled = false
         if cellsEditable {
-            saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
             navigationItem.rightBarButtonItem = saveBarButton
         }
     }
     
-    @objc private func save(disappearing: Bool = false) {
+    func needsResave() {
+        saveBarButton.title = "Save"
+        saveBarButton.isEnabled = true
+    }
+    
+    func markAsSaved() {
+        saveBarButton.title = "Saved"
+        saveBarButton.isEnabled = false
+    }
+    
+    @objc private func saveButtonPressed() {
+        save()
+    }
+    
+    func save(disappearing: Bool = false, _ onSuccess: (() -> ())? = nil) {
         
-        guard let user = User.current else {
-            return
-        }
+        guard let user = User.current else { return }
+        guard User.needsUpload else { return }
+        guard saveBarButton.isEnabled else { return }
         
-        guard User.needsUpload else {
-            return
-        }
-        
-        navigationItem.rightBarButtonItem = .init(customView: spinner)
-                
+        saveBarButton.title = "Saving..."
+        saveBarButton.isEnabled = false
+                        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/UpdateUserInfo",
                            parameters: ["uuid": String(user.uuid)])!
@@ -328,11 +355,8 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                self.navigationItem.rightBarButtonItem = self.saveBarButton
-            }
-            
             guard error == nil else {
+                self.needsResave()
                 if !disappearing {
                     DispatchQueue.main.async {
                         internetUnavailableError(vc: self)
@@ -352,12 +376,25 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             switch msg {
             case INTERNAL_ERROR:
                 DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
+                    self.saveBarButton.title = "Save"
+                    self.saveBarButton.isEnabled = true
+                    if !disappearing {
+                        serverMaintenanceError(vc: self)
+                    }
                 }
             case "success":
                 User.needsUpload = false
+                DispatchQueue.main.async {
+                    self.markAsSaved()
+                    onSuccess?()
+                }
             default:
-                print(msg!)
+                DispatchQueue.main.async {
+                    self.needsResave()
+                    let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                    alert.addAction(.init(title: "OK", style: .cancel))
+                    self.present(alert, animated: true)
+                }
             }
             
         }
@@ -430,7 +467,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath {
         case [0, 2]:
-            let ml = MajorList()
+            let ml = MajorList(parentVC: self)
             navigationController?.pushViewController(ml, animated: true)
         case [0, 3]:
             view.endEditing(true)
@@ -442,6 +479,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     }
     
     private func refreshGradCell() {
+        
         let chooserCell = contentCells[0][4] as! GraduationYearChooser
         chooserCell.picker.isUserInteractionEnabled = graduationCellExpanded
         
@@ -449,10 +487,19 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
             chooserCell.picker.alpha = self.graduationCellExpanded ? 1.0 : 0.0
         }
         
-        chooserCell.valueChanged()
+        chooserCell.valueChanged(setup: true)
         
-        tableView.beginUpdates()
-        tableView.endUpdates()
+         tableView.beginUpdates()
+         tableView.endUpdates()
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if let majorCell = contentCells[0][2] as? SettingsItemCell {
+            majorCell.valueLabel.text = "\(userProfile.majors.count) selected"
+        }
     }
     
 

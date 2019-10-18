@@ -21,26 +21,6 @@ class Registrant: Hashable, Profile {
     var displayedName: String
     var majors = Set<Int>()
     
-    var majorDescription: String {
-        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
-        
-        if objects.isEmpty {
-            return "Undeclared"
-        }
-        
-        return objects.joined(separator: " + ")
-    }
-    
-    var shortMajorDescription: String {
-        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
-        
-        if objects.isEmpty {
-            return "Undeclared"
-        }
-        
-        return objects.joined(separator: " + ")
-    }
-    
     var email: String
     var order: Int?
     var currentCode: String?

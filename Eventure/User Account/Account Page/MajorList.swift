@@ -11,6 +11,8 @@ import SwiftyJSON
 
 class MajorList: UIViewController {
     
+    private var parentVC: ProfileInfoPage!
+    
     private var loadingBG: UIView!
     private var majorTable: UITableView!
     private(set) var majorList = [String: [Major]]() {
@@ -22,10 +24,12 @@ class MajorList: UIViewController {
     private var searchController: UISearchController!
     private var sectionTitles = [String]()
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    var edited = false
+    
+    required init(parentVC: ProfileInfoPage) {
+        super.init(nibName: nil, bundle: nil)
         
-        navigationItem.hidesSearchBarWhenScrolling = true
+        self.parentVC = parentVC
     }
 
     override func viewDidLoad() {
@@ -41,7 +45,6 @@ class MajorList: UIViewController {
             sc.searchResultsUpdater = searchResults
             sc.searchBar.placeholder = "Search major / minor"
             sc.searchBar.tintColor = AppColors.main
-            navigationItem.hidesSearchBarWhenScrolling = false
             sc.obscuresBackgroundDuringPresentation = true
             
             navigationItem.searchController = sc
@@ -132,6 +135,19 @@ class MajorList: UIViewController {
     @objc private func done() {
         navigationController?.popViewController(animated: true)
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if edited {
+            parentVC.needsResave()
+            parentVC.save { self.edited = false }
+        }
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
 
 }
 
@@ -158,7 +174,7 @@ extension MajorList: UITableViewDelegate, UITableViewDataSource {
         label.layoutMargins.left = 10
         label.textColor = .gray
         label.text = sectionTitles[section]
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.font = .systemFont(ofSize: 14, weight: .medium)
         label.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(label)
         
@@ -182,7 +198,7 @@ extension MajorList: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
+                
         let section = sectionTitles[indexPath.section]
         let major = majorList[section]![indexPath.row]
         let cell = tableView.cellForRow(at: indexPath) as! MajorCell
@@ -190,9 +206,11 @@ extension MajorList: UITableViewDelegate, UITableViewDataSource {
         if User.current!.majors.contains(major.id) {
             User.current?.majors.remove(major.id)
             cell.isChecked = false
+            edited = true
         } else if User.current!.majors.count < 3 {
             User.current?.majors.insert(major.id)
             cell.isChecked = true
+            edited = true
         } else {
             let alert = UIAlertController(title: "Too many areas", message: "Please select no more than 3 areas of study.", preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))

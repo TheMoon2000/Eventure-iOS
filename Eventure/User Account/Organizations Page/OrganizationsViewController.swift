@@ -27,7 +27,11 @@ class OrganizationsViewController: UIViewController {
     
     var customPushHandler: ((Organization) -> ())?
     
+    /// The list of organizations that are actually displayed.
     private var filteredOrgs = [Organization]()
+    
+    /// A subset of organizations that are recommended for the user, ordered by the size of the intersection between the user's tags and the org's tags.
+    private var recommendedOrgs = [Organization]()
     
     private var isFiltering: Bool {
         return searchController.isActive && !searchController.searchBar.text!.isEmpty
@@ -88,7 +92,7 @@ class OrganizationsViewController: UIViewController {
         }()
         
         topTab = {
-            let tab = UISegmentedControl(items: ["All", "Recommended",  "Subscribed"])
+            let tab = UISegmentedControl(items: ["All", "Subscribed",  "Membership"])
             if User.current == nil {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
@@ -113,8 +117,8 @@ class OrganizationsViewController: UIViewController {
             orgTable.delegate = self
             orgTable.tableFooterView = UIView()
             orgTable.contentInsetAdjustmentBehavior = .always
-            orgTable.contentInset.top = 60
-            orgTable.scrollIndicatorInsets.top = 60
+            orgTable.contentInset.top = 50
+            orgTable.scrollIndicatorInsets.top = 50
             orgTable.backgroundColor = .clear
             orgTable.register(OrganizationCell.classForCoder(), forCellReuseIdentifier: "org")
             orgTable.translatesAutoresizingMaskIntoConstraints = false
@@ -158,7 +162,7 @@ class OrganizationsViewController: UIViewController {
         
         emptyLabel = {
             let label = UILabel()
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -228,7 +232,6 @@ class OrganizationsViewController: UIViewController {
                 DispatchQueue.main.async {
                     self.organizations = tmp
                     self.emptyLabel.text = tmp.isEmpty ? "No Organizations" : ""
-                    self.orgTable.reloadSections(IndexSet(arrayLiteral: 0), with: .none)
                 }
             } else {
                 DispatchQueue.main.async {
@@ -247,6 +250,10 @@ class OrganizationsViewController: UIViewController {
 extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        if User.current != nil && topTab.selectedSegmentIndex == 0 {
+            return 2
+        }
+        
         return 1
     }
     
@@ -272,14 +279,46 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
             navigationController?.pushViewController(orgDetail, animated: true)
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if tableView.numberOfSections == 1 || organizations.isEmpty { return 0 }
+        
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if tableView.numberOfSections == 1 || organizations.isEmpty { return nil }
+        
+        let container = UIView()
+        container.backgroundColor = AppColors.canvas.withAlphaComponent(0.95)
+        
+        let label = UILabel()
+        label.layoutMargins.left = 10
+        label.textColor = .gray
+        if tableView.numberOfSections == 2 {
+            label.text = ["Recommended", "All Organizations"][section]
+        } else {
+            label.text = "All Organizations"
+        }
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(label)
+        
+        label.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 6).isActive = true
+        label.topAnchor.constraint(equalTo: container.topAnchor, constant: 2).isActive = true
+        label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -2).isActive = true
+        
+        return container
+    }
 }
 
 extension OrganizationsViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
-        self.updateFiltered()
+        self.updateFiltered(animated: false)
     }
     
-    private func updateFiltered() {
+    private func updateFiltered(animated: Bool = true) {
         let searchText = searchController.searchBar.text!.lowercased()
         let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
         DispatchQueue.global(qos: .default).async {
@@ -295,19 +334,45 @@ extension OrganizationsViewController: UISearchResultsUpdating {
                 
                 if !contains && !searchText.isEmpty { return false }
                 
-                if tabName == "Recommended" {
+                if tabName == "Subscribed" {
                     return !org.tags.intersection(User.current!.tags).isEmpty
-                } else if tabName == "Subscribed" {
-                    return User.current?.subscriptions.contains(org.id) ?? false
+                } else if tabName == "Membership" {
+                    return User.current?.memberships.contains { $0.orgID == org.id } ?? false
                 }
                 
                 return true
             }
             
             self.filteredOrgs.sort(by: { $0.title.lowercased() < $1.title.lowercased() })
+                        
+            if let current = User.current {
+                let rec = self.organizations.filter { org in
+                    return !org.tags.intersection(current.tags).isEmpty
+                }
+                self.recommendedOrgs = rec.sorted { org1, org2 in
+                    let in1 = org1.tags.intersection(current.tags).count
+                    let in2 = org2.tags.intersection(current.tags).count
+                    if in1 != in2 { return in1 > in2 }
+                    return org1.title.lowercased() <= org2.title.lowercased()
+                }
+            }
             
             DispatchQueue.main.async {
-                self.orgTable.reloadSections([0], with: .none)
+                self.emptyLabel.text = self.filteredOrgs.isEmpty ? "No Organizations" : ""
+                let begin = (self.orgTable.numberOfSections, self.numberOfSections(in: self.orgTable))
+                if begin.0 == begin.1 {
+                    self.orgTable.reloadSections(IndexSet(integersIn: 0..<self.orgTable.numberOfSections), with: .none)
+                } else if begin.1 > begin.0 {
+                    self.orgTable.beginUpdates()
+                    self.orgTable.insertSections([1], with: .fade)
+                    self.orgTable.reloadSections([0], with: .fade)
+                    self.orgTable.endUpdates()
+                } else {
+                    self.orgTable.beginUpdates()
+                    self.orgTable.deleteSections([1], with: .fade)
+                    self.orgTable.reloadSections([0], with: .fade)
+                    self.orgTable.endUpdates()
+                }
             }
         }
         

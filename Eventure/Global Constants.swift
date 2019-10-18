@@ -23,8 +23,8 @@ let API_BASE_URL = "https://api.eventure-app.com/"
 let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "__replace__"
-let PASSWORD = "__replace__"
+let USERNAME = "Eventure 1.0.5"
+let PASSWORD = "8005d0864aa27ed7b7d2ab1abcf2ef47"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"

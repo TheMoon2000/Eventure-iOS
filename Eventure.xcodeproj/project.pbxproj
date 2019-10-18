@@ -140,6 +140,7 @@
 		CCBA13D723389DA100E282AD /* TicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13D623389DA100E282AD /* TicketRequest.swift */; };
 		CCBA13D923396B9300E282AD /* PurchaseDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13D823396B9300E282AD /* PurchaseDetailsCell.swift */; };
 		CCBA13DB23399BC000E282AD /* PurchaseDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13DA23399BC000E282AD /* PurchaseDetails.swift */; };
+		CCC4539B235913010081C99D /* Membership.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4539A235913010081C99D /* Membership.swift */; };
 		CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC4A0AE22F24EA000AB9557 /* TagCell.swift */; };
 		CCC824F422BC17B500FFD251 /* MinimalTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */; };
 		CCC824F622BC181100FFD251 /* RegisterTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F522BC181100FFD251 /* RegisterTableController.swift */; };
@@ -237,7 +238,7 @@
 		CC2167B3231AF689003B8DE7 /* CheckinPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinPageController.swift; sourceTree = "<group>"; };
 		CC2167B5231AF6DF003B8DE7 /* SignupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupSheet.swift; sourceTree = "<group>"; };
 		CC2167B9231B0171003B8DE7 /* Registrant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Registrant.swift; sourceTree = "<group>"; };
-		CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInfoPage.swift; sourceTree = "<group>"; };
+		CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */ = {isa = PBXFileReference; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = ProfileInfoPage.swift; sourceTree = "<group>"; };
 		CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraduationYearChooser.swift; sourceTree = "<group>"; };
 		CC2167BF231B1719003B8DE7 /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
 		CC2167C1231B719D003B8DE7 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
@@ -341,6 +342,7 @@
 		CCBA13D623389DA100E282AD /* TicketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketRequest.swift; sourceTree = "<group>"; };
 		CCBA13D823396B9300E282AD /* PurchaseDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDetailsCell.swift; sourceTree = "<group>"; };
 		CCBA13DA23399BC000E282AD /* PurchaseDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDetails.swift; sourceTree = "<group>"; };
+		CCC4539A235913010081C99D /* Membership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Membership.swift; sourceTree = "<group>"; };
 		CCC4A0AE22F24EA000AB9557 /* TagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagCell.swift; sourceTree = "<group>"; };
 		CCC824F322BC17B500FFD251 /* MinimalTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalTextCell.swift; sourceTree = "<group>"; };
 		CCC824F522BC181100FFD251 /* RegisterTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterTableController.swift; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 				CC2167B9231B0171003B8DE7 /* Registrant.swift */,
 				CC0B3A3C2320C9D200DE7203 /* Profile.swift */,
 				CC0646DB22FDF1EA000BF3CD /* Organization.swift */,
+				CCC4539A235913010081C99D /* Membership.swift */,
 				CC0646DE22FDF201000BF3CD /* Event.swift */,
 				CC2CCD4E2331CF7B000C65E2 /* AdmissionType.swift */,
 				CC46772C2319956600A9FF18 /* Campus.swift */,
@@ -1145,6 +1148,7 @@
 				CC2167C2231B719D003B8DE7 /* CommentCell.swift in Sources */,
 				CCE214252314ED0E00E9B137 /* GenericOneFieldPage.swift in Sources */,
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
+				CCC4539B235913010081C99D /* Membership.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
 				CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */,

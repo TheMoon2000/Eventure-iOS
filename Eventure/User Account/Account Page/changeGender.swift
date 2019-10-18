@@ -100,7 +100,7 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
             cell.icon.image = UIImage(named: "female")
             cell.titleLabel.text = "Female"
         case (0,3):
-            cell.icon.image = UIImage(named: "default_user")
+            cell.icon.image = #imageLiteral(resourceName: "non-binary")
             cell.titleLabel.text = "Non-Binary"
             
         default:

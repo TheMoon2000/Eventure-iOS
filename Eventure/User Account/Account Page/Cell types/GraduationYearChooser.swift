@@ -83,11 +83,13 @@ class GraduationYearChooser: UITableViewCell, UIPickerViewDelegate, UIPickerView
         valueChanged()
     }
     
-    @objc func valueChanged() {
+    @objc func valueChanged(setup: Bool = false) {
         let year = yearList[picker.selectedRow(inComponent: 0)]
         let season = seasons[picker.selectedRow(inComponent: 1)]
         
-        selectionHandler?(year, season)
+        if !setup {
+            selectionHandler?(year, season)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

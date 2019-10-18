@@ -12,8 +12,7 @@ protocol Profile {
     
     var userID: Int { get }
     var name: String { get }
-    var majorDescription: String { get }
-    var shortMajorDescription: String { get }
+    var majors: Set<Int> { get }
     var email: String { get }
     
     var graduationYear: Int? { get }
@@ -35,6 +34,26 @@ extension Profile {
             return ""
         }
         return graduationSeason!.rawValue + " \(graduationYear!)"
+    }
+    
+    var majorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
+    }
+    
+    var shortMajorDescription: String {
+        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        
+        if objects.isEmpty {
+            return "Undeclared"
+        }
+        
+        return objects.joined(separator: " + ")
     }
 }
 

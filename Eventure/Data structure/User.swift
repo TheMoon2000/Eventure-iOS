@@ -61,6 +61,7 @@ class User: Profile {
     var interestedEvents = Set<String>() { didSet { save() } }
     var subscriptions = Set<String>() { didSet { save() } }
     var tags = Set<String>() { didSet { save() } }
+    var memberships = [Membership]()
     let dateRegistered: String // Only for debugging purpose
     
     var saveEnabled = false
@@ -82,26 +83,6 @@ class User: Profile {
     
     var majorEncoded: String {
         return JSON(majors.map { $0 }).rawString([.castNilToNSNull: true])!
-    }
-    
-    var majorDescription: String {
-        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
-        
-        if objects.isEmpty {
-            return "Undeclared"
-        }
-        
-        return objects.joined(separator: " + ")
-    }
-    
-    var shortMajorDescription: String {
-        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
-        
-        if objects.isEmpty {
-            return "Undeclared"
-        }
-        
-        return objects.joined(separator: " + ")
     }
     
     var interests: String { didSet { save() } }
@@ -169,6 +150,10 @@ class User: Profile {
             }
         }
         
+        for memInfo in (dictionary["Memberships"]?.arrayValue ?? []) {
+            memberships.append(Membership(memberInfo: memInfo))
+        }
+        
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
         numberOfAttendedEvents = dictionary["# checked in"]?.int ?? 0
         
@@ -176,10 +161,12 @@ class User: Profile {
         if let majorString = dictionary["Major"]?.string {
             majors = Set((JSON(parseJSON: majorString).arrayObject as? [Int] ?? []))
         }
+        
         graduationYear = dictionary["Graduation year"]?.int
         if let tmp = dictionary["Graduation season"]?.string {
             graduationSeason = User.GraduationSeason(rawValue: tmp)
         }
+        
         resume = dictionary["Resume"]?.string ?? ""
         linkedIn = dictionary["LinkedIn"]?.string ?? ""
         github = dictionary["GitHub"]?.string ?? ""

@@ -168,9 +168,9 @@ class OrgInfoPage: UIViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         
         if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
-            line.alpha = 0.0
+            line?.alpha = 0.0
         } else {
-            line.alpha = 0.8
+            line?.alpha = 0.8
         }
     }
     

@@ -98,13 +98,6 @@ class Organization: CustomStringConvertible {
         orgDescription = dictionary["Description"]?.string ?? ""
         website = dictionary["Website"]?.string ?? ""
 
-        /*
-        if let members_raw = dictionary["Members"]?.string {
-            for pair in JSON(parseJSON: members_raw).dictionaryValue {
-                members[Int(pair.key)!] = MemberRole(rawValue: pair.value.stringValue)
-            }
-        }*/
-
         if let tags_raw = dictionary["Tags"]?.string {
             let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
             tags = Set(tagsArray)

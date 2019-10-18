@@ -22,7 +22,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
         
         selectionStyle = .none
         
-        let h = heightAnchor.constraint(greaterThanOrEqualToConstant: 100)
+        let h = heightAnchor.constraint(greaterThanOrEqualToConstant: 120)
         h.priority = .defaultHigh
         h.isActive = true
         
@@ -46,10 +46,12 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
         commentText = {
             let tv = UITextView()
             tv.font = .systemFont(ofSize: 17)
-            tv.isScrollEnabled = false
+            // tv.isScrollEnabled = false
             tv.delegate = self
+            tv.textColor = AppColors.value
             tv.backgroundColor = .clear
             tv.keyboardDismissMode = .onDrag
+            tv.allowsEditingTextAttributes = false
             tv.textContainer.lineFragmentPadding = 0
             
             let pStyle = NSMutableParagraphStyle()
