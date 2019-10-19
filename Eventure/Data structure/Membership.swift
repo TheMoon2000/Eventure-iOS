@@ -12,8 +12,7 @@ import SwiftyJSON
 /// Records a membership relation.
 class Membership: Hashable {
     
-    /// If the member doesn't have a user ID, the value is -1.
-    let userID: Int
+    let userID: Int?
     var email: String
     var name: String
     let orgID: String
@@ -23,7 +22,7 @@ class Membership: Hashable {
     init(memberInfo: JSON) {
         let dictionary = memberInfo.dictionaryValue
         
-        userID = dictionary["User ID"]?.int ?? -1
+        userID = dictionary["User ID"]?.int
         email = dictionary["Email"]?.string ?? ""
         name = dictionary["Full name"]?.string ?? ""
         if name.isEmpty {
