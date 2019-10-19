@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1100"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B665D0BF653EB25FA97A6A3D0EA96535"
+               BlueprintIdentifier = "99DF80314A8098E16D3590CEDD97AC8F"
                BuildableName = "Pods_Eventure.framework"
                BlueprintName = "Pods-Eventure"
                ReferencedContainer = "container:Pods.xcodeproj">

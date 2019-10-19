@@ -295,7 +295,7 @@ class EventDraft: UIPageViewController {
                 return
             }
             
-            let msg = String(data: data!, encoding: .utf8)!
+            let msg = String(data: data!, encoding: .utf8)
             switch msg {
             case INTERNAL_ERROR:
                 DispatchQueue.main.async {
@@ -322,8 +322,8 @@ class EventDraft: UIPageViewController {
                 }
                 
             default:
-                warning.message = msg
                 DispatchQueue.main.async {
+                    warning.message = msg
                     self.navigationItem.rightBarButtonItem = doneButton
                     self.present(warning, animated: true, completion: nil)
                 }

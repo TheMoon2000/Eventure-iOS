@@ -20,11 +20,11 @@ import typealias CommonCrypto.CC_LONG
 let API_BASE_URL = "https://api.eventure-app.com/"
 
 /// APIs related to mails are hosted in a seperate API cluster due to compatibility reasons with SendGrid's library.
-let MAIL_API_BASE_URL = "https://mail.api.eventure-app.com/"
+let PHP7_API_BASE_URL = "https://php7.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "Eventure 1.0.5"
-let PASSWORD = "8005d0864aa27ed7b7d2ab1abcf2ef47"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
@@ -51,6 +51,8 @@ enum NotificationKeys: String {
     case ticketTransferRequest = "ticket transfer request"
     case ticketTransferApproved = "ticket transfer approved"
     case ticketTransferDeclined = "ticket transfer declined"
+    case eventTimeUpdate = "event time update"
+    case eventLocationUpdate = "event location update"
 }
 
 /// Legacy main disabled color.
@@ -274,6 +276,15 @@ let DATE_FORMATTER: DateFormatter = {
     let formatter = DateFormatter()
     formatter.locale = Locale(identifier: "en_US")
     formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    formatter.timeZone = TimeZone(abbreviation: "UTC")!
+    return formatter
+}()
+
+/// Same as `DATE_FORMATTER` except with milliseconds.
+let PRECISE_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US")
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
     formatter.timeZone = TimeZone(abbreviation: "UTC")!
     return formatter
 }()

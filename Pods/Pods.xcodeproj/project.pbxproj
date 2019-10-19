@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1418,7 +1418,7 @@
 				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1817,22 +1817,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		07F5B650EAA43437AA6A178BD00BF0BB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D460E89C877CBA2BE24302871248C51 /* TOCropViewController.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/TOCropViewController";
-				INFOPLIST_FILE = "Target Support Files/TOCropViewController/ResourceBundle-TOCropViewControllerBundle-TOCropViewController-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				PRODUCT_NAME = TOCropViewControllerBundle;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
-		};
 		0BAE5262F4177FE0CC00E864CE382C41 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D460E89C877CBA2BE24302871248C51 /* TOCropViewController.xcconfig */;
@@ -2041,12 +2025,30 @@
 			};
 			name = Debug;
 		};
-		4B5B76EE47B47DB955C976D64DB4F656 /* Debug */ = {
+		4F3EE63E7FFB4B5ECD639C7025DCE133 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2D460E89C877CBA2BE24302871248C51 /* TOCropViewController.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/TOCropViewController";
+				IBSC_MODULE = TOCropViewController;
+				INFOPLIST_FILE = "Target Support Files/TOCropViewController/ResourceBundle-TOCropViewControllerBundle-TOCropViewController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = TOCropViewControllerBundle;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		58C6AEA56689CFE0595D13BE333D7BC7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 423C843A7D751B440BB40BEF6A5FF2F6 /* XLPagerTabStrip.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/XLPagerTabStrip";
+				IBSC_MODULE = XLPagerTabStrip;
 				INFOPLIST_FILE = "Target Support Files/XLPagerTabStrip/ResourceBundle-XLPagerTabStrip-XLPagerTabStrip-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				PRODUCT_NAME = XLPagerTabStrip;
@@ -2056,22 +2058,6 @@
 				WRAPPER_EXTENSION = bundle;
 			};
 			name = Debug;
-		};
-		5050A3FB56D8C5DE53D8CE771D0F6DCC /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2D460E89C877CBA2BE24302871248C51 /* TOCropViewController.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/TOCropViewController";
-				INFOPLIST_FILE = "Target Support Files/TOCropViewController/ResourceBundle-TOCropViewControllerBundle-TOCropViewController-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				PRODUCT_NAME = TOCropViewControllerBundle;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
 		};
 		666862A038EAFBC843662DCC3675267B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2325,6 +2311,23 @@
 			};
 			name = Release;
 		};
+		A97767D8EDF957916E7837C3894C0140 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2D460E89C877CBA2BE24302871248C51 /* TOCropViewController.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/TOCropViewController";
+				IBSC_MODULE = TOCropViewController;
+				INFOPLIST_FILE = "Target Support Files/TOCropViewController/ResourceBundle-TOCropViewControllerBundle-TOCropViewController-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				PRODUCT_NAME = TOCropViewControllerBundle;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 		ADC41E9F6F32937481EC5F22B457AB2C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D460E89C877CBA2BE24302871248C51 /* TOCropViewController.xcconfig */;
@@ -2394,22 +2397,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
-		};
-		B2128FE478FDC25E55CE320A5751309A /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 423C843A7D751B440BB40BEF6A5FF2F6 /* XLPagerTabStrip.xcconfig */;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/XLPagerTabStrip";
-				INFOPLIST_FILE = "Target Support Files/XLPagerTabStrip/ResourceBundle-XLPagerTabStrip-XLPagerTabStrip-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				PRODUCT_NAME = XLPagerTabStrip;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
 		};
 		B50A3A1B9570ED6B1A3CA4211A20E5CE /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2481,6 +2468,23 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
+		};
+		D1C3A9887FA027696EA4F68AB3247B46 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 423C843A7D751B440BB40BEF6A5FF2F6 /* XLPagerTabStrip.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/XLPagerTabStrip";
+				IBSC_MODULE = XLPagerTabStrip;
+				INFOPLIST_FILE = "Target Support Files/XLPagerTabStrip/ResourceBundle-XLPagerTabStrip-XLPagerTabStrip-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				PRODUCT_NAME = XLPagerTabStrip;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
 		};
 		D43951F6AFB26750906F6BC3783C430A /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -2662,8 +2666,8 @@
 		0DC3A1F894722359353AC05A476C7644 /* Build configuration list for PBXNativeTarget "XLPagerTabStrip-XLPagerTabStrip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4B5B76EE47B47DB955C976D64DB4F656 /* Debug */,
-				B2128FE478FDC25E55CE320A5751309A /* Release */,
+				58C6AEA56689CFE0595D13BE333D7BC7 /* Debug */,
+				D1C3A9887FA027696EA4F68AB3247B46 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2734,8 +2738,8 @@
 		AFC524D184C406D4719AB2F36EADC21F /* Build configuration list for PBXNativeTarget "TOCropViewController-TOCropViewControllerBundle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				07F5B650EAA43437AA6A178BD00BF0BB /* Debug */,
-				5050A3FB56D8C5DE53D8CE771D0F6DCC /* Release */,
+				4F3EE63E7FFB4B5ECD639C7025DCE133 /* Debug */,
+				A97767D8EDF957916E7837C3894C0140 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

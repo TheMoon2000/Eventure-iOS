@@ -98,6 +98,10 @@
 		CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
 		CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */; };
 		CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
+		CC595CDF235AEE03003D74F6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CDE235AEE03003D74F6 /* NotificationService.swift */; };
+		CC595CE3235AEE03003D74F6 /* CustomNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CC595CDC235AEE03003D74F6 /* CustomNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CE9235B119C003D74F6 /* AccountNotification.swift */; };
+		CC595CED235B1222003D74F6 /* EventNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CEC235B1222003D74F6 /* EventNotification.swift */; };
 		CC5E8FE9232BFE2A00962B8B /* CheckinTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */; };
 		CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
@@ -173,6 +177,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CC595CE1235AEE03003D74F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC18F543229AD4EB008FABEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC595CDB235AEE03003D74F6;
+			remoteInfo = CustomNotification;
+		};
 		CCFB7A22229FA6810082FEC6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CC18F543229AD4EB008FABEA /* Project object */;
@@ -183,12 +194,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CC31B6042328BA3100C4793F /* Embed App Extensions */ = {
+		CC4E8111235AE99700ACD897 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				CC595CE3235AEE03003D74F6 /* CustomNotification.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -272,8 +284,6 @@
 		CC2EE6F0230707330044C6ED /* UpcomingEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingEvents.swift; sourceTree = "<group>"; };
 		CC2EE6F2230709450044C6ED /* OrgEventsTabStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventsTabStrip.swift; sourceTree = "<group>"; };
 		CC2F308D2324631A00AF5F8E /* OrgSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgSplitViewController.swift; sourceTree = "<group>"; };
-		CC31B5FB2328BA3100C4793F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		CC31B5FD2328BA3100C4793F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC3312812322121C00DC03D2 /* AboutPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutPage.swift; sourceTree = "<group>"; };
 		CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePreviewCell.swift; sourceTree = "<group>"; };
 		CC377C572310223A0098219B /* EventureAPITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EventureAPITests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -299,6 +309,11 @@
 		CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationCell.swift; sourceTree = "<group>"; };
 		CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailPage.swift; sourceTree = "<group>"; };
 		CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventViewController.swift; sourceTree = "<group>"; };
+		CC595CDC235AEE03003D74F6 /* CustomNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CustomNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC595CDE235AEE03003D74F6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		CC595CE0235AEE03003D74F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CC595CE9235B119C003D74F6 /* AccountNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountNotification.swift; sourceTree = "<group>"; };
+		CC595CEC235B1222003D74F6 /* EventNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotification.swift; sourceTree = "<group>"; };
 		CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTimeCell.swift; sourceTree = "<group>"; };
 		CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewTicket.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
@@ -385,6 +400,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CC595CD9235AEE03003D74F6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CCFB7A1A229FA6810082FEC6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -432,6 +454,7 @@
 				CC686ED1232F459100144CBF /* Ticket.swift */,
 				CCBA13D623389DA100E282AD /* TicketRequest.swift */,
 				CC9E1DFC233EE23B00931BFD /* Major.swift */,
+				CC595CEB235B1211003D74F6 /* Account Notifications */,
 			);
 			path = "Data structure";
 			sourceTree = "<group>";
@@ -463,7 +486,7 @@
 				CC18F54D229AD4EB008FABEA /* Eventure */,
 				CC18F569229AD570008FABEA /* README.md */,
 				CCFB7A1E229FA6810082FEC6 /* EventureAPITests */,
-				CC31B5FA2328BA3100C4793F /* NotificationService */,
+				CC595CDD235AEE03003D74F6 /* CustomNotification */,
 				CC18F54C229AD4EB008FABEA /* Products */,
 				4149180F70B4DE215B5CD739 /* Pods */,
 				8BD3CB51C88836DB8BF8AC12 /* Frameworks */,
@@ -475,6 +498,7 @@
 			children = (
 				CC18F54B229AD4EB008FABEA /* Eventure.app */,
 				CCFB7A1D229FA6810082FEC6 /* EventureAPITests.xctest */,
+				CC595CDC235AEE03003D74F6 /* CustomNotification.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -582,15 +606,6 @@
 			path = "Events Page";
 			sourceTree = "<group>";
 		};
-		CC31B5FA2328BA3100C4793F /* NotificationService */ = {
-			isa = PBXGroup;
-			children = (
-				CC31B5FB2328BA3100C4793F /* NotificationService.swift */,
-				CC31B5FD2328BA3100C4793F /* Info.plist */,
-			);
-			path = NotificationService;
-			sourceTree = "<group>";
-		};
 		CC37DB662313FD1D00B19C83 /* Event Editor */ = {
 			isa = PBXGroup;
 			children = (
@@ -648,6 +663,24 @@
 				CC37DB662313FD1D00B19C83 /* Event Editor */,
 			);
 			path = "Organization Account";
+			sourceTree = "<group>";
+		};
+		CC595CDD235AEE03003D74F6 /* CustomNotification */ = {
+			isa = PBXGroup;
+			children = (
+				CC595CDE235AEE03003D74F6 /* NotificationService.swift */,
+				CC595CE0235AEE03003D74F6 /* Info.plist */,
+			);
+			path = CustomNotification;
+			sourceTree = "<group>";
+		};
+		CC595CEB235B1211003D74F6 /* Account Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				CC595CE9235B119C003D74F6 /* AccountNotification.swift */,
+				CC595CEC235B1222003D74F6 /* EventNotification.swift */,
+			);
+			path = "Account Notifications";
 			sourceTree = "<group>";
 		};
 		CC66A5BC2329D127002DA953 /* Sorting cells */ = {
@@ -815,17 +848,35 @@
 				CC18F547229AD4EB008FABEA /* Sources */,
 				CC18F548229AD4EB008FABEA /* Frameworks */,
 				CC18F549229AD4EB008FABEA /* Resources */,
-				CC31B6042328BA3100C4793F /* Embed App Extensions */,
 				D6416B4FEC70B6DAADD7FFEA /* [CP] Embed Pods Frameworks */,
+				CC4E8111235AE99700ACD897 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CC595CE2235AEE03003D74F6 /* PBXTargetDependency */,
 			);
 			name = Eventure;
 			productName = Eventure;
 			productReference = CC18F54B229AD4EB008FABEA /* Eventure.app */;
 			productType = "com.apple.product-type.application";
+		};
+		CC595CDB235AEE03003D74F6 /* CustomNotification */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC595CE4235AEE04003D74F6 /* Build configuration list for PBXNativeTarget "CustomNotification" */;
+			buildPhases = (
+				CC595CD8235AEE03003D74F6 /* Sources */,
+				CC595CD9235AEE03003D74F6 /* Frameworks */,
+				CC595CDA235AEE03003D74F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CustomNotification;
+			productName = CustomNotification;
+			productReference = CC595CDC235AEE03003D74F6 /* CustomNotification.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		CCFB7A1C229FA6810082FEC6 /* EventureAPITests */ = {
 			isa = PBXNativeTarget;
@@ -853,7 +904,7 @@
 		CC18F543229AD4EB008FABEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1030;
+				LastSwiftUpdateCheck = 1100;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "UC Berkeley";
 				TargetAttributes = {
@@ -871,6 +922,9 @@
 								enabled = 1;
 							};
 						};
+					};
+					CC595CDB235AEE03003D74F6 = {
+						CreatedOnToolsVersion = 11.0;
 					};
 					CCFB7A1C229FA6810082FEC6 = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -894,6 +948,7 @@
 			targets = (
 				CC18F54A229AD4EB008FABEA /* Eventure */,
 				CCFB7A1C229FA6810082FEC6 /* EventureAPITests */,
+				CC595CDB235AEE03003D74F6 /* CustomNotification */,
 			);
 		};
 /* End PBXProject section */
@@ -906,6 +961,13 @@
 				CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */,
 				CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */,
 				CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC595CDA235AEE03003D74F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1129,6 +1191,7 @@
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
 				CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */,
+				CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
@@ -1150,6 +1213,7 @@
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CCC4539B235913010081C99D /* Membership.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
+				CC595CED235B1222003D74F6 /* EventNotification.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
 				CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */,
 				CC8960C9233C2242000E8C3D /* BuyTicketCell.swift in Sources */,
@@ -1160,6 +1224,14 @@
 				CC2CCD4B23318AE1000C65E2 /* DraftTicketsPage.swift in Sources */,
 				CC2CCD49233184FE000C65E2 /* TicketTypeCell.swift in Sources */,
 				CC2CCD5123323474000C65E2 /* TicketQRCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC595CD8235AEE03003D74F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC595CDF235AEE03003D74F6 /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1175,6 +1247,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CC595CE2235AEE03003D74F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC595CDB235AEE03003D74F6 /* CustomNotification */;
+			targetProxy = CC595CE1235AEE03003D74F6 /* PBXContainerItemProxy */;
+		};
 		CCFB7A23229FA6810082FEC6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CC18F54A229AD4EB008FABEA /* Eventure */;
@@ -1375,6 +1452,48 @@
 			};
 			name = Release;
 		};
+		CC595CE5235AEE04003D74F6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = US8T2D45H8;
+				INFOPLIST_FILE = CustomNotification/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure.CustomNotification;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CC595CE6235AEE04003D74F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = US8T2D45H8;
+				INFOPLIST_FILE = CustomNotification/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure.CustomNotification;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		CCFB7A25229FA6810082FEC6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 673EDF57DF5B883258D96E04 /* Pods-EventureAPITests.debug.xcconfig */;
@@ -1439,6 +1558,15 @@
 			buildConfigurations = (
 				CC18F561229AD4EC008FABEA /* Debug */,
 				CC18F562229AD4EC008FABEA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC595CE4235AEE04003D74F6 /* Build configuration list for PBXNativeTarget "CustomNotification" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC595CE5235AEE04003D74F6 /* Debug */,
+				CC595CE6235AEE04003D74F6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

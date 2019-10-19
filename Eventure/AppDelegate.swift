@@ -224,6 +224,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let approved = keyType == .ticketTransferApproved
             let ticketID = info["Ticket ID"]?.string ?? ""
             NotificationCenter.default.post(name: TICKET_TRANSFER_STATUS, object: (approved, ticketID))
+        case .eventTimeUpdate:
+            guard let start = info["startTime"]?.string else { return }
+            guard let msg = info["alert"]?.dictionary?["body"]?.string else { return }
+            guard let formatted = DATE_FORMATTER.date(from: start)?.readableString() else { return }
+            let alert = UIAlertController(title: "Event Time Update", message: msg.replacingOccurrences(of: start, with: formatted), preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .cancel))
+            UIApplication.topMostViewController?.present(alert, animated: true)
         default:
             print(info)
         }

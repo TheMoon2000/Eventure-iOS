@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1100"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DE632A744EBC1086BB34C34A2689D48C"
+               BlueprintIdentifier = "B4575FF01775E963E58050542C9A4E7A"
+               BuildableName = "Down.framework"
                BlueprintName = "Down"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "Down.framework">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

@@ -174,7 +174,6 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
                     }))
                     alert.addAction(.init(title: "Mark as Sent", style: .default, handler: { _ in
                         self.markAsSent(tickets: [self.tickets[indexPath.row]], sent: true)
-                        self.markAsSent(tickets: [self.tickets[indexPath.row]])
                     }))
                 }
                 alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
@@ -425,7 +424,7 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         (loadingBG.contentView.subviews.last as? UILabel)?.text = "Sending..."
         loadingBG.isHidden = false
         
-        let url = URL(string: MAIL_API_BASE_URL + "MailTicket")!
+        let url = URL(string: PHP7_API_BASE_URL + "MailTicket")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addMultipartBody(parameters: parameters,
@@ -474,12 +473,11 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ToggleTicketSent",
                            parameters: [
-                            "sent": sent ? "1" : "0"
+                            "sent": sent ? "1" : "0",
+                            "ticketArray": tickets.map { $0.ticketID }.description
                            ])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
-        request.httpMethod = "POST"
-        request.httpBody = tickets.map { $0.ticketID }.description.data(using: .utf8)
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
