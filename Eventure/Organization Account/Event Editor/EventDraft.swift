@@ -208,6 +208,7 @@ class EventDraft: UIPageViewController {
     private func publishEvent() {
         
         let spinner = UIActivityIndicatorView(style: .gray)
+        spinner.color = AppColors.control
         spinner.startAnimating()
         
         let doneButton = navigationItem.rightBarButtonItem!

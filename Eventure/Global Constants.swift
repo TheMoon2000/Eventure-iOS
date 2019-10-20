@@ -255,6 +255,7 @@ let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDom
 let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
 let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
 let MAJORS_PATH = ACCOUNT_DIR.path + "/" + "majors"
+let NOTIFICATIONS_PATH = ACCOUNT_DIR.path + "/" + "notifications"
 
 /// Height between items in a vertical stack
 let VERTICAL_SPACING: CGFloat = 13

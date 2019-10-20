@@ -392,6 +392,8 @@ extension Organization {
     enum MemberRole: String {
         case member = "Member"
         case president = "President"
+        case evp = "External Vice President"
+        case ivp = "Internal Vice President"
     }
 }
 

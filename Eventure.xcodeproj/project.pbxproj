@@ -102,6 +102,7 @@
 		CC595CE3235AEE03003D74F6 /* CustomNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CC595CDC235AEE03003D74F6 /* CustomNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CE9235B119C003D74F6 /* AccountNotification.swift */; };
 		CC595CED235B1222003D74F6 /* EventNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CEC235B1222003D74F6 /* EventNotification.swift */; };
+		CC595CEF235B82C9003D74F6 /* TicketNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CEE235B82C9003D74F6 /* TicketNotification.swift */; };
 		CC5E8FE9232BFE2A00962B8B /* CheckinTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */; };
 		CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
@@ -314,6 +315,7 @@
 		CC595CE0235AEE03003D74F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC595CE9235B119C003D74F6 /* AccountNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountNotification.swift; sourceTree = "<group>"; };
 		CC595CEC235B1222003D74F6 /* EventNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotification.swift; sourceTree = "<group>"; };
+		CC595CEE235B82C9003D74F6 /* TicketNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketNotification.swift; sourceTree = "<group>"; };
 		CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTimeCell.swift; sourceTree = "<group>"; };
 		CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewTicket.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
@@ -679,6 +681,7 @@
 			children = (
 				CC595CE9235B119C003D74F6 /* AccountNotification.swift */,
 				CC595CEC235B1222003D74F6 /* EventNotification.swift */,
+				CC595CEE235B82C9003D74F6 /* TicketNotification.swift */,
 			);
 			path = "Account Notifications";
 			sourceTree = "<group>";
@@ -1193,6 +1196,7 @@
 				CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */,
 				CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
+				CC595CEF235B82C9003D74F6 /* TicketNotification.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
 				CC9A74F72330AC930021A790 /* TicketTabView.swift in Sources */,
