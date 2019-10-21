@@ -12,23 +12,23 @@ import SwiftyJSON
 /// Records a membership relation.
 class Membership: Hashable {
     
-    let userID: Int?
     var email: String
     var name: String
     let orgID: String
     var majors = Set<Int>()
+    var department: String?
+    var status: Status
     var joinedDate: Date?
     
     init(memberInfo: JSON) {
         let dictionary = memberInfo.dictionaryValue
         
-        userID = dictionary["User ID"]?.int
         email = dictionary["Email"]?.string ?? ""
         name = dictionary["Full name"]?.string ?? ""
         if name.isEmpty {
             name = dictionary["Displayed name"]?.string ?? ""
         }
-        orgID = dictionary["Organization ID"]?.string ?? "Unknown Organization"
+        orgID = dictionary["Org ID"]?.string ?? "Unknown Organization"
         
         if let majorString = dictionary["Major"]?.string {
             majors = Set((JSON(parseJSON: majorString).arrayObject as? [Int] ?? []))
@@ -37,17 +37,29 @@ class Membership: Hashable {
         if let dateRaw = dictionary["Date joined"]?.string {
             joinedDate = DATE_FORMATTER.date(from: dateRaw)
         }
+        
+        status = Status(rawValue: (dictionary["Status"]?.int ?? 0))!
     }
     
     static func ==(lhs: Membership, rhs: Membership) -> Bool {
-        if lhs.orgID != rhs.orgID { return false }
-        if lhs.userID != -1 && rhs.userID != -1 { return lhs.userID == rhs.userID }
-        return lhs.email.lowercased() == rhs.email.lowercased()
+        return lhs.email.lowercased() == rhs.email.lowercased() && lhs.orgID == rhs.orgID
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(userID)
         hasher.combine(orgID)
         hasher.combine(email.lowercased())
+    }
+    
+    enum Status: Int {
+        case declined = -1
+        case active = 1
+        case pending = 0
+    }
+}
+
+
+extension Membership: CustomStringConvertible {
+    var description: String {
+        return "Membership(email = \(email), club = \(orgID))"
     }
 }

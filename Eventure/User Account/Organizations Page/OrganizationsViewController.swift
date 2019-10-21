@@ -92,7 +92,7 @@ class OrganizationsViewController: UIViewController {
         }()
         
         topTab = {
-            let tab = UISegmentedControl(items: ["All", "Subscribed",  "Membership"])
+            let tab = UISegmentedControl(items: ["All", "Subscribed",  "My Clubs"])
             if User.current == nil {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
@@ -335,8 +335,8 @@ extension OrganizationsViewController: UISearchResultsUpdating {
                 if !contains && !searchText.isEmpty { return false }
                 
                 if tabName == "Subscribed" {
-                    return !org.tags.intersection(User.current!.tags).isEmpty
-                } else if tabName == "Membership" {
+                    return org.subscribers.contains(User.current!.userID)
+                } else if tabName == "My Clubs" {
                     return User.current?.memberships.contains { $0.orgID == org.id } ?? false
                 }
                 

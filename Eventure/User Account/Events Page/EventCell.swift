@@ -143,7 +143,7 @@ class EventCell: UICollectionViewCell {
         timeLabel = {
             let label = UILabel()
             label.text = "When:"
-            label.textColor = AppColors.prompt
+            label.textColor = AppColors.value
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -177,7 +177,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.text = "Where:"
-            label.textColor = AppColors.prompt
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -210,7 +210,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.font = .systemFont(ofSize: 17, weight: .semibold)
             label.text = "Hosted by:"
-            label.textColor = AppColors.prompt
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             

@@ -53,6 +53,8 @@ enum NotificationKeys: String {
     case ticketTransferDeclined = "ticket transfer declined"
     case eventTimeUpdate = "event time update"
     case eventLocationUpdate = "event location update"
+    case newEvent = "new event"
+    case messageUpdate = "message update"
 }
 
 /// Legacy main disabled color.
@@ -256,6 +258,7 @@ let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
 let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
 let MAJORS_PATH = ACCOUNT_DIR.path + "/" + "majors"
 let NOTIFICATIONS_PATH = ACCOUNT_DIR.path + "/" + "notifications"
+let LOGO_CACHE = ACCOUNT_DIR.path + "/" + "logos"
 
 /// Height between items in a vertical stack
 let VERTICAL_SPACING: CGFloat = 13
@@ -294,6 +297,14 @@ let PRECISE_FORMATTER: DateFormatter = {
 let YEAR_FORMATTER: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy"
+    formatter.locale = Locale(identifier: "en_US")
+    return formatter
+}()
+
+/// A formatter to get the current month in string format.
+let MONTH_FORMATTER: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "MM"
     formatter.locale = Locale(identifier: "en_US")
     return formatter
 }()
@@ -341,7 +352,11 @@ extension String {
             if d.string.isEmpty {
                 return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
             }
-            return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
+            let attributed = NSMutableAttributedString(attributedString: d.attributedSubstring(from: NSMakeRange(0, d.length - 1)))
+            let pStyle = NSMutableParagraphStyle()
+            pStyle.lineBreakMode = .byTruncatingTail
+            attributed.addAttribute(.paragraphStyle, value: pStyle, range: NSMakeRange(0, attributed.length))
+            return attributed
         } else {
             print("WARNING: markdown failed")
             return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
@@ -423,6 +438,26 @@ extension Date {
         } else {
             return "at " + Date.timeFormatter.string(from: self)
         }
+    }
+    
+    func shortString() -> String {
+        
+        let today = Date().midnight
+        
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US")
+        
+        if today == self.midnight {
+            df.dateFormat = "h:mm a"
+        } else if today.timeIntervalSince(self.midnight) == 86400 {
+            df.dateFormat = "'Yesterday'"
+        } else if today.timeIntervalSince(self.midnight) <= 7 * 86400 {
+            df.dateFormat = "EEEE"
+        } else {
+            df.dateFormat = "MM/dd/yyyy"
+        }
+        
+        return df.string(from: self)
     }
 }
 
@@ -810,3 +845,4 @@ let ORG_SYNC_FAILED = Notification.Name("org sync failed")
 let TICKET_ACTIVATED = Notification.Name("ticket activated")
 let NEW_TICKET_REQUEST = Notification.Name("new ticket request")
 let TICKET_TRANSFER_STATUS = Notification.Name(rawValue: "ticket transfer status")
+let NEW_NOTIFICATION = Notification.Name(rawValue: "notification")

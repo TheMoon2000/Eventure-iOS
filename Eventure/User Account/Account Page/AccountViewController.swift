@@ -48,6 +48,12 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.myTableView.reloadData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        AppDelegate.suppressNotifications = false
+    }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -57,9 +63,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         DispatchQueue.main.async {
             self.title = "Me"
             self.navigationController?.navigationBar.setNeedsDisplay()
-            UIView.performWithoutAnimation {
-                self.myTableView.reloadRows(at: [[0, 0], [1, 1], [2, 2]], with: .none)
-            }
+            self.myTableView.reloadData()
         }
     }
     
@@ -109,6 +113,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             profileInfo.parentVC = self
             profileInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(profileInfo, animated: true)
+        case (1, 2):
+            let messageCenter = MessageCenter()
+            messageCenter.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(messageCenter, animated: true)
         case (2, 0):
             let scanVC = UserScanner()
             scanVC.accountVC = self
@@ -276,6 +284,13 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.icon.image = #imageLiteral(resourceName: "profile")
             cell.titleLabel.text = "Professional Profile"
             cell.valueLabel.text = User.current?.profileStatus
+        case (1, 2):
+            cell.icon.image = #imageLiteral(resourceName: "messages").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = UIColor(named: "AppColors.message")!
+            cell.titleLabel.text = "My Messages"
+            if User.current != nil {
+                cell.valueLabel.text = AccountNotification.unreadCount > 0 ? String(AccountNotification.unreadCount) : ""
+            }
         case (2, 0):
             cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Scan"
@@ -362,7 +377,11 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     //rows in sections
     func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 3, 3, 2][section]
+        if User.current == nil {
+            return [1, 2, 3, 3, 2][section]
+        } else {
+            return [1, 3, 3, 3, 2][section]
+        }
     }
     
     //eliminate first section header

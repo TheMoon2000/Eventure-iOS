@@ -101,8 +101,9 @@
 		CC595CDF235AEE03003D74F6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CDE235AEE03003D74F6 /* NotificationService.swift */; };
 		CC595CE3235AEE03003D74F6 /* CustomNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = CC595CDC235AEE03003D74F6 /* CustomNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CE9235B119C003D74F6 /* AccountNotification.swift */; };
-		CC595CED235B1222003D74F6 /* EventNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CEC235B1222003D74F6 /* EventNotification.swift */; };
+		CC595CED235B1222003D74F6 /* NewEventNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CEC235B1222003D74F6 /* NewEventNotification.swift */; };
 		CC595CEF235B82C9003D74F6 /* TicketNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CEE235B82C9003D74F6 /* TicketNotification.swift */; };
+		CC595CF1235C1A3E003D74F6 /* InviteNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CF0235C1A3E003D74F6 /* InviteNotification.swift */; };
 		CC5E8FE9232BFE2A00962B8B /* CheckinTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */; };
 		CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
@@ -140,6 +141,11 @@
 		CCA3EB302317A352008538A6 /* SettingsItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */; };
 		CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */; };
 		CCA6CF7B231AF528005D8BB2 /* CheckinOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */; };
+		CCAB884B235D0F930053AA20 /* MessageCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAB884A235D0F930053AA20 /* MessageCenter.swift */; };
+		CCAB884E235D19590053AA20 /* MessageSenderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAB884D235D19590053AA20 /* MessageSenderCell.swift */; };
+		CCAB8850235D34510053AA20 /* MessageSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAB884F235D34510053AA20 /* MessageSearchResults.swift */; };
+		CCAB8852235D3A9A0053AA20 /* MessageSenderIdentityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAB8851235D3A9A0053AA20 /* MessageSenderIdentityCell.swift */; };
+		CCAB8854235D5BA30053AA20 /* EventUpdateNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAB8853235D5BA20053AA20 /* EventUpdateNotification.swift */; };
 		CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAFC82623127899005FC231 /* DraftLocationCell.swift */; };
 		CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */; };
 		CCBA13D723389DA100E282AD /* TicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13D623389DA100E282AD /* TicketRequest.swift */; };
@@ -314,8 +320,9 @@
 		CC595CDE235AEE03003D74F6 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		CC595CE0235AEE03003D74F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CC595CE9235B119C003D74F6 /* AccountNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountNotification.swift; sourceTree = "<group>"; };
-		CC595CEC235B1222003D74F6 /* EventNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotification.swift; sourceTree = "<group>"; };
+		CC595CEC235B1222003D74F6 /* NewEventNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventNotification.swift; sourceTree = "<group>"; };
 		CC595CEE235B82C9003D74F6 /* TicketNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketNotification.swift; sourceTree = "<group>"; };
+		CC595CF0235C1A3E003D74F6 /* InviteNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteNotification.swift; sourceTree = "<group>"; };
 		CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTimeCell.swift; sourceTree = "<group>"; };
 		CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewTicket.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
@@ -353,6 +360,11 @@
 		CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItemCell.swift; sourceTree = "<group>"; };
 		CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgAccountPageController.swift; sourceTree = "<group>"; };
 		CCA6CF7A231AF528005D8BB2 /* CheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinOverview.swift; sourceTree = "<group>"; };
+		CCAB884A235D0F930053AA20 /* MessageCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCenter.swift; sourceTree = "<group>"; };
+		CCAB884D235D19590053AA20 /* MessageSenderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSenderCell.swift; sourceTree = "<group>"; };
+		CCAB884F235D34510053AA20 /* MessageSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSearchResults.swift; sourceTree = "<group>"; };
+		CCAB8851235D3A9A0053AA20 /* MessageSenderIdentityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSenderIdentityCell.swift; sourceTree = "<group>"; };
+		CCAB8853235D5BA20053AA20 /* EventUpdateNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventUpdateNotification.swift; sourceTree = "<group>"; };
 		CCAFC82623127899005FC231 /* DraftLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftLocationCell.swift; sourceTree = "<group>"; };
 		CCB533DB23245B370058C125 /* Eventure.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Eventure.entitlements; sourceTree = "<group>"; };
 		CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFooterView.swift; sourceTree = "<group>"; };
@@ -562,12 +574,7 @@
 				CC3312812322121C00DC03D2 /* AboutPage.swift */,
 				CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */,
 				CC2050542334BA9B00F6A114 /* UserScanner.swift */,
-				CC2CCD442330B516000C65E2 /* TicketsOverview.swift */,
-				CC9A74F62330AC930021A790 /* TicketTabView.swift */,
-				CC686ECD232F40DD00144CBF /* TicketsList.swift */,
-				CC0D9F0A233074950050CC92 /* AddTicket.swift */,
-				CC9A74F42330A97B0021A790 /* TicketDetails.swift */,
-				CC247A7623412D0500C4EE75 /* TicketScannedPage.swift */,
+				CCAB884C235D19250053AA20 /* My Tickets */,
 				CCA52C93233EDA0900873B2F /* Cell types */,
 				CCA6CF79231AF4D3005D8BB2 /* Checkin */,
 				CC23293123163B720097A915 /* UpdatePasswordPage.swift */,
@@ -577,6 +584,7 @@
 				677A8CA9231D8489007CB04F /* EventsCell.swift */,
 				677A8CAB231DA132007CB04F /* InterestedEvents.swift */,
 				67017DB0231F09D2006321F6 /* CheckedInEvents.swift */,
+				CCAB8849235D0E490053AA20 /* Message Center */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -680,8 +688,10 @@
 			isa = PBXGroup;
 			children = (
 				CC595CE9235B119C003D74F6 /* AccountNotification.swift */,
-				CC595CEC235B1222003D74F6 /* EventNotification.swift */,
+				CC595CEC235B1222003D74F6 /* NewEventNotification.swift */,
 				CC595CEE235B82C9003D74F6 /* TicketNotification.swift */,
+				CC595CF0235C1A3E003D74F6 /* InviteNotification.swift */,
+				CCAB8853235D5BA20053AA20 /* EventUpdateNotification.swift */,
 			);
 			path = "Account Notifications";
 			sourceTree = "<group>";
@@ -746,10 +756,6 @@
 				67AFF77923121ACE00329626 /* AccountCell.swift */,
 				CC2167BD231B0C46003B8DE7 /* GraduationYearChooser.swift */,
 				CCA3EB2F2317A352008538A6 /* SettingsItemCell.swift */,
-				CC686ECF232F41AE00144CBF /* TicketCell.swift */,
-				CC2CCD5023323474000C65E2 /* TicketQRCell.swift */,
-				CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */,
-				CC247A78234196FD00C4EE75 /* TransferLockCell.swift */,
 			);
 			path = "Cell types";
 			sourceTree = "<group>";
@@ -780,6 +786,34 @@
 				CCA0381B231DBF330011AE22 /* CheckinTable.swift */,
 			);
 			path = Checkin;
+			sourceTree = "<group>";
+		};
+		CCAB8849235D0E490053AA20 /* Message Center */ = {
+			isa = PBXGroup;
+			children = (
+				CCAB884A235D0F930053AA20 /* MessageCenter.swift */,
+				CCAB884F235D34510053AA20 /* MessageSearchResults.swift */,
+				CCAB884D235D19590053AA20 /* MessageSenderCell.swift */,
+				CCAB8851235D3A9A0053AA20 /* MessageSenderIdentityCell.swift */,
+			);
+			path = "Message Center";
+			sourceTree = "<group>";
+		};
+		CCAB884C235D19250053AA20 /* My Tickets */ = {
+			isa = PBXGroup;
+			children = (
+				CC2CCD442330B516000C65E2 /* TicketsOverview.swift */,
+				CC9A74F62330AC930021A790 /* TicketTabView.swift */,
+				CC686ECD232F40DD00144CBF /* TicketsList.swift */,
+				CC0D9F0A233074950050CC92 /* AddTicket.swift */,
+				CC247A7623412D0500C4EE75 /* TicketScannedPage.swift */,
+				CC9A74F42330A97B0021A790 /* TicketDetails.swift */,
+				CC686ECF232F41AE00144CBF /* TicketCell.swift */,
+				CC2CCD5023323474000C65E2 /* TicketQRCell.swift */,
+				CC2CCD522332F3FC000C65E2 /* TicketDetailInfoCell.swift */,
+				CC247A78234196FD00C4EE75 /* TransferLockCell.swift */,
+			);
+			path = "My Tickets";
 			sourceTree = "<group>";
 		};
 		CCB064762307F09900BB22E1 /* Events */ = {
@@ -1074,10 +1108,12 @@
 				CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
+				CCAB8854235D5BA30053AA20 /* EventUpdateNotification.swift in Sources */,
 				CC04666923372A8700BB2754 /* RequestCell.swift in Sources */,
 				CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */,
 				CC0B3A3D2320C9D200DE7203 /* Profile.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
+				CCAB8852235D3A9A0053AA20 /* MessageSenderIdentityCell.swift in Sources */,
 				CC2050592335302E00F6A114 /* CheckinVerification.swift in Sources */,
 				CC04666723372A4900BB2754 /* TicketRequests.swift in Sources */,
 				CC2CCD532332F3FC000C65E2 /* TicketDetailInfoCell.swift in Sources */,
@@ -1162,6 +1198,7 @@
 				CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
+				CC595CF1235C1A3E003D74F6 /* InviteNotification.swift in Sources */,
 				CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */,
 				677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */,
 				CC2167B4231AF689003B8DE7 /* CheckinPageController.swift in Sources */,
@@ -1185,11 +1222,13 @@
 				CC9E1DFF233EFCD200931BFD /* MajorSearchResults.swift in Sources */,
 				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
+				CCAB884B235D0F930053AA20 /* MessageCenter.swift in Sources */,
 				CC20505B2335F1F000F6A114 /* ActivateTicket.swift in Sources */,
 				CC3312822322121C00DC03D2 /* AboutPage.swift in Sources */,
 				CC2CCD47233184CD000C65E2 /* TicketTypes.swift in Sources */,
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
+				CCAB8850235D34510053AA20 /* MessageSearchResults.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
@@ -1201,6 +1240,7 @@
 				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
 				CC9A74F72330AC930021A790 /* TicketTabView.swift in Sources */,
 				CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */,
+				CCAB884E235D19590053AA20 /* MessageSenderCell.swift in Sources */,
 				EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,
@@ -1217,7 +1257,7 @@
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CCC4539B235913010081C99D /* Membership.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
-				CC595CED235B1222003D74F6 /* EventNotification.swift in Sources */,
+				CC595CED235B1222003D74F6 /* NewEventNotification.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
 				CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */,
 				CC8960C9233C2242000E8C3D /* BuyTicketCell.swift in Sources */,

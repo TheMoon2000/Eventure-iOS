@@ -1,5 +1,5 @@
 //
-//  EventNotification.swift
+//  NewEventNotification.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/10/19.
@@ -9,14 +9,17 @@
 import Foundation
 import SwiftyJSON
 
-class EventNotification: AccountNotification {
-    var message = ""
+class NewEventNotification: AccountNotification {
     var eventID = ""
+    var eventTitle = ""
+    override var shortString: String {
+        return "New event: \(eventTitle)"
+    }
     
     override init(json: JSON) {
         super.init(json: json)
         
-        self.message = rawContent.dictionary?["message"]?.string ?? ""
+        self.eventTitle = rawContent.dictionary?["eventTitle"]?.string ?? ""
         self.eventID = rawContent.dictionary?["eventId"]?.string ?? ""
     }
 }

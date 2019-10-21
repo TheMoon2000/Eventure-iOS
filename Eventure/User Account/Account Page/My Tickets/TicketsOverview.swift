@@ -17,7 +17,7 @@ class TicketsOverview: UIViewController {
         super.viewDidLoad()
         
         title = "My Tickets"
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         
         navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(addTickets))
         navigationItem.backBarButtonItem = .init(title: "Tickets", style: .plain, target: nil, action: nil)

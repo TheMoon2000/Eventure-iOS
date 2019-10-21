@@ -25,13 +25,13 @@ class Organization: CustomStringConvertible {
 
     let id: String
     var title: String { didSet { save() } }
-    var members: [Int: MemberRole]? { didSet { save() } }
     var password_MD5: String { didSet { save() } }
     var active: Bool { didSet { save() } }
     var dateRegistered: String { didSet { save() } }
     var logoImage: UIImage? { didSet { save(requireReupload: false) } }
     var hasLogo: Bool
     var subscribers = Set<Int>() { didSet { save() } }
+    var roles = Set<String>() { didSet { save() } }
     var numberOfEvents = 0
 
     // Profile Information
@@ -101,8 +101,11 @@ class Organization: CustomStringConvertible {
         if let tags_raw = dictionary["Tags"]?.string {
             let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
             tags = Set(tagsArray)
-        } else {
-            tags = []
+        }
+        
+        if let roles_raw = dictionary["Roles"]?.string {
+            let rolesArray = (JSON(parseJSON: roles_raw).arrayObject as? [String]) ?? [String]()
+            roles = Set(rolesArray)
         }
 
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
@@ -121,12 +124,12 @@ class Organization: CustomStringConvertible {
     }
 
     var description: String {
-        var str = "Organization \"\(String(describing: title))\":\n"
+        var str = "Organization (\"\(String(describing: title))\":\n"
         str += "  id = \(String(describing: id))\n"
         str += "  website = \(String(describing: website))\n"
         str += "  tags = \(tags.description)\n"
         str += "  date registered = \(String(describing: dateRegistered))\n"
-        str += "  # of subscribers = \(subscribers.count)"
+        str += "  # of subscribers = \(subscribers.count))"
 
         return str
     }
@@ -224,20 +227,8 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Title"] = self.title
         json.dictionaryObject?["Description"] = self.orgDescription
         json.dictionaryObject?["Website"] = self.website
-        
-        /*
-        var membersMap = [String : String]()
-        for (key, value) in members {
-            membersMap[String(key)] = value.rawValue
-        }
-        
-        
-        let membersEncoded = JSON(membersMap)
-        */
-        
-        json.dictionaryObject?["# of members"] = members?.count
-        
         json.dictionaryObject?["Tags"] = self.tags.description
+        json.dictionaryObject?["Roles"] = self.roles.description
         json.dictionaryObject?["Password MD5"] = self.password_MD5
         json.dictionaryObject?["Contact name"] = self.contactName
         json.dictionaryObject?["Email"] = self.contactEmail
@@ -386,17 +377,6 @@ class Organization: CustomStringConvertible {
     }
 
 }
-
-
-extension Organization {
-    enum MemberRole: String {
-        case member = "Member"
-        case president = "President"
-        case evp = "External Vice President"
-        case ivp = "Internal Vice President"
-    }
-}
-
 
 extension Organization: Hashable {
     static func == (lhs: Organization, rhs: Organization) -> Bool {

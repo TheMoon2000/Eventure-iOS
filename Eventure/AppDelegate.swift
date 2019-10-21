@@ -77,6 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
+        AccountNotification.saveLogoCache()
         self.saveContext()
     }
 
@@ -171,7 +172,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func handleAPSPacket(packet: JSON) {
         
-        if AppDelegate.suppressNotifications { return }
+        if AppDelegate.suppressNotifications {
+            NotificationCenter.default.post(name: NEW_NOTIFICATION, object: nil)
+            return
+        }
         
         let info = packet.dictionaryValue
         
@@ -179,7 +183,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             print("WARNING: Notification type is not defined or unrecognized")
             return
         }
-        
+                
         switch keyType {
         case .oneTimeCode:
             guard let code = info["code"]?.string else { return }
@@ -231,9 +235,49 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             let alert = UIAlertController(title: "Event Time Update", message: msg.replacingOccurrences(of: start, with: formatted), preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))
             UIApplication.topMostViewController?.present(alert, animated: true)
+        case .newEvent:
+            guard let msg = info["alert"]?.dictionary?["body"]?.string else { return }
+            guard let eventID = info["eventId"]?.string else { return }
+            prepareEvent(msg: msg, eventID: eventID)
         default:
             print(info)
         }
+    }
+    
+    private func prepareEvent(msg: String, eventID: String) {
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetEvent",
+                           parameters: ["uuid": eventID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                return
+            }
+            
+            if let eventDictionary = try? JSON(data: data!){
+                let event = Event(eventInfo: eventDictionary)
+
+                DispatchQueue.main.async {
+                    
+                    let alert = UIAlertController(title: "New Event", message: msg, preferredStyle: .alert)
+                    alert.addAction(.init(title: "Close", style: .cancel))
+                    alert.addAction(.init(title: "View", style: .default, handler: { _ in
+                        let detailPage = EventDetailPage()
+                        detailPage.hidesBottomBarWhenPushed = true
+                        detailPage.event = event
+                        UIApplication.topMostViewController?.navigationController?.pushViewController(detailPage, animated: true)
+                    }))
+                    MainTabBarController.current.present(alert, animated: true, completion: nil)
+                }
+            }
+        }
+        
+        task.resume()
     }
     
     @objc private func respondToTransferRequest(ticketID: String, approve: Bool, newOwner: Int) {

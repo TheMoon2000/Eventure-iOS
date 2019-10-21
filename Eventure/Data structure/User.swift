@@ -153,7 +153,7 @@ class User: Profile {
         for memInfo in (dictionary["Memberships"]?.arrayValue ?? []) {
             memberships.append(Membership(memberInfo: memInfo))
         }
-        
+                
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
         numberOfAttendedEvents = dictionary["# checked in"]?.int ?? 0
         
@@ -181,6 +181,7 @@ class User: Profile {
         var user: User?
         
         guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: path) else {
+            print("No user cache exists, assuming guest identity.")
             return nil
         }
         
@@ -437,6 +438,14 @@ extension User {
         case fall = "Fall"
     }
     
+    struct EnabledNotifications: OptionSet {
+        let rawValue: Int
+        
+        static let newEvents = EnabledNotifications(rawValue: 1)
+        static let eventUpdates = EnabledNotifications(rawValue: 1 << 1)
+        static let membershipInvites = EnabledNotifications(rawValue: 1 << 2)
+        static let ticketTransferRequests = EnabledNotifications(rawValue: 1 << 3)
+    }
 }
 
 

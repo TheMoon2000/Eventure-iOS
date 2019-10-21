@@ -13,6 +13,9 @@ import SwiftyJSON
 class TicketNotification: AccountNotification {
     var message = ""
     var ticketID = ""
+    override var shortString: String {
+        return message
+    }
     
     override init(json: JSON) {
         super.init(json: json)

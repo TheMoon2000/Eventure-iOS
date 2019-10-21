@@ -88,7 +88,7 @@ class CheckinTimeCell: UITableViewCell {
         caption = {
             let label = UILabel()
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -122,7 +122,7 @@ class CheckinTimeCell: UITableViewCell {
             trackRect: slider.trackRect(forBounds: slider.bounds), value: 0).width - 3
         
         let track = UIView()
-        track.backgroundColor = .init(white: 0.88, alpha: 1)
+        track.backgroundColor = AppColors.line
         track.translatesAutoresizingMaskIntoConstraints = false
         ticks.addSubview(track)
         

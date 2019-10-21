@@ -28,7 +28,7 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
             label.isHidden = true
             label.text = "No search results."
             label.textAlignment = .center
-            label.textColor = .init(white: 0.5, alpha: 1)
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             

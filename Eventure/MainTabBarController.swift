@@ -131,6 +131,16 @@ class MainTabBarController: UITabBarController {
         if isUserAccount {
             print("Logged in as '" + (User.current?.displayedName ?? "guest") + "'")
             setupUserTabs()
+            if let userID = User.current?.uuid {
+                AccountNotification.readFromFile(userID: userID)
+                AccountNotification.syncFromServer { success in
+                    if success {
+                        NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
+                    } else {
+                        print("WARNING: notifications failed to sync")
+                    }
+                }
+            }
             User.current?.getProfilePicture(nil)
         } else {
             print("Logged in as organization '\(Organization.current?.title ?? "unknown")'")
