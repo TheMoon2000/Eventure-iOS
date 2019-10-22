@@ -129,6 +129,11 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         
         modifyAccount.submitAction = { inputField, spinner in
             
+            if type == .email && inputField.text == User.current?.email {
+                self.navigationController?.popViewController(animated: true)
+                return
+            }
+            
             inputField.isEnabled = false
             spinner.startAnimating()
             

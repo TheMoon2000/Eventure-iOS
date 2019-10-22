@@ -39,6 +39,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: USER_SYNC_FAILED, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: USER_SYNC_SUCCESS, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(userUpdated), name: NEW_NOTIFICATION, object: nil)
 
     }
     

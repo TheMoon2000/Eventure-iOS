@@ -160,50 +160,27 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
     }
     
     @objc private func save(disappearing: Bool = false) {
-        print("saving")
+        
         guard let org = Organization.current else {
-            print("place -1")
             return
         }
         
         guard Organization.needsUpload else {
-            print("place 0")
             return
         }
         
         navigationItem.rightBarButtonItem = .init(customView: spinner)
         
-        //Calling the API to save data
+        // Calling the API to save data
         
-        let url = URL.with(base: API_BASE_URL, API_Name: "account/UpdateOrgInfo", parameters: ["id": String(org.id)])!
-        
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        request.httpMethod = "POST"
-        
-        
-        //This part indicates what data are we saving
-        //Assuming we already have org's instance variables updated
-        var body = JSON()
-        body.dictionaryObject?["Tags"] = org.tags.description //Serialize Tags
-        body.dictionaryObject?["Email"] = org.contactEmail
-        body.dictionaryObject?["Description"] = org.orgDescription
-        body.dictionaryObject?["Website"] = org.website
-        
-        request.httpBody = try? body.rawData()
-        
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
+        Organization.current!.pushSettings([.tags, .email, .orgDescription, .website]) {
+            successful in
             
-            DispatchQueue.main.async {
-                self.navigationItem.rightBarButtonItem = self.saveBarButton
-            }
-
-        
-        
-            guard error == nil else {
-            if !disappearing {
+            self.navigationItem.rightBarButtonItem = self.saveBarButton
+            
+            if successful {
+                Organization.needsUpload = false
+            } else if !disappearing {
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self)
                 }
@@ -214,26 +191,9 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
                     self.parentVC?.present(alert, animated: true, completion: nil)
                 }
             }
-            return
-        }
-            
-            let msg = String(data: data!, encoding: .utf8)
-            
-            switch msg {
-            case INTERNAL_ERROR:
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
-                    print("Error")
-                }
-            case "success":
-                Organization.needsUpload = false
-                print("success")
-            default:
-                print(msg!)
-            }
             
         }
-        task.resume()
+            
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -304,7 +264,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             tagPicker.customContinueMethod = { tagPicker in
                 tagPicker.loadingBG.isHidden = false
                 
-                Organization.current?.pushToServer { success in
+                Organization.current?.pushSettings(.tags) { success in
                     tagPicker.loadingBG.isHidden = true
                     if success {
                         Organization.current!.tags = tagPicker.selectedTags
@@ -317,7 +277,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             
             tagPicker.customDisappearHandler = { tags in
                 Organization.current?.tags = tags
-                Organization.current?.pushToServer(nil)
+                Organization.current?.pushSettings(.tags, nil)
             }
             
             //push the TagPicker Page

@@ -17,8 +17,8 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
     private var new: Int = (User.current?.gender)!.rawValue
     private var newIndexPath: IndexPath = []
     
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
+    private var doneButton: UIBarButtonItem!
+    private var spinner: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,36 +39,17 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
         myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
-        navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonPressed))
+        doneButton = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonPressed))
+        navigationItem.rightBarButtonItem = doneButton
         
         spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
+            let spinner = UIActivityIndicatorView(style: .gray)
+            spinner.color = AppColors.control
+            spinner.startAnimating()
             spinner.hidesWhenStopped = true
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
             
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -5).isActive = true
-            
-            return spinner
+            return UIBarButtonItem(customView: spinner)
         }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Modifying..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
-        
         
     }
     
@@ -122,58 +103,25 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return " Displayed Gender"
+        return "Displayed Gender"
     }
     
     @objc private func doneButtonPressed() {
-        print("yes")
         if (new == selected) {
             self.navigationController?.popViewController(animated: true)
         } else {
-            print("initiated")
-            spinner.startAnimating()
-            spinnerLabel.isHidden = false
+            navigationItem.rightBarButtonItem = spinner
+            User.current?.gender = User.Gender(rawValue: self.new)!
             
-            let url = URL.with(base: API_BASE_URL,
-                               API_Name: "account/UpdateUserInfo",
-                               parameters: [
-                                "uuid": String(User.current!.uuid)
-                ])!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.addAuthHeader()
-            let body = JSON(dictionaryLiteral: ("Gender", new))
-            request.httpBody = try? body.rawData()
-            
-            let task = CUSTOM_SESSION.dataTask(with: request) {
-                data, response, error in
+            User.current?.pushSettings(.gender) { success in
+                self.navigationItem.rightBarButtonItem = self.doneButton
                 
-                DispatchQueue.main.async {
+                if success {
                     self.navigationController?.popViewController(animated: true)
-                }
-                
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        internetUnavailableError(vc: self)
-                    }
-                    return
-                }
-                
-                let msg = String(data: data!, encoding: .utf8)!
-                
-                if msg == INTERNAL_ERROR {
-                    DispatchQueue.main.async {
-                        serverMaintenanceError(vc: self)
-                    }
-                    return
                 } else {
-                    DispatchQueue.main.async {
-                        User.current!.gender = User.Gender(rawValue: self.new)!
-                    }
+                    internetUnavailableError(vc: self)
                 }
             }
-            
-            task.resume()
         }
     }
     

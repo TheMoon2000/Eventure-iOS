@@ -120,7 +120,7 @@ class AccountNotification: CustomStringConvertible {
         
         guard let userID = User.current?.userID else { return }
         
-        let url = URL.with(base: API_BASE_URL,
+        let url = URL.with(base: PHP7_API_BASE_URL,
                            API_Name: "account/GetUserNotifications",
                            parameters: ["userId": String(userID)])!
         var request = URLRequest(url: url)

@@ -331,75 +331,23 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         
         saveBarButton.title = "Saving..."
         saveBarButton.isEnabled = false
-                        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/UpdateUserInfo",
-                           parameters: ["uuid": String(user.uuid)])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        request.httpMethod = "POST"
         
-        var body = JSON()
-        body.dictionaryObject?["Full name"] = user.fullName
-        body.dictionaryObject?["Graduation year"] = user.graduationYear
-        body.dictionaryObject?["Graduation season"] = user.graduationSeason?.rawValue
-        body.dictionaryObject?["Major"] = user.majorEncoded
-        body.dictionaryObject?["Resume"] = user.resume
-        body.dictionaryObject?["LinkedIn"] = user.linkedIn
-        body.dictionaryObject?["GitHub"] = user.github
-        body.dictionaryObject?["Interests"] = user.interests
-        body.dictionaryObject?["Comments"] = user.comments
-        
-        request.httpBody = try? body.rawData()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                self.needsResave()
-                if !disappearing {
-                    DispatchQueue.main.async {
-                        internetUnavailableError(vc: self)
-                    }
-                } else {
-                    let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your profile information could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
-                    alert.addAction(.init(title: "I Understand", style: .cancel))
-                    DispatchQueue.main.async {
-                        self.parentVC?.present(alert, animated: true, completion: nil)
-                    }
-                }
-                return
-            }
-            
-            let msg = String(data: data!, encoding: .utf8)
-            
-            switch msg {
-            case INTERNAL_ERROR:
-                DispatchQueue.main.async {
-                    self.saveBarButton.title = "Save"
-                    self.saveBarButton.isEnabled = true
-                    if !disappearing {
-                        serverMaintenanceError(vc: self)
-                    }
-                }
-            case "success":
+        User.current?.pushSettings([.fullName, .graduationYear, .graduationSeason, .major, .resumeLink, .linkedIn, .github, .interests, .profileComments]) {
+            success in
+
+            if success {
                 User.needsUpload = false
                 DispatchQueue.main.async {
                     self.markAsSaved()
                     onSuccess?()
                 }
-            default:
-                DispatchQueue.main.async {
-                    self.needsResave()
-                    let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
-                    alert.addAction(.init(title: "OK", style: .cancel))
-                    self.present(alert, animated: true)
-                }
+            } else {
+                self.needsResave()
+                let alert = UIAlertController(title: "Changes could not uploaded", message: "It seems that some of your changes to your profile information could not be automatically uploaded due to lack of internet connection. These changes have been saved locally, but will be lost if you quit and reopen this app while being online, as they will be overwritten.", preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .cancel))
+                self.parentVC?.present(alert, animated: true, completion: nil)
             }
-            
         }
-        
-        task.resume()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

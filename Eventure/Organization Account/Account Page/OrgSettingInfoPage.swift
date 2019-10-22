@@ -126,62 +126,45 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
         let modifyAccount: GenericOneFieldPage
         if type == .title {
             modifyAccount = GenericOneFieldPage(fieldName: "Title", fieldDefault: Organization.current!.title)
-        } else {
-            modifyAccount = .init(fieldName: "Organization Contact Address", fieldDefault: Organization.current!.contactEmail)
-        }
-        
-        modifyAccount.submitAction = { inputField, spinner in
-            
-            inputField.isEnabled = false
-            spinner.startAnimating()
-            
-            let url = URL.with(base: API_BASE_URL,
-                               API_Name: "account/UpdateOrgInfo",
-                               parameters: [
-                                "id": Organization.current!.id
-                ])!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.addAuthHeader()
-            let body = JSON(dictionaryLiteral: (type.rawValue, inputField.text!))
-            request.httpBody = try? body.rawData()
-            
-            let task = CUSTOM_SESSION.dataTask(with: request) {
-                data, response, error in
+            modifyAccount.submitAction = { inputField, spinner in
+                inputField.isEnabled = false
+                spinner.startAnimating()
                 
-                DispatchQueue.main.async {
+                Organization.current?.title = inputField.text!
+                
+                Organization.current?.pushSettings(.orgTitle) { success in
                     spinner.stopAnimating()
                     inputField.isEnabled = true
-                }
-                
-                guard error == nil else {
-                    DispatchQueue.main.async {
-                        internetUnavailableError(vc: self)
-                    }
-                    return
-                }
-                
-                let msg = String(data: data!, encoding: .utf8)!
-                
-                if msg == INTERNAL_ERROR {
-                    DispatchQueue.main.async {
-                        serverMaintenanceError(vc: self)
-                    }
-                    return
-                } else {
-                    DispatchQueue.main.async {
-                        if type == .title {
-                            Organization.current?.title = inputField.text!
-                        } else if type == .contactEmail {
-                            Organization.current!.contactEmail = inputField.text!
-                        }
+                    
+                    if success {
                         self.navigationController?.popViewController(animated: true)
+                    } else {
+                        internetUnavailableError(vc: self)
                     }
                 }
             }
+        } else {
+            modifyAccount = .init(fieldName: "Organization Contact Address", fieldDefault: Organization.current!.contactEmail)
             
-            task.resume()
+            modifyAccount.submitAction = { inputField, spinner in
+                inputField.isEnabled = false
+                spinner.startAnimating()
+                
+                Organization.current?.contactEmail = inputField.text!
+                
+                Organization.current?.pushSettings(.email) { success in
+                    spinner.stopAnimating()
+                    inputField.isEnabled = true
+                    
+                    if success {
+                        self.navigationController?.popViewController(animated: true)
+                    } else {
+                        internetUnavailableError(vc: self)
+                    }
+                }
+            }
         }
+        
         modifyAccount.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(modifyAccount, animated: true)
     }

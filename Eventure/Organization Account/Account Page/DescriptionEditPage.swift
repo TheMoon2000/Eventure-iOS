@@ -275,7 +275,7 @@ class DescriptionEditPage: UIViewController {
         org.orgDescription = descriptionText.text
         navigationItem.rightBarButtonItem = spinnerBarItem
             
-        org.pushToServer { success in
+        org.pushSettings(.orgDescription) { success in
             self.edited = false
             self.navigationItem.rightBarButtonItem = self.saveBarButton
             if !success {

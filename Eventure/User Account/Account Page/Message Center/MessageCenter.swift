@@ -18,6 +18,8 @@ class MessageCenter: UITableViewController {
     
     /// Grouped and sorted notifications; latest notifications come last.
     private var groupedNotifications = [[AccountNotification]]()
+    
+    private var touchDown = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +47,7 @@ class MessageCenter: UITableViewController {
         tableView.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
         tableView.separatorInset.left = 70
-        
+        (tableView as UIScrollView).delegate = self
         
         emptyLabel = {
             let label = UILabel()
@@ -88,11 +90,21 @@ class MessageCenter: UITableViewController {
     }
     
     @objc private func updateMessages() {
+        if touchDown {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.updateMessages()
+            }
+            return
+        }
         AccountNotification.syncFromServer { success in
             if success {
                 self.groupNotifications()
                 self.tableView.reloadData()
                 self.refreshNavigationBarTitle()
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                self.updateMessages()
             }
         }
     }
@@ -111,6 +123,16 @@ class MessageCenter: UITableViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
+}
+
+extension MessageCenter {
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        touchDown = true
+    }
+    
+    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        touchDown = false
+    }
 }
 
 

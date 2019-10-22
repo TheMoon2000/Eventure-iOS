@@ -421,6 +421,98 @@ class User: Profile {
         
         task.resume()
     }
+    
+    /**
+    Call this method when some of the user's settings information needs to be uploaded to the server.
+    
+    - Parameters:
+       - settings: The subset of user settings that should be updated.
+       - handler: Optional handler that will be called after this method attempts to upload the user settings.
+    */
+    func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())?) {
+        
+        var body = JSON()
+        
+        if settings.contains(.displayedName) {
+            body.dictionaryObject?["Displayed name"] = displayedName
+        }
+        
+        if settings.contains(.gender) {
+            body.dictionaryObject?["Gender"] = gender.rawValue
+        }
+        
+        if settings.contains(.email) {
+            body.dictionaryObject?["Email"] = email
+        }
+        
+        if settings.contains(.tags) {
+            body.dictionaryObject?["Tags"] = tags.description
+        }
+        
+        if settings.contains(.fullName) {
+            body.dictionaryObject?["Full name"] = fullName
+        }
+        
+        if settings.contains(.graduationYear) {
+            body.dictionaryObject?["Graduation year"] = graduationYear
+        }
+        
+        if settings.contains(.graduationSeason) {
+            body.dictionaryObject?["Graduation season"] = graduationSeason?.rawValue
+        }
+        
+        if settings.contains(.major) {
+            body.dictionaryObject?["Major"] = majorEncoded
+        }
+        
+        if settings.contains(.resumeLink) {
+            body.dictionaryObject?["Resume"] = resume
+        }
+        
+        if settings.contains(.linkedIn) {
+            body.dictionaryObject?["LinkedIn"] = linkedIn
+        }
+        
+        if settings.contains(.github) {
+            body.dictionaryObject?["GitHub"] = github
+        }
+        
+        if settings.contains(.interests) {
+            body.dictionaryObject?["Interests"] = interests
+        }
+        
+        if settings.contains(.profileComments) {
+            body.dictionaryObject?["Comments"] = comments
+        }
+        
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/UpdateUserInfo",
+                           parameters: ["uuid": String(uuid)])!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.addAuthHeader()
+        request.httpBody = try? body.rawData()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)!
+            
+            DispatchQueue.main.async {
+                handler?(msg == "success")
+            }
+        }
+        
+        task.resume()
+    }
 }
 
 
@@ -441,11 +533,30 @@ extension User {
     struct EnabledNotifications: OptionSet {
         let rawValue: Int
         
-        static let newEvents = EnabledNotifications(rawValue: 1)
-        static let eventUpdates = EnabledNotifications(rawValue: 1 << 1)
-        static let membershipInvites = EnabledNotifications(rawValue: 1 << 2)
-        static let ticketTransferRequests = EnabledNotifications(rawValue: 1 << 3)
+        static let newEvents                = EnabledNotifications(rawValue: 1)
+        static let eventUpdates             = EnabledNotifications(rawValue: 1 << 1)
+        static let membershipInvites        = EnabledNotifications(rawValue: 1 << 2)
+        static let ticketTransferRequests   = EnabledNotifications(rawValue: 1 << 3)
     }
+    
+    struct PushableSettings: OptionSet {
+        let rawValue: Int
+        
+        static let displayedName    = PushableSettings(rawValue: 1)
+        static let email            = PushableSettings(rawValue: 1 << 1)
+        static let gender           = PushableSettings(rawValue: 1 << 2)
+        static let tags             = PushableSettings(rawValue: 1 << 3)
+        static let fullName         = PushableSettings(rawValue: 1 << 4)
+        static let graduationYear   = PushableSettings(rawValue: 1 << 5)
+        static let graduationSeason = PushableSettings(rawValue: 1 << 6)
+        static let major            = PushableSettings(rawValue: 1 << 7)
+        static let resumeLink       = PushableSettings(rawValue: 1 << 8)
+        static let linkedIn         = PushableSettings(rawValue: 1 << 9)
+        static let github           = PushableSettings(rawValue: 1 << 10)
+        static let interests        = PushableSettings(rawValue: 1 << 11)
+        static let profileComments  = PushableSettings(rawValue: 1 << 12)
+    }
+    
 }
 
 

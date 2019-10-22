@@ -14,7 +14,7 @@ class MessageSenderCell: UITableViewCell {
     static let PREVIEW_STYLE = """
         body {
             font-family: -apple-system;
-            font-size: 16px;
+            font-size: 15.5px;
             line-height: 1.25;
             letter-spacing: 1%;
             color: #6A6A6A;
@@ -104,7 +104,13 @@ class MessageSenderCell: UITableViewCell {
     
     func setup(content: AccountNotification) {
         senderTitle.text = content.sender.name
-        messageOverview.attributedText = content.shortString.attributedText(style: MessageSenderCell.PREVIEW_STYLE)
+        
+        let attributedContent = NSMutableAttributedString(attributedString: content.shortString.attributedText(style: MessageSenderCell.PREVIEW_STYLE))
+        let pStyle = NSMutableParagraphStyle()
+        pStyle.lineBreakMode = .byTruncatingTail
+        attributedContent.addAttribute(.paragraphStyle, value: pStyle, range: NSMakeRange(0, attributedContent.length))
+            
+        messageOverview.attributedText = attributedContent
         messageOverview.textColor = AppColors.prompt
         dateLabel.text = content.creationDate.shortString()
         

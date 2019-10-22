@@ -183,8 +183,46 @@ class Organization: CustomStringConvertible {
         }
     }
     
-    /// Handler will be called on main thread, and its parameter represents whether the upload had been successful.
-    func pushToServer(_ handler: ((Bool) -> ())?) {
+    /**
+     Uploads the current organization settings to the server.
+     
+     - Parameters:
+        - settings: The set of settings that should be updated.
+        - handler: Optional handler that will be called after this method attempts to upload the organization settings.
+     */
+    
+    func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())?) {
+        var body = JSON()
+        
+        if settings.contains(.orgTitle) {
+            body.dictionaryObject?["Title"] = title
+        }
+        
+        if settings.contains(.email) {
+            body.dictionaryObject?["Email"] = contactEmail
+        }
+        
+        if settings.contains(.orgDescription) {
+            body.dictionaryObject?["Description"] = orgDescription
+        }
+        
+        if settings.contains(.tags) {
+            body.dictionaryObject?["Tags"] = tags.description
+        }
+        
+        if settings.contains(.website) {
+            body.dictionaryObject?["Website"] = website
+        }
+        
+        if settings.contains(.roles) {
+            body.dictionaryObject?["Roles"] = roles.description
+        }
+        
+        pushToServer(handler, customJSON: body)
+    }
+    
+    /// Now made private to prevent direct calling. Push operations should be done using the above method.
+    private func pushToServer(_ handler: ((Bool) -> ())?, customJSON: JSON) {
                 
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/UpdateOrgInfo",
@@ -193,7 +231,7 @@ class Organization: CustomStringConvertible {
         var request = URLRequest(url: url)
         request.addAuthHeader()
         request.httpMethod = "POST"
-        request.httpBody = try? encodedJSON().rawData()
+        request.httpBody = try? customJSON.rawData()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
@@ -385,5 +423,18 @@ extension Organization: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+extension Organization {
+    struct PushableSettings: OptionSet {
+        let rawValue: Int
+        
+        static let orgDescription   = PushableSettings(rawValue: 1)
+        static let tags             = PushableSettings(rawValue: 1 << 1)
+        static let orgTitle         = PushableSettings(rawValue: 1 << 2)
+        static let email            = PushableSettings(rawValue: 1 << 3)
+        static let website          = PushableSettings(rawValue: 1 << 4)
+        static let roles            = PushableSettings(rawValue: 1 << 5)
     }
 }

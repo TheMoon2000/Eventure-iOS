@@ -352,11 +352,7 @@ extension String {
             if d.string.isEmpty {
                 return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)
             }
-            let attributed = NSMutableAttributedString(attributedString: d.attributedSubstring(from: NSMakeRange(0, d.length - 1)))
-            let pStyle = NSMutableParagraphStyle()
-            pStyle.lineBreakMode = .byTruncatingTail
-            attributed.addAttribute(.paragraphStyle, value: pStyle, range: NSMakeRange(0, attributed.length))
-            return attributed
+            return d.attributedSubstring(from: NSMakeRange(0, d.length - 1))
         } else {
             print("WARNING: markdown failed")
             return NSAttributedString(string: self, attributes: EventDetailPage.standardAttributes)

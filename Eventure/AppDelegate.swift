@@ -172,8 +172,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     
     func handleAPSPacket(packet: JSON) {
         
+        NotificationCenter.default.post(name: NEW_NOTIFICATION, object: nil)
+        
         if AppDelegate.suppressNotifications {
-            NotificationCenter.default.post(name: NEW_NOTIFICATION, object: nil)
             return
         }
         
