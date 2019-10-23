@@ -26,7 +26,7 @@ class MessageDateHeaderView: UIView {
             v.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
             v.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor, constant: 15).isActive = true
             v.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
-            v.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
+            v.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
             v.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15).isActive = true
             
             return v
@@ -36,7 +36,7 @@ class MessageDateHeaderView: UIView {
             let label = UILabel()
             label.text = "Replace me with a date"
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 13.5)
+            label.font = .systemFont(ofSize: 13)
             label.textAlignment = .center
             label.textColor = UIColor(named: "AppColors.lightText")!
             label.translatesAutoresizingMaskIntoConstraints = false

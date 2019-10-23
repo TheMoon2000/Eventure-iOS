@@ -34,10 +34,10 @@ class MessageScreen: UIViewController {
         
         tableView = {
             let tv = UITableView(frame: .zero, style: .grouped)
-            tv.tableHeaderView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 10))
-            tv.tableFooterView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 1))
+            tv.tableHeaderView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 5))
+            tv.tableFooterView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 10))
             tv.contentInset.bottom = 5
-            tv.sectionFooterHeight = 10
+            tv.sectionFooterHeight = 2
             tv.separatorStyle = .none
             tv.backgroundColor = .clear
             tv.delegate = self
@@ -63,22 +63,24 @@ class MessageScreen: UIViewController {
                 
         groupByDate()
         
-        tableView.layoutIfNeeded()
+        tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
         
+        /* old solution
+        tableView.layoutIfNeeded()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.tableView.scrollToRow(at: IndexPath(row: self.groupedMessages[self.groupedMessages.count - 1].content.count - 1, section: self.groupedMessages.count - 1), at: .bottom, animated: false)
-        }
+        }*/
     }
     
     private func groupByDate() {
         guard let sorted = AccountNotification.current[sender] else { return }
         
         var tmp = [(String, [AccountNotification])]()
-        var lastDate = Date.distantPast
+        var lastDate = Date.distantFuture
         
-        for msg in sorted {
+        for msg in sorted.reversed() {
             msg.read = true
-            if tmp.isEmpty || msg.creationDate.timeIntervalSince(lastDate) >= 300 {
+            if tmp.isEmpty || lastDate.timeIntervalSince(msg.creationDate) >= 300 {
                 tmp.append((msg.creationDate.mediumString, [msg]))
             } else {
                 tmp[tmp.count - 1].1.append(msg)
@@ -107,16 +109,21 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table view data source
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return groupedMessages.count
+        return groupedMessages.count + 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section == 0 { return nil }
+        
         let header = MessageDateHeaderView()
-        header.headerTitle.text = groupedMessages[section].dateTime
+        header.headerTitle.text = groupedMessages[section - 1].dateTime
+        header.transform = CGAffineTransform(scaleX: 1, y: -1)
         return header
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == groupedMessages.count { return 0 }
         return groupedMessages[section].content.count
     }
     
@@ -127,23 +134,31 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
         switch msg.type {
         case .membershipInvite:
             let cell = MembershipInvitationCell(invitation: msg as! InviteNotification)
-            
+            cell.transform = CGAffineTransform(scaleX: 1, y: -1)
             cell.acceptHandler = { accepted in
                 self.loadingBG.isHidden = false
             }
              return cell
         case .plain:
-            return PlainMessageCell(content: msg)
+            let cell = PlainMessageCell(content: msg)
+            cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+            return cell
         case .eventUpdate:
-            return EventUpdateCell(content: msg as! EventUpdateNotification,
+            let cell = EventUpdateCell(content: msg as! EventUpdateNotification,
                                    parent: self)
+            cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+            return cell
         case .newEvent:
-            return NewEventCell(content: msg as! NewEventNotification, parent: self)
+            let cell = NewEventCell(content: msg as! NewEventNotification, parent: self)
+            cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+            return cell
         default:
             break
         }
         
-        return UnsupportedContentCell(content: msg)
+        let cell = UnsupportedContentCell(content: msg)
+        cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+        return cell
     }
     
     func openEvent(eventID: String) {
