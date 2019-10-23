@@ -83,7 +83,7 @@ class EventUpdateCell: UITableViewCell {
         
         messageLabel = {
             let label = UILabel()
-            label.attributedText = content.shortString.attributedText(style: COMPACT_STYLE)
+            label.attributedText = content.shortString
             label.numberOfLines = 0
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false

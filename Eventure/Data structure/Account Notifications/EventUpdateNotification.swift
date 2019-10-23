@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import BonMot
 
 /// A subclass of user account notifications that presents an event update.
 class EventUpdateNotification: AccountNotification {
@@ -21,14 +22,21 @@ class EventUpdateNotification: AccountNotification {
         return .eventUpdate
     }
     
-    override var shortString: String {
+    override var shortString: NSAttributedString {
+                
+        let valuePart = updateValue.styled(with: .valueStyle)
+        
         switch updateType {
         case .none:
-            return "There was an error loading this message."
+            return "There was an error loading this message.".styled(with: .basicStyle)
         case .location:
-            return "The location for \(eventTitle) has been changed to **\(updateValue)**."
+            let part1 = "The location for \(eventTitle) has been changed to ".styled(with: .basicStyle)
+            let part3 = ".".styled(with: .basicStyle)
+            return NSAttributedString.composed(of: [part1, valuePart, part3])
         case .startTime:
-            return "The starting time for \(eventTitle) has been changed to **\(updateValue)**."
+            let part1 = "The starting time for \(eventTitle) has been changed to ".styled(with: .basicStyle)
+            let part3 = ".".styled(with: .basicStyle)
+            return NSAttributedString.composed(of: [part1, valuePart, part3])
         }
     }
     
@@ -45,6 +53,8 @@ class EventUpdateNotification: AccountNotification {
         } else if let location = rawContent.dictionary?["newLocation"]?.string {
             self.updateType = .location
             updateValue = location
+        } else {
+            print("read update error: \(rawContent)")
         }
     }
     

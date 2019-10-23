@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BonMot
 
 class MembershipInvitationCell: UITableViewCell {
     
@@ -85,13 +86,15 @@ class MembershipInvitationCell: UITableViewCell {
         
         messageLabel = {
             let label = UILabel()
-            if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
-                label.attributedText = "\(invitation.sender.name) invites you to join as **\(invitation.role)**.".attributedText(style: COMPACT_DARK)
-            } else {
-                label.attributedText = "\(invitation.sender.name) invites you to join as **\(invitation.role)**.".attributedText(style: COMPACT_STYLE)
-            }
+            
+            label.attributedText = NSAttributedString.composed(of: [
+                "\(invitation.sender.name) invites you to join as ".styled(with: .basicStyle),
+                invitation.role.styled(with: .valueStyle),
+                ".".styled(with: .basicStyle)
+            ])
+            
             label.numberOfLines = 0
-            label.textColor = AppColors.label
+            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -173,18 +176,6 @@ class MembershipInvitationCell: UITableViewCell {
             titleLabel.text = invitation.status == .accepted ? "Membership accepted!" : "Membership decline."
             titleLabel.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -20).isActive = true
         }
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
-            messageLabel.attributedText = "\(invitation.sender.name) invites you to join as **\(invitation.role)**.".attributedText(style: COMPACT_DARK)
-        } else {
-            messageLabel.attributedText = "\(invitation.sender.name) invites you to join as **\(invitation.role)**.".attributedText(style: COMPACT_STYLE)
-        }
-        
-        messageLabel.textColor = AppColors.label
     }
     
     @objc private func acceptPressed() {

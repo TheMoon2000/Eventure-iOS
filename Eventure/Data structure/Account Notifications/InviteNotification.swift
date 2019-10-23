@@ -18,14 +18,14 @@ class InviteNotification: AccountNotification {
         return .membershipInvite
     }
     
-    override var shortString: String {
-        return "[Member invitation: \(role)]"
+    override var shortString: NSAttributedString {
+        return "[Member invitation: \(role)]".styled(with: .basicStyle)
     }
     
     override init(json: JSON) {
         super.init(json: json)
         
-        self.role = rawContent.dictionary?["role"]?.string ?? ""
+        self.role = rawContent.dictionary?["role"]?.string?.decoded ?? ""
         self.status = Status(rawValue: rawContent.dictionary?["status"]?.int ?? 0) ?? .pending
     }
     

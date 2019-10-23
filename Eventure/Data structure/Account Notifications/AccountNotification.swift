@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import BonMot
 
 class AccountNotification: CustomStringConvertible {
     
@@ -41,8 +42,8 @@ class AccountNotification: CustomStringConvertible {
     
     private var message: String
     
-    var shortString: String {
-        return message
+    var shortString: NSAttributedString {
+        return message.styled(with: .basicStyle)
     }
     
     var senderLogo: UIImage? {
@@ -59,8 +60,14 @@ class AccountNotification: CustomStringConvertible {
         
         self.userID = dictionary["User ID"]?.int ?? -1
         self.creationDate = PRECISE_FORMATTER.date(from: dictionary["Date"]!.stringValue) ?? .distantPast
-        self.rawContent = JSON(parseJSON: dictionary["Content"]!.stringValue)
         self.message = dictionary["Content"]?.string ?? "No content."
+        
+        if let json = dictionary["Content"], !json.isEmpty {
+            rawContent = json
+        } else {
+            self.rawContent = JSON(parseJSON: dictionary["Content"]!.stringValue)
+        }
+        
         self.contentType = ContentType(rawValue: dictionary["Type"]?.string ?? "")
         
         let senderID = dictionary["Sender"]?.string ?? AccountNotification.SYSTEM_ID
@@ -196,7 +203,7 @@ class AccountNotification: CustomStringConvertible {
         if type == .plain {
             json.dictionaryObject?["Content"] = message
         } else {
-            json.dictionaryObject?["Content"] = rawContent.rawString([.castNilToNSNull: true])
+            json.dictionaryObject?["Content"] = rawContent
         }
         json.dictionaryObject?["Sender"] = sender.senderID
         json.dictionaryObject?["Sender title"] = sender.name
@@ -287,7 +294,7 @@ class AccountNotification: CustomStringConvertible {
                 var noRaw = [String : Any]()
                 
                 let mainEncrypted: Data? = NSData(data: try! n.encodedJSON.rawData()).aes256Encrypt(withKey: AES_KEY)
-                
+                                
                 noRaw["main"] = mainEncrypted
                 noRaw["lastUpdate"] = currentUpdateTime
                 
@@ -306,7 +313,7 @@ class AccountNotification: CustomStringConvertible {
     }
     
     var description: String {
-        return shortString
+        return shortString.string
     }
 }
 

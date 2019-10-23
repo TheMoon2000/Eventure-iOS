@@ -22,18 +22,21 @@ class NewEventNotification: AccountNotification {
         return .newEvent
     }
     
-    override var shortString: String {
-        return "New event: \(eventTitle)"
+    override var shortString: NSAttributedString {
+        return NSAttributedString.composed(of: [
+            "New event: ".styled(with: .basicStyle),
+            eventTitle.styled(with: .valueStyle)
+        ])
     }
     
     override init(json: JSON) {
         super.init(json: json)
         
-        self.eventTitle = rawContent.dictionary?["eventTitle"]?.string ?? ""
-        self.eventID = rawContent.dictionary?["eventId"]?.string ?? ""
+        self.eventTitle = rawContent.dictionary?["eventTitle"]?.string?.decoded ?? ""
+        self.eventID = rawContent.dictionary?["eventId"]?.string?.decoded ?? ""
         self.startTime = DATE_FORMATTER.date(from: rawContent.dictionary?["startTime"]?.string ?? "") ?? Date.init(timeIntervalSinceReferenceDate: 0)
-        self.location = rawContent.dictionary?["location"]?.string ?? "TBA"
-        self.eventSummary = rawContent.dictionary?["description"]?.string ?? "No description."
+        self.location = rawContent.dictionary?["location"]?.string?.decoded ?? "TBA"
+        self.eventSummary = rawContent.dictionary?["description"]?.string?.decoded ?? "No description."
         self.coverImage = AccountNotification.cachedLogos[eventID]
     }
     

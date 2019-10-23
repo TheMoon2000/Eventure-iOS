@@ -130,7 +130,7 @@ extension MessageSearchResults: UISearchResultsUpdating {
             // Search the messages
             self.filteredMessages = AccountNotification.current.map { key, value in
                 return (key, value.filter {
-                    $0.shortString.lowercased().contains(searchString) || searchString.isEmpty
+                    $0.shortString.string.lowercased().contains(searchString) || searchString.isEmpty
                 })
             } . filter { !$0.matches.isEmpty }
             

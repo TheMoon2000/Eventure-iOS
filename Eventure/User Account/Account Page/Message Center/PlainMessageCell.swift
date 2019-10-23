@@ -40,7 +40,7 @@ class PlainMessageCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
-            label.text = "\(content.shortString)"
+            label.text = content.shortString.string
             label.numberOfLines = 5
             label.font = .systemFont(ofSize: 15)
             label.textAlignment = .center

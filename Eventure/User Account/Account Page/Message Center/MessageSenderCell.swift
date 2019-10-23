@@ -105,13 +105,12 @@ class MessageSenderCell: UITableViewCell {
     func setup(content: AccountNotification) {
         senderTitle.text = content.sender.name
         
-        let attributedContent = NSMutableAttributedString(attributedString: content.shortString.attributedText(style: MessageSenderCell.PREVIEW_STYLE))
+        let attributedContent = NSMutableAttributedString(attributedString: content.shortString)
         let pStyle = NSMutableParagraphStyle()
         pStyle.lineBreakMode = .byTruncatingTail
         attributedContent.addAttribute(.paragraphStyle, value: pStyle, range: NSMakeRange(0, attributedContent.length))
             
         messageOverview.attributedText = attributedContent
-        messageOverview.textColor = AppColors.prompt
         dateLabel.text = content.creationDate.shortString
         
         if content.senderLogo != nil {

@@ -122,9 +122,9 @@ class NewEventCell: UITableViewCell {
             let label = TTTAttributedLabel(frame: .zero)
             
             if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
-                label.setText(content.eventSummary.attributedText(style: PLAIN_DARK))
+                label.setText(content.eventSummary.attributedText(style: COMPACT_DARK))
             } else {
-                label.setText(content.eventSummary.attributedText(style: PLAIN_STYLE))
+                label.setText(content.eventSummary.attributedText(style: COMPACT_STYLE))
             }
             
             label.enabledTextCheckingTypes = NSTextCheckingResult.CheckingType.link.rawValue +

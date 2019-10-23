@@ -18,14 +18,14 @@ class TicketNotification: AccountNotification {
         return .newTicket
     }
     
-    override var shortString: String {
-        return message
+    override var shortString: NSAttributedString {
+        return message.styled(with: .basicStyle)
     }
     
     override init(json: JSON) {
         super.init(json: json)
         
-        self.message = rawContent.dictionary?["message"]?.string ?? ""
+        self.message = rawContent.dictionary?["message"]?.string?.decoded ?? ""
         self.ticketID = rawContent.dictionary?["ticketId"]?.string ?? ""
     }
 }

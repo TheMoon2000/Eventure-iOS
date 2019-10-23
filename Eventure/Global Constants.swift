@@ -9,6 +9,7 @@
 
 import UIKit
 import SwiftyJSON
+import BonMot
 import Down
 import var CommonCrypto.CC_MD5_DIGEST_LENGTH
 import func CommonCrypto.CC_MD5
@@ -335,6 +336,20 @@ let DAY_FORMATTER: DateFormatter = {
 
 
 // MARK: - Classes and Extensions
+
+extension StringStyle {
+    static let valueStyle = StringStyle(
+        .font(UIFont.systemFont(ofSize: 15.5, weight: .medium)),
+        .lineHeightMultiple(1.1),
+        .color(AppColors.value)
+    )
+    
+    static let basicStyle = StringStyle(
+        .font(UIFont.systemFont(ofSize: 15.5)),
+        .lineHeightMultiple(1.1),
+        .color(AppColors.prompt)
+    )
+}
 
 extension String {
     
