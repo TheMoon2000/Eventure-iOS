@@ -64,7 +64,10 @@ class MessageScreen: UIViewController {
         groupByDate()
         
         tableView.layoutIfNeeded()
-        tableView.scrollToRow(at: [groupedMessages.count - 1, groupedMessages.last!.content.count - 1], at: .bottom, animated: false)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.tableView.scrollToRow(at: IndexPath(row: self.groupedMessages[self.groupedMessages.count - 1].content.count - 1, section: self.groupedMessages.count - 1), at: .bottom, animated: false)
+        }
     }
     
     private func groupByDate() {
@@ -116,7 +119,6 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return groupedMessages[section].content.count
     }
-
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
