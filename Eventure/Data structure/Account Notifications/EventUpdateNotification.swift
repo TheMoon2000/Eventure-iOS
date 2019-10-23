@@ -16,14 +16,19 @@ class EventUpdateNotification: AccountNotification {
     var eventTitle = ""
     var updateValue = ""
     var message = ""
+    
+    override var type: AccountNotification.ContentType {
+        return .eventUpdate
+    }
+    
     override var shortString: String {
         switch updateType {
         case .none:
             return "There was an error loading this message."
         case .location:
-            return "The location for **\(eventTitle)** has been changed to \(updateValue)."
+            return "The location for \(eventTitle) has been changed to **\(updateValue)**."
         case .startTime:
-            return "The starting time for **\(eventTitle)** has been changed to \(updateValue)."
+            return "The starting time for \(eventTitle) has been changed to **\(updateValue)**."
         }
     }
     

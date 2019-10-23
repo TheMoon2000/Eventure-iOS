@@ -133,6 +133,9 @@ class MainTabBarController: UITabBarController {
             setupUserTabs()
             if let userID = User.current?.uuid {
                 AccountNotification.readFromFile(userID: userID)
+                if AccountNotification.current.isEmpty {
+                    addWelcomeMessage(userID: userID)
+                }
                 AccountNotification.syncFromServer { success in
                     if success {
                         NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
@@ -150,6 +153,23 @@ class MainTabBarController: UITabBarController {
         selectedIndex = page
         dismiss(animated: true)
     }
+    
+    /// Create a welcome message.
+    func addWelcomeMessage(userID: Int) {
+        var json = JSON()
+        json.dictionaryObject?["User ID"] = userID
+        json.dictionaryObject?["Content"] = "Welcome to Eventure! Here you will find important notifications relevant to events and organizations which you have expressed interest."
+        json.dictionaryObject?["Date"] = PRECISE_FORMATTER.string(from: Date())
+        json.dictionaryObject?["Type"] = AccountNotification.ContentType.plain.rawValue
+        json.dictionaryObject?["Sender"] = AccountNotification.SYSTEM_ID
+        json.dictionaryObject?["Sender title"] = "Eventure"
+        json.dictionaryObject?["Read"] = 0
+        
+        let welcome = AccountNotification(json: json)
+        
+        AccountNotification.current[welcome.sender] = [welcome]
+    }
+    
     
     func loginSetup() {
         

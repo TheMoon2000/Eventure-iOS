@@ -8,16 +8,21 @@
 
 import UIKit
 
-class MessageCenter: UITableViewController {
+class MessageCenter: UIViewController {
     
     private var searchController: UISearchController!
     private var settingsItem: UIBarButtonItem!
+    
+    private var tableView: UITableView!
     
     private var loadingBG: UIView!
     private var emptyLabel: UILabel!
     
     /// Grouped and sorted notifications; latest notifications come last.
-    private var groupedNotifications = [[AccountNotification]]()
+    private var groupedNotifications = [(
+        AccountNotification.Sender,
+        [AccountNotification]
+    )]()
     
     private var touchDown = false
 
@@ -44,10 +49,24 @@ class MessageCenter: UITableViewController {
         settingsItem = UIBarButtonItem(image: #imageLiteral(resourceName: "settings"), style: .plain, target: self, action: #selector(settings))
         navigationItem.rightBarButtonItem = settingsItem
         
-        tableView.backgroundColor = AppColors.canvas
-        tableView.tableFooterView = UIView()
-        tableView.separatorInset.left = 70
-        (tableView as UIScrollView).delegate = self
+        tableView = {
+            let tv = UITableView()
+            tv.backgroundColor = AppColors.canvas
+            tv.tableFooterView = UIView()
+            tv.separatorInset.left = 70
+            tv.delegate = self
+            tv.dataSource = self
+            (tv as UIScrollView).delegate = self
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(tv)
+            
+            tv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            tv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            tv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            return tv
+        }()
         
         emptyLabel = {
             let label = UILabel()
@@ -67,29 +86,35 @@ class MessageCenter: UITableViewController {
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
-        NotificationCenter.default.addObserver(self, selector: #selector(updateMessages), name: NEW_NOTIFICATION, object: nil)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(oneTimeUpdate), name: NEW_NOTIFICATION, object: nil)
+                
         groupNotifications()
-        refreshNavigationBarTitle()
+        refreshNavBarTitle()
+        updateMessages(spawnThread: true)
     }
     
-    private func refreshNavigationBarTitle() {
+    func refreshNavBarTitle() {
         if AccountNotification.unreadCount == 0 {
             navigationItem.title = "Messages"
         } else {
             navigationItem.title = "Messages (\(AccountNotification.unreadCount))"
         }
+        navigationItem.backBarButtonItem = .init(title: navigationItem.title, style: .plain, target: nil, action: nil)
     }
     
     private func groupNotifications() {
-        self.groupedNotifications = AccountNotification.current.values.sorted { g1, g2 in
-            return g1.last!.creationDate > g2.last!.creationDate
+        self.groupedNotifications = AccountNotification.current.sorted { g1, g2 in
+            return g1.value.last!.creationDate > g2.value.last!.creationDate
         }
         
         emptyLabel.isHidden = !self.groupedNotifications.isEmpty
     }
     
-    @objc private func updateMessages() {
+    @objc private func oneTimeUpdate() {
+        updateMessages()
+    }
+    
+    private func updateMessages(spawnThread: Bool = false) {
         if touchDown {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.updateMessages()
@@ -97,20 +122,40 @@ class MessageCenter: UITableViewController {
             return
         }
         AccountNotification.syncFromServer { success in
+            
+            self.loadingBG.isHidden = true
+            
             if success {
                 self.groupNotifications()
-                self.tableView.reloadData()
-                self.refreshNavigationBarTitle()
+                if !self.touchDown {
+                    self.tableView.reloadData()
+                }
+                self.refreshNavBarTitle()
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                self.updateMessages()
+            if spawnThread {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.updateMessages(spawnThread: true)
+                }
             }
         }
     }
     
     @objc private func settings() {
+        let alert = UIAlertController(title: "Choose action", message: nil, preferredStyle: .actionSheet)
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Clear Cache (Beta)", style: .destructive, handler: { _ in
+            AccountNotification.cachedLogos.removeAll()
+            AccountNotification.current.removeAll()
+            AccountNotification.cachedNotifications.removeAll()
+            AccountNotification.currentUpdateTime = .distantPast
+            AccountNotification.save()
+            MainTabBarController.current.addWelcomeMessage(userID: User.current!.userID)
+            self.loadingBG.isHidden = false
+            self.updateMessages()
+        }))
         
+        present(alert, animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -125,31 +170,63 @@ class MessageCenter: UITableViewController {
 
 }
 
-extension MessageCenter {
-    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+extension MessageCenter: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         touchDown = true
     }
     
-    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         touchDown = false
     }
 }
 
-
-extension MessageCenter {
+// MARK: - Delegate and data source
+extension MessageCenter: UITableViewDelegate, UITableViewDataSource {
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return groupedNotifications.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = MessageSenderCell()
-        cell.setup(content: groupedNotifications[indexPath.row].last!)
+        cell.setup(content: groupedNotifications[indexPath.row].1.last!)
         
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let sender = groupedNotifications[indexPath.row].0
+        sender.markAsRead()
+        let messageScreen = MessageScreen(parent: self, sender: sender)
+        navigationController?.pushViewController(messageScreen, animated: true)
     }
+    
+    
+}
+
+// MARK: - Peek and pop
+
+extension MessageCenter: UIViewControllerPreviewingDelegate {
+    func previewInteraction(_ previewInteraction: UIPreviewInteraction, didUpdatePreviewTransition transitionProgress: CGFloat, ended: Bool) {}
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        navigationController?.pushViewController(viewControllerToCommit, animated: true)
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        if let index = tableView.indexPathForRow(at: location) {
+            
+            previewingContext.sourceRect = tableView.rectForRow(at: index)
+            let sender = groupedNotifications[index.row].0
+            sender.markAsRead()
+            let messageScreen = MessageScreen(parent: self, sender: sender)
+            
+            return messageScreen
+        }
+        
+        return nil
+    }
+    
 }

@@ -259,7 +259,7 @@ class EventDraft: UIPageViewController {
             "orgId": Organization.current!.id,
             "title": draft.title,
             "description": draft.eventDescription,
-            "location": draft.location,
+            "location": draft.location.isEmpty ? "TBA" : draft.location,
             "checkinTime": String(draft.checkinTime),
             "startTime": DATE_FORMATTER.string(from: draft.startTime!),
             "endTime": DATE_FORMATTER.string(from: draft.endTime!),

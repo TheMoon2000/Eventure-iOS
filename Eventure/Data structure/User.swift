@@ -63,7 +63,8 @@ class User: Profile {
     var tags = Set<String>() { didSet { save() } }
     var memberships = [Membership]()
     let dateRegistered: String // Only for debugging purpose
-    
+        
+    /// Whether changes to the `User` instance would automatically be written to local cache.
     var saveEnabled = false
     
     /// Whether the app is in the middle of a sync session and is waiting for a response.

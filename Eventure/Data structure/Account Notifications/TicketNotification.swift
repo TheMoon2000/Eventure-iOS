@@ -13,6 +13,11 @@ import SwiftyJSON
 class TicketNotification: AccountNotification {
     var message = ""
     var ticketID = ""
+    
+    override var type: AccountNotification.ContentType {
+        return .newTicket
+    }
+    
     override var shortString: String {
         return message
     }

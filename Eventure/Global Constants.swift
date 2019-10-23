@@ -134,12 +134,21 @@ struct AppColors {
     
     /// Plain text color, intended for event and organization descriptions.
     static var plainText = UIColor(named: "AppColors.plainText")!
+
+    /// Bold text color.
+    static var boldText = UIColor(named: "AppColors.bold")!
     
     /// Button colors.
     static var control = UIColor(named: "AppColors.control")!
     
     /// A light gray tint used for disabled controls.
     static var disabled = UIColor(named: "AppColors.disabled")!
+    
+    /// Message header background color.
+    static var messageHeader = UIColor(named: "AppColors.messageHeader")!
+    
+    /// The label color for a dark background.
+    static var invertedLabel = UIColor(named: "AppColors.invertedLabel")!
 }
 
 let SAMPLE_TEXT = """
@@ -436,8 +445,7 @@ extension Date {
         }
     }
     
-    func shortString() -> String {
-        
+    var shortString: String {
         let today = Date().midnight
         
         let df = DateFormatter()
@@ -451,6 +459,25 @@ extension Date {
             df.dateFormat = "EEEE"
         } else {
             df.dateFormat = "MM/dd/yyyy"
+        }
+        
+        return df.string(from: self)
+    }
+    
+    var mediumString: String {
+        let today = Date().midnight
+        
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US")
+        
+        if today == self.midnight {
+            df.dateFormat = "h:mm a"
+        } else if today.timeIntervalSince(self.midnight) == 86400 {
+            df.dateFormat = "'Yesterday' h:mm a"
+        } else if today.timeIntervalSince(self.midnight) <= 7 * 86400 {
+            df.dateFormat = "EEEE, h:mm a"
+        } else {
+            df.dateFormat = "MMM d, yyyy"
         }
         
         return df.string(from: self)

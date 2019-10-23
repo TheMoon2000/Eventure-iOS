@@ -11,12 +11,13 @@ import SwiftyJSON
 
 class AccountNotification: CustomStringConvertible {
     
-    private static var cachedNotifications = [Int: [[String: Any]]]()
+    static var cachedNotifications = [Int: [[String: Any]]]()
     static var cachedLogos = [String: UIImage]()
     
-    /// Stores all the notifications for the current user. A set structure is used to prevent duplicates.
+    /// Stores all the notifications for the current user. A set structure is used to prevent duplicates. The arrays are sorted by date in ascending order.
     static var current = [Sender: [AccountNotification]]()
-    static var SYSTEM = "__SYSTEM__"
+    static var currentUpdateTime = Date.distantPast
+    static var SYSTEM_ID = "__SYSTEM__"
     static var unreadCount: Int {
         let unreadBySender = current.map { _, notifications in
             return notifications.filter { !$0.read }.count
@@ -29,9 +30,14 @@ class AccountNotification: CustomStringConvertible {
     let userID: Int
     var creationDate: Date
     let rawContent: JSON
-    let type: ContentType
     let sender: Sender
     var read = true
+    
+    private var contentType: ContentType?
+    
+    var type: ContentType {
+        return contentType ?? .unsupported
+    }
     
     private var message: String
     
@@ -41,7 +47,7 @@ class AccountNotification: CustomStringConvertible {
     
     var senderLogo: UIImage? {
         
-        if sender.senderID == AccountNotification.SYSTEM {
+        if sender.senderID == AccountNotification.SYSTEM_ID {
             return #imageLiteral(resourceName: "user_default")
         } else {
             return AccountNotification.cachedLogos[sender.senderID]
@@ -52,16 +58,16 @@ class AccountNotification: CustomStringConvertible {
         let dictionary = json.dictionaryValue
         
         self.userID = dictionary["User ID"]?.int ?? -1
-        self.creationDate = DATE_FORMATTER.date(from: dictionary["Date"]!.stringValue) ?? .distantPast
-        self.type = ContentType(rawValue: dictionary["Type"]!.string!) ?? .plain
+        self.creationDate = PRECISE_FORMATTER.date(from: dictionary["Date"]!.stringValue) ?? .distantPast
         self.rawContent = JSON(parseJSON: dictionary["Content"]!.stringValue)
         self.message = dictionary["Content"]?.string ?? "No content."
+        self.contentType = ContentType(rawValue: dictionary["Type"]?.string ?? "")
         
-        let senderID = dictionary["Sender"]?.string ?? AccountNotification.SYSTEM
+        let senderID = dictionary["Sender"]?.string ?? AccountNotification.SYSTEM_ID
         let senderName = dictionary["Sender title"]?.string ?? "Unknown"
         self.sender = Sender(name: senderName, id: senderID)
         
-        self.read = (dictionary["Read"]?.int ?? 1) == 1
+        self.read = (dictionary["Read"]?.int ?? 0) == 1
         getLogoImage(nil)
     }
     
@@ -86,7 +92,7 @@ class AccountNotification: CustomStringConvertible {
     /// Load the logo image for the sender organization.
     func getLogoImage(_ handler: ((UIImage) -> ())?) {
         
-        if sender.senderID == AccountNotification.SYSTEM {
+        if sender.senderID == AccountNotification.SYSTEM_ID {
             handler?(#imageLiteral(resourceName: "user_default"))
             return
         }
@@ -120,9 +126,14 @@ class AccountNotification: CustomStringConvertible {
         
         guard let userID = User.current?.userID else { return }
         
+        let parameters = [
+            "userId": String(userID),
+            "lowerBound": DATE_FORMATTER.string(from: currentUpdateTime)
+        ]
+        
         let url = URL.with(base: PHP7_API_BASE_URL,
                            API_Name: "account/GetUserNotifications",
-                           parameters: ["userId": String(userID)])!
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -138,8 +149,14 @@ class AccountNotification: CustomStringConvertible {
             }
             
             if let json = try? JSON(data: data!), let nArray = json.array {
-                var tmp = [Sender: [AccountNotification]]()
+                var tmp = current // [Sender: [AccountNotification]]()
+                var newUpdateTime: Date?
                 for rawNotification in nArray {
+                    
+                    if newUpdateTime == nil, let rawDate = rawNotification.dictionary?["Last updated"]?.string {
+                        newUpdateTime = PRECISE_FORMATTER.date(from: rawDate)
+                    }
+                    
                     if let new = new(json: rawNotification) {
                         if tmp[new.sender] == nil {
                             tmp[new.sender] = [new]
@@ -153,7 +170,10 @@ class AccountNotification: CustomStringConvertible {
                     tmp[key]!.sort { $0.creationDate <= $1.creationDate }
                 }
                 
-                AccountNotification.current = tmp
+                current = tmp
+                if let updateTime = newUpdateTime {
+                    currentUpdateTime = updateTime
+                }
                 AccountNotification.save()
                 DispatchQueue.main.async {
                     handler?(true)
@@ -172,8 +192,12 @@ class AccountNotification: CustomStringConvertible {
         var json = JSON()
         json.dictionaryObject?["User ID"] = userID
         json.dictionaryObject?["Type"] = type.rawValue
-        json.dictionaryObject?["Date"] = DATE_FORMATTER.string(from: creationDate)
-        json.dictionaryObject?["Content"] = rawContent.rawString([.castNilToNSNull: true])
+        json.dictionaryObject?["Date"] = PRECISE_FORMATTER.string(from: creationDate)
+        if type == .plain {
+            json.dictionaryObject?["Content"] = message
+        } else {
+            json.dictionaryObject?["Content"] = rawContent.rawString([.castNilToNSNull: true])
+        }
         json.dictionaryObject?["Sender"] = sender.senderID
         json.dictionaryObject?["Sender title"] = sender.name
         json.dictionaryObject?["Read"] = read ? 1 : 0
@@ -203,8 +227,11 @@ class AccountNotification: CustomStringConvertible {
         
         guard let userCollection = collection[userID] else {
             print("WARNING: No notification cache was found for user <id=\(userID)>!");
+            
             return
         }
+        
+        var dateUpdated = false
         
         for notificationRaw in userCollection {
             guard let mainData = notificationRaw["main"] as? Data else {
@@ -219,6 +246,11 @@ class AccountNotification: CustomStringConvertible {
             
             if let json = try? JSON(data: notificationMain) {
                 guard let new = new(json: json) else { continue }
+                
+                if let lastUpdate = notificationRaw["lastUpdate"] as? Date, User.current?.userID == new.userID, !dateUpdated {
+                    currentUpdateTime = lastUpdate
+                    dateUpdated = true
+                }
 
                 if current[new.sender] != nil {
                     current[new.sender]?.append(new)
@@ -248,7 +280,6 @@ class AccountNotification: CustomStringConvertible {
         
         saveLogoCache()
         
-        
         var collection = [[String : Any]]()
         
         for group in current.values {
@@ -258,6 +289,7 @@ class AccountNotification: CustomStringConvertible {
                 let mainEncrypted: Data? = NSData(data: try! n.encodedJSON.rawData()).aes256Encrypt(withKey: AES_KEY)
                 
                 noRaw["main"] = mainEncrypted
+                noRaw["lastUpdate"] = currentUpdateTime
                 
                 collection.append(noRaw)
             }
@@ -294,6 +326,7 @@ extension AccountNotification: Hashable {
         case eventUpdate = "EVENT UPDATE"
         case newTicket = "NEW TICKET"
         case membershipInvite = "MEMBERSHIP INVITATION"
+        case unsupported = ""
     }
     
     class Sender: Hashable, CustomStringConvertible {
@@ -316,6 +349,32 @@ extension AccountNotification: Hashable {
         
         var description: String {
             return "Sender<\(senderID)>"
+        }
+        
+        func markAsRead() {
+            guard let userID = User.current?.userID else { return }
+            
+            let url = URL.with(base: PHP7_API_BASE_URL,
+                               API_Name: "account/MarkNotificationsAsRead",
+                               parameters: [
+                                "userId": String(userID),
+                                "senderId": senderID
+                               ])!
+            var request = URLRequest(url: url)
+            request.addAuthHeader()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+                
+                if error != nil {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                        self.markAsRead()
+                    }
+                }
+                
+            }
+            
+            task.resume()
         }
     }
 }

@@ -112,7 +112,7 @@ class MessageSenderCell: UITableViewCell {
             
         messageOverview.attributedText = attributedContent
         messageOverview.textColor = AppColors.prompt
-        dateLabel.text = content.creationDate.shortString()
+        dateLabel.text = content.creationDate.shortString
         
         if content.senderLogo != nil {
             senderLogo.image = content.senderLogo
