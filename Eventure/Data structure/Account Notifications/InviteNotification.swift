@@ -29,6 +29,30 @@ class InviteNotification: AccountNotification {
         self.status = Status(rawValue: rawContent.dictionary?["status"]?.int ?? 0) ?? .pending
     }
     
+    func pushStatus() {
+        let url = URL.with(base: PHP7_API_BASE_URL,
+                           API_Name: "account/UpdateInvitationStatus",
+                           parameters: [
+                            "date": PRECISE_FORMATTER.string(from: creationDate),
+                            "accept": String(status.rawValue)
+                           ])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                    self.pushStatus()
+                }
+                return
+            }
+        }
+        
+        task.resume()
+    }
+    
     enum Status: Int {
         case accepted = 1
         case pending = 0

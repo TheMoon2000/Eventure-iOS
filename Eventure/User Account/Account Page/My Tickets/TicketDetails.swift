@@ -93,8 +93,9 @@ class TicketDetails: UITableViewController {
         case [1, 1]:
             return TicketDetailInfoCell(ticket: ticket)
         case [2, 0]:
-            let lock = TransferLockCell()
-            lock.lockSwitch.isOn = ticket.transferLocked
+            let lock = BasicSwitchCell()
+            lock.titleLabel.text = "Transfer Lock"
+            lock.switch.isOn = ticket.transferLocked
             lock.switchHandler = { sw in
                 self.updateTransferLock(sw: sw)
             }

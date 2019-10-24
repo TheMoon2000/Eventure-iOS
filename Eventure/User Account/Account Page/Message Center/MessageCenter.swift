@@ -15,8 +15,8 @@ class MessageCenter: UIViewController {
     
     private var tableView: UITableView!
     
-    private var loadingBG: UIView!
-    private var emptyLabel: UILabel!
+    private(set) var loadingBG: UIView!
+    private(set) var emptyLabel: UILabel!
     
     /// Grouped and sorted notifications; latest notifications come last.
     private var groupedNotifications = [(
@@ -87,7 +87,7 @@ class MessageCenter: UIViewController {
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(oneTimeUpdate), name: NEW_NOTIFICATION, object: nil)
-                
+                        
         groupNotifications()
         refreshNavBarTitle()
         updateMessages(spawnThread: true)
@@ -114,16 +114,29 @@ class MessageCenter: UIViewController {
         updateMessages()
     }
     
-    private func updateMessages(spawnThread: Bool = false) {
+    func updateMessages(spawnThread: Bool = false) {
         if touchDown {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 self.updateMessages()
             }
             return
         }
+        
+        let lastUpdate = AccountNotification.currentUpdateTime
+        
         AccountNotification.syncFromServer { success in
             
             self.loadingBG.isHidden = true
+            
+            
+            if spawnThread {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                    self.updateMessages(spawnThread: true)
+                }
+            }
+            
+            /// Another update has taken place before this thread did.
+            if lastUpdate != AccountNotification.currentUpdateTime { return }
             
             if success {
                 self.groupNotifications()
@@ -132,30 +145,12 @@ class MessageCenter: UIViewController {
                 }
                 self.refreshNavBarTitle()
             }
-            
-            if spawnThread {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                    self.updateMessages(spawnThread: true)
-                }
-            }
         }
     }
     
     @objc private func settings() {
-        let alert = UIAlertController(title: "Choose action", message: nil, preferredStyle: .actionSheet)
-        alert.addAction(.init(title: "Cancel", style: .cancel))
-        alert.addAction(.init(title: "Clear Cache (Beta)", style: .destructive, handler: { _ in
-            AccountNotification.cachedLogos.removeAll()
-            AccountNotification.current.removeAll()
-            AccountNotification.cachedNotifications.removeAll()
-            AccountNotification.currentUpdateTime = .distantPast
-            AccountNotification.save()
-            MainTabBarController.current.addWelcomeMessage(userID: User.current!.userID)
-            self.loadingBG.isHidden = false
-            self.updateMessages()
-        }))
-        
-        present(alert, animated: true, completion: nil)
+        let preferences = MessageSettingsMenu(parent: self)
+        navigationController?.pushViewController(preferences, animated: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -189,6 +184,7 @@ extension MessageCenter: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = MessageSenderCell()
+        cell.badge.badgeNumber = groupedNotifications[indexPath.row].1.filter { !$0.read } .count
         cell.setup(content: groupedNotifications[indexPath.row].1.last!)
         
         return cell
@@ -199,6 +195,11 @@ extension MessageCenter: UITableViewDelegate, UITableViewDataSource {
         
         let sender = groupedNotifications[indexPath.row].0
         sender.markAsRead()
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? MessageSenderCell {
+            cell.badge.badgeNumber = 0
+        }
+        
         let messageScreen = MessageScreen(parent: self, sender: sender)
         navigationController?.pushViewController(messageScreen, animated: true)
     }

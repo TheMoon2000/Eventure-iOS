@@ -28,6 +28,7 @@ class MessageSenderCell: UITableViewCell {
     private(set) var senderLogo: UIImageView!
     private(set) var senderTitle: UILabel!
     private var messageOverview: UILabel!
+    private(set) var badge: BadgeCount!
     private(set) var dateLabel: UILabel!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -44,9 +45,9 @@ class MessageSenderCell: UITableViewCell {
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
-            iv.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 42).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
-            iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 15).isActive = true
+            iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 14).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return iv
@@ -76,7 +77,7 @@ class MessageSenderCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(equalTo: senderLogo.rightAnchor, constant: 15).isActive = true
-            label.rightAnchor.constraint(equalTo: dateLabel.leftAnchor, constant: -12).isActive = true
+            label.rightAnchor.constraint(equalTo: dateLabel.leftAnchor, constant: -13).isActive = true
             label.topAnchor.constraint(equalTo: topAnchor, constant: 15).isActive = true
             
             label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -100,6 +101,18 @@ class MessageSenderCell: UITableViewCell {
             return label
         }()
         
+        badge = {
+            let badge = BadgeCount()
+            badge.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(badge)
+            
+            badge.rightAnchor.constraint(equalTo: senderLogo.rightAnchor, constant: 10).isActive = true
+            badge.centerYAnchor.constraint(equalTo: senderLogo.topAnchor).isActive = true
+            
+            return badge
+        }()
+        
+        
     }
     
     func setup(content: AccountNotification) {
@@ -111,6 +124,8 @@ class MessageSenderCell: UITableViewCell {
         attributedContent.addAttribute(.paragraphStyle, value: pStyle, range: NSMakeRange(0, attributedContent.length))
             
         messageOverview.attributedText = attributedContent
+        messageOverview.textColor = AppColors.prompt
+        
         dateLabel.text = content.creationDate.shortString
         
         if content.senderLogo != nil {
@@ -125,6 +140,13 @@ class MessageSenderCell: UITableViewCell {
     func setPreview(string: String) {
         messageOverview.attributedText = string.attributedText(style: MessageSenderCell.PREVIEW_STYLE)
         messageOverview.textColor = AppColors.prompt
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        
+        badge.backgroundColor = AppColors.badgeColor
+        badge.layer.cornerRadius = 9
     }
     
     required init?(coder: NSCoder) {

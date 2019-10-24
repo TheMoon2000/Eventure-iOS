@@ -11,7 +11,6 @@ import TTTAttributedLabel
 
 class NewEventCell: UITableViewCell {
 
-    private var parentVC: MessageScreen!
     private var content: NewEventNotification!
     
     private var bgView: UIView!
@@ -21,11 +20,10 @@ class NewEventCell: UITableViewCell {
     private var separator: UIView!
     private var eventDescription: TTTAttributedLabel!
     
-    required init(content: NewEventNotification, parent: MessageScreen) {
+    required init(content: NewEventNotification) {
         super.init(style: .default, reuseIdentifier: nil)
         
         self.content = content
-        self.parentVC = parent
         
         backgroundColor = .clear
         selectionStyle = .none
@@ -158,6 +156,8 @@ class NewEventCell: UITableViewCell {
         } else {
             eventDescription.setText(content.eventSummary.attributedText(style: PLAIN_STYLE))
         }
+        
+        bgView.layer.borderColor = AppColors.line.cgColor
     }
     
     required init?(coder: NSCoder) {

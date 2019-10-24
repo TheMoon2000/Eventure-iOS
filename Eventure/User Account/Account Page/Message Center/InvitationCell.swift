@@ -178,6 +178,12 @@ class MembershipInvitationCell: UITableViewCell {
         }
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        bgView.layer.borderColor = AppColors.line.cgColor
+    }
+    
     @objc private func acceptPressed() {
         acceptButton.backgroundColor = AppColors.selected
     }

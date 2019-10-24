@@ -217,9 +217,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
                 //pop out an alert window
                 let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
-                    UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
-                    User.current = nil
-                    self.logout()
+                    User.logout()
                     MainTabBarController.current.openScreen(page: 2)
                 }))
                 alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -228,17 +226,6 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         default:
             break
         }
-    }
-    
-    private func logout() {
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/LogOut",
-                           parameters: ["token": User.token ?? ""])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request)
-        task.resume()
     }
     
     func openTickets() {

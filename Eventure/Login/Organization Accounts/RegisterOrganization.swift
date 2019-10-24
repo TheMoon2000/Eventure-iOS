@@ -31,7 +31,7 @@ class RegisterOrganization: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.backgroundColor = AppColors.canvas
+        tableView.backgroundColor = AppColors.tableBG
         tableView.tintColor = AppColors.main
         tableView.tableFooterView = UIView()
         tableView.keyboardDismissMode = .interactive

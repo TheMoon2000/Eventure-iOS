@@ -29,7 +29,10 @@ class AccountNotification: CustomStringConvertible {
     }
     
     let userID: Int
+    
+    /// Accurate within milliseconds of time. This is also the unique identifier for a notification.
     var creationDate: Date
+    
     let rawContent: JSON
     let sender: Sender
     var read = true
@@ -219,6 +222,7 @@ class AccountNotification: CustomStringConvertible {
     }
     
     static func readFromFile(userID: Int) {
+        AccountNotification.currentUpdateTime = .distantPast
         readLogos()
         
         guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: NOTIFICATIONS_PATH) else {
@@ -231,6 +235,7 @@ class AccountNotification: CustomStringConvertible {
         }
                 
         cachedNotifications = collection
+        print("Message cache recovery was successful. Current cache size by user:", cachedNotifications.mapValues { $0.count })
         
         guard let userCollection = collection[userID] else {
             print("WARNING: No notification cache was found for user <id=\(userID)>!");
@@ -305,7 +310,7 @@ class AccountNotification: CustomStringConvertible {
         cachedNotifications[currentUser.userID] = collection
                 
         if NSKeyedArchiver.archiveRootObject(cachedNotifications, toFile: NOTIFICATIONS_PATH) {
-            print("Successfully wrote notification data for user (id = \(currentUser.userID)) to \(NOTIFICATIONS_PATH)")
+            // print("Successfully wrote notification data for user (id = \(currentUser.userID)) to \(NOTIFICATIONS_PATH)")
             return true
         } else {
             return false

@@ -150,6 +150,12 @@ struct AppColors {
     
     /// The label color for a dark background.
     static var invertedLabel = UIColor(named: "AppColors.invertedLabel")!
+    
+    /// Badge color for messages.
+    static var badgeColor = UIColor(named: "AppColors.badge")!
+    
+    /// Emphasis color for values within messages.
+    static var emphasis = UIColor(named: "AppColors.emphasis")!
 }
 
 let SAMPLE_TEXT = """
@@ -341,13 +347,13 @@ extension StringStyle {
     static let valueStyle = StringStyle(
         .font(UIFont.systemFont(ofSize: 15.5, weight: .medium)),
         .lineHeightMultiple(1.1),
-        .color(AppColors.value)
+        .color(AppColors.emphasis)
     )
     
     static let basicStyle = StringStyle(
         .font(UIFont.systemFont(ofSize: 15.5)),
         .lineHeightMultiple(1.1),
-        .color(AppColors.prompt)
+        .color(AppColors.plainText)
     )
 }
 
@@ -604,7 +610,7 @@ extension UIView {
     func addLoader() -> UIVisualEffectView {
         
         let loadingBG: UIVisualEffectView = {
-            var effect = UIBlurEffect(style: .light)
+            var effect = UIBlurEffect(style: .extraLight)
             if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
                 effect = UIBlurEffect(style: .regular)
             }

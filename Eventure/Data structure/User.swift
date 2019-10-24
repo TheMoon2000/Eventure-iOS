@@ -62,6 +62,7 @@ class User: Profile {
     var subscriptions = Set<String>() { didSet { save() } }
     var tags = Set<String>() { didSet { save() } }
     var memberships = [Membership]()
+    var enabledNotifications = EnabledNotifications.all
     let dateRegistered: String // Only for debugging purpose
         
     /// Whether changes to the `User` instance would automatically be written to local cache.
@@ -154,6 +155,8 @@ class User: Profile {
         for memInfo in (dictionary["Memberships"]?.arrayValue ?? []) {
             memberships.append(Membership(memberInfo: memInfo))
         }
+        
+        enabledNotifications = .init(rawValue: (dictionary["Enabled notifications"]?.int ?? 31))
                 
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
         numberOfAttendedEvents = dictionary["# checked in"]?.int ?? 0
@@ -232,6 +235,8 @@ class User: Profile {
     func writeToFile(path: String) -> Bool {
         
         var json = JSON()
+        
+        // Account information
         json.dictionaryObject?["uuid"] = self.uuid
         json.dictionaryObject?["Email"] = self.email
         json.dictionaryObject?["Password MD5"] = self.password_MD5
@@ -242,7 +247,9 @@ class User: Profile {
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Liked events"] = self.favoritedEvents.description
         json.dictionaryObject?["Interested"] = self.interestedEvents.description
+        json.dictionaryObject?["Enabled notifications"] = enabledNotifications.rawValue
         
+        // Profile information
         json.dictionaryObject?["Full name"] = self.fullName
         json.dictionaryObject?["Major"] = majorEncoded
         json.dictionaryObject?["Graduation year"] = self.graduationYear
@@ -486,6 +493,10 @@ class User: Profile {
             body.dictionaryObject?["Comments"] = comments
         }
         
+        if settings.contains(.preferences) {
+            body.dictionaryObject?["Enabled notifications"] = enabledNotifications.rawValue
+        }
+        
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/UpdateUserInfo",
@@ -514,6 +525,23 @@ class User: Profile {
         
         task.resume()
     }
+    
+    /// Prepare for a logout.
+    static func logout() {
+        
+        UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
+        User.current = nil
+        AccountNotification.current.removeAll()
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/LogOut",
+                           parameters: ["token": User.token ?? ""])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request)
+        task.resume()
+    }
 }
 
 
@@ -534,10 +562,14 @@ extension User {
     struct EnabledNotifications: OptionSet {
         let rawValue: Int
         
-        static let newEvents                = EnabledNotifications(rawValue: 1)
-        static let eventUpdates             = EnabledNotifications(rawValue: 1 << 1)
-        static let membershipInvites        = EnabledNotifications(rawValue: 1 << 2)
-        static let ticketTransferRequests   = EnabledNotifications(rawValue: 1 << 3)
+        static let newEvents            = EnabledNotifications(rawValue: 1)
+        static let eventUpdates         = EnabledNotifications(rawValue: 1 << 1)
+        static let membershipInvites    = EnabledNotifications(rawValue: 1 << 2)
+        static let newTickets           = EnabledNotifications(rawValue: 1 << 3)
+        static let others               = EnabledNotifications(rawValue: 1 << 4)
+        
+        static let none                 = EnabledNotifications(rawValue: 0)
+        static let all                  = EnabledNotifications(rawValue: 1 << 5 - 1)
     }
     
     struct PushableSettings: OptionSet {
@@ -556,6 +588,7 @@ extension User {
         static let github           = PushableSettings(rawValue: 1 << 10)
         static let interests        = PushableSettings(rawValue: 1 << 11)
         static let profileComments  = PushableSettings(rawValue: 1 << 12)
+        static let preferences      = PushableSettings(rawValue: 1 << 13)
     }
     
 }

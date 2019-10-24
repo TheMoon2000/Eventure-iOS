@@ -161,7 +161,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
     
     @objc private func save(disappearing: Bool = false) {
         
-        guard let org = Organization.current else {
+        guard Organization.current != nil else {
             return
         }
         

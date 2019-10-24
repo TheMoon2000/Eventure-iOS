@@ -40,7 +40,7 @@ class RegisterTableController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         
         tableView.tintColor = AppColors.main
         tableView.tableFooterView = UIView()

@@ -31,7 +31,7 @@ class PlainMessageCell: UITableViewCell {
             v.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
             v.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor, constant: 15).isActive = true
             v.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
-            v.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+            v.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
             v.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
             
             return v

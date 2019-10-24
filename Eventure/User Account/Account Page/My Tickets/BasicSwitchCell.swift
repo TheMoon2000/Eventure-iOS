@@ -1,5 +1,5 @@
 //
-//  TransferLockCell.swift
+//  BasicSwitchCell.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/9/29.
@@ -8,10 +8,10 @@
 
 import UIKit
 
-class TransferLockCell: UITableViewCell {
+class BasicSwitchCell: UITableViewCell {
     
     private(set) var titleLabel: UILabel!
-    private(set) var lockSwitch: UISwitch!
+    private(set) var `switch`: UISwitch!
     
     var switchHandler: ((UISwitch) -> ())?
 
@@ -20,14 +20,13 @@ class TransferLockCell: UITableViewCell {
         
         selectionStyle = .none
         
-        let h = heightAnchor.constraint(equalToConstant: 55)
+        let h = heightAnchor.constraint(equalToConstant: 50)
         h.priority = .defaultHigh
         h.isActive = true
         
         
         titleLabel = {
             let label = UILabel()
-            label.text = "Transfer lock"
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -38,7 +37,7 @@ class TransferLockCell: UITableViewCell {
             return label
         }()
         
-        lockSwitch = {
+        `switch` = {
             let s = UISwitch()
             s.onTintColor = AppColors.main
             s.translatesAutoresizingMaskIntoConstraints = false
@@ -55,7 +54,7 @@ class TransferLockCell: UITableViewCell {
     
     @objc private func switchTriggered() {
         UISelectionFeedbackGenerator().selectionChanged()
-        switchHandler?(lockSwitch)
+        switchHandler?(`switch`)
     }
     
     required init?(coder: NSCoder) {

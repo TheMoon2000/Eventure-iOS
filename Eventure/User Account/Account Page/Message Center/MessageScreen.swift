@@ -64,12 +64,19 @@ class MessageScreen: UIViewController {
         groupByDate()
         
         tableView.transform = CGAffineTransform(scaleX: 1, y: -1)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
-        /* old solution
-        tableView.layoutIfNeeded()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.tableView.scrollToRow(at: IndexPath(row: self.groupedMessages[self.groupedMessages.count - 1].content.count - 1, section: self.groupedMessages.count - 1), at: .bottom, animated: false)
-        }*/
+        view.layoutIfNeeded()
+        adjustInsets()
+    }
+    
+    private func adjustInsets() {
+        let offset = max(0, tableView.bounds.height - tableView.contentSize.height)
+        tableView.contentInset.top = offset
+        tableView.contentInset.bottom = -offset
     }
     
     private func groupByDate() {
@@ -136,9 +143,24 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
             let cell = MembershipInvitationCell(invitation: msg as! InviteNotification)
             cell.transform = CGAffineTransform(scaleX: 1, y: -1)
             cell.acceptHandler = { accepted in
-                self.loadingBG.isHidden = false
+                
+                let alert: UIAlertController
+                if accepted {
+                    alert = UIAlertController(title: "Accept Membership?", message: "Once you accepted the invitation, you will be considered part as part of the club.", preferredStyle: .alert)
+                    alert.addAction(.init(title: "Accept", style: .default, handler: { _ in
+                        self.acceptMembership(accept: true, content: msg as! InviteNotification)
+                    }))
+                } else {
+                    alert = UIAlertController(title: "Decline Membership?", message: "The club will be notified. You cannot undo this action.", preferredStyle: .alert)
+                    alert.addAction(.init(title: "Decline", style: .destructive, handler: { _ in
+                        self.acceptMembership(accept: false, content: msg as! InviteNotification)
+                    }))
+                }
+                alert.addAction(.init(title: "Cancel", style: .cancel))
+
+                self.present(alert, animated: true)
             }
-             return cell
+            return cell
         case .plain:
             let cell = PlainMessageCell(content: msg)
             cell.transform = CGAffineTransform(scaleX: 1, y: -1)
@@ -149,7 +171,7 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
             cell.transform = CGAffineTransform(scaleX: 1, y: -1)
             return cell
         case .newEvent:
-            let cell = NewEventCell(content: msg as! NewEventNotification, parent: self)
+            let cell = NewEventCell(content: msg as! NewEventNotification)
             cell.transform = CGAffineTransform(scaleX: 1, y: -1)
             return cell
         default:
@@ -159,6 +181,16 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
         let cell = UnsupportedContentCell(content: msg)
         cell.transform = CGAffineTransform(scaleX: 1, y: -1)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+        
+        let msg = groupedMessages[indexPath.section].content[indexPath.row]
+
+        if let msg = msg as? NewEventNotification {
+            openEvent(eventID: msg.eventID)
+        }
     }
     
     func openEvent(eventID: String) {
@@ -190,6 +222,7 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
             
             if let eventDictionary = try? JSON(data: data!) {
                 let event = Event(eventInfo: eventDictionary)
+                event.eventVisual = AccountNotification.cachedLogos[event.uuid]
 
                 DispatchQueue.main.async {
                     let detailPage = EventDetailPage()
@@ -200,6 +233,57 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
                 
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
+            }
+        }
+        
+        task.resume()
+    }
+    
+    private func acceptMembership(accept: Bool, content: InviteNotification) {
+        
+        loadingBG.isHidden = false
+        
+        let parameters = [
+            "orgId": sender.senderID,
+            "email": User.current!.email,
+            "accept": accept ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/RespondToInvitation",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            DispatchQueue.main.async {
+                self.loadingBG.isHidden = true
+            }
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    internetUnavailableError(vc: self)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8)
+            switch msg {
+            case INTERNAL_ERROR:
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self)
+                }
+            case "success":
+                content.status = accept ? .accepted : .declined
+                break
+            default:
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                    alert.addAction(.init(title: "OK", style: .cancel))
+                    self.present(alert, animated: true)
+                }
             }
         }
         

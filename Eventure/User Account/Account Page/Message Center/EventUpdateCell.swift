@@ -85,7 +85,6 @@ class EventUpdateCell: UITableViewCell {
             let label = UILabel()
             label.attributedText = content.shortString
             label.numberOfLines = 0
-            label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -136,7 +135,7 @@ class EventUpdateCell: UITableViewCell {
         
         disclosure = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = AppColors.disabled
+            iv.tintColor = AppColors.placeholder
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(iv)
@@ -148,6 +147,12 @@ class EventUpdateCell: UITableViewCell {
             
             return iv
         }()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        bgView.layer.borderColor = AppColors.line.cgColor
     }
     
     @objc private func detailButtonPressed() {
