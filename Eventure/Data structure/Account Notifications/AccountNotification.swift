@@ -235,7 +235,7 @@ class AccountNotification: CustomStringConvertible {
         }
                 
         cachedNotifications = collection
-        print("Message cache recovery was successful. Current cache size by user:", cachedNotifications.mapValues { $0.count })
+        print("Message cache recovered:", cachedNotifications.mapValues { $0.count })
         
         guard let userCollection = collection[userID] else {
             print("WARNING: No notification cache was found for user <id=\(userID)>!");

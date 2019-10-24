@@ -18,8 +18,15 @@ class InviteNotification: AccountNotification {
         return .membershipInvite
     }
     
+    /// For membership invitations, this string isn't actually used. The implementation here is only used for the message preview.
     override var shortString: NSAttributedString {
-        return "[Member invitation: \(role)]".styled(with: .basicStyle)
+        if status == .pending {
+            return "[Member invitation: \(role)]".styled(with: .basicStyle)
+        } else if status == .accepted {
+            return "[Membership accepted: \(role)]".styled(with: .basicStyle)
+        } else {
+            return "[Membership declined: \(role)]".styled(with: .basicStyle)
+        }
     }
     
     override init(json: JSON) {

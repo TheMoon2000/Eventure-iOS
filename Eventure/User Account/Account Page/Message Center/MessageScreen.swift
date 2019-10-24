@@ -148,12 +148,12 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
                 if accepted {
                     alert = UIAlertController(title: "Accept Membership?", message: "Once you accepted the invitation, you will be considered part as part of the club.", preferredStyle: .alert)
                     alert.addAction(.init(title: "Accept", style: .default, handler: { _ in
-                        self.acceptMembership(accept: true, content: msg as! InviteNotification)
+                        self.acceptMembership(accept: true, indexPath: indexPath, content: msg as! InviteNotification)
                     }))
                 } else {
                     alert = UIAlertController(title: "Decline Membership?", message: "The club will be notified. You cannot undo this action.", preferredStyle: .alert)
                     alert.addAction(.init(title: "Decline", style: .destructive, handler: { _ in
-                        self.acceptMembership(accept: false, content: msg as! InviteNotification)
+                        self.acceptMembership(accept: false, indexPath: indexPath, content: msg as! InviteNotification)
                     }))
                 }
                 alert.addAction(.init(title: "Cancel", style: .cancel))
@@ -239,7 +239,7 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
         task.resume()
     }
     
-    private func acceptMembership(accept: Bool, content: InviteNotification) {
+    private func acceptMembership(accept: Bool, indexPath: IndexPath, content: InviteNotification) {
         
         loadingBG.isHidden = false
         
@@ -277,6 +277,11 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
                 }
             case "success":
                 content.status = accept ? .accepted : .declined
+                DispatchQueue.main.async {
+                    UIView.performWithoutAnimation {
+                        self.tableView.reloadRows(at: [indexPath], with: .none)
+                    }   
+                }
                 break
             default:
                 DispatchQueue.main.async {

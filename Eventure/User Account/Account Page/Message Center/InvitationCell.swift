@@ -172,9 +172,20 @@ class MembershipInvitationCell: UITableViewCell {
             vLine.topAnchor.constraint(equalTo: line.topAnchor).isActive = true
             vLine.bottomAnchor.constraint(equalTo: bgView.bottomAnchor).isActive = true
         } else {
-            titleLabel.textAlignment = .center
-            titleLabel.text = invitation.status == .accepted ? "Membership accepted!" : "Membership decline."
-            titleLabel.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -20).isActive = true
+            if invitation.status == .accepted {
+                messageLabel.attributedText = .composed(of: [
+                    "You have accepted the position ".styled(with: .basicStyle),
+                    invitation.role.styled(with: .valueStyle),
+                    ".".styled(with: .basicStyle)
+                ])
+            } else {
+                messageLabel.attributedText = .composed(of: [
+                    "You have declined the position ".styled(with: .basicStyle),
+                    invitation.role.styled(with: .valueStyle),
+                    ".".styled(with: .basicStyle)
+                ])
+            }
+            messageLabel.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -20).isActive = true
         }
     }
     
