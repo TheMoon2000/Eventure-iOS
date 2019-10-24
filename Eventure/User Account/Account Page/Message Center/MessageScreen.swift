@@ -74,7 +74,19 @@ class MessageScreen: UIViewController {
     }
     
     private func adjustInsets() {
-        let offset = max(0, tableView.bounds.height - tableView.contentSize.height)
+        
+        let contentHeight: CGFloat
+        
+        if #available(iOS 13.0, *) {
+            contentHeight = tableView.bounds.height
+        } else {
+            contentHeight = tableView.bounds.height
+            + view.frame.minY
+            - (navigationController?.navigationBar.frame.height ?? 0)
+            - UIApplication.shared.statusBarFrame.height
+        }
+        
+        let offset = max(0, contentHeight - tableView.contentSize.height)
         tableView.contentInset.top = offset
         tableView.contentInset.bottom = -offset
     }
