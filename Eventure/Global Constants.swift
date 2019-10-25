@@ -20,7 +20,7 @@ import typealias CommonCrypto.CC_LONG
 /// The URL prefix for all the APIs.
 let API_BASE_URL = "https://api.eventure-app.com/"
 
-/// APIs related to mails are hosted in a seperate API cluster due to compatibility reasons with SendGrid's library.
+/// APIs related to mails (among others) are hosted in a seperate API cluster due to compatibility reasons with SendGrid's library.
 let PHP7_API_BASE_URL = "https://php7.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing

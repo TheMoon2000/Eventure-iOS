@@ -172,7 +172,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.valueLabel.text = Organization.current?.profileStatus
         case (1, 2):
             cell.icon.image = #imageLiteral(resourceName: "members")
-            cell.titleLabel.text = "Club Members"
+            cell.titleLabel.text = "Manage Members"
             let noun = Organization.current!.members.count == 1 ? "" : "s"
             cell.valueLabel.text = "\(Organization.current!.members.count) Member" + noun
         case (2, 0):
