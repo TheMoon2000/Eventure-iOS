@@ -19,6 +19,7 @@ class BasicSwitchCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = .none
+        backgroundColor = AppColors.background
         
         let h = heightAnchor.constraint(equalToConstant: 50)
         h.priority = .defaultHigh

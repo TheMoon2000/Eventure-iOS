@@ -52,6 +52,7 @@ class BuyTickets: UITableViewController {
         }()
         
         rc.addTarget(self, action: #selector(pullRefresh), for: .valueChanged)
+        rc.tintColor = AppColors.lightControl
         
         updateTickets()
     }

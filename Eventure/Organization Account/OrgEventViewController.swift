@@ -147,9 +147,7 @@ class OrgEventViewController: UIViewController, EventProvider {
             let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
-            if useRefreshControl {
-                ec.refreshControl = self.refreshControl
-            }
+            ec.addSubview(self.refreshControl)
             ec.alwaysBounceVertical = true
             ec.contentInset.top = 8
             ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
@@ -233,7 +231,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
         // refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)
-        // refreshControl.tintColor = AppColors.main
+        refreshControl.tintColor = AppColors.lightControl
         
         // Fetch all events and draft events
         updateEvents()

@@ -88,6 +88,7 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
         }()
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
+        refreshControl.tintColor = AppColors.lightControl
         
         getTickets(pulled: true)
     }

@@ -38,6 +38,7 @@ class MessageScreen: UIViewController {
             self.groupedMessages.first?.content.first?.read = false
             AccountNotification.save()
             self.parentVC.tableView.reloadData()
+            self.parentVC.refreshNavBarTitle()
         })]
     }
 

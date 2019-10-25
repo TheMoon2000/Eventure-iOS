@@ -26,8 +26,6 @@ class TicketRequests: UITableViewController, IndicatorInfoProvider {
         super.init(nibName: nil, bundle: nil)
         
         self.parentVC = parentVC
-        
-        refreshControl = UIRefreshControl()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -64,6 +62,7 @@ class TicketRequests: UITableViewController, IndicatorInfoProvider {
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         rc.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        rc.tintColor = AppColors.lightControl
         
         fetchRequests()
         

@@ -80,6 +80,7 @@ class CheckinResults: UIViewController {
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "settings"), style: .plain, target: self, action: #selector(more))
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
+        refreshControl.tintColor = AppColors.lightControl
         
         banner = {
             let effect: UIVisualEffect

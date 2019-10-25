@@ -68,6 +68,7 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         }()
         
         rc.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        rc.tintColor = AppColors.lightControl
         
         loadPurchases()
     }

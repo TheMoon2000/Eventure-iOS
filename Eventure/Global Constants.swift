@@ -158,7 +158,7 @@ struct AppColors {
     static var emphasis = UIColor(named: "AppColors.emphasis")!
     
     /// Spinner tint color.
-    static var lightControl = UIColor(named: "AppColors.spinner")!
+    static var lightControl = UIColor(named: "AppColors.lightControl")!
 }
 
 let SAMPLE_TEXT = """

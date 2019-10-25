@@ -59,6 +59,7 @@ class TicketCenter: UITableViewController {
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         rc.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        rc.tintColor = AppColors.lightControl
         
         updateQuantities()
     }

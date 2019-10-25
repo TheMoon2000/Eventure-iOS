@@ -72,6 +72,7 @@ class CheckinTable: UIViewController {
         view.backgroundColor = AppColors.canvas
         
         refreshControl.addTarget(self, action: #selector(refreshRegistrants), for: .valueChanged)
+        refreshControl.tintColor = AppColors.lightControl
         
         banner = {
             let effect: UIVisualEffect
