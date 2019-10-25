@@ -92,7 +92,7 @@ class RequestCell: UITableViewCell {
             let label = UILabel()
             label.text = "Requested on:"
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -122,7 +122,7 @@ class RequestCell: UITableViewCell {
             let label = UILabel()
             label.text = "User email:"
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -156,7 +156,7 @@ class RequestCell: UITableViewCell {
             let label = UILabel()
             label.text = "Note:"
             label.font = .systemFont(ofSize: 16)
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -287,6 +287,7 @@ class RequestCell: UITableViewCell {
         let username = requestInfo.username.isEmpty ? "<user #\(requestInfo.userID)>" : requestInfo.username
         let noun = requestInfo.quantity == 1 ? "ticket" : "tickets"
         message.attributedText = "**\(username)** has requested \(requestInfo.quantity) \(noun).".attributedText(style: TITLE_STYLE)
+        message.textColor = AppColors.value
         emailValue.setTitle(requestInfo.email, for: .normal)
         
         if requestInfo.notes.isEmpty {
@@ -304,6 +305,12 @@ class RequestCell: UITableViewCell {
         } else {
             dateValue.text = "Unknown"
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        bgView.layer.borderColor = AppColors.line.cgColor
     }
     
     required init?(coder aDecoder: NSCoder) {
