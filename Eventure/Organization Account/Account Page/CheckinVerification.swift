@@ -35,7 +35,7 @@ class CheckinVerification: UIViewController {
         
         spinner = {
             let spinner = UIActivityIndicatorView()
-            spinner.color = .lightGray
+            spinner.color = AppColors.lightControl
             spinner.hidesWhenStopped = true
             spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false

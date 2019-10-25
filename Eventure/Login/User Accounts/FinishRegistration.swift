@@ -28,7 +28,7 @@ class FinishRegistration: UIViewController {
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
+            spinner.color = AppColors.lightControl
             spinner.hidesWhenStopped = true
             spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false

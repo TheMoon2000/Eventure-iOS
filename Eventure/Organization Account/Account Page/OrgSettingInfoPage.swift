@@ -42,7 +42,7 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
+            spinner.color = AppColors.lightControl
             spinner.hidesWhenStopped = true
             spinner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(spinner)

@@ -176,7 +176,7 @@ class MembershipInvitationCell: UITableViewCell {
                 messageLabel.attributedText = .composed(of: [
                     "You have accepted the position ".styled(with: .basicStyle),
                     invitation.role.styled(with: .valueStyle),
-                    ".".styled(with: .basicStyle)
+                    "!".styled(with: .basicStyle)
                 ])
             } else {
                 messageLabel.attributedText = .composed(of: [

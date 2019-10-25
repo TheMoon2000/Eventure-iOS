@@ -43,7 +43,7 @@ class CreateNewTicket: UITableViewController {
         }
         
         let spinner = UIActivityIndicatorView()
-        spinner.color = .lightGray
+        spinner.color = AppColors.lightControl
         spinner.startAnimating()
         spinnerItem = UIBarButtonItem(customView: spinner)
     }

@@ -206,6 +206,9 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
     }
     
     func openEvent(eventID: String) {
+        
+        if !loadingBG.isHidden { return }
+        
         loadingBG.isHidden = false
         
         var parameters = [String : String]()
@@ -289,10 +292,9 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
                 }
             case "success":
                 content.status = accept ? .accepted : .declined
+                content.pushStatus()
                 DispatchQueue.main.async {
-                    UIView.performWithoutAnimation {
-                        self.tableView.reloadRows(at: [indexPath], with: .none)
-                    }   
+                    self.tableView.reloadData()
                 }
                 break
             default:

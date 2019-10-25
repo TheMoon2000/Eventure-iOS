@@ -27,6 +27,9 @@ class EventViewController: UIViewController, EventProvider {
     private var loadMoreLabel: UILabel!
     private var shouldLoadMore = false
     
+    // Refresh control
+    private var refreshControl = UIRefreshControl()
+    
     private static var upToDate: Bool = false
     public static var chosenTags = Set<String>()
     
@@ -90,16 +93,10 @@ class EventViewController: UIViewController, EventProvider {
         
         definesPresentationContext = true
         
-        /*
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.tintColor = AppColors.main
-        searchController.searchBar.placeholder = "Search Events"
- */
-//      navigationItem.hidesSearchBarWhenScrolling = false
-        
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
-        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(updateEvents))
+        
+        refreshControl.addTarget(self, action: #selector(updateEvents), for: .valueChanged)
+        refreshControl.tintColor = AppColors.lightControl
         
         topTabBg = {
             
@@ -148,6 +145,7 @@ class EventViewController: UIViewController, EventProvider {
             let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
+            ec.addSubview(refreshControl)
             ec.backgroundColor = AppColors.canvas
             ec.contentInset.top = topTabBg.frame.height + 8
             ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
@@ -168,7 +166,7 @@ class EventViewController: UIViewController, EventProvider {
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
+            spinner.color = AppColors.lightControl
             spinner.hidesWhenStopped = true
             spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -183,7 +181,6 @@ class EventViewController: UIViewController, EventProvider {
         spinnerLabel = {
             let label = UILabel()
             label.text = "Loading events..."
-            label.isHidden = true
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -197,7 +194,7 @@ class EventViewController: UIViewController, EventProvider {
         
         emptyLabel = {
             let label = UILabel()
-            label.textColor = .darkGray
+            label.textColor = .gray
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -209,7 +206,6 @@ class EventViewController: UIViewController, EventProvider {
         }()
         
         updateEvents()
-//        NotificationCenter.default.addObserver(self, selector: #selector(filteredByUser), name: NSNotification.Name("filter"), object: nil)
     }
     
     /// Refreshes the displayed events, fetching data from the server if needed.
@@ -222,15 +218,9 @@ class EventViewController: UIViewController, EventProvider {
     }
     
     @objc private func updateEvents() {
-        //shouldFilter = false
-        
-        navigationItem.rightBarButtonItem?.isEnabled = false
-        
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
+                
         emptyLabel.text = ""
         filteredEvents.removeAll()
-        self.eventCatalog.reloadData()
         
         var parameters = [String : String]()
         if User.current != nil {
@@ -258,7 +248,7 @@ class EventViewController: UIViewController, EventProvider {
         func stop() {
             self.spinner.stopAnimating()
             self.spinnerLabel.isHidden = true
-            self.navigationItem.rightBarButtonItem?.isEnabled = true
+            self.refreshControl.endRefreshing()
         }
         
         let task = CUSTOM_SESSION.dataTask(with: request) {

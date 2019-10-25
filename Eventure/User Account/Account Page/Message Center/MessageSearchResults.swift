@@ -10,10 +10,18 @@ import UIKit
 
 class MessageSearchResults: UITableViewController {
     
+    private var parentVC: MessageCenter!
+    
     private var filteredSources = [AccountNotification.Sender]()
     private var filteredMessages = [(sender: AccountNotification.Sender, matches: [AccountNotification])]()
     
     private var emptyLabel: UILabel!
+    
+    required init(parent: MessageCenter) {
+        super.init(nibName: nil, bundle: nil)
+        
+        parentVC = parent
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,6 +118,23 @@ class MessageSearchResults: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let sender: AccountNotification.Sender
+        
+        if !filteredMessages.isEmpty && indexPath.section == 0 {
+            sender = filteredSources[indexPath.row]
+        } else {
+            sender = filteredMessages[indexPath.row].sender
+        }
+        
+        print(sender)
+        
+        let messageScreen = MessageScreen(parent: parentVC, sender: sender)
+        parentVC.navigationController?.pushViewController(messageScreen, animated: true)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
     }
 
 }

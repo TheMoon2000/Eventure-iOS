@@ -36,11 +36,17 @@ class InviteNotification: AccountNotification {
         self.status = Status(rawValue: rawContent.dictionary?["status"]?.int ?? 0) ?? .pending
     }
     
+    /// Saves the membership response to local cache and also upload it to the server.
     func pushStatus() {
+        
+        rawContent.dictionaryObject?["status"] = status.rawValue
+        AccountNotification.save()
+        
         let url = URL.with(base: PHP7_API_BASE_URL,
                            API_Name: "account/UpdateInvitationStatus",
                            parameters: [
                             "date": PRECISE_FORMATTER.string(from: creationDate),
+                            "orgId": sender.senderID,
                             "accept": String(status.rawValue)
                            ])!
         var request = URLRequest(url: url)

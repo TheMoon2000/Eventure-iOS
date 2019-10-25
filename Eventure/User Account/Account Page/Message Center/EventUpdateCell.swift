@@ -135,7 +135,7 @@ class EventUpdateCell: UITableViewCell {
         
         disclosure = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "disclosure_indicator").withRenderingMode(.alwaysTemplate))
-            iv.tintColor = AppColors.placeholder
+            iv.tintColor = AppColors.lightControl
             iv.contentMode = .scaleAspectFit
             iv.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(iv)

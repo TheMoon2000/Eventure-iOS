@@ -32,6 +32,7 @@ class Organization: CustomStringConvertible {
     var hasLogo: Bool
     var subscribers = Set<Int>() { didSet { save() } }
     var roles = Set<String>() { didSet { save() } }
+    var departments = Set<String>() { didSet { save() } }
     var numberOfEvents = 0
 
     // Profile Information
@@ -106,6 +107,11 @@ class Organization: CustomStringConvertible {
         if let roles_raw = dictionary["Roles"]?.string {
             let rolesArray = (JSON(parseJSON: roles_raw).arrayObject as? [String]) ?? [String]()
             roles = Set(rolesArray)
+        }
+        
+        if let dept_raw = dictionary["Departments"]?.string {
+            let deptArray = (JSON(parseJSON: dept_raw).arrayObject as? [String]) ?? [String]()
+            departments = Set(deptArray)
         }
 
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
@@ -216,6 +222,10 @@ class Organization: CustomStringConvertible {
         
         if settings.contains(.roles) {
             body.dictionaryObject?["Roles"] = roles.description
+        }
+        
+        if settings.contains(.departments) {
+            body.dictionaryObject?["Departments"] = departments.description
         }
         
         pushToServer(handler, customJSON: body)
@@ -436,5 +446,6 @@ extension Organization {
         static let email            = PushableSettings(rawValue: 1 << 3)
         static let website          = PushableSettings(rawValue: 1 << 4)
         static let roles            = PushableSettings(rawValue: 1 << 5)
+        static let departments      = PushableSettings(rawValue: 1 << 6)
     }
 }

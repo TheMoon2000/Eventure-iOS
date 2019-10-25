@@ -13,7 +13,7 @@ class MessageCenter: UIViewController {
     private var searchController: UISearchController!
     private var settingsItem: UIBarButtonItem!
     
-    private var tableView: UITableView!
+    private(set) var tableView: UITableView!
     
     private(set) var loadingBG: UIView!
     private(set) var emptyLabel: UILabel!
@@ -31,7 +31,7 @@ class MessageCenter: UIViewController {
         
         view.backgroundColor = AppColors.navbar
         
-        let searchResults = MessageSearchResults()
+        let searchResults = MessageSearchResults(parent: self)
         
         searchController = {
             let sc = UISearchController(searchResultsController: searchResults)
@@ -103,11 +103,11 @@ class MessageCenter: UIViewController {
     }
     
     private func groupNotifications() {
-        self.groupedNotifications = AccountNotification.current.sorted { g1, g2 in
+        groupedNotifications = AccountNotification.current.sorted { g1, g2 in
             return g1.value.last!.creationDate > g2.value.last!.creationDate
         }
         
-        emptyLabel.isHidden = !self.groupedNotifications.isEmpty
+        emptyLabel.isHidden = !groupedNotifications.isEmpty
     }
     
     @objc private func oneTimeUpdate() {
@@ -117,7 +117,7 @@ class MessageCenter: UIViewController {
     func updateMessages(spawnThread: Bool = false) {
         if touchDown {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                self.updateMessages()
+                self.updateMessages(spawnThread: spawnThread)
             }
             return
         }

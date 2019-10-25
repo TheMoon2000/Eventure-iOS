@@ -156,6 +156,9 @@ struct AppColors {
     
     /// Emphasis color for values within messages.
     static var emphasis = UIColor(named: "AppColors.emphasis")!
+    
+    /// Spinner tint color.
+    static var lightControl = UIColor(named: "AppColors.spinner")!
 }
 
 let SAMPLE_TEXT = """

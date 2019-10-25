@@ -67,7 +67,7 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
         if let cover = thisEvent.eventVisual {
             cell.icon.image = cover
         } else {
-            cell.icon.image = #imageLiteral(resourceName: "cover_placeholder")
+            cell.icon.image = thisEvent.hasVisual ? #imageLiteral(resourceName: "cover_placeholder") : #imageLiteral(resourceName: "berkeley")
             thisEvent.getCover { eventWithVisual in
                 cell.icon.image = eventWithVisual.eventVisual
             }

@@ -41,7 +41,7 @@ class InitiateTicketRequest: UITableViewController {
         tableView.contentInset.bottom = 5
         
         let spinner = UIActivityIndicatorView()
-        spinner.color = .lightGray
+        spinner.color = AppColors.lightControl
         spinner.startAnimating()
         spinnerItem = UIBarButtonItem(customView: spinner)
         

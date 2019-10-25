@@ -11,6 +11,8 @@ import SwiftyJSON
 
 class OrganizationsViewController: UIViewController {
 
+    // Pull to refresh
+    private var refreshControl = UIRefreshControl()
     
     private var topTabBg: UIVisualEffectView!
     private var topTab: UISegmentedControl!
@@ -68,9 +70,9 @@ class OrganizationsViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(loadOrganizations))
-        
-        
+        refreshControl.tintColor = AppColors.lightControl
+        refreshControl.addTarget(self, action: #selector(loadOrganizations), for: .valueChanged)
+                
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
             
@@ -120,6 +122,7 @@ class OrganizationsViewController: UIViewController {
             orgTable.contentInset.top = 50
             orgTable.scrollIndicatorInsets.top = 50
             orgTable.backgroundColor = .clear
+            orgTable.addSubview(refreshControl)
             orgTable.register(OrganizationCell.classForCoder(), forCellReuseIdentifier: "org")
             orgTable.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(orgTable, belowSubview: topTabBg)
@@ -134,8 +137,9 @@ class OrganizationsViewController: UIViewController {
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
+            spinner.color = AppColors.lightControl
             spinner.hidesWhenStopped = true
+            spinner.startAnimating()
             spinner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(spinner)
             
@@ -148,8 +152,7 @@ class OrganizationsViewController: UIViewController {
         spinnerLabel = {
             let label = UILabel()
             label.text = "Loading organizations..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .systemFont(ofSize: 17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -162,7 +165,7 @@ class OrganizationsViewController: UIViewController {
         
         emptyLabel = {
             let label = UILabel()
-            label.textColor = AppColors.prompt
+            label.textColor = .gray
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -180,16 +183,9 @@ class OrganizationsViewController: UIViewController {
         updateFiltered()
     }
     
-    
     @objc private func loadOrganizations() {
         
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
         emptyLabel.text = ""
-        filteredOrgs.removeAll()
-        orgTable.reloadData()
-        
-        navigationItem.rightBarButtonItem?.isEnabled = false
         
         var parameters = [String : String]()
         if User.current != nil {
@@ -208,7 +204,7 @@ class OrganizationsViewController: UIViewController {
             DispatchQueue.main.async {
                 self.spinner.stopAnimating()
                 self.spinnerLabel.isHidden = true
-                self.navigationItem.rightBarButtonItem?.isEnabled = true
+                self.refreshControl.endRefreshing()
             }
             
             guard error == nil else {
@@ -263,7 +259,7 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "org") as! OrganizationCell
+        let cell = OrganizationCell()
         cell.setup(with: filteredOrgs[indexPath.row])
         
         return cell

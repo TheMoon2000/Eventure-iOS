@@ -33,7 +33,7 @@ class AccountNotification: CustomStringConvertible {
     /// Accurate within milliseconds of time. This is also the unique identifier for a notification.
     var creationDate: Date
     
-    let rawContent: JSON
+    var rawContent: JSON
     let sender: Sender
     var read = true
     

@@ -51,7 +51,7 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
         
         emptyLabel = {
             let label = UILabel()
-            label.textColor = .darkGray
+            label.textColor = .gray
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)

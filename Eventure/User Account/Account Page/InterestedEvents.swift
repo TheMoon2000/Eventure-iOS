@@ -15,9 +15,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private var myTableView: UITableView!
     
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
-    
+    private var loadingBG: UIView!
     private var backGroundLabel: UILabel!
     
     private var eventUUIDList: Set<String> = User.current!.favoritedEvents
@@ -40,73 +38,45 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         title = "Interested"
         
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = .lightGray
-            spinner.hidesWhenStopped = true
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -5).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Updating..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
-        
-        backGroundLabel = {
-            let label = UILabel()
-            label.text = "Oops, nothing here..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
-        
-        retrieveEvents()
-        
-        
         // Do any additional setup after loading the view.
         view.backgroundColor = AppColors.canvas
         
-        myTableView = UITableView(frame: .zero, style: .grouped)
-        myTableView.dataSource = self
-        myTableView.delegate = self
-        myTableView.backgroundColor = .clear
-        self.view.addSubview(myTableView)
-        //set location constraints of the tableview
-        myTableView.translatesAutoresizingMaskIntoConstraints = false
-        myTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        myTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        myTableView = {
+            let tv = UITableView(frame: .zero, style: .grouped)
+            tv.dataSource = self
+            tv.delegate = self
+            tv.backgroundColor = .clear
+            self.view.addSubview(tv)
+
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            tv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            tv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            
+            return tv
+        }()
+                
+        backGroundLabel = {
+            let label = UILabel()
+            label.text = "No interested events"
+            label.isHidden = true
+            label.font = .systemFont(ofSize: 17)
+            label.textColor = .darkGray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: myTableView.centerXAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: myTableView.centerYAnchor).isActive = true
+            
+            return label
+        }()
         
-        self.view.bringSubviewToFront(spinnerLabel)
-        self.view.bringSubviewToFront(spinner)
-        self.view.bringSubviewToFront(backGroundLabel)
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: myTableView.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: myTableView.centerYAnchor).isActive = true
         
-        
-        
+        retrieveEvents()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -157,9 +127,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func retrieveEvents() {
         
-        spinner.startAnimating()
-        spinnerLabel.isHidden = false
-        
+        loadingBG.isHidden = false
         
         var parameters = [String : String]()
         if User.current != nil {
@@ -175,8 +143,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
             data, response, error in
             
             DispatchQueue.main.async {
-                self.spinner.stopAnimating()
-                self.spinnerLabel.isHidden = true
+                self.loadingBG.isHidden = true
             }
             
             guard error == nil else {

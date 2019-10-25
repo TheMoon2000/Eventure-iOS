@@ -9,13 +9,12 @@
 import UIKit
 import SwiftyJSON
 
-/// Records a membership relation.
+/// Records a membership relation. Memberships should *NOT* be cached.
 class Membership: Hashable {
     
     var email: String
     var name: String
     let orgID: String
-    var majors = Set<Int>()
     var department: String?
     var status: Status
     var joinedDate: Date?
@@ -24,15 +23,8 @@ class Membership: Hashable {
         let dictionary = memberInfo.dictionaryValue
         
         email = dictionary["Email"]?.string ?? ""
-        name = dictionary["Full name"]?.string ?? ""
-        if name.isEmpty {
-            name = dictionary["Displayed name"]?.string ?? ""
-        }
+        name = dictionary["Alias"]?.string ?? ""
         orgID = dictionary["Org ID"]?.string ?? "Unknown Organization"
-        
-        if let majorString = dictionary["Major"]?.string {
-            majors = Set((JSON(parseJSON: majorString).arrayObject as? [Int] ?? []))
-        }
 
         if let dateRaw = dictionary["Date joined"]?.string {
             joinedDate = DATE_FORMATTER.date(from: dateRaw)

@@ -166,7 +166,7 @@ class TagPickerView: UIViewController {
         }()
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: topBanner.frame.height / 2).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: -topBanner.frame.height / 2).isActive = true
         
         bottomBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
