@@ -36,6 +36,7 @@ class MessageScreen: UIViewController {
     override var previewActionItems: [UIPreviewActionItem] {
         return [UIPreviewAction(title: "Mark as Unread", style: .default, handler: { action, controller in
             self.groupedMessages.first?.content.first?.read = false
+            AccountNotification.save()
             self.parentVC.tableView.reloadData()
         })]
     }

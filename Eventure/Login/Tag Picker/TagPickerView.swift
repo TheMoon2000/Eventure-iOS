@@ -164,9 +164,6 @@ class TagPickerView: UIViewController {
             
             return picker
         }()
-        loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: -topBanner.frame.height / 2).isActive = true
         
         bottomBanner = {
             let banner = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -182,6 +179,9 @@ class TagPickerView: UIViewController {
             banner.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
             banner.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             banner.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -75).isActive = true
+            
+            banner.layoutIfNeeded()
+            
             return banner
         }()
         
@@ -208,6 +208,11 @@ class TagPickerView: UIViewController {
             
             return button
         }()
+        
+        loadingBG = view.addLoader()
+        loadingBG.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
+        loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: (topBanner.frame.height - bottomBanner.frame.height) / 2).isActive = true
+
         
         loadTags()
     }

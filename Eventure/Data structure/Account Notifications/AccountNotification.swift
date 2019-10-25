@@ -136,6 +136,8 @@ class AccountNotification: CustomStringConvertible {
         
         guard let userID = User.current?.userID else { return }
         
+        let currentTime = currentUpdateTime
+        
         let parameters = [
             "userId": String(userID),
             "lowerBound": DATE_FORMATTER.string(from: currentUpdateTime)
@@ -157,6 +159,8 @@ class AccountNotification: CustomStringConvertible {
                 }
                 return
             }
+            
+            guard currentUpdateTime == currentTime else { return }
             
             if let json = try? JSON(data: data!), let nArray = json.array {
                 var tmp = current // [Sender: [AccountNotification]]()

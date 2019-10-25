@@ -33,6 +33,7 @@ class Organization: CustomStringConvertible {
     var subscribers = Set<Int>() { didSet { save() } }
     var roles = Set<String>() { didSet { save() } }
     var departments = Set<String>() { didSet { save() } }
+    var members = [Membership]()
     var numberOfEvents = 0
 
     // Profile Information
@@ -112,6 +113,10 @@ class Organization: CustomStringConvertible {
         if let dept_raw = dictionary["Departments"]?.string {
             let deptArray = (JSON(parseJSON: dept_raw).arrayObject as? [String]) ?? [String]()
             departments = Set(deptArray)
+        }
+                
+        for memInfo in (dictionary["Members"]?.arrayValue ?? []) {
+            members.append(Membership(memberInfo: memInfo))
         }
 
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
@@ -284,6 +289,7 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
         json.dictionaryObject?["Subscribers"] = self.subscribers.description
+        json.dictionaryObject?["Members"] = members.map { $0.encodedJSON }
         
         return json
     }

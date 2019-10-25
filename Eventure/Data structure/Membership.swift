@@ -15,6 +15,7 @@ class Membership: Hashable {
     var email: String
     var name: String
     let orgID: String
+    var role: String
     var department: String?
     var status: Status
     var joinedDate: Date?
@@ -24,6 +25,7 @@ class Membership: Hashable {
         
         email = dictionary["Email"]?.string ?? ""
         name = dictionary["Alias"]?.string ?? ""
+        role = dictionary["Role"]?.string ?? ""
         orgID = dictionary["Org ID"]?.string ?? "Unknown Organization"
 
         if let dateRaw = dictionary["Date joined"]?.string {
@@ -46,6 +48,19 @@ class Membership: Hashable {
         case declined = -1
         case active = 1
         case pending = 0
+    }
+    
+    var encodedJSON: JSON {
+        var json = JSON()
+        json.dictionaryObject?["Email"] = email
+        json.dictionaryObject?["Alias"] = name
+        json.dictionaryObject?["Date joined"] = DATE_FORMATTER.string(from: joinedDate ?? .distantPast)
+        json.dictionaryObject?["Role"] = role
+        json.dictionaryObject?["Org ID"] = orgID
+        json.dictionaryObject?["Department"] = department
+        json.dictionaryObject?["Status"] = status.rawValue
+        
+        return json
     }
 }
 

@@ -95,8 +95,10 @@ class EventViewController: UIViewController, EventProvider {
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openOptions))
         
-        refreshControl.addTarget(self, action: #selector(updateEvents), for: .valueChanged)
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         refreshControl.tintColor = AppColors.lightControl
+        
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refreshButton))
         
         topTabBg = {
             
@@ -145,7 +147,6 @@ class EventViewController: UIViewController, EventProvider {
             let ec = UICollectionView(frame: .zero, collectionViewLayout: layout)
             ec.delegate = self
             ec.dataSource = self
-            ec.addSubview(refreshControl)
             ec.backgroundColor = AppColors.canvas
             ec.contentInset.top = topTabBg.frame.height + 8
             ec.contentInset.bottom = 8 - layout.footerReferenceSize.height
@@ -153,6 +154,7 @@ class EventViewController: UIViewController, EventProvider {
             ec.register(EventFooterView.classForCoder(), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "footer")
             ec.register(EventCell.classForCoder(), forCellWithReuseIdentifier: "event")
             ec.contentInsetAdjustmentBehavior = .always
+            ec.addSubview(refreshControl)
             ec.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(ec, belowSubview: topTabBg)
             
@@ -217,10 +219,25 @@ class EventViewController: UIViewController, EventProvider {
         }
     }
     
-    @objc private func updateEvents() {
-                
+    @objc private func pullToRefresh() {
+        updateEvents(pulled: true)
+    }
+    
+    @objc private func refreshButton() {
+        updateEvents()
+    }
+    
+    private func updateEvents(pulled: Bool = false) {
+        
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        
         emptyLabel.text = ""
         filteredEvents.removeAll()
+        if !pulled {
+            self.eventCatalog.reloadData()
+            spinner.startAnimating()
+            spinnerLabel.isHidden = false
+        }
         
         var parameters = [String : String]()
         if User.current != nil {
@@ -249,6 +266,7 @@ class EventViewController: UIViewController, EventProvider {
             self.spinner.stopAnimating()
             self.spinnerLabel.isHidden = true
             self.refreshControl.endRefreshing()
+            self.navigationItem.rightBarButtonItem?.isEnabled = true
         }
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
@@ -256,8 +274,10 @@ class EventViewController: UIViewController, EventProvider {
             
             guard error == nil else {
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = CONNECTION_ERROR
                     stop()
+                    if self.eventCatalog.numberOfItems(inSection: 0) == 0 {
+                        self.emptyLabel.text = CONNECTION_ERROR
+                    }
                     internetUnavailableError(vc: self)
                 }
                 return
@@ -289,7 +309,9 @@ class EventViewController: UIViewController, EventProvider {
 
                 DispatchQueue.main.async {
                     stop()
-                    self.emptyLabel.text = SERVER_ERROR
+                    if self.eventCatalog.numberOfItems(inSection: 0) == 0 {
+                        self.emptyLabel.text = SERVER_ERROR
+                    }
                 }
                 
                 if String(data: data!, encoding: .utf8) == INTERNAL_ERROR {
@@ -336,7 +358,7 @@ extension EventViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: indexPath) as! EventCell
         guard indexPath.row < filteredEvents.count else {
-            return UICollectionViewCell()
+            return collectionView.dequeueReusableCell(withReuseIdentifier: "event", for: [0, 0])
         }
         
         cell.setupCellWithEvent(event: filteredEvents[indexPath.row], withImage: true)

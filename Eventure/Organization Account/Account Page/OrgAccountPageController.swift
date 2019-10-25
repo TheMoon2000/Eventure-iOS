@@ -92,15 +92,17 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             
             present(alert, animated: true)
             
-        case (1,0): //if the user tries to change account information
+        case (1, 0): //if the user tries to change account information
             let orgInfo = OrgSettingInfoPage()
             orgInfo.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgInfo, animated: true)
-        case (1,1):
+        case (1, 1):
             let orgProfile = OrgProfilePage()
             orgProfile.parentVC = self
             orgProfile.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgProfile, animated: true)
+        case (1, 2):
+            print("REPLACE ME...")
         case (2, 0):
             let scanner = OrgScanner()
             scanner.hidesBottomBarWhenPushed = true
@@ -168,6 +170,11 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             cell.icon.image = UIImage(named: "organization_profile")
             cell.titleLabel.text = "Organization Profile"
             cell.valueLabel.text = Organization.current?.profileStatus
+        case (1, 2):
+            cell.icon.image = #imageLiteral(resourceName: "members")
+            cell.titleLabel.text = "Club Members"
+            let noun = Organization.current!.members.count == 1 ? "" : "s"
+            cell.valueLabel.text = "\(Organization.current!.members.count) Member" + noun
         case (2, 0):
             cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "Scan Ticket Code"
@@ -240,7 +247,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
     
     //rows in sections
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 3, 2][section]
+        return [1, 3, 3, 2][section]
     }
     
     //eliminate first section header

@@ -124,21 +124,16 @@ class MessageCenter: UIViewController {
             return
         }
         
-        let lastUpdate = AccountNotification.currentUpdateTime
-        
         AccountNotification.syncFromServer { success in
             
             self.loadingBG.isHidden = true
             
             
             if spawnThread {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
                     self.updateMessages(spawnThread: true)
                 }
             }
-            
-            /// Another update has taken place before this thread did.
-            if lastUpdate != AccountNotification.currentUpdateTime { return }
             
             if success {
                 self.groupNotifications()
