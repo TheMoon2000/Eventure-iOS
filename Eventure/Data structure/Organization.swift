@@ -372,6 +372,35 @@ class Organization: CustomStringConvertible {
         task.resume()
     }
     
+    static func getOrganization(with orgID: String, _ handler: @escaping ((Organization?) -> ())) {
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetOrgInfo",
+                           parameters: ["orgId": orgID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler(nil)
+                }
+                return
+            }
+            
+            if let orgInfo = try? JSON(data: data!) {
+                handler(Organization(orgInfo: orgInfo))
+            } else {
+                DispatchQueue.main.async {
+                    handler(nil)
+                }
+            }
+        }
+        
+        task.resume()
+    }
+    
     func uploadLogo(new: UIImage, _ handler: ((Bool) -> ())?) {
         
         let original = logoImage

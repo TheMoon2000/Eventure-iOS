@@ -121,14 +121,12 @@ class MessageSearchResults: UITableViewController {
         
         let sender: AccountNotification.Sender
         
-        if !filteredMessages.isEmpty && indexPath.section == 0 {
+        if !filteredSources.isEmpty && indexPath.section == 0 {
             sender = filteredSources[indexPath.row]
         } else {
             sender = filteredMessages[indexPath.row].sender
         }
-        
-        print(sender)
-        
+                
         let messageScreen = MessageScreen(parent: parentVC, sender: sender)
         parentVC.navigationController?.pushViewController(messageScreen, animated: true)
     }

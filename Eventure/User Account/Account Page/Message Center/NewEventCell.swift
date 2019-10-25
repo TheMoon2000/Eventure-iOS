@@ -17,8 +17,8 @@ class NewEventCell: UITableViewCell {
     private var coverImage: UIImageView!
     private var eventTitle: UILabel!
     private var timeAndLocation: UILabel!
-    private var separator: UIView!
-    private var eventDescription: TTTAttributedLabel!
+    // private var separator: UIView!
+    // private var eventDescription: TTTAttributedLabel!
     
     required init(content: NewEventNotification) {
         super.init(style: .default, reuseIdentifier: nil)
@@ -38,15 +38,16 @@ class NewEventCell: UITableViewCell {
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             
-            view.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            view.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            view.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            view.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            view.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
             view.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
             
             let bottomConstraint = view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12)
             bottomConstraint.priority = .defaultHigh
             bottomConstraint.isActive = true
             
-            view.widthAnchor.constraint(lessThanOrEqualToConstant: 700).isActive = true
+            view.widthAnchor.constraint(lessThanOrEqualToConstant: 520).isActive = true
             
             return view
         }()
@@ -97,11 +98,13 @@ class NewEventCell: UITableViewCell {
             
             label.leftAnchor.constraint(equalTo: eventTitle.leftAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: eventTitle.rightAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 5).isActive = true
+            label.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 6).isActive = true
+            label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -18).isActive = true
             
             return label
         }()
         
+        /*
         separator = {
             let v = UIView()
             v.backgroundColor = AppColors.line
@@ -114,8 +117,9 @@ class NewEventCell: UITableViewCell {
             v.widthAnchor.constraint(equalToConstant: 50).isActive = true
             
             return v
-        }()
+        }()*/
         
+        /*
         eventDescription = {
             let label = TTTAttributedLabel(frame: .zero)
             
@@ -145,17 +149,18 @@ class NewEventCell: UITableViewCell {
             label.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -16).isActive = true
             
             return label
-        }()
+        }() */
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
+        /*
         if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
             eventDescription.setText(content.eventSummary.attributedText(style: PLAIN_DARK))
         } else {
             eventDescription.setText(content.eventSummary.attributedText(style: PLAIN_STYLE))
-        }
+        }*/
         
         bgView.layer.borderColor = AppColors.line.cgColor
     }

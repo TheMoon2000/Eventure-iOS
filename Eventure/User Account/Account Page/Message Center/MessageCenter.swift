@@ -88,6 +88,8 @@ class MessageCenter: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(oneTimeUpdate), name: NEW_NOTIFICATION, object: nil)
                         
+        registerForPreviewing(with: self, sourceView: tableView)
+        
         groupNotifications()
         refreshNavBarTitle()
         updateMessages(spawnThread: true)
@@ -194,7 +196,10 @@ extension MessageCenter: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let sender = groupedNotifications[indexPath.row].0
-        sender.markAsRead()
+        
+        DispatchQueue.main.async {
+            sender.markAsRead()
+        }
         
         if let cell = tableView.cellForRow(at: indexPath) as? MessageSenderCell {
             cell.badge.badgeNumber = 0

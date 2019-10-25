@@ -306,12 +306,10 @@ class CheckinTable: UIViewController {
                     self.reloadStats()
                     self.checkinTable.reloadData()
                 }
-            } else {
-                if !stealth {
-                    DispatchQueue.main.async {
-                        serverMaintenanceError(vc: self) {
-                            self.dismiss(animated: true)
-                        }
+            } else if !stealth {
+                DispatchQueue.main.async {
+                    serverMaintenanceError(vc: self) {
+                        self.dismiss(animated: true)
                     }
                 }
             }
@@ -322,38 +320,19 @@ class CheckinTable: UIViewController {
 
     private func loadOrganizationInfo() {
         
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "account/GetOrgInfo",
-                           parameters: ["orgId": event.hostID])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self)
+        Organization.getOrganization(with: event.hostID) { org in
+            if let org = org {
+                self.orgInfo = org
+                self.orgInfo?.getLogoImage { withImage in
+                    self.orgLogo.image = withImage.logoImage
                 }
-                return
-            }
-            
-            if let orgInfo = try? JSON(data: data!) {
-                
-                self.orgInfo = Organization(orgInfo: orgInfo)
-                self.orgInfo?.getLogoImage { orgWithImage in
-                    self.orgLogo.image = orgWithImage.logoImage
-                }
-                
-                print("retrieved org info for <\(self.event.hostTitle)>")
             } else {
                 DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
+                    internetUnavailableError(vc: self)
                 }
             }
         }
         
-        task.resume()
     }
     
     

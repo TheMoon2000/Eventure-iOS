@@ -17,7 +17,11 @@ class MessageScreen: UIViewController {
     
     private var tableView: UITableView!
     private var loadingBG: UIView!
+    private var orgInfo: Organization?
     
+    private(set) var datesDisplayed = 10
+    private var shouldLoadMore = false
+    private var needsResetBottomInset = false
     
     required init(parent: MessageCenter, sender: AccountNotification.Sender) {
         super.init(nibName: nil, bundle: nil)
@@ -28,20 +32,28 @@ class MessageScreen: UIViewController {
         self.view.backgroundColor = AppColors.canvas
         
     }
+    
+    override var previewActionItems: [UIPreviewActionItem] {
+        return [UIPreviewAction(title: "Mark as Unread", style: .default, handler: { action, controller in
+            self.groupedMessages.first?.content.first?.read = false
+            self.parentVC.tableView.reloadData()
+        })]
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView = {
             let tv = UITableView(frame: .zero, style: .grouped)
-            tv.tableHeaderView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 5))
-            tv.tableFooterView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 10))
+            tv.tableHeaderView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 2))
+            tv.tableFooterView = .init(frame: .init(x: 0.0, y: 0.0, width: 0.0, height: 15))
             tv.contentInset.bottom = 5
             tv.sectionFooterHeight = 2
             tv.separatorStyle = .none
             tv.backgroundColor = .clear
             tv.delegate = self
             tv.dataSource = self
+            (tv as UIScrollView).delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(tv)
             
@@ -68,6 +80,8 @@ class MessageScreen: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+                
+        navigationController?.navigationBar.shadowImage = nil
         
         view.layoutIfNeeded()
         adjustInsets()
@@ -89,6 +103,10 @@ class MessageScreen: UIViewController {
         let offset = max(0, contentHeight - tableView.contentSize.height)
         tableView.contentInset.top = offset
         tableView.contentInset.bottom = -offset
+        
+        if offset == 0 {
+            tableView.setContentOffset(.init(x: 0, y: 2), animated: false)
+        }
     }
     
     private func groupByDate() {
@@ -109,10 +127,44 @@ class MessageScreen: UIViewController {
         
         groupedMessages = tmp
         parentVC.refreshNavBarTitle()
+        getOrgDetails()
     }
+    
+    private func getOrgDetails() {
+        
+        Organization.getOrganization(with: sender.senderID) { orgInfo in
+            if orgInfo != nil {
+                self.orgInfo = orgInfo
+                self.orgInfo?.logoImage = AccountNotification.cachedLogos[orgInfo!.id]
+            }
+        }
+        
+    }
+    
     
     @objc private func more() {
         
+        let alert = UIAlertController()
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        if sender.senderID == AccountNotification.SYSTEM_ID {
+            alert.addAction(.init(title: "About Eventure", style: .default, handler: { _ in
+                let aboutPage = AboutPage()
+                self.navigationController?.pushViewController(aboutPage, animated: true)
+            }))
+        } else {
+            alert.addAction(.init(title: "View Organization", style: .default, handler: { _ in
+                if let org = self.orgInfo {
+                    let orgDetails = OrgDetailPage(organization: org)
+                    self.navigationController?.pushViewController(orgDetails, animated: true)
+                }
+            }))
+        }
+        
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.barButtonItem = navigationItem.rightBarButtonItem
+        }
+        
+        present(alert, animated: true)
     }
     
 
@@ -128,7 +180,7 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
     // MARK: - Table view data source
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return groupedMessages.count + 1
+        return min(datesDisplayed, groupedMessages.count) + 1
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -144,6 +196,16 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == groupedMessages.count { return 0 }
         return groupedMessages[section].content.count
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        let header = self.tableView(tableView, viewForHeaderInSection: section)
+        return (header?.preferredHeight(width: tableView.bounds.width) ?? 10)
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let cell = self.tableView(tableView, cellForRowAt: indexPath)
+        return cell.preferredHeight(width: tableView.bounds.width)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -309,4 +371,70 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
         task.resume()
     }
     
+}
+
+
+extension MessageScreen: UIScrollViewDelegate {
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        needsResetBottomInset = false
+        shouldLoadMore = true
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let height = scrollView.contentSize.height
+        let scrolled = scrollView.safeAreaLayoutGuide.layoutFrame.height + scrollView.contentOffset.y
+        if height <= scrollView.safeAreaLayoutGuide.layoutFrame.height { return }
+                
+        if scrolled - height >= -10 && datesDisplayed < groupedMessages.count && shouldLoadMore {
+            datesDisplayed += 10
+            shouldLoadMore = false
+            /*UIView.performWithoutAnimation {
+                let currentSections = tableView.numberOfSections - 1
+                let newSections = min(groupedMessages.count, datesDisplayed)
+                tableView.beginUpdates()
+                tableView.deleteSections([tableView.numberOfSections - 1], with: .automatic)
+                tableView.insertSections(IndexSet(integersIn: currentSections...newSections), with: .automatic)
+                tableView.endUpdates()
+            }*/
+            
+            self.tableView.reloadData()
+//            self.adjustInsets()
+        }
+    }
+    
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+                
+        scrollView.setContentOffset(CGPoint(x: 0,y: max(0, scrollView.contentSize.height - scrollView.bounds.height)), animated: true)
+        
+        return false
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if tableView.bounds.height >= tableView.contentSize.height { return }
+        
+        scrollView.setContentOffset(.init(x: 0, y: max(scrollView.contentOffset.y, 1)), animated: true)
+                
+        if decelerate {
+            needsResetBottomInset = true
+        }
+    }
+    
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if needsResetBottomInset {
+            scrollView.setContentOffset(.init(x: 0, y: max(scrollView.contentOffset.y, 1)), animated: true)
+            needsResetBottomInset = false
+        }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { _ in
+            self.adjustInsets()
+        }, completion: nil)
+        
+    }
 }

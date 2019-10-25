@@ -24,6 +24,8 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.backgroundColor = AppColors.tableBG
         title = User.waitingForSync ? "Syncing..." : "Me"
 
+        navigationItem.backBarButtonItem = .init(title: "Me", style: .plain, target: nil, action: nil)
+        
         //myTableView = UITableView(frame: CGRect(x: 0, y: barHeight, width: displayWidth, height: displayHeight - barHeight))
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self

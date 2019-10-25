@@ -108,7 +108,7 @@ class MessageSettingsMenu: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath == [1, 0] {
-            let alert = UIAlertController(title: "Clear cache?", message: "All images will be cleared. All textual messages are preserved.", preferredStyle: .actionSheet)
+            let alert = UIAlertController(title: "Clear cache?", message: "All images will be cleared. All textual messages will be preserved.", preferredStyle: .actionSheet)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Clear Cache", style: .destructive, handler: { _ in
                 AccountNotification.cachedLogos.removeAll()

@@ -15,7 +15,7 @@ class BadgeCount: UIView {
     
     var badgeNumber: Int = 0 {
         didSet {
-            badgeLabel.text = String(badgeNumber)
+            badgeLabel.text = badgeNumber < 100 ? String(badgeNumber) : "99+"
             isHidden = badgeNumber == 0
         }
     }
@@ -55,8 +55,8 @@ class BadgeCount: UIView {
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
-            label.leftAnchor.constraint(greaterThanOrEqualTo: badgeBG.leftAnchor).isActive = true
-            label.rightAnchor.constraint(lessThanOrEqualTo: badgeBG.rightAnchor).isActive = true
+            label.leftAnchor.constraint(greaterThanOrEqualTo: badgeBG.leftAnchor, constant: 5).isActive = true
+            label.rightAnchor.constraint(lessThanOrEqualTo: badgeBG.rightAnchor, constant: -5).isActive = true
             
             label.centerXAnchor.constraint(equalTo: badgeBG.centerXAnchor).isActive = true
             label.centerYAnchor.constraint(equalTo: badgeBG.centerYAnchor).isActive = true
