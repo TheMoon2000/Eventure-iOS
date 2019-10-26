@@ -46,6 +46,7 @@ class RequestCell: UITableViewCell {
             view.layer.borderWidth = 1
             view.layer.borderColor = AppColors.line.cgColor
             view.layer.masksToBounds = true
+            view.applyMildShadow()
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             

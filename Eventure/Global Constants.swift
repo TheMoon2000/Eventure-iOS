@@ -660,6 +660,11 @@ extension UIView {
         
         return loadingBG
     }
+    
+    func applyMildShadow() {
+        self.layer.shadowOpacity = 0.04
+        self.layer.shadowOffset.height = 0.5
+    }
 }
 
 func generateQRCode(from string: String, dark: Bool = false) -> UIImage? {

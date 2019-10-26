@@ -35,6 +35,7 @@ class EventCell: UICollectionViewCell {
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
+            view.applyMildShadow()
             view.layer.borderColor = AppColors.line.cgColor
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)

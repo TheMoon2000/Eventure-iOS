@@ -273,11 +273,13 @@ class CheckinResults: UIViewController {
     @objc private func more() {
         let alert = UIAlertController(title: "More actions", message: nil, preferredStyle: .actionSheet)
         alert.addAction(.init(title: "Cancel", style: .cancel))
-        alert.addAction(.init(title: "Scan Ticket", style: .default, handler: { _ in
-            let scanner = OrgScanner()
-            scanner.event = self.event
-            self.navigationController?.pushViewController(scanner, animated: true)
-        }))
+        if event.requiresTicket {
+            alert.addAction(.init(title: "Scan Ticket", style: .default, handler: { _ in
+                let scanner = OrgScanner()
+                scanner.event = self.event
+                self.navigationController?.pushViewController(scanner, animated: true)
+            }))
+        }
         alert.addAction(.init(title: "Sort Settings", style: .default, handler: { _ in
             self.openSortMenu()
         }))

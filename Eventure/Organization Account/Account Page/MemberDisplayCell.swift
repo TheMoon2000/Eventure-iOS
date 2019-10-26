@@ -26,7 +26,7 @@ class MemberDisplayCell: UITableViewCell {
 
         bgView = {
             let view = UIView()
-            view.layer.cornerRadius = 8
+            view.applyMildShadow()
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
 
@@ -47,7 +47,7 @@ class MemberDisplayCell: UITableViewCell {
             iv.layer.cornerRadius = 2
             iv.layer.masksToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(iv)
+            bgView.addSubview(iv)
 
             iv.widthAnchor.constraint(equalToConstant: 25).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
