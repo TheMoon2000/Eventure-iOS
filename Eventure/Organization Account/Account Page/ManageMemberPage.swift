@@ -27,7 +27,6 @@ class ManageMemberPage: UIViewController {
     private var allMembers: Set<Membership> { return Organization.current!.members }
     private var allDepartments: [String]!
     private var memberDictionaryList = Set<Membership>()
-    private var membersByDepartment: [String: [Membership]] = [:]
     private var mappedMembers = [(String, [Membership])]()
     
     override func viewDidLoad() {
@@ -80,6 +79,9 @@ class ManageMemberPage: UIViewController {
     
     func groupMembers() {
         
+        mappedMembers.removeAll()
+        var membersByDepartment = [String: [Membership]]()
+        
         // Sort by name of all members
         self.sortedMembers = self.allMembers.sorted(by: { (member1, member2) -> Bool in
             member1.name.lowercased() < member2.name.lowercased()
@@ -105,10 +107,17 @@ class ManageMemberPage: UIViewController {
     @objc private func reloadMembers() {
         Organization.current!.updateMembers { successful in
             self.refreshControl.endRefreshing()
-            if successful {
-                self.myTableView.reloadData()
-            } else {
+            
+            guard successful else {
                 internetUnavailableError(vc: self)
+                return
+            }
+            
+            DispatchQueue.global(qos: .default).async {
+                self.groupMembers()
+                DispatchQueue.main.async {
+                    self.myTableView.reloadData()
+                }
             }
         }
     }
