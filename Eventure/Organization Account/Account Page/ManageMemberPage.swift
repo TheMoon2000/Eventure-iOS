@@ -14,12 +14,14 @@ class ManageMemberPage: UIViewController {
 
     var parentVC: OrgAccountPageController?
     
+
     
     // UI elements
     private var loadingBG: UIView!
     private var backGroundLabel: UILabel!
     private var myTableView: UITableView!
     private var refreshControl = UIRefreshControl()
+    private var saveBarButton: UIBarButtonItem!
     
     // Data
     private let NO_DEPART = "__OTHERS__"
@@ -37,6 +39,9 @@ class ManageMemberPage: UIViewController {
         
         refreshControl.addTarget(self, action: #selector(reloadMembers), for: .valueChanged)
         refreshControl.tintColor = AppColors.lightControl
+        
+        saveBarButton = .init(title: "Invite", style: .done, target: self, action: nil) //FIXME: add action
+        navigationItem.rightBarButtonItem = saveBarButton
                 
         myTableView = {
             let tv = UITableView(frame: .zero, style: .grouped)
@@ -142,7 +147,8 @@ extension ManageMemberPage: UITableViewDelegate, UITableViewDataSource {
    
    //section titles
    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-       return mappedMembers[section].0
+    let currSection:(String, [Membership]) = mappedMembers[section]
+    return currSection.0 + " (" + String(currSection.1.count) + ")"
    }
    
    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
