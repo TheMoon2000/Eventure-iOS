@@ -35,6 +35,18 @@ class Membership: Hashable {
         status = Status(rawValue: (dictionary["Status"]?.int ?? 0))!
     }
     
+    init(orgID: String) {
+        
+        email = ""
+        name = ""
+        role = ""
+        self.orgID = orgID
+
+        joinedDate = Date()
+        
+        status = .pending
+    }
+    
     static func ==(lhs: Membership, rhs: Membership) -> Bool {
         return lhs.email.lowercased() == rhs.email.lowercased() && lhs.orgID == rhs.orgID
     }
