@@ -102,7 +102,10 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             orgProfile.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgProfile, animated: true)
         case (1, 2):
-            print("REPLACE ME...")
+            let memberPage = ManageMemberPage()
+            memberPage.parentVC = self
+            memberPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(memberPage, animated: true)
         case (2, 0):
             let scanner = OrgScanner()
             scanner.hidesBottomBarWhenPushed = true

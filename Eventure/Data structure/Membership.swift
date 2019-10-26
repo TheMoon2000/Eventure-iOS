@@ -26,6 +26,7 @@ class Membership: Hashable {
         email = dictionary["Email"]?.string ?? ""
         name = dictionary["Alias"]?.string ?? ""
         role = dictionary["Role"]?.string ?? ""
+        department = dictionary["Department"]?.string
         orgID = dictionary["Org ID"]?.string ?? "Unknown Organization"
 
         if let dateRaw = dictionary["Date joined"]?.string {
