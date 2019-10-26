@@ -13,7 +13,7 @@ class MemberDisplayCell: UITableViewCell {
     private var bgView: UIView!
     private(set) var profilePicture: UIImageView!
     private(set) var nameLabel: UILabel!
-    private(set) var majorLabel: UILabel!
+    private(set) var roleLabel: UILabel!
     private(set) var auxiliaryLabel: UILabel!
     private var member: Membership!
     private(set) var placeLabel: UILabel!
@@ -60,10 +60,9 @@ class MemberDisplayCell: UITableViewCell {
         nameLabel = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.lineBreakMode = .byWordWrapping
             label.font = .systemFont(ofSize: 17, weight: .medium)
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
+            bgView.addSubview(label)
 
             label.leftAnchor.constraint(equalTo: profilePicture.rightAnchor, constant: 12).isActive = true
             label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -40).isActive = true
@@ -72,13 +71,13 @@ class MemberDisplayCell: UITableViewCell {
             return label
         }()
 
-        majorLabel = {
+        roleLabel = {
             let label = UILabel()
             label.numberOfLines = 3
             label.font = .systemFont(ofSize: 16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
+            bgView.addSubview(label)
 
             label.leftAnchor.constraint(equalTo: nameLabel.leftAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: nameLabel.rightAnchor).isActive = true
@@ -94,9 +93,9 @@ class MemberDisplayCell: UITableViewCell {
             label.font = .systemFont(ofSize: 16)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
+            bgView.addSubview(label)
 
-            label.topAnchor.constraint(equalTo: majorLabel.topAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: roleLabel.topAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -15).isActive = true
 
             return label
@@ -108,7 +107,7 @@ class MemberDisplayCell: UITableViewCell {
             label.font = .systemFont(ofSize: 16)
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
+            bgView.addSubview(label)
 
             label.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -18).isActive = true
             label.centerYAnchor.constraint(equalTo: bgView.centerYAnchor).isActive = true
@@ -131,22 +130,26 @@ class MemberDisplayCell: UITableViewCell {
         
         if member.status == .pending {
             role = "Invitation Pending"
+            bgView.subviews.forEach { $0.alpha = 0.3 }
         }
         
-        majorLabel.text = role
+        roleLabel.text = role
         bgView.backgroundColor = AppColors.subview
-        majorLabel.attributedText = majorLabel.text?.attributedText(style: COMPACT_STYLE)
-        majorLabel.textColor = AppColors.prompt
         
-        //FIXME: how to add profile picture
+        if let pic = member.profilePicture {
+            profilePicture.image = pic
+        } else {
+            member.getProfilePicture { img in
+                self.profilePicture.image = img
+            }
+        }
+        
     }
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
 
-        if member.status == .pending  {
-            bgView.backgroundColor = AppColors.disabled
-        } else {
+        if member.status == .active {
             bgView.backgroundColor = highlighted ? AppColors.selected : AppColors.subview
         }
     }

@@ -20,6 +20,8 @@ class Membership: Hashable {
     var status: Status
     var joinedDate: Date?
     
+    var profilePicture: UIImage?
+    
     init(memberInfo: JSON) {
         let dictionary = memberInfo.dictionaryValue
         
@@ -62,6 +64,29 @@ class Membership: Hashable {
         json.dictionaryObject?["Status"] = status.rawValue
         
         return json
+    }
+    
+    func getProfilePicture(_ handler: ((UIImage) -> ())?) {
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetMemberPicture",
+                           parameters: ["email": email])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else { return }
+            
+            if let image = UIImage(data: data!) {
+                self.profilePicture = image
+                DispatchQueue.main.async {
+                    handler?(image)
+                }
+            }
+        }
+        
+        task.resume()
     }
 }
 
