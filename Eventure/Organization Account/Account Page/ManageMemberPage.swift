@@ -40,7 +40,7 @@ class ManageMemberPage: UIViewController {
         refreshControl.addTarget(self, action: #selector(reloadMembers), for: .valueChanged)
         refreshControl.tintColor = AppColors.lightControl
         
-        saveBarButton = .init(title: "Invite", style: .done, target: self, action: nil) //FIXME: add action
+        saveBarButton = .init(title: "Invite", style: .done, target: self, action:  #selector(inviteButtonPressed)) //FIXME: add action
         navigationItem.rightBarButtonItem = saveBarButton
                 
         myTableView = {
@@ -80,6 +80,17 @@ class ManageMemberPage: UIViewController {
         
         groupMembers()
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        groupMembers()
+        self.myTableView.reloadData()
+    }
+    
+    @objc private func inviteButtonPressed() {
+        let addPage = AddMemberPage(member: nil)
+        addPage.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(addPage, animated: true)
     }
     
     func groupMembers() {
@@ -133,8 +144,13 @@ class ManageMemberPage: UIViewController {
 
 extension ManageMemberPage: UITableViewDelegate, UITableViewDataSource {
            
-   func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-       tableView.deselectRow(at: indexPath, animated: true)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let cell: MemberDisplayCell = tableView.cellForRow(at: indexPath) as! MemberDisplayCell
+        let member:Membership = cell.returnMember()
+           let addPage = AddMemberPage(member: member)
+           addPage.hidesBottomBarWhenPushed = true
+           navigationController?.pushViewController(addPage, animated: true)
    }
    
    func numberOfSections(in tableView: UITableView) -> Int {
