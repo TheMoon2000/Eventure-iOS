@@ -39,6 +39,7 @@ class OrgEventCell: UICollectionViewCell {
             view.layer.cornerRadius = 7
             view.layer.masksToBounds = true
             view.layer.borderColor = AppColors.line.cgColor
+            view.applyMildShadow()
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             

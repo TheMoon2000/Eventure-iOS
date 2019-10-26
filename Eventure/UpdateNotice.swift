@@ -18,7 +18,7 @@ class UpdateNotice: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        view.backgroundColor = AppColors.background
         
         AppDelegate.AppUtility.lockOrientation(UIInterfaceOrientationMask.portrait, andRotateTo: UIInterfaceOrientation.portrait)
         
@@ -40,6 +40,7 @@ class UpdateNotice: UIViewController {
             label.text = "Update Notice"
             label.font = .systemFont(ofSize: 25, weight: .semibold)
             label.textAlignment = .center
+            label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
@@ -54,7 +55,7 @@ class UpdateNotice: UIViewController {
             label.numberOfLines = 0
             label.attributedText = "We've made some important updates to our platform, and we are sorry to let you know that this version of Eventure is **no longer supported**. Please go to the App Store to download the latest version.".attributedText(style: COMPACT_STYLE)
             label.textAlignment = .center
-            label.textColor = .gray
+            label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             

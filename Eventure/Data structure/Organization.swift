@@ -458,6 +458,42 @@ class Organization: CustomStringConvertible {
         
         task.resume()
     }
+    
+    /// Update the members for this organization. The handler should handle whether the update was successful.
+    func updateMembers(_ handler: ((Bool) -> ())?) {
+        
+        Organization.waitingForSync = true
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "account/GetOrgInfo",
+                           parameters: ["orgId": id])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+
+            if let json = try? JSON(data: data!) {
+                let newOrg = Organization(orgInfo: json)
+                self.members = newOrg.members
+                DispatchQueue.main.async {
+                    handler?(true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+            }
+        }
+
+        task.resume()
+    }
 
 }
 

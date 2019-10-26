@@ -53,6 +53,7 @@ class OrgInfoPage: UIViewController {
             iv.tintColor = AppColors.mainDisabled
             iv.contentMode = .scaleAspectFit
             iv.layer.cornerRadius = 5
+            iv.clipsToBounds = true
             iv.isHidden = view.frame.height <= 500
             iv.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(iv)
