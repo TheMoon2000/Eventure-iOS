@@ -128,8 +128,12 @@ class MemberDisplayCell: UITableViewCell {
             role = "No Specified Role"
         }
         
+        
         if member.status == .pending {
             role = "Invitation Pending"
+            bgView.subviews.forEach { $0.alpha = 0.3 }
+        } else if member.status == .declined {
+            role = "Invitation Declined"
             bgView.subviews.forEach { $0.alpha = 0.3 }
         }
         
