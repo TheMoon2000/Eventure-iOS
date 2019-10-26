@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		420D9B100CE35C665D770E68 /* Pods_Eventure.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45C5F10A2A66720B17CBDB33 /* Pods_Eventure.framework */; };
 		67017DB1231F09D2006321F6 /* CheckedInEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67017DB0231F09D2006321F6 /* CheckedInEvents.swift */; };
+		671346242364E735004C3CEA /* RoleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671346222364E734004C3CEA /* RoleList.swift */; };
+		671346252364E735004C3CEA /* RoleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671346232364E734004C3CEA /* RoleCell.swift */; };
+		671346282364E740004C3CEA /* DepartmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671346262364E73F004C3CEA /* DepartmentCell.swift */; };
+		671346292364E740004C3CEA /* DepartmentList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671346272364E73F004C3CEA /* DepartmentList.swift */; };
 		6727E7C02363B6750055D242 /* AddMemberPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6727E7BF2363B6750055D242 /* AddMemberPage.swift */; };
 		67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67705BD1231395900024FBBA /* PersonalInfoPage.swift */; };
 		677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677A8CA9231D8489007CB04F /* EventsCell.swift */; };
@@ -232,8 +236,11 @@
 		25EDA3B193B1432D9840DAED /* Pods-Eventure.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Eventure.debug.xcconfig"; path = "Target Support Files/Pods-Eventure/Pods-Eventure.debug.xcconfig"; sourceTree = "<group>"; };
 		45C5F10A2A66720B17CBDB33 /* Pods_Eventure.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Eventure.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67017DB0231F09D2006321F6 /* CheckedInEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckedInEvents.swift; sourceTree = "<group>"; };
+		671346222364E734004C3CEA /* RoleList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoleList.swift; sourceTree = "<group>"; };
+		671346232364E734004C3CEA /* RoleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoleCell.swift; sourceTree = "<group>"; };
+		671346262364E73F004C3CEA /* DepartmentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepartmentCell.swift; sourceTree = "<group>"; };
+		671346272364E73F004C3CEA /* DepartmentList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DepartmentList.swift; sourceTree = "<group>"; };
 		6727E7BF2363B6750055D242 /* AddMemberPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMemberPage.swift; sourceTree = "<group>"; };
-		673EDF57DF5B883258D96E04 /* Pods-EventureAPITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventureAPITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-EventureAPITests/Pods-EventureAPITests.debug.xcconfig"; sourceTree = "<group>"; };
 		67705BD1231395900024FBBA /* PersonalInfoPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalInfoPage.swift; sourceTree = "<group>"; };
 		677A8CA9231D8489007CB04F /* EventsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCell.swift; sourceTree = "<group>"; };
 		677A8CAB231DA132007CB04F /* InterestedEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestedEvents.swift; sourceTree = "<group>"; };
@@ -777,6 +784,10 @@
 		CCA6CF76231A6889005D8BB2 /* Account Page */ = {
 			isa = PBXGroup;
 			children = (
+				671346262364E73F004C3CEA /* DepartmentCell.swift */,
+				671346272364E73F004C3CEA /* DepartmentList.swift */,
+				671346232364E734004C3CEA /* RoleCell.swift */,
+				671346222364E734004C3CEA /* RoleList.swift */,
 				CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */,
 				CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */,
 				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
@@ -789,10 +800,6 @@
 				CC2050582335302E00F6A114 /* CheckinVerification.swift */,
 				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
 				6727E7BF2363B6750055D242 /* AddMemberPage.swift */,
-				67F6B69D2363F134001BC05B /* DepartmentList.swift */,
-				67F6B6A12363FE0C001BC05B /* DepartmentCell.swift */,
-				67F6B6A3236401B5001BC05B /* RoleList.swift */,
-				67F6B6A5236401BD001BC05B /* RoleCell.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -1160,9 +1167,11 @@
 				CC04666723372A4900BB2754 /* TicketRequests.swift in Sources */,
 				CC2CCD532332F3FC000C65E2 /* TicketDetailInfoCell.swift in Sources */,
 				CC2CCD5923336DB2000C65E2 /* TicketManagerTabs.swift in Sources */,
+				671346282364E740004C3CEA /* DepartmentCell.swift in Sources */,
 				CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */,
 				CC2167BA231B0171003B8DE7 /* Registrant.swift in Sources */,
 				CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */,
+				671346292364E740004C3CEA /* DepartmentList.swift in Sources */,
 				CC9E1DF9233EDC5E00931BFD /* MajorList.swift in Sources */,
 				CC2167BC231B06F0003B8DE7 /* ProfileInfoPage.swift in Sources */,
 				CC23293023163A880097A915 /* EventImagePreviewCell.swift in Sources */,
@@ -1222,7 +1231,7 @@
 				CCE99AC323117EC800823A60 /* DatePickerTopCell.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
-				67F6B6A4236401B5001BC05B /* RoleList.swift in Sources */,
+				671346242364E735004C3CEA /* RoleList.swift in Sources */,
 				DD1BB0D12310B1390082C4EE /* EventDetailTabStrip.swift in Sources */,
 				CC9E1DFD233EE23B00931BFD /* Major.swift in Sources */,
 				CC46772D2319956600A9FF18 /* Campus.swift in Sources */,
@@ -1296,8 +1305,8 @@
 				EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,
+				671346252364E735004C3CEA /* RoleCell.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
-				67F6B6A6236401BD001BC05B /* RoleCell.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
 				CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */,
@@ -1312,14 +1321,12 @@
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
 				CCC4539B235913010081C99D /* Membership.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
-				67F6B6A22363FE0C001BC05B /* DepartmentCell.swift in Sources */,
 				CC595CED235B1222003D74F6 /* NewEventNotification.swift in Sources */,
 				CC2EE6EF230706FC0044C6ED /* PastEvents.swift in Sources */,
 				CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */,
 				CC8960C9233C2242000E8C3D /* BuyTicketCell.swift in Sources */,
 				CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */,
 				CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */,
-				67F6B69F2363F134001BC05B /* DepartmentList.swift in Sources */,
 				CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */,
 				CC3D875C231848B800F1F1E7 /* ScannerViewController.swift in Sources */,
 				CC2CCD4B23318AE1000C65E2 /* DraftTicketsPage.swift in Sources */,

@@ -162,6 +162,10 @@ class MemberDisplayCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
+    func returnMember() -> Membership! {
+        return self.member
+    }
 
 }
 

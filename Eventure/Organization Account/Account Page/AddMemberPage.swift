@@ -34,8 +34,8 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
     
     required init(member: Membership?) {
         super.init(nibName: nil, bundle: nil)
+        self.newMember = member == nil
         self.memberProfile = member ?? Membership(orgID: Organization.current!.id)
-        self.newMember = self.memberProfile.name == ""
         if self.newMember {
             self.memberProfile.department = "None"
             self.memberProfile.role = "None"
@@ -70,24 +70,10 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
             nameCell.textfield.textContentType = .name
             nameCell.textfield.autocapitalizationType = .words
             nameCell.textfield.enablesReturnKeyAutomatically = true
-            if self.memberProfile.name != "" {
+            if !self.newMember {
                 nameCell.textfield.text = self.memberProfile.name
             }
             nameCell.textfield.returnKeyType = .done
-            
-            nameCell.changeHandler = { textfield in
-                self.memberProfile.name = textfield.text!
-                if !self.newMember {
-                    self.needsResave()
-                }
-            }
-            
-            nameCell.endEditingHandler = { textfield in
-                self.memberProfile.name = textfield.text!
-                if !self.newMember {
-                    self.save()
-                }
-            }
             
             nameCell.returnHandler = { textfield in
                 textfield.resignFirstResponder()
@@ -102,24 +88,11 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
             emailCell.textfield.textContentType = .name
             emailCell.textfield.autocapitalizationType = .words
             emailCell.textfield.enablesReturnKeyAutomatically = true
-            if self.memberProfile.email != "" {
+            if !self.newMember {
                 emailCell.textfield.text = self.memberProfile.email
+                emailCell.textfield.isUserInteractionEnabled = false
             }
             emailCell.textfield.returnKeyType = .done
-            
-            emailCell.changeHandler = { textfield in
-                self.memberProfile.email = textfield.text!
-                if !self.newMember {
-                    self.needsResave()
-                }
-            }
-            
-            emailCell.endEditingHandler = { textfield in
-                self.memberProfile.email = textfield.text!
-                if !self.newMember {
-                    self.save()
-                }
-            }
             
             emailCell.returnHandler = { textfield in
                 textfield.resignFirstResponder()
@@ -153,32 +126,48 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
             return section
         }()
         
+        let section3: [UITableViewCell] = {
+            var section = [UITableViewCell]()
+            
+            let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
+            let label = UILabel()
+            label.textColor = AppColors.badgeColor
+            label.text = "Remove Member"
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            section.append(cell)
+            return section
+        }()
+        
         contentCells.append(section0)
         contentCells.append(section1)
         contentCells.append(section2)
+        if !newMember {
+            contentCells.append(section3)
+        }
         
         if newMember {
             saveBarButton = .init(title: "Invite", style: .done, target: self, action: #selector(saveButtonPressed))
             saveBarButton.isEnabled = true
         } else {
-            saveBarButton = .init(title: "Saved", style: .done, target: self, action: #selector(saveButtonPressed))
-            saveBarButton.isEnabled = false
+            saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(saveButtonPressed))
+            saveBarButton.isEnabled = true
         }
         
         if cellsEditable {
             navigationItem.rightBarButtonItem = saveBarButton
         }
     }
-    
-    func needsResave() {
-        saveBarButton.title = "Save"
-        saveBarButton.isEnabled = true
-    }
-    
-    func markAsSaved() {
-        saveBarButton.title = "Saved"
-        saveBarButton.isEnabled = false
-    }
+
     
     @objc private func saveButtonPressed() {
         save()
@@ -193,8 +182,14 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
         }
         saveBarButton.isEnabled = false
         
-        var parameters = ["email": self.memberProfile.email]
-        parameters["name"] = self.memberProfile.name
+        
+        var parameters = ["email": ""]
+        if self.newMember {
+            parameters["email"] = (contentCells[0][1] as! TextFieldCell).textfield.text
+        } else {
+            parameters["email"] = self.memberProfile.email
+        }
+        parameters["name"] = (contentCells[0][0] as! TextFieldCell).textfield.text
         parameters["orgId"] = Organization.current!.id
         parameters["role"] = self.memberProfile.role
         parameters["department"] = self.memberProfile.department
@@ -224,12 +219,15 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
                     }
                 case "success":
                     if self.newMember {
-                        Organization.current!.members.insert(self.memberProfile)
                         DispatchQueue.main.async {
+                            self.memberProfile.name = (self.contentCells[0][0] as! TextFieldCell).textfield.text!
+                            self.memberProfile.email = (self.contentCells[0][1] as! TextFieldCell).textfield.text!
+                            Organization.current!.members.insert(self.memberProfile)
                             self.navigationController?.popViewController(animated: true)
                         }
                     } else {
                         DispatchQueue.main.async {
+                            self.memberProfile.name = (self.contentCells[0][0] as! TextFieldCell).textfield.text!
                             self.navigationController?.popViewController(animated: true)
                         }
                     }
@@ -308,6 +306,47 @@ class AddMemberPage: UITableViewController,EditableInfoProvider {
         case [2,0]:
             let rl = RoleList(parentVC: self,memberProfile: memberProfile)
             navigationController?.pushViewController(rl, animated: true)
+        case [3,0]:
+            var parameters = ["orgId" :Organization.current!.id]
+            parameters["email"] = self.memberProfile.email
+            
+            let url = URL.with(base: API_BASE_URL,
+                               API_Name: "account/RemoveMember",
+                               parameters: parameters)!
+            var request = URLRequest(url: url)
+            request.addAuthHeader()
+            
+            let task = CUSTOM_SESSION.dataTask(with: request) {
+                data, response, error in
+                
+                guard error == nil else {
+                    DispatchQueue.main.async {
+                        internetUnavailableError(vc: self)
+                    }
+                    return
+                }
+                
+                let msg = String(data: data!, encoding: .utf8)
+                switch msg {
+                    case INTERNAL_ERROR:
+                        DispatchQueue.main.async {
+                            serverMaintenanceError(vc: self)
+                        }
+                    case "success":
+                        DispatchQueue.main.async {
+                            Organization.current!.members.remove(self.memberProfile)
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    default:
+                        DispatchQueue.main.async {
+                            let alert = UIAlertController(title: "Error", message: msg, preferredStyle: .alert)
+                            alert.addAction(.init(title: "Dismiss", style: .cancel))
+                            self.present(alert, animated: true)
+                        }
+                }
+                
+            }
+            task.resume()
         default:
             break
         }

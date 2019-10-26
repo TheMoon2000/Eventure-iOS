@@ -70,14 +70,6 @@ class DepartmentList: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        if edited {
-            parentVC.needsResave()
-            parentVC.save { self.edited = false }
-        }
-    }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
