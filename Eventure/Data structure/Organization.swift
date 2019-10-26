@@ -33,7 +33,7 @@ class Organization: CustomStringConvertible {
     var subscribers = Set<Int>() { didSet { save() } }
     var roles = Set<String>() { didSet { save() } }
     var departments = Set<String>() { didSet { save() } }
-    var members = [Membership]()
+    var members = Set<Membership>()
     var numberOfEvents = 0
 
     // Profile Information
@@ -116,7 +116,7 @@ class Organization: CustomStringConvertible {
         }
                 
         for memInfo in (dictionary["Members"]?.arrayValue ?? []) {
-            members.append(Membership(memberInfo: memInfo))
+            members.insert(Membership(memberInfo: memInfo))
         }
 
         password_MD5 = dictionary["Password MD5"]?.string ?? ""

@@ -61,7 +61,7 @@ class User: Profile {
     var interestedEvents = Set<String>() { didSet { save() } }
     var subscriptions = Set<String>() { didSet { save() } }
     var tags = Set<String>() { didSet { save() } }
-    var memberships = [Membership]()
+    var memberships = Set<Membership>()
     var enabledNotifications = EnabledNotifications.all
     let dateRegistered: String // Only for debugging purpose
         
@@ -153,7 +153,7 @@ class User: Profile {
         }
         
         for memInfo in (dictionary["Memberships"]?.arrayValue ?? []) {
-            memberships.append(Membership(memberInfo: memInfo))
+            memberships.insert(Membership(memberInfo: memInfo))
         }
         
         enabledNotifications = .init(rawValue: (dictionary["Enabled notifications"]?.int ?? 31))
