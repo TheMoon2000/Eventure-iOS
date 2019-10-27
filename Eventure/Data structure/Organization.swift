@@ -202,7 +202,7 @@ class Organization: CustomStringConvertible {
         - handler: Optional handler that will be called after this method attempts to upload the organization settings.
      */
     
-    func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())?) {
+    func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())? = nil) {
         var body = JSON()
         
         if settings.contains(.orgTitle) {
