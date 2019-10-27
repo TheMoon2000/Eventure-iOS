@@ -82,7 +82,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return ["Basic Information", "General Preferences"][section]
+        return ["Basic Information", "General"][section]
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

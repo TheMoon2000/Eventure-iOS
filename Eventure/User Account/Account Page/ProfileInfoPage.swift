@@ -43,7 +43,6 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         tableView.contentInset.top = 5
         tableView.contentInset.bottom = 10
         tableView.keyboardDismissMode = .interactive
-        tableView.tableFooterView = UIView()
         tableView.tintColor = AppColors.main
         tableView.allowsSelection = cellsEditable
     
@@ -332,7 +331,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         saveBarButton.title = "Saving..."
         saveBarButton.isEnabled = false
         
-        User.current?.pushSettings([.fullName, .graduationYear, .graduationSeason, .major, .resumeLink, .linkedIn, .github, .interests, .profileComments]) {
+        user.pushSettings([.fullName, .graduationYear, .graduationSeason, .major, .resumeLink, .linkedIn, .github, .interests, .profileComments]) {
             success in
 
             if success {
@@ -387,12 +386,10 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return contentCells.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return contentCells[section].count
     }
     

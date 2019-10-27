@@ -211,7 +211,9 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         case (3, 1):
             let cell = UITableViewCell()
             cell.backgroundColor = AppColors.background
-            cell.heightAnchor.constraint(equalToConstant: 50).isActive = true
+            let h = cell.heightAnchor.constraint(equalToConstant: 50)
+            h.priority = .defaultHigh
+            h.isActive = true
 
             let label = UILabel()
             label.textColor = AppColors.label

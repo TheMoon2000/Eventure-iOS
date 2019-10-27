@@ -16,6 +16,7 @@ class CalendarPreference: UITableViewController {
         title = "Calendar Preferences"
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.backgroundColor = AppColors.tableBG
+        tableView.tableHeaderView = UIView(frame: .init(x: 0, y: 0, width: 0, height: 25))
     }
 
     // MARK: - Table view data source
