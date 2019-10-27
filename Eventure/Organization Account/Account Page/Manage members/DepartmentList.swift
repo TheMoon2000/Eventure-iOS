@@ -34,7 +34,7 @@ class DepartmentList: UIViewController {
         title = "Departments"
         view.backgroundColor = AppColors.canvas
         
-        navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(done))
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(addDept))
         
         departmentTable = {
             let tb = UITableView()
@@ -59,14 +59,38 @@ class DepartmentList: UIViewController {
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
-        deptList = Organization.current!.departments.sorted(by: <)
-        prevRow = deptList.firstIndex(of: memberProfile.department ?? "") ?? -1
+        refreshDepartments()
     }
     
+    private func refreshDepartments() {
+        deptList = Organization.current!.departments.sorted(by: <)
+        prevRow = deptList.firstIndex(of: memberProfile.department!) ?? -1
+    }
 
     
-    @objc private func done() {
-        navigationController?.popViewController(animated: true)
+    @objc private func addDept() {
+        let alert = UIAlertController(title: "Add Department", message: "Please enter the name of the new department.", preferredStyle: .alert)
+        alert.addTextField { textfield in
+            textfield.autocapitalizationType = .words
+            textfield.placeholder = "e.g. Marketing Team"
+        }
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Add", style: .default) { _ in
+            let dept = alert.textFields![0].text!
+            self.loadingBG.isHidden = false
+            Organization.current?.departments.insert(dept)
+            Organization.current?.pushSettings(.departments) { successful in
+                self.loadingBG.isHidden = true
+                if successful {
+                    self.refreshDepartments()
+                    self.departmentTable.reloadData()
+                } else {
+                    Organization.current?.roles.remove(dept)
+                    internetUnavailableError(vc: self)
+                }
+            }
+        })
+        present(alert, animated: true)
     }
     
     
@@ -94,7 +118,6 @@ extension DepartmentList: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-        cell.backgroundColor = AppColors.background
         cell.textLabel?.text = deptList[indexPath.row]
         cell.accessoryType = indexPath.row == prevRow ? .checkmark : .none
         
@@ -109,5 +132,45 @@ extension DepartmentList: UITableViewDelegate, UITableViewDataSource {
         cell.accessoryType = .checkmark
         memberProfile.department = deptList[indexPath.row]
         prevRow = indexPath.row
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
+            
+            let alert = UIAlertController(title: "Delete department?", message: "This action cannot be undone.", preferredStyle: .alert)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
+                self.attemptDeleteDept(indexPath: indexPath)
+            }))
+            self.present(alert, animated: true)
+        })
+
+        action.backgroundColor = AppColors.fatal
+        return [action]
+    }
+    
+    func attemptDeleteDept(indexPath: IndexPath) {
+        let dept = deptList[indexPath.row]
+        if (Organization.current!.members.filter { $0.department == dept }).isEmpty {
+            loadingBG.isHidden = false
+            Organization.current?.departments.remove(dept)
+            Organization.current?.pushSettings(.departments) { successful in
+                self.loadingBG.isHidden = true
+                if successful {
+                    self.refreshDepartments()
+                    if self.memberProfile.department == dept {
+                        self.memberProfile.role = ""
+                    }
+                    self.departmentTable.deleteRows(at: [indexPath], with: .automatic)
+                } else {
+                    Organization.current?.departments.insert(dept)
+                }
+            }
+        } else {
+            let alert = UIAlertController(title: "Cannot delete row", message: "This department is already assigned to at least one member in your organization. To remove it, please first change those members to other departments.", preferredStyle: .alert)
+            alert.addAction(.init(title: "OK", style: .default))
+            present(alert, animated: true)
+        }
     }
 }
