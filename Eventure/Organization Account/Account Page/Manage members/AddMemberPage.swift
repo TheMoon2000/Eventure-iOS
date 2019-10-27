@@ -138,10 +138,11 @@ class AddMemberPage: UITableViewController {
                 DispatchQueue.main.async {
                     if let backup = self.backup {
                         backup.importData(from: self.memberProfile)
+                        self.navigationController?.popViewController(animated: true)
                     } else {
                         Organization.current?.members.insert(self.memberProfile)
+                        self.dismiss(animated: true)
                     }
-                    self.navigationController?.popViewController(animated: true)
                 }
             default:
                 DispatchQueue.main.async {
@@ -356,11 +357,13 @@ extension AddMemberPage {
         case [1, 1]:
             let rl = RoleList(parentVC: self, memberProfile: memberProfile)
             navigationController?.pushViewController(rl, animated: true)
-        case [3, 0]:
+        case [2, 0]:
             let alert = UIAlertController(title: "Remove Member?", message: "This member will no longer be part of the organization.", preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Remove", style: .destructive, handler: { _ in
                 self.removeMember(self.memberProfile)
+                Organization.current?.members.remove(self.memberProfile)
+                self.navigationController?.popViewController(animated: true)
             }))
             present(alert, animated: true)
         default:

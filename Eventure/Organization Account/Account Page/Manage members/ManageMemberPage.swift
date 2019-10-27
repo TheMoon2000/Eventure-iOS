@@ -115,8 +115,11 @@ class ManageMemberPage: UIViewController {
             }
         }
     
-        mappedMembers = membersByDepartment.map { ($0, $1) }.sorted { $0.0.lowercased() < $1.0.lowercased() }
-        print(mappedMembers)
+        mappedMembers = membersByDepartment.map { ($0, $1) }.sorted { m1, m2 in
+            if m1.0 == NO_DEPART { return false }
+            if m2.0 == NO_DEPART { return true }
+            return m1.0.lowercased() < m2.0.lowercased()
+        }
     
     }
     
@@ -164,7 +167,9 @@ extension ManageMemberPage: UITableViewDelegate, UITableViewDataSource {
    
    //section titles
    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-    let currSection:(String, [Membership]) = mappedMembers[section]
+    var currSection: (String, [Membership]) = mappedMembers[section]
+    if currSection.0 == NO_DEPART { currSection.0 = "Others" }
+    
     return currSection.0 + " (" + String(currSection.1.count) + ")"
    }
    
