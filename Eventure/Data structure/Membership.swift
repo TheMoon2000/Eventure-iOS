@@ -78,6 +78,22 @@ class Membership: Hashable {
         return json
     }
     
+    /// Create a copy of the current `Membership` object.
+    func clone() -> Membership {
+        let new = Membership(memberInfo: encodedJSON)
+        new.profilePicture = profilePicture
+        return new
+    }
+    
+    /// Update the current `Membership` object using the content from another. Note that `dateJoined` and `orgId` will not be updated.
+    func importData(from other: Membership) {
+        self.email = other.email
+        self.name = other.name
+        self.role = other.role
+        self.department = other.department
+        self.status = other.status
+    }
+    
     func getProfilePicture(_ handler: ((UIImage) -> ())?) {
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/GetMemberPicture",
