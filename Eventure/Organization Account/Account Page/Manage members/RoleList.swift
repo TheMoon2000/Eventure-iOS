@@ -158,6 +158,9 @@ extension RoleList: UITableViewDelegate, UITableViewDataSource {
                 self.loadingBG.isHidden = true
                 if successful {
                     self.refreshRoles()
+                    if self.memberProfile.role == role {
+                        self.memberProfile.role = ""
+                    }
                     self.roleTable.deleteRows(at: [indexPath], with: .automatic)
                 } else {
                     Organization.current?.roles.insert(role)

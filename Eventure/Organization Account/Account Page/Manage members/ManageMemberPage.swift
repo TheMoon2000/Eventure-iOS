@@ -90,6 +90,7 @@ class ManageMemberPage: UIViewController {
     @objc private func inviteButtonPressed() {
         let addPage = AddMemberPage(member: nil)
         let navBar = CheckinNavigationController(rootViewController: addPage)
+        navBar.navigationBar.isTranslucent = false
         present(navBar, animated: true)
     }
     
