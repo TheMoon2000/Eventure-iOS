@@ -127,6 +127,7 @@ extension RoleList: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let cell = tableView.cellForRow(at: indexPath)!
+        cell.backgroundColor = AppColors.background
         cell.accessoryType = .checkmark
         memberProfile.role = roleList[indexPath.row]
         prevRow = indexPath.row

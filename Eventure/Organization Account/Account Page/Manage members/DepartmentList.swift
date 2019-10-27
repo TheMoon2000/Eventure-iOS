@@ -94,6 +94,7 @@ extension DepartmentList: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
+        cell.backgroundColor = AppColors.background
         cell.textLabel?.text = deptList[indexPath.row]
         cell.accessoryType = indexPath.row == prevRow ? .checkmark : .none
         
