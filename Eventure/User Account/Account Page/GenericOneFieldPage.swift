@@ -24,7 +24,7 @@ class GenericOneFieldPage: UITableViewController {
         
         self.fieldName = fieldName
         tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = AppColors.canvas
+        tableView.backgroundColor = AppColors.tableBG
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonPressed))
         
         textCell = GenericTextCell(title: fieldName)

@@ -27,12 +27,14 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>You can sync interested / favorite events with your device calendar.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Your camera will be used for scanning event QR codes.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Receive event recommendations based on location.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>After you allow, you can save images into your photo library.</string>
+	<string>You will be able to save images like QR codes to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>QR codes will be saved to your device.</string>
 	<key>UIBackgroundModes</key>

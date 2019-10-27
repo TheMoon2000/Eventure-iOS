@@ -37,8 +37,8 @@ class SettingsItemCell: UITableViewCell {
             iv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(iv)
             
-            iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 18).isActive = true
-            iv.widthAnchor.constraint(equalToConstant: 28).isActive = true
+            iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 16).isActive = true
+            iv.widthAnchor.constraint(equalToConstant: 26).isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
@@ -66,7 +66,7 @@ class SettingsItemCell: UITableViewCell {
             label.font = .systemFont(ofSize: 17)
             label.numberOfLines = 3
             label.textAlignment = .right
-            label.textColor = UIColor.gray
+            label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .right
             addSubview(label)

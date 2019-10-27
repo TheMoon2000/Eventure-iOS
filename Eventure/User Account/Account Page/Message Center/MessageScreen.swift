@@ -424,12 +424,13 @@ extension MessageScreen: UIScrollViewDelegate {
     }
     
     
+    /*
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if needsResetBottomInset {
             scrollView.setContentOffset(.init(x: 0, y: max(scrollView.contentOffset.y, 1)), animated: true)
             needsResetBottomInset = false
         }
-    }
+    }*/
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)

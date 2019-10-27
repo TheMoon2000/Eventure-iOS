@@ -8,6 +8,7 @@
 
 import UIKit
 import XLPagerTabStrip
+import EventKit
 
 class EventDetailPage: UIViewController {
     
@@ -242,39 +243,15 @@ class EventDetailPage: UIViewController {
         
         toggle()
         UISelectionFeedbackGenerator().selectionChanged()
-        
-        let parameters = [
-            "userId": String(currentUser.uuid),
-            "eventId": event.uuid,
-            "favorited": rightButton.image == #imageLiteral(resourceName: "heart") ? "1" : "0"
-        ]
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/MarkEvent",
-                           parameters: parameters)!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self) { toggle() }
-                }
+                
+        currentUser.syncFavorited(favorited: !isFavoriteOriginally, for: event) { successful in
+            guard successful else {
+                internetUnavailableError(vc: self)
                 return
-            }
-            
-            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
-            
-            if msg == INTERNAL_ERROR {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self) { toggle() }
-                }
             }
         }
         
-        task.resume()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -297,17 +274,21 @@ class EventDetailPage: UIViewController {
     
     @objc private func interestedAction() {
         UISelectionFeedbackGenerator().selectionChanged()
+        
         let status: Bool
+        
         if User.current!.interestedEvents.contains(event.uuid) {
-            interestedButton.setImage(#imageLiteral(resourceName: "star_empty"), for: .normal)
-            User.current?.interestedEvents.remove(event.uuid)
-            event.interested.remove(User.current!.uuid)
+            interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
             status = false
         } else {
-            self.interestedButton.setImage(#imageLiteral(resourceName: "star_filled"), for: .normal)
-            User.current?.interestedEvents.insert(event.uuid)
-            event.interested.insert(User.current!.uuid)
+            self.interestedButton.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
             status = true
+        }
+        
+        User.current?.syncInterested(interested: status, for: event) { success in
+            if !success {
+                internetUnavailableError(vc: self)
+            }
         }
         
         if let v = tabStrip.viewControllers.last as? OtherViewController {
@@ -315,12 +296,6 @@ class EventDetailPage: UIViewController {
         }
         
         interestedStatusChanged?(status)
-    
-        User.current?.syncInterested(interested: status, for: event) { success in
-            if !success {
-                internetUnavailableError(vc: self)
-            }
-        }
         
     }
 

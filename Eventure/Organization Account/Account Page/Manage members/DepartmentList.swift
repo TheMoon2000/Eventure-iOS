@@ -160,7 +160,7 @@ extension DepartmentList: UITableViewDelegate, UITableViewDataSource {
                 if successful {
                     self.refreshDepartments()
                     if self.memberProfile.department == dept {
-                        self.memberProfile.role = ""
+                        self.memberProfile.department = nil
                     }
                     self.departmentTable.deleteRows(at: [indexPath], with: .automatic)
                 } else {

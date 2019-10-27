@@ -20,6 +20,7 @@ class User: Profile {
                 Ticket.userTickets = Ticket.readFromFile()[current!.userID] ?? []
                 Ticket.updateTickets()
                 current?.saveEnabled = true
+                print("Saving for user <\(current!.name)> is enabled at \(CURRENT_USER_PATH)")
             } else {
                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
                 Ticket.userTickets = []
@@ -56,14 +57,20 @@ class User: Profile {
     var numberOfAttendedEvents = 0 { didSet { save() } }
     
     /// A set of uuid strings for events which the user has favorited.
-    var favoritedEvents = Set<String>() {
-        didSet { save() } }
+    var favoritedEvents = Set<String>() { didSet { save() } }
     var interestedEvents = Set<String>() { didSet { save() } }
+    
+    /// Maps events to their calendar identifiers.
+    var calendarIdentifiers: [String : String] { didSet { save() } }
     var subscriptions = Set<String>() { didSet { save() } }
     var tags = Set<String>() { didSet { save() } }
     var memberships = Set<Membership>()
-    var enabledNotifications = EnabledNotifications.all
     let dateRegistered: String // Only for debugging purpose
+    
+    // MARK: - User Preferences
+    var enabledNotifications = EnabledNotifications.all
+    var interestPreference = CalendarPreference.alwaysAsk
+    var favoritePreference = CalendarPreference.alwaysAsk
         
     /// Whether changes to the `User` instance would automatically be written to local cache.
     var saveEnabled = false
@@ -156,8 +163,6 @@ class User: Profile {
             memberships.insert(Membership(memberInfo: memInfo))
         }
         
-        enabledNotifications = .init(rawValue: (dictionary["Enabled notifications"]?.int ?? 31))
-                
         dateRegistered = dictionary["Date registered"]?.string ?? "Unknown"
         numberOfAttendedEvents = dictionary["# checked in"]?.int ?? 0
         
@@ -176,6 +181,12 @@ class User: Profile {
         github = dictionary["GitHub"]?.string ?? ""
         interests = dictionary["Interests"]?.string ?? ""
         comments = dictionary["Comments"]?.string ?? ""
+        
+        // Other info
+        enabledNotifications = .init(rawValue: (dictionary["Enabled notifications"]?.int ?? 31))
+        interestPreference = CalendarPreference(rawValue: (dictionary["Interest preference"]?.int ?? 1)) ?? .alwaysAsk
+        favoritePreference = CalendarPreference(rawValue: (dictionary["Favorite preference"]?.int ?? 1)) ?? .alwaysAsk
+        calendarIdentifiers = (dictionary["__calendar__"]?.dictionaryObject as? [String : String]) ?? [:]
     }
     
     // MARK: - Read & Write
@@ -226,8 +237,6 @@ class User: Profile {
         DispatchQueue.global(qos: .background).async {
             if self.writeToFile(path: CURRENT_USER_PATH) == false {
                 print("WARNING: cannot write user to \(CURRENT_USER_PATH)")
-            } else {
-                print("successfully wrote user data to \(CURRENT_USER_PATH)")
             }
         }
     }
@@ -247,7 +256,12 @@ class User: Profile {
         json.dictionaryObject?["Date registered"] = self.dateRegistered
         json.dictionaryObject?["Liked events"] = self.favoritedEvents.description
         json.dictionaryObject?["Interested"] = self.interestedEvents.description
+        
+        // Preferences
         json.dictionaryObject?["Enabled notifications"] = enabledNotifications.rawValue
+        json.dictionaryObject?["Interest preference"] = interestPreference.rawValue
+        json.dictionaryObject?["Favorite preference"] = favoritePreference.rawValue
+        json.dictionaryObject?["__calendar__"] = calendarIdentifiers
         
         // Profile information
         json.dictionaryObject?["Full name"] = self.fullName
@@ -305,8 +319,10 @@ class User: Profile {
             
             if let json = try? JSON(data: data!) {
                 let currentImage = User.current?.profilePicture
+                let calendarIdentifiers = User.current?.calendarIdentifiers
                 User.current = User(userInfo: json)
                 User.current?.profilePicture = currentImage
+                User.current?.calendarIdentifiers = calendarIdentifiers ?? [:]
                 NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
             } else {
                 print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'")
@@ -318,6 +334,7 @@ class User: Profile {
     }
     
     func syncInterested(interested: Bool, for event: Event, completion handler: ((Bool) -> ())? = nil) {
+        
         let parameters = [
             "userId": String(uuid),
             "eventId": event.uuid,
@@ -345,9 +362,121 @@ class User: Profile {
             DispatchQueue.main.async {
                 handler?(msg != INTERNAL_ERROR)
             }
+            
+            if interested {
+                self.interestedEvents.insert(event.uuid)
+                event.interested.insert(self.userID)
+            } else {
+                self.interestedEvents.remove(event.uuid)
+                event.interested.remove(self.userID)
+            }
         }
         
         task.resume()
+        
+        if interested {
+            if interestPreference == .alwaysAdd {
+                event.addToCalendar()
+            } else if interestPreference == .alwaysAsk {
+                let alert = UIAlertController(title: "Add event to calendar?", message: "Your current preference indicates that you should be asked every time you add an interested event. You can either make a decision just for this event, or set update the default settings for all interested events.", preferredStyle: .actionSheet)
+                alert.addAction(.init(title: "Add This Event", style: .default, handler: { _ in
+                    event.addToCalendar()
+                }))
+                alert.addAction(.init(title: "Add All Future Events", style: .default, handler: { _ in
+                    self.interestPreference = .alwaysAdd
+                    event.addToCalendar()
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    self.pushSettings(.preferences) { _ in
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }))
+                alert.addAction(.init(title: "Never Add", style: .default, handler: { _ in
+                    self.interestPreference = .never
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    self.pushSettings(.preferences) { _ in
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }))
+                alert.addAction(.init(title: "Don't Add This Event", style: .cancel))
+                UIApplication.topMostViewController?.present(alert, animated: true)
+            }
+        } else {
+            event.removeFromCalendar()
+        }
+    }
+    
+    func syncFavorited(favorited: Bool, for event: Event, completion handler: ((Bool) -> ())? = nil) {
+        
+        let parameters = [
+            "userId": String(uuid),
+            "eventId": event.uuid,
+            "favorited": favorited ? "1" : "0"
+        ]
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/MarkEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+                return
+            }
+            
+            let msg = String(data: data!, encoding: .utf8) ?? INTERNAL_ERROR
+            
+            if msg == INTERNAL_ERROR {
+                DispatchQueue.main.async {
+                    handler?(false)
+                }
+            }
+            
+            if favorited {
+                self.favoritedEvents.insert(event.uuid)
+                event.favorited.insert(self.userID)
+            } else {
+                self.favoritedEvents.remove(event.uuid)
+                event.favorited.remove(self.userID)
+            }
+        }
+        
+        task.resume()
+        
+        if favorited {
+            if favoritePreference == .alwaysAdd {
+                event.addToCalendar()
+            } else if favoritePreference == .alwaysAsk {
+                let alert = UIAlertController(title: "Add event to calendar?", message: "Your current preference indicates that you should be asked every time you add a favorite event. You can either make a decision just for this event, or set update the default settings for all favorite events.", preferredStyle: .actionSheet)
+                alert.addAction(.init(title: "Add This Event", style: .default, handler: { _ in
+                    event.addToCalendar()
+                }))
+                alert.addAction(.init(title: "Add All Future Events", style: .default, handler: { _ in
+                    self.favoritePreference = .alwaysAdd
+                    event.addToCalendar()
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    self.pushSettings(.preferences) { _ in
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }))
+                alert.addAction(.init(title: "Never Add", style: .default, handler: { _ in
+                    self.favoritePreference = .never
+                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                    self.pushSettings(.preferences) { _ in
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                }))
+                alert.addAction(.init(title: "Don't Add This Event", style: .cancel))
+                UIApplication.topMostViewController?.present(alert, animated: true)
+            }
+        } else {
+            event.removeFromCalendar()
+        }
     }
     
     
@@ -495,6 +624,8 @@ class User: Profile {
         
         if settings.contains(.preferences) {
             body.dictionaryObject?["Enabled notifications"] = enabledNotifications.rawValue
+            body.dictionaryObject?["Interest preference"] = interestPreference.rawValue
+            body.dictionaryObject?["Favorite preference"] = favoritePreference.rawValue
         }
         
         
@@ -552,6 +683,10 @@ extension User {
         case male = 0
         case female = 1
         case non_binary = 2
+        
+        var description: String {
+            return ["Unspecified", "Male", "Female", "Non-binary"][rawValue + 1]
+        }
     }
     
     enum GraduationSeason: String {
@@ -589,6 +724,16 @@ extension User {
         static let interests        = PushableSettings(rawValue: 1 << 11)
         static let profileComments  = PushableSettings(rawValue: 1 << 12)
         static let preferences      = PushableSettings(rawValue: 1 << 13)
+    }
+    
+    enum CalendarPreference: Int {
+        case never = 0
+        case alwaysAsk = 1
+        case alwaysAdd = 2
+        
+        var description: String {
+            return ["Never", "Always ask", "Always add"][rawValue]
+        }
     }
     
 }

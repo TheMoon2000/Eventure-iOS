@@ -21,23 +21,26 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
-        title = "Manage Account"
+        view.backgroundColor = AppColors.tableBG
+        title = "Account Settings"
         
-        myTableView = UITableView()
-        myTableView.register(AccountCell.classForCoder(), forCellReuseIdentifier: "MyCell")
-        myTableView.dataSource = self
-        myTableView.delegate = self
-        myTableView.backgroundColor = .clear
-        self.view.addSubview(myTableView)
-        //set location constraints of the tableview
-        myTableView.translatesAutoresizingMaskIntoConstraints = false
-        myTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        myTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        //make sure table view appears limited
-        self.myTableView.tableFooterView = UIView(frame: CGRect.zero)
+        myTableView = {
+            let tv = UITableView(frame: .zero, style: .grouped)
+            tv.dataSource = self
+            tv.delegate = self
+            tv.backgroundColor = .clear
+            self.view.addSubview(tv)
+
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            tv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            tv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            
+            return tv
+        }()
+        
+        
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
@@ -74,15 +77,25 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         myTableView.reloadData()
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return ["Basic Information", "General Preferences"][section]
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return [4, 1][section]
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == 0 { //if the user tries to change the name
+        
+        switch indexPath {
+        case [0, 0]:
             self.pushToModifyPage(type: .displayedName)
-        } else if indexPath.row == 1 { //if the user tries to change the password
+        case [0, 1]:
             let alert = UIAlertController(title: "Verification", message: "Please enter your current password to continue.", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
                 textField.isSecureTextEntry = true
@@ -101,22 +114,52 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             
             self.present(alert, animated: true)
-        } else if indexPath.row == 2 {
+            
+        case [0, 2]:
             pushToModifyPage(type: .email)
-        } else if indexPath.row == 3 {
+        case [0, 3]:
             let genderPage = changeGender()
             navigationController?.pushViewController(genderPage, animated: true)
+        case [1, 0]:
+            let cp = CalendarPreference()
+            navigationController?.pushViewController(cp, animated: true)
+        default:
+            break
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell") as! AccountCell
-        cell.setup(sectionNum: indexPath.section,rowNum: indexPath.row, type: "Personal")
+        
+        let cell = SettingsItemCell(withAccessory: true)
+        
+        switch indexPath {
+        case [0, 0]:
+            cell.titleLabel.text = "Name"
+            cell.valueLabel.text = User.current!.displayedName
+            cell.icon.image = #imageLiteral(resourceName: "name")
+        case [0, 1]:
+            cell.titleLabel.text = "Password"
+            cell.icon.image = #imageLiteral(resourceName: "password")
+        case [0, 2]:
+            cell.titleLabel.text = "Email"
+            cell.valueLabel.text = User.current!.email
+            cell.icon.image = #imageLiteral(resourceName: "email")
+        case [0, 3]:
+            cell.titleLabel.text = "Gender"
+            cell.valueLabel.text = User.current!.gender.description
+            cell.icon.image = #imageLiteral(resourceName: "gender")
+        case [1, 0]:
+            cell.titleLabel.text = "Add Events to Calendar"
+            cell.icon.image = #imageLiteral(resourceName: "calendar")
+        default:
+            break
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 55.0
+        return 54.0
     }
     
     func pushToModifyPage(type: Types) {

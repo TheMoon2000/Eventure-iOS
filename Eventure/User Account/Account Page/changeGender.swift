@@ -25,7 +25,7 @@ class changeGender: UIViewController, UITableViewDelegate, UITableViewDataSource
         
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         
         myTableView = UITableView(frame: .zero, style: .grouped)
         myTableView.dataSource = self

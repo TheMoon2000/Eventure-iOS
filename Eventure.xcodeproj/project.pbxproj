@@ -30,6 +30,9 @@
 		CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC101FF922F5473B0025217A /* RegisterOrganization.swift */; };
 		CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC101FFC22F558890025217A /* ChooseImageCell.swift */; };
 		CC10200322F695770025217A /* ChooseTagCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC10200222F695770025217A /* ChooseTagCell.swift */; };
+		CC188CF6236542580060909D /* InterestPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC188CF5236542580060909D /* InterestPreference.swift */; };
+		CC188CF8236648860060909D /* CalendarPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC188CF7236648860060909D /* CalendarPreference.swift */; };
+		CC188CFA236649B90060909D /* FavoritePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC188CF9236649B90060909D /* FavoritePreference.swift */; };
 		CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC18F54E229AD4EB008FABEA /* AppDelegate.swift */; };
 		CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CC18F552229AD4EB008FABEA /* Main.storyboard */; };
 		CC18F557229AD4EB008FABEA /* Eventure.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = CC18F555229AD4EB008FABEA /* Eventure.xcdatamodeld */; };
@@ -255,6 +258,9 @@
 		CC101FF922F5473B0025217A /* RegisterOrganization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterOrganization.swift; sourceTree = "<group>"; };
 		CC101FFC22F558890025217A /* ChooseImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseImageCell.swift; sourceTree = "<group>"; };
 		CC10200222F695770025217A /* ChooseTagCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseTagCell.swift; sourceTree = "<group>"; };
+		CC188CF5236542580060909D /* InterestPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestPreference.swift; sourceTree = "<group>"; };
+		CC188CF7236648860060909D /* CalendarPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarPreference.swift; sourceTree = "<group>"; };
+		CC188CF9236649B90060909D /* FavoritePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePreference.swift; sourceTree = "<group>"; };
 		CC18F54B229AD4EB008FABEA /* Eventure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eventure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC18F54E229AD4EB008FABEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC18F553229AD4EB008FABEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -585,6 +591,9 @@
 				67AFF77B23121ACE00329626 /* AccountViewController.swift */,
 				67E89384231C40FF004896F7 /* changeGender.swift */,
 				67705BD1231395900024FBBA /* PersonalInfoPage.swift */,
+				CC188CF7236648860060909D /* CalendarPreference.swift */,
+				CC188CF5236542580060909D /* InterestPreference.swift */,
+				CC188CF9236649B90060909D /* FavoritePreference.swift */,
 				CC2167BB231B06F0003B8DE7 /* ProfileInfoPage.swift */,
 				CC9E1DF8233EDC5E00931BFD /* MajorList.swift */,
 				CC9E1DFE233EFCD200931BFD /* MajorSearchResults.swift */,
@@ -1242,6 +1251,7 @@
 				CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */,
 				CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */,
 				CC2CCD4F2331CF7B000C65E2 /* AdmissionType.swift in Sources */,
+				CC188CFA236649B90060909D /* FavoritePreference.swift in Sources */,
 				CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */,
 				CCCE5DB5235FA052005CE5D7 /* PlainMessageCell.swift in Sources */,
 				CCBA13D923396B9300E282AD /* PurchaseDetailsCell.swift in Sources */,
@@ -1258,6 +1268,7 @@
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
 				CC595CF1235C1A3E003D74F6 /* InviteNotification.swift in Sources */,
+				CC188CF8236648860060909D /* CalendarPreference.swift in Sources */,
 				CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */,
 				677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */,
 				EBF4DA422363B74F00B6056F /* ManageMemberPage.swift in Sources */,
@@ -1319,6 +1330,7 @@
 				CCE214252314ED0E00E9B137 /* GenericOneFieldPage.swift in Sources */,
 				EBF4DA442363B80500B6056F /* MemberDisplayCell.swift in Sources */,
 				CC2EE6F3230709450044C6ED /* OrgEventsTabStrip.swift in Sources */,
+				CC188CF6236542580060909D /* InterestPreference.swift in Sources */,
 				CCC4539B235913010081C99D /* Membership.swift in Sources */,
 				CC1AF7A5229B732C003471F2 /* Global Constants.swift in Sources */,
 				CC595CED235B1222003D74F6 /* NewEventNotification.swift in Sources */,

@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import EventKit
 
 class Event {
     static var current: Event?
@@ -460,6 +461,40 @@ class Event {
         }
         
         task.resume()
+    }
+    
+    func addToCalendar() {
+        let store = EKEventStore()
+        if let id = User.current?.calendarIdentifiers[uuid], store.event(withIdentifier: id) != nil {
+            print("Event with id \(id) already added!")
+            return
+        }
+        store.requestAccess(to: .event) { granted, error in
+            if granted && error == nil {
+                let newEvent = EKEvent(eventStore: store)
+                newEvent.title = self.title
+                newEvent.startDate = self.startTime ?? Date()
+                newEvent.endDate = self.endTime ?? newEvent.startDate.addingTimeInterval(7200)
+                newEvent.location = self.location
+                newEvent.calendar = store.defaultCalendarForNewEvents
+                newEvent.addAlarm(.init(relativeOffset: -3600))
+                newEvent.addAlarm(.init(relativeOffset: -900))
+                newEvent.notes = "This event is hosted by \(self.hostTitle)."
+                do {
+                    try store.save(newEvent, span: .thisEvent)
+                    User.current?.calendarIdentifiers[self.uuid] = newEvent.eventIdentifier
+                } catch let error {
+                    print("Failed to save event: \(error)")
+                }
+            }
+        }
+    }
+    
+    func removeFromCalendar() {
+        let store = EKEventStore()
+        if let id = User.current?.calendarIdentifiers[uuid], let calendarEvent = store.event(withIdentifier: id) {
+            try? store.remove(calendarEvent, span: .thisEvent)
+        }
     }
 }
 
