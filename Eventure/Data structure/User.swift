@@ -400,7 +400,7 @@ class User: Profile {
                 alert.addAction(.init(title: "Don't Add This Event", style: .cancel))
                 UIApplication.topMostViewController?.present(alert, animated: true)
             }
-        } else {
+        } else if !favoritedEvents.contains(event.uuid) {
             event.removeFromCalendar()
         }
     }
@@ -474,7 +474,7 @@ class User: Profile {
                 alert.addAction(.init(title: "Don't Add This Event", style: .cancel))
                 UIApplication.topMostViewController?.present(alert, animated: true)
             }
-        } else {
+        } else if !interestedEvents.contains(event.uuid) {
             event.removeFromCalendar()
         }
     }

@@ -286,7 +286,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.titleLabel.text = "Scan"
         case (2, 1):
             cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Events I Checked in"
+            cell.titleLabel.text = "Events I Attended"
         case (2, 2):
             cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
             cell.titleLabel.text = "My Tickets"
@@ -359,7 +359,7 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         return [
             "",
             "Personal Information",
-            "Event Check-in",
+            "Events",
             "Personal Interests",
             nil
         ][section]

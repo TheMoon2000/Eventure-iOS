@@ -64,7 +64,9 @@ class DepartmentList: UIViewController {
     
     private func refreshDepartments() {
         deptList = Organization.current!.departments.sorted(by: <)
-        prevRow = deptList.firstIndex(of: memberProfile.department!) ?? -1
+        if memberProfile.department != nil {
+            prevRow = deptList.firstIndex(of: memberProfile.department!) ?? -1
+        }
     }
 
     

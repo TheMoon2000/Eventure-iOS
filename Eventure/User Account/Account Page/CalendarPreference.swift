@@ -12,6 +12,8 @@ class CalendarPreference: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
 
         title = "Calendar Preferences"
         tableView = UITableView(frame: .zero, style: .grouped)
