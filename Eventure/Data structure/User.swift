@@ -374,11 +374,19 @@ class User: Profile {
         
         task.resume()
         
+        let style: UIAlertController.Style
+        
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            style = .actionSheet
+        } else {
+            style = .alert
+        }
+        
         if interested {
             if interestPreference == .alwaysAdd {
                 event.addToCalendar()
             } else if interestPreference == .alwaysAsk {
-                let alert = UIAlertController(title: "Add event to calendar?", message: "Your current preference indicates that you should be asked every time you add an interested event. You can either make a decision just for this event, or set update the default settings for all interested events.", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "Add event to calendar?", message: "Your current preference indicates that you should be asked every time you add an interested event. You can either make a decision just for this event, or set update the default settings for all interested events.", preferredStyle: style)
                 alert.addAction(.init(title: "Add This Event", style: .default, handler: { _ in
                     event.addToCalendar()
                 }))
@@ -448,11 +456,19 @@ class User: Profile {
         
         task.resume()
         
+        let style: UIAlertController.Style
+        
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            style = .actionSheet
+        } else {
+            style = .alert
+        }
+        
         if favorited {
             if favoritePreference == .alwaysAdd {
                 event.addToCalendar()
             } else if favoritePreference == .alwaysAsk {
-                let alert = UIAlertController(title: "Add event to calendar?", message: "Your current preference indicates that you should be asked every time you add a favorite event. You can either make a decision just for this event, or set update the default settings for all favorite events.", preferredStyle: .actionSheet)
+                let alert = UIAlertController(title: "Add event to calendar?", message: "Your current preference indicates that you should be asked every time you add a favorite event. You can either make a decision just for this event, or set update the default settings for all favorite events.", preferredStyle: style)
                 alert.addAction(.init(title: "Add This Event", style: .default, handler: { _ in
                     event.addToCalendar()
                 }))

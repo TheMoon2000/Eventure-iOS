@@ -315,12 +315,14 @@ extension AddMemberPage {
             return cell
         case [1, 0]:
             let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
+            cell.backgroundColor = AppColors.background
             cell.accessoryType = .disclosureIndicator
             cell.textLabel?.text = "Department"
             cell.detailTextLabel?.text = self.memberProfile.department ?? "None"
             return cell
         case [1, 1]:
             let cell = UITableViewCell(style: .value1, reuseIdentifier: nil)
+            cell.backgroundColor = AppColors.background
             cell.accessoryType = .disclosureIndicator
             cell.textLabel?.text = "Position"
             cell.detailTextLabel?.text = memberProfile.role.isEmpty ? "None" : memberProfile.role
