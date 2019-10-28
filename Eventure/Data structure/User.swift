@@ -13,7 +13,7 @@ class User: Profile {
     
     /// The current user, if the app is logged in.
     static var current: User? {
-        didSet {
+        didSet (oldValue) {
             if current != nil {
                 UserDefaults.standard.set(ACCOUNT_TYPE_USER, forKey: KEY_ACCOUNT_TYPE)
                 current?.save(needsUpload: false)
@@ -21,8 +21,7 @@ class User: Profile {
                 Ticket.updateTickets()
                 current?.saveEnabled = true
                 print("Saving for user <\(current!.name)> is enabled at \(CURRENT_USER_PATH)")
-            } else {
-                UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
+            } else if oldValue != nil {
                 Ticket.userTickets = []
             }
         }

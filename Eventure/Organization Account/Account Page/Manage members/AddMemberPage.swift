@@ -154,16 +154,16 @@ class AddMemberPage: UITableViewController {
                     if let backup = self.backup {
                         backup.importData(from: self.memberProfile)
                         Organization.current?.save()
-                        self.parentVC.myTableView.reloadData()
+                        self.parentVC.reloadPage()
                         self.navigationController?.popViewController(animated: true)
                     } else if let existingMember = (Organization.current!.members.filter { $0.email == self.memberProfile.email }).first {
                         existingMember.importData(from: self.memberProfile)
                         Organization.current?.save()
-                        self.parentVC.myTableView.reloadData()
+                        self.parentVC.reloadPage()
                         self.dismiss(animated: true)
                     } else {
                         Organization.current?.members.insert(self.memberProfile)
-                        self.parentVC.myTableView.reloadData()
+                        self.parentVC.reloadPage()
                         self.dismiss(animated: true)
                     }
                 }

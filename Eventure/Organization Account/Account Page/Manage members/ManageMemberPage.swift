@@ -133,11 +133,15 @@ class ManageMemberPage: UIViewController {
                 return
             }
             
-            DispatchQueue.global(qos: .default).async {
-                self.groupMembers()
-                DispatchQueue.main.async {
-                    self.myTableView.reloadData()
-                }
+            self.reloadPage()
+        }
+    }
+    
+    func reloadPage() {
+        DispatchQueue.global(qos: .default).async {
+            self.groupMembers()
+            DispatchQueue.main.async {
+                self.myTableView.reloadData()
             }
         }
     }

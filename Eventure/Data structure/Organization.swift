@@ -12,13 +12,11 @@ import SwiftyJSON
 class Organization: CustomStringConvertible {
 
     static var current: Organization? {
-        didSet {
+        didSet (oldValue) {
             if current != nil {
                 UserDefaults.standard.setValue(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
                 current?.save(requireReupload: false)
                 current?.saveEnabled = true
-            } else {
-                 UserDefaults.standard.removeObject(forKey: KEY_ACCOUNT_TYPE)
             }
         }
     }
