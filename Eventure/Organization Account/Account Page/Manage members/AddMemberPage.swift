@@ -58,8 +58,8 @@ class AddMemberPage: UITableViewController {
         }
         
         spinner = {
-            let spinner = UIActivityIndicatorView(style: .gray)
-            spinner.tintColor = AppColors.lightControl
+            let spinner = UIActivityIndicatorView(style: .white)
+            spinner.color = AppColors.lightControl
             spinner.startAnimating()
             
             return UIBarButtonItem(customView: spinner)
@@ -380,8 +380,6 @@ extension AddMemberPage {
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Remove", style: .destructive, handler: { _ in
                 self.removeMember(self.memberProfile)
-                Organization.current?.members.remove(self.memberProfile)
-                self.navigationController?.popViewController(animated: true)
             }))
             present(alert, animated: true)
         default:
