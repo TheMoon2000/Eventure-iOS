@@ -141,6 +141,15 @@ extension DepartmentList: UITableViewDelegate, UITableViewDataSource {
         
         let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
             
+            let dept = self.deptList[indexPath.row]
+            
+            if Organization.current!.members.contains(where: { $0.department == dept }) {
+                let alert = UIAlertController(title: "Cannot delete department", message: "This department is already assigned to at least one member in your organization. To remove it, please first change those members to other departments.", preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .default))
+                self.present(alert, animated: true)
+                return
+            }
+            
             let alert = UIAlertController(title: "Delete department?", message: "This action cannot be undone.", preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
@@ -155,25 +164,19 @@ extension DepartmentList: UITableViewDelegate, UITableViewDataSource {
     
     func attemptDeleteDept(indexPath: IndexPath) {
         let dept = deptList[indexPath.row]
-        if (Organization.current!.members.filter { $0.department == dept }).isEmpty {
-            loadingBG.isHidden = false
-            Organization.current?.departments.remove(dept)
-            Organization.current?.pushSettings(.departments) { successful in
-                self.loadingBG.isHidden = true
-                if successful {
-                    self.refreshDepartments()
-                    if self.memberProfile.department == dept {
-                        self.memberProfile.department = nil
-                    }
-                    self.departmentTable.deleteRows(at: [indexPath], with: .automatic)
-                } else {
-                    Organization.current?.departments.insert(dept)
+        loadingBG.isHidden = false
+        Organization.current?.departments.remove(dept)
+        Organization.current?.pushSettings(.departments) { successful in
+            self.loadingBG.isHidden = true
+            if successful {
+                self.refreshDepartments()
+                if self.memberProfile.department == dept {
+                    self.memberProfile.department = nil
                 }
+                self.departmentTable.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                Organization.current?.departments.insert(dept)
             }
-        } else {
-            let alert = UIAlertController(title: "Cannot delete row", message: "This department is already assigned to at least one member in your organization. To remove it, please first change those members to other departments.", preferredStyle: .alert)
-            alert.addAction(.init(title: "OK", style: .default))
-            present(alert, animated: true)
         }
     }
 }

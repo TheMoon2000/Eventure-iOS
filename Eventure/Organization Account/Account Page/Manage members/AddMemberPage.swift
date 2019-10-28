@@ -72,7 +72,6 @@ class AddMemberPage: UITableViewController {
 
     
     @objc private func save() {
-        
         guard !memberProfile.role.isEmpty else {
             let warning = UIAlertController(title: "Member must have a position!", message: "You have not specified a position for this member.", preferredStyle: .alert)
             warning.addAction(.init(title: "OK", style: .cancel))
@@ -93,6 +92,20 @@ class AddMemberPage: UITableViewController {
             present(warning, animated: true)
             return
         }
+        
+        guard !Organization.current!.members.contains(where: { $0.email == memberProfile.email }) else {
+            let warning = UIAlertController(title: "Member already exists!", message: "The member with the provided email already exists. Would you like to update the member's information?", preferredStyle: .alert)
+            warning.addAction(.init(title: "Cancel", style: .cancel))
+            warning.addAction(.init(title: "Update", style: .default, handler: { _ in
+                self.pushMember()
+            }))
+            self.present(warning, animated: true)
+            return
+        }
+        pushMember()
+    }
+    
+    private func pushMember() {
         
         navigationItem.rightBarButtonItem = spinner
         
@@ -139,6 +152,9 @@ class AddMemberPage: UITableViewController {
                     if let backup = self.backup {
                         backup.importData(from: self.memberProfile)
                         self.navigationController?.popViewController(animated: true)
+                    } else if let existingMember = (Organization.current!.members.filter { $0.email == self.memberProfile.email }).first {
+                        existingMember.importData(from: self.memberProfile)
+                        self.dismiss(animated: true)
                     } else {
                         Organization.current?.members.insert(self.memberProfile)
                         self.dismiss(animated: true)

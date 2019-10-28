@@ -138,6 +138,16 @@ extension RoleList: UITableViewDelegate, UITableViewDataSource {
         
         let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
             
+            let role = roleList[indexPath.row]
+
+            if Organization.current!.members.contains(where: { $0.role == role }) {
+                let alert = UIAlertController(title: "Cannot delete role", message: "This role is already assigned to at least one member in your organization. To remove this role, please first change those members to other roles.", preferredStyle: .alert)
+                alert.addAction(.init(title: "OK", style: .default))
+                present(alert, animated: true)
+                return nil
+            }
+            
+            
             let alert = UIAlertController(title: "Delete role?", message: "This action cannot be undone.", preferredStyle: .alert)
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Delete", style: .destructive, handler: { _ in
@@ -152,25 +162,19 @@ extension RoleList: UITableViewDelegate, UITableViewDataSource {
     
     func attemptDeleteRole(indexPath: IndexPath) {
         let role = roleList[indexPath.row]
-        if (Organization.current!.members.filter { $0.role == role }).isEmpty {
-            loadingBG.isHidden = false
-            Organization.current?.roles.remove(role)
-            Organization.current?.pushSettings(.roles) { successful in
-                self.loadingBG.isHidden = true
-                if successful {
-                    self.refreshRoles()
-                    if self.memberProfile.role == role {
-                        self.memberProfile.role = ""
-                    }
-                    self.roleTable.deleteRows(at: [indexPath], with: .automatic)
-                } else {
-                    Organization.current?.roles.insert(role)
+        loadingBG.isHidden = false
+        Organization.current?.roles.remove(role)
+        Organization.current?.pushSettings(.roles) { successful in
+            self.loadingBG.isHidden = true
+            if successful {
+                self.refreshRoles()
+                if self.memberProfile.role == role {
+                    self.memberProfile.role = ""
                 }
+                self.roleTable.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                Organization.current?.roles.insert(role)
             }
-        } else {
-            let alert = UIAlertController(title: "Cannot delete row", message: "This role is already assigned to at least one member in your organization. To remove this role, please first change those members to other roles.", preferredStyle: .alert)
-            alert.addAction(.init(title: "OK", style: .default))
-            present(alert, animated: true)
         }
     }
 }

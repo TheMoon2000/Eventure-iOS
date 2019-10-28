@@ -84,7 +84,7 @@ class ManageMemberPage: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         groupMembers()
-        self.myTableView.reloadData()
+        myTableView.reloadData()
     }
     
     @objc private func inviteButtonPressed() {
