@@ -13,7 +13,7 @@ import SwiftyJSON
 
 class AddMemberPage: UITableViewController {
     
-    var parentVC: AccountViewController?
+    var parentVC: ManageMemberPage!
     
     private var graduationCellExpanded = false
     private var saveBarButton: UIBarButtonItem!
@@ -28,9 +28,10 @@ class AddMemberPage: UITableViewController {
         super.init(coder: aDecoder)
     }
     
-    required init(member: Membership?) {
+    required init(member: Membership?, parent: ManageMemberPage) {
         super.init(nibName: nil, bundle: nil)
         
+        self.parentVC = parent
         backup = member
         memberProfile = member?.clone() ?? Membership(orgID: Organization.current!.id)
     }
@@ -67,6 +68,7 @@ class AddMemberPage: UITableViewController {
     }
     
     @objc private func close() {
+        parentVC.myTableView.reloadData()
         dismiss(animated: true)
     }
 
@@ -151,12 +153,17 @@ class AddMemberPage: UITableViewController {
                 DispatchQueue.main.async {
                     if let backup = self.backup {
                         backup.importData(from: self.memberProfile)
+                        Organization.current?.save()
+                        self.parentVC.myTableView.reloadData()
                         self.navigationController?.popViewController(animated: true)
                     } else if let existingMember = (Organization.current!.members.filter { $0.email == self.memberProfile.email }).first {
                         existingMember.importData(from: self.memberProfile)
+                        Organization.current?.save()
+                        self.parentVC.myTableView.reloadData()
                         self.dismiss(animated: true)
                     } else {
                         Organization.current?.members.insert(self.memberProfile)
+                        self.parentVC.myTableView.reloadData()
                         self.dismiss(animated: true)
                     }
                 }

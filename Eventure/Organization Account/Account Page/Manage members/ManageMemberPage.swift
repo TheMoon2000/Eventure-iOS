@@ -19,7 +19,7 @@ class ManageMemberPage: UIViewController {
     // UI elements
     private var loadingBG: UIView!
     private var backGroundLabel: UILabel!
-    private var myTableView: UITableView!
+    private(set) var myTableView: UITableView!
     private var refreshControl = UIRefreshControl()
     private var saveBarButton: UIBarButtonItem!
     
@@ -88,7 +88,7 @@ class ManageMemberPage: UIViewController {
     }
     
     @objc private func inviteButtonPressed() {
-        let addPage = AddMemberPage(member: nil)
+        let addPage = AddMemberPage(member: nil, parent: self)
         let navBar = CheckinNavigationController(rootViewController: addPage)
         navBar.navigationBar.isTranslucent = false
         present(navBar, animated: true)
@@ -152,9 +152,9 @@ extension ManageMemberPage: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         let cell: MemberDisplayCell = tableView.cellForRow(at: indexPath) as! MemberDisplayCell
         let member:Membership = cell.returnMember()
-           let addPage = AddMemberPage(member: member)
-           addPage.hidesBottomBarWhenPushed = true
-           navigationController?.pushViewController(addPage, animated: true)
+        let addPage = AddMemberPage(member: member, parent: self)
+        addPage.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(addPage, animated: true)
    }
    
    func numberOfSections(in tableView: UITableView) -> Int {

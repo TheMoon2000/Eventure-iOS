@@ -33,7 +33,7 @@ class Organization: CustomStringConvertible {
     var subscribers = Set<Int>() { didSet { save() } }
     var roles = Set<String>() { didSet { save() } }
     var departments = Set<String>() { didSet { save() } }
-    var members = Set<Membership>()
+    var members = Set<Membership>() { didSet { save() } }
     var numberOfEvents = 0
 
     // Profile Information
@@ -290,6 +290,8 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Has logo"] = self.hasLogo ? 1 : 0
         json.dictionaryObject?["Subscribers"] = self.subscribers.description
         json.dictionaryObject?["Members"] = members.map { $0.encodedJSON }
+        json.dictionaryObject?["Departments"] = departments.description
+        json.dictionaryObject?["Roles"] = roles.description
         
         return json
     }

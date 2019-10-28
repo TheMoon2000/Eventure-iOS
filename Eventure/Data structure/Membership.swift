@@ -91,7 +91,6 @@ class Membership: Hashable {
         self.name = other.name
         self.role = other.role
         self.department = other.department
-        self.status = other.status
     }
     
     func getProfilePicture(_ handler: ((UIImage) -> ())?) {
