@@ -138,13 +138,13 @@ extension RoleList: UITableViewDelegate, UITableViewDataSource {
         
         let action = UITableViewRowAction(style: .destructive, title: "Delete", handler: { action, indexPath in
             
-            let role = roleList[indexPath.row]
+            let role = self.roleList[indexPath.row]
 
             if Organization.current!.members.contains(where: { $0.role == role }) {
                 let alert = UIAlertController(title: "Cannot delete role", message: "This role is already assigned to at least one member in your organization. To remove this role, please first change those members to other roles.", preferredStyle: .alert)
                 alert.addAction(.init(title: "OK", style: .default))
-                present(alert, animated: true)
-                return nil
+                self.present(alert, animated: true)
+                return
             }
             
             
