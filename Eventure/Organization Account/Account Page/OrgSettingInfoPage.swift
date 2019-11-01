@@ -12,62 +12,31 @@ import UIKit
 
 class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    
     private var myTableView: UITableView!
-    private var spinner: UIActivityIndicatorView!
-    private var spinnerLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         title = "Organization Info"
         
-        myTableView = UITableView()
-        myTableView.contentInset.top = 10
-        myTableView.register(OrgSettingInfoCell.classForCoder(), forCellReuseIdentifier: "MyCell")
-        myTableView.dataSource = self
-        myTableView.delegate = self
-        myTableView.backgroundColor = .clear
-        self.view.addSubview(myTableView)
-        //set location constraints of the tableview
-        myTableView.translatesAutoresizingMaskIntoConstraints = false
-        myTableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        myTableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        myTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        myTableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        //make sure table view appears limited
-        self.myTableView.tableFooterView = UIView(frame: CGRect.zero)
-        
-        spinner = {
-            let spinner = UIActivityIndicatorView(style: .whiteLarge)
-            spinner.color = AppColors.lightControl
-            spinner.hidesWhenStopped = true
-            spinner.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(spinner)
-            
-            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -5).isActive = true
-            
-            return spinner
-        }()
-        
-        spinnerLabel = {
-            let label = UILabel()
-            label.text = "Verifying password..."
-            label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
-            label.textColor = .darkGray
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: spinner.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 10).isActive = true
-            
-            return label
-        }()
+        myTableView = {
+            let tv = UITableView(frame: .zero, style: .grouped)
+            tv.tableHeaderView = UIView(frame: .init(x: 0, y: 0, width: 0, height: 30))
+            tv.dataSource = self
+            tv.delegate = self
+            tv.backgroundColor = .clear
+            tv.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(tv)
 
+            tv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            tv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            tv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            tv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            
+            return tv
+        }()
     
     }
 
@@ -80,21 +49,43 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - Table view setup
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return 4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell") as! OrgSettingInfoCell
         
-        cell.setup(sectionNum: indexPath.section, rowNum: indexPath.row, type: "")
+        let cell = SettingsItemCell(withAccessory: true)
+        
+        switch indexPath {
+        case [0, 0]:
+            cell.titleLabel.text = "Organization Name"
+            cell.valueLabel.text = Organization.current!.title
+            cell.icon.image = #imageLiteral(resourceName: "name")
+        case [0, 1]:
+            cell.titleLabel.text = "Password"
+            cell.icon.image = #imageLiteral(resourceName: "password")
+        case [0, 2]:
+            cell.titleLabel.text = "Contact Name"
+            cell.valueLabel.text = Organization.current!.contactName
+            cell.icon.image = #imageLiteral(resourceName: "default_user")
+        case [0, 3]:
+            cell.titleLabel.text = "Contact Email"
+            cell.valueLabel.text = Organization.current!.contactEmail
+            cell.icon.image = #imageLiteral(resourceName: "email")
+        default:
+            break
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == 0 { //if the user tries to change the name
-            self.pushToModifyPage(type: .title)
-        } else if indexPath.row == 1 { //if the user tries to change the password
+        
+        switch indexPath {
+        case [0, 0]:
+            pushToModifyPage(type: .title)
+        case [0, 1]:
             let alert = UIAlertController(title: "Verification", message: "Please enter your current password to continue.", preferredStyle: .alert)
             alert.addTextField(configurationHandler: { (textField) in
                 textField.isSecureTextEntry = true
@@ -113,19 +104,43 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             
             self.present(alert, animated: true)
-        } else if indexPath.row == 2 {
+        
+        case [0, 2]:
+            let modifyPage = GenericOneFieldPage(fieldName: "Contact Name", fieldDefault: Organization.current!.contactName, type: .displayedName)
+            modifyPage.submitAction = { inputField, spinner in
+                inputField.isEnabled = false
+                spinner.startAnimating()
+                
+                Organization.current?.contactName = inputField.text!
+                
+                Organization.current?.pushSettings(.contactName) { success in
+                    spinner.stopAnimating()
+                    inputField.isEnabled = true
+                    
+                    if success {
+                        self.navigationController?.popViewController(animated: true)
+                    } else {
+                        internetUnavailableError(vc: self)
+                    }
+                }
+            }
+            modifyPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(modifyPage, animated: true)
+        case [0, 3]:
             pushToModifyPage(type: .contactEmail)
+        default:
+            break
         }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 55.0
+        return 54.0
     }
     
-    func pushToModifyPage(type: Types) {
+    private func pushToModifyPage(type: Types, placeholder: String? = nil) {
         let modifyAccount: GenericOneFieldPage
         if type == .title {
-            modifyAccount = GenericOneFieldPage(fieldName: "Title", fieldDefault: Organization.current!.title)
+            modifyAccount = GenericOneFieldPage(fieldName: placeholder ?? "Title", fieldDefault: Organization.current!.title)
             modifyAccount.submitAction = { inputField, spinner in
                 inputField.isEnabled = false
                 spinner.startAnimating()
@@ -144,7 +159,7 @@ class OrgSettingInfoPage: UIViewController, UITableViewDelegate, UITableViewData
                 }
             }
         } else {
-            modifyAccount = .init(fieldName: "Organization Contact Address", fieldDefault: Organization.current!.contactEmail)
+            modifyAccount = .init(fieldName: "Contact Email", fieldDefault: Organization.current!.contactEmail)
             
             modifyAccount.submitAction = { inputField, spinner in
                 inputField.isEnabled = false

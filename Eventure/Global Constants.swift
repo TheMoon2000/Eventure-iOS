@@ -92,7 +92,10 @@ struct AppColors {
     static var interest = UIColor(red: 254/255, green: 206/255, blue: 56/255, alpha: 1)
     
     /// The color used for hyperlinks.
-    static var link = UIColor(red: 104/255, green: 165/255, blue: 245/255, alpha: 1)
+    static var link = UIColor(named: "AppColors.link")!
+    
+    /// The color used for active hyperlinks.
+    static var linkPressed = UIColor(named: "AppColors.link_pressed")!
     
     /// Placeholder text color.
     static var placeholder = UIColor(named: "AppColors.placeholder")!
@@ -353,10 +356,22 @@ extension StringStyle {
         .color(AppColors.emphasis)
     )
     
+    static let valueLarge = StringStyle(
+        .font(UIFont.systemFont(ofSize: 18, weight: .medium)),
+        .lineHeightMultiple(1.2),
+        .color(AppColors.value)
+    )
+    
     static let basicStyle = StringStyle(
         .font(UIFont.systemFont(ofSize: 15.5)),
         .lineHeightMultiple(1.1),
         .color(AppColors.plainText)
+    )
+    
+    static let basicLarge = StringStyle(
+        .font(UIFont.systemFont(ofSize: 18)),
+        .lineHeightMultiple(1.2),
+        .color(AppColors.value)
     )
 }
 

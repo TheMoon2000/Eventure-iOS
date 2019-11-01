@@ -25,6 +25,7 @@ class EventImagePickerCell: UITableViewCell {
             let view = UIView()
             view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
+            view.applyMildShadow()
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             

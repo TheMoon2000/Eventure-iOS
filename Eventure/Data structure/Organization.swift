@@ -17,6 +17,7 @@ class Organization: CustomStringConvertible {
                 UserDefaults.standard.setValue(ACCOUNT_TYPE_ORG, forKey: KEY_ACCOUNT_TYPE)
                 current?.save(requireReupload: false)
                 current?.saveEnabled = true
+                print("Saving for organization <\(current!.title)> is enabled at \(CURRENT_USER_PATH)")
             }
         }
     }
@@ -187,8 +188,6 @@ class Organization: CustomStringConvertible {
         
         if writeToFile(path: CURRENT_USER_PATH) == false {
             print("WARNING: cannot write organization to \(CURRENT_USER_PATH)")
-        } else {
-            print("successfully wrote organization to \(CURRENT_USER_PATH)")
         }
     }
     
@@ -209,6 +208,10 @@ class Organization: CustomStringConvertible {
         
         if settings.contains(.email) {
             body.dictionaryObject?["Email"] = contactEmail
+        }
+        
+        if settings.contains(.contactName) {
+            body.dictionaryObject?["Contact name"] = contactName
         }
         
         if settings.contains(.orgDescription) {
@@ -515,8 +518,9 @@ extension Organization {
         static let tags             = PushableSettings(rawValue: 1 << 1)
         static let orgTitle         = PushableSettings(rawValue: 1 << 2)
         static let email            = PushableSettings(rawValue: 1 << 3)
-        static let website          = PushableSettings(rawValue: 1 << 4)
-        static let roles            = PushableSettings(rawValue: 1 << 5)
-        static let departments      = PushableSettings(rawValue: 1 << 6)
+        static let contactName      = PushableSettings(rawValue: 1 << 4)
+        static let website          = PushableSettings(rawValue: 1 << 5)
+        static let roles            = PushableSettings(rawValue: 1 << 6)
+        static let departments      = PushableSettings(rawValue: 1 << 7)
     }
 }

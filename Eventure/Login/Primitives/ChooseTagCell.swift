@@ -54,6 +54,9 @@ class ChooseTagCell: UITableViewCell {
             overlay.layer.cornerRadius = 7
             overlay.layer.borderColor = AppColors.line.cgColor
             overlay.backgroundColor = AppColors.subview
+            if !loginStyle {
+                overlay.applyMildShadow()
+            }
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             

@@ -41,6 +41,7 @@ class Ticket {
         }
     }
     var quantity: Int
+    var remaining: Int
     var ticketPrice: Double
     var paymentAmount: Double
     var paymentDescription: String {
@@ -90,6 +91,7 @@ class Ticket {
         admissionID = dictionary["Admission ID"]?.string ?? ""
         typeName = dictionary["Type name"]?.string ?? "<Ticket name>"
         quantity = dictionary["Quantity"]?.int ?? 1
+        remaining = dictionary["Remaining"]?.int ?? 1
         ticketPrice = dictionary["Ticket price"]?.double ?? 0.0
         paymentAmount = dictionary["Payment amount"]?.double ?? 0.0
         location = dictionary["Location"]?.string ?? "TBA"
@@ -139,6 +141,7 @@ class Ticket {
         main.dictionaryObject?["Organization title"] = hostName
         main.dictionaryObject?["Organization"] = hostID
         main.dictionaryObject?["Quantity"] = quantity
+        main.dictionaryObject?["Remaining"] = remaining
         main.dictionaryObject?["Payment amount"] = paymentAmount
         main.dictionaryObject?["Payment type"] = paymentType.rawValue
         main.dictionaryObject?["Has logo"] = hasLogo ? 1 : 0

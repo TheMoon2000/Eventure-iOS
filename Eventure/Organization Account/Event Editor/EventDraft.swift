@@ -63,7 +63,7 @@ class EventDraft: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = AppColors.background
+        view.backgroundColor = AppColors.canvas
         dataSource = self
         
         // Prepare for transition progress detection

@@ -22,9 +22,12 @@ class GenericOneFieldPage: UITableViewController {
     required init(fieldName: String, fieldDefault: String, type: PersonalInfoPage.Types = .displayedName) {
         super.init(nibName: nil, bundle: nil)
         
+        self.title = fieldName
         self.fieldName = fieldName
         tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.sectionHeaderHeight = 50
         tableView.backgroundColor = AppColors.tableBG
+        tableView.keyboardDismissMode = .interactive
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(doneButtonPressed))
         
         textCell = GenericTextCell(title: fieldName)

@@ -112,10 +112,11 @@ class MessageSettingsMenu: UITableViewController {
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Clear Cache", style: .destructive, handler: { _ in
                 AccountNotification.cachedLogos.removeAll()
-                AccountNotification.current.removeAll()
-                AccountNotification.currentUpdateTime = .distantPast
+                // AccountNotification.current.removeAll()
+                // AccountNotification.currentUpdateTime = .distantPast
                 AccountNotification.save()
                 self.parentVC.loadingBG.isHidden = false
+                self.parentVC.groupNotifications()
                 self.parentVC.tableView.reloadData()
                 self.parentVC.updateMessages()
             }))

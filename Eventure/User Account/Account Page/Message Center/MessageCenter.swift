@@ -104,7 +104,7 @@ class MessageCenter: UIViewController {
         navigationItem.backBarButtonItem = .init(title: navigationItem.title, style: .plain, target: nil, action: nil)
     }
     
-    private func groupNotifications() {
+    func groupNotifications() {
         groupedNotifications = AccountNotification.current.sorted { g1, g2 in
             return g1.value.last!.creationDate > g2.value.last!.creationDate
         }

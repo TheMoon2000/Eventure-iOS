@@ -36,7 +36,7 @@ class DraftTimeLocationPage: UITableViewController {
         
         let startBottomCell: DatePickerBottomCell = {
             let cell = DatePickerBottomCell()
-            
+            cell.backgroundColor = AppColors.canvas
             let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
             cell.datePicker.date = draftPage.draft.startTime ?? rounded
@@ -47,6 +47,7 @@ class DraftTimeLocationPage: UITableViewController {
         contentCells.append(startBottomCell)
         
         let endTopCell = DatePickerTopCell(title: "End time:")
+        endTopCell.backgroundColor = AppColors.canvas
         if let endDate = draftPage.draft.endTime {
             endTopCell.displayedDate = endDate
         }
@@ -54,7 +55,7 @@ class DraftTimeLocationPage: UITableViewController {
         
         let endBottomCell: DatePickerBottomCell = {
             let cell = DatePickerBottomCell()
-            
+            cell.backgroundColor = AppColors.canvas
             let seconds = ceil(Date().timeIntervalSinceReferenceDate / 3600) * 3600
             let rounded = Date(timeIntervalSinceReferenceDate: seconds)
             cell.datePicker.date = draftPage.draft.endTime ?? rounded
@@ -84,12 +85,22 @@ class DraftTimeLocationPage: UITableViewController {
         }
         
         let checkinTopCell = DatePickerTopCell(title: "Check-in begins: ")
-        let checkinSliderCell = CheckinTimeCell()
+        checkinTopCell.backgroundColor = AppColors.canvas
         
-        var tiers = [Int : String]()
-        checkinSliderCell.options.forEach { tiers[$0.timeInterval] = $0.label }
-        checkinTopCell.rightLabel.text = tiers[draftPage.draft.checkinTime] ?? tiers[3600]
-        checkinSliderCell.caption.text = checkinTopCell.rightLabel.text
+        let checkinSliderCell = CheckinTimeCell()
+        checkinSliderCell.backgroundColor = AppColors.canvas
+        
+        var tiers = [Int : (label: String, index: Int)]()
+        for i in 0..<checkinSliderCell.options.count {
+            let option = checkinSliderCell.options[i]
+            tiers[option.timeInterval] = (option.label, i)
+        }
+                
+        let eventTier = tiers[draftPage.draft.checkinTime] ?? tiers[3600]!
+                
+        checkinTopCell.rightLabel.text = eventTier.label
+        checkinSliderCell.caption.text = eventTier.label
+        checkinSliderCell.slider.value = 20.0 * Float(eventTier.index)
         checkinSliderCell.changeHandler = { [weak self] newInterval, newLabel in
             checkinTopCell.rightLabel.text = newLabel
             self?.draftPage.draft.checkinTime = newInterval

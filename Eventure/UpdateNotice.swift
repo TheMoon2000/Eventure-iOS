@@ -53,7 +53,7 @@ class UpdateNotice: UIViewController {
         subtitleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.attributedText = "We've made some important updates to our platform, and we are sorry to let you know that this version of Eventure is **no longer supported**. Please go to the App Store to download the latest version.".attributedText(style: COMPACT_STYLE)
+            label.attributedText = "We've made some important updates to our platform and the app, and we are sorry to let you know that this version of Eventure is **no longer supported**. Please go to the App Store to download the latest version.".attributedText(style: COMPACT_STYLE)
             label.textAlignment = .center
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false

@@ -18,7 +18,7 @@ class ManageMemberPage: UIViewController {
     
     // UI elements
     private var loadingBG: UIView!
-    private var backGroundLabel: UILabel!
+    private var emptyLabel: UILabel!
     private(set) var myTableView: UITableView!
     private var refreshControl = UIRefreshControl()
     private var saveBarButton: UIBarButtonItem!
@@ -61,15 +61,15 @@ class ManageMemberPage: UIViewController {
             return tv
         }()
         
-        backGroundLabel = {
+        emptyLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
-            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 10).isActive = true
+            label.centerXAnchor.constraint(equalTo: myTableView.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: myTableView.centerYAnchor).isActive = true
+            
             
             return label
         }()
@@ -83,8 +83,9 @@ class ManageMemberPage: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        groupMembers()
-        myTableView.reloadData()
+        super.viewWillAppear(animated)
+        
+        reloadPage()
     }
     
     @objc private func inviteButtonPressed() {
@@ -141,6 +142,7 @@ class ManageMemberPage: UIViewController {
         DispatchQueue.global(qos: .default).async {
             self.groupMembers()
             DispatchQueue.main.async {
+                self.emptyLabel.text = self.allMembers.isEmpty ? "No members." : ""
                 self.myTableView.reloadData()
             }
         }

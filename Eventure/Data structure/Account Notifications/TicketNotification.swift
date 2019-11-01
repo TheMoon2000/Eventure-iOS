@@ -8,24 +8,43 @@
 
 import Foundation
 import SwiftyJSON
+import BonMot
 
 /// A subclass of user account notifications that handles all notifications that involve a ticket.
 class TicketNotification: AccountNotification {
-    var message = ""
-    var ticketID = ""
+    var eventTitle = ""
     
-    override var type: AccountNotification.ContentType {
+    override var contentType: AccountNotification.ContentType {
         return .newTicket
     }
     
     override var shortString: NSAttributedString {
-        return message.styled(with: .basicStyle)
+        return "[Ticket: \(eventTitle)]".styled(with: .basicStyle)
+    }
+    
+    var displayString: NSAttributedString {
+        
+        let textStyle = StringStyle(
+            .font(UIFont.systemFont(ofSize: 15)),
+            .lineHeightMultiple(1.1),
+            .color(AppColors.invertedLabel)
+        )
+        
+        let linkStyle = textStyle.byAdding(
+            .link(URL(string: "localhost")!),
+            .color(AppColors.link)
+        )
+        
+        return NSAttributedString.composed(of: [
+            "You have received a new ticket for the event “\(eventTitle)”. Please view it at your ".styled(with: textStyle),
+            "Ticket Center".styled(with: linkStyle),
+            ".".styled(with: textStyle)
+            ])
     }
     
     override init(json: JSON) {
         super.init(json: json)
         
-        self.message = rawContent.dictionary?["message"]?.string?.decoded ?? ""
-        self.ticketID = rawContent.dictionary?["ticketId"]?.string ?? ""
+        self.eventTitle = rawContent.dictionary?["eventTitle"]?.string ?? ""
     }
 }

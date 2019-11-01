@@ -59,7 +59,13 @@ class TicketQRCell: UITableViewCell {
             label.textAlignment = .center
             label.textColor = .gray
             let noun = ticket.quantity == 1 ? "Ticket" : "Tickets"
-            label.text = "\(ticket.quantity) " + noun
+            
+            var remaining = ""
+            if ticket.quantity > 1 && ticket.remaining < ticket.quantity {
+                remaining = " (\(ticket.quantity - ticket.remaining) used)"
+            }
+            
+            label.text = "\(ticket.quantity) " + noun + remaining
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -94,7 +100,7 @@ class TicketQRCell: UITableViewCell {
         activationLabel = {
             let label = UILabel()
             label.numberOfLines = 5
-            if let activationDate = ticket.activationDate {
+            if let activationDate = ticket.activationDate, ticket.remaining == 0 {
                 label.attributedText = "Activated \(activationDate.inlineString())".attributedText()
                 qrCode.alpha = 0.09
             }

@@ -33,6 +33,7 @@ class TicketCell: UITableViewCell {
             let view = UIView()
             view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 8
+            view.applyMildShadow()
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
             

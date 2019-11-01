@@ -1,5 +1,8 @@
 PODS:
   - BonMot (5.4.1)
+  - Charts (3.4.0):
+    - Charts/Core (= 3.4.0)
+  - Charts/Core (3.4.0)
   - Down (0.9.0)
   - SwiftCSVExport (2.0.1)
   - SwiftLoggly (1.0.7)
@@ -10,6 +13,7 @@ PODS:
 
 DEPENDENCIES:
   - BonMot
+  - Charts
   - Down
   - SwiftCSVExport
   - SwiftLoggly (~> 1.0)
@@ -28,9 +32,12 @@ SPEC REPOS:
     - TOCropViewController
     - TTTAttributedLabel
     - XLPagerTabStrip
+  trunk:
+    - Charts
 
 SPEC CHECKSUMS:
   BonMot: aa82119ff2ffa184223d8a31c72aed84fbb009e0
+  Charts: 74c9f256eaf0460c0c416522d1cf8c634ea6b286
   Down: 1cdbca4963b542d0ef34ebb3e10ff48382bdf761
   SwiftCSVExport: a2baa3904699e9d5b66dc1a15111d8172ade84dc
   SwiftLoggly: e698435ac1442ac0be4f4e2f74615ee1a0bd4547
@@ -39,6 +46,6 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
 
-PODFILE CHECKSUM: 7f80b7844ceb47ed1cba0c8ce712b752bd230ca4
+PODFILE CHECKSUM: 79ab1d43ccf6581a111af005d87e80dff6c86537
 
 COCOAPODS: 1.8.3

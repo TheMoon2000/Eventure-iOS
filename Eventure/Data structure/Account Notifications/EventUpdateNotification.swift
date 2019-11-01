@@ -18,7 +18,7 @@ class EventUpdateNotification: AccountNotification {
     var updateValue = ""
     var message = ""
     
-    override var type: AccountNotification.ContentType {
+    override var contentType: AccountNotification.ContentType {
         return .eventUpdate
     }
     

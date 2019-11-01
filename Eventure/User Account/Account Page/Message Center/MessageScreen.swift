@@ -106,7 +106,7 @@ class MessageScreen: UIViewController {
         tableView.contentInset.top = offset
         tableView.contentInset.bottom = -offset
         
-        if offset == 0 {
+        if tableView.contentOffset.y == 0 {
             tableView.setContentOffset(.init(x: 0, y: 2), animated: false)
         }
     }
@@ -214,7 +214,7 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
         
         let msg = groupedMessages[indexPath.section].content[indexPath.row]
         
-        switch msg.type {
+        switch msg.contentType {
         case .membershipInvite:
             let cell = MembershipInvitationCell(invitation: msg as! InviteNotification)
             cell.transform = CGAffineTransform(scaleX: 1, y: -1)
@@ -248,6 +248,11 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
             return cell
         case .newEvent:
             let cell = NewEventCell(content: msg as! NewEventNotification)
+            cell.transform = CGAffineTransform(scaleX: 1, y: -1)
+            return cell
+        case .newTicket:
+            let cell = TicketNotificationCell(content: msg as! TicketNotification,
+                                              parent: self)
             cell.transform = CGAffineTransform(scaleX: 1, y: -1)
             return cell
         default:

@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftyJSON
+import BonMot
 
 class ActivateTicket: UIViewController {
     
@@ -108,7 +109,7 @@ class ActivateTicket: UIViewController {
         activateTicket()
     }
     
-    func activateTicket(overrideCapacity: Bool = false) {
+    func activateTicket(overrideCapacity: Bool = false, name: String? = nil, email: String? = nil) {
         
         loadingBG.isHidden = false
         
@@ -117,6 +118,9 @@ class ActivateTicket: UIViewController {
             "ticketId": ticketID!,
             "overrideCapacity": overrideCapacity ? "1" : "0"
         ]
+        
+        parameters["name"] = name
+        parameters["email"] = email
         
         parameters["eventId"] = event?.uuid
         
@@ -155,11 +159,16 @@ class ActivateTicket: UIViewController {
                     self.dismiss(animated: true)
                 }))
                 switch status {
+                case -2:
+                    DispatchQueue.main.async {
+                        self.loadingBG.isHidden = true
+                        self.provideAdditionalInfo()
+                    }
                 case -1:
                     alert.title = "Your event is overloaded"
                     alert.message = "Your event's occupancy has already reached its capacity. Proceed check-in anyway?"
                     alert.addAction(.init(title: "Proceed", style: .default, handler: { _ in
-                        self.activateTicket(overrideCapacity: true)
+                        self.activateTicket(overrideCapacity: true, name: name, email: email)
                     }))
                     DispatchQueue.main.async {
                         self.present(alert, animated: true)
@@ -197,6 +206,27 @@ class ActivateTicket: UIViewController {
         
         task.resume()
     }
+    
+    func provideAdditionalInfo() {
+        let alert = UIAlertController(title: "Additional info needed", message: "This ticket has not been validated by its owner. To activate this ticket, the attendee should provide their name and email.", preferredStyle: .alert)
+        alert.addTextField { textfield in
+            textfield.placeholder = "Name"
+            textfield.autocapitalizationType = .words
+            textfield.autocorrectionType = .no
+        }
+        alert.addTextField { textfield in
+            textfield.placeholder = "Email"
+            textfield.keyboardType = .emailAddress
+            textfield.autocorrectionType = .no
+            textfield.autocapitalizationType = .none
+        }
+        alert.addAction(.init(title: "Cancel", style: .cancel))
+        alert.addAction(.init(title: "Continue", style: .default, handler: { _ in
+            self.activateTicket(overrideCapacity: false, name: alert.textFields![0].text, email: alert.textFields![1].text)
+        }))
+        
+        present(alert, animated: true)
+    }
 
     
     func checkinSuccess(info: [String : JSON]) {
@@ -211,11 +241,26 @@ class ActivateTicket: UIViewController {
         }
         
         let quantity = info["Quantity"]?.int ?? 1
+        let remaining = info["Remaining"]?.int ?? 0
         let noun = quantity == 1 ? "ticket" : "tickets"
-        let quantityInfo = quantity == 1 ? "" : "(\(quantity) \(noun)) "
-        let eventInfo = event == nil ? " of event *\(info["Event title"]!)*" : ""
+        let quantityInfo = quantity == 1 ? "" : "(\(quantity) \(noun), \(remaining) remaining) "
         
-        message.attributedText = ("**\(displayedName)** " + quantityInfo + "is successfully checked in for ticket type  **\(admissionType)**\(eventInfo).").attributedText(style: TITLE_STYLE)
+        var eventInfo: NSAttributedString = "".styled(with: .basicLarge)
+        if event == nil {
+            eventInfo = NSAttributedString.composed(of: [
+                " of “".styled(with: .basicLarge),
+                info["Event title"]!.stringValue.styled(with: .valueLarge),
+                "”.".styled(with: .basicLarge)
+            ])
+        }
+                        
+        message.attributedText = NSAttributedString.composed(of: [
+            displayedName.styled(with: .valueLarge),
+            " \(quantityInfo)is successfully checked in for ticket type ".styled(with: .basicLarge),
+            admissionType.styled(with: .valueLarge),
+            eventInfo
+        ])
+        
         message.textAlignment = .center
         canvas.isHidden = false
     }

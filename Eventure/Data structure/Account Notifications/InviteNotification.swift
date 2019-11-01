@@ -14,7 +14,7 @@ class InviteNotification: AccountNotification {
     var role = ""
     var status = Status.pending
     
-    override var type: AccountNotification.ContentType {
+    override var contentType: AccountNotification.ContentType {
         return .membershipInvite
     }
     

@@ -129,13 +129,9 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         
         loadingBG.isHidden = false
         
-        var parameters = [String : String]()
-        if User.current != nil {
-            parameters["userId"] = String(User.current!.uuid)
-        }
-        
         let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/List", parameters: parameters)!
+                           API_Name: "events/ListInterested",
+                           parameters: ["userId": String(User.current?.uuid ?? 0)])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -156,20 +152,18 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
             
             if let eventsList = try? JSON(data: data!).arrayValue {
                 for eventData in eventsList {
-                    if (eventData.dictionary?["Is interested"]?.bool ?? false)! {
                         
-                        let event = Event(eventInfo: eventData)
-                        
-                        event.getCover { eventWithImage in
-                            if let index = self.eventToIndex[event] {
-                                if let cell = self.myTableView.cellForRow(at: index) as? EventsCell {
-                                    cell.icon.image = eventWithImage.eventVisual
-                                }
+                    let event = Event(eventInfo: eventData)
+                    
+                    event.getCover { eventWithImage in
+                        if let index = self.eventToIndex[event] {
+                            if let cell = self.myTableView.cellForRow(at: index) as? EventsCell {
+                                cell.icon.image = eventWithImage.eventVisual
                             }
                         }
-                        
-                        self.eventDictionaryList.append(event)
                     }
+                    
+                    self.eventDictionaryList.append(event)
                 }
                 
                 //group events according to their time

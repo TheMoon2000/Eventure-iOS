@@ -177,8 +177,8 @@ class OrgEventCell: UICollectionViewCell {
         
         descriptionText = {
             let label = TTTAttributedLabel(frame: .zero)
-            label.delegate = self
             label.numberOfLines = 3
+            label.delegate = self
             label.enabledTextCheckingTypes = NSTextCheckingResult.CheckingType.link.rawValue +
                 NSTextCheckingResult.CheckingType.phoneNumber.rawValue
             
@@ -187,8 +187,14 @@ class OrgEventCell: UICollectionViewCell {
                 .foregroundColor: AppColors.link,
                 .underlineStyle: true
             ]
+            
+            let activeAttributes: [NSAttributedString.Key : Any] = [
+                .foregroundColor: AppColors.linkPressed,
+                .underlineStyle: true
+            ]
+            
             label.linkAttributes = attributes
-            label.activeLinkAttributes = attributes
+            label.activeLinkAttributes = activeAttributes
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             

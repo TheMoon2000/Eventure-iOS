@@ -204,7 +204,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         
         publishedLabel = {
             let label = UILabel()
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -218,7 +218,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         draftLabel = {
             let label = UILabel()
             label.isHidden = true
-            label.textColor = .darkGray
+            label.textColor = AppColors.prompt
             label.font = .systemFont(ofSize: 17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -227,7 +227,7 @@ class OrgEventViewController: UIViewController, EventProvider {
             label.centerYAnchor.constraint(equalTo: eventCatalog.centerYAnchor).isActive = true
             
             return label
-            }()
+        }()
         
         refreshControl.addTarget(self, action: #selector(pullDownRefresh), for: .valueChanged)
         // refreshControl.attributedTitle = NSAttributedString(string: "Reload", attributes: refreshControlAttributes)

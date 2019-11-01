@@ -35,6 +35,7 @@ class SortSettingsCell: UITableViewCell {
             let view = UIView()
             view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
+            view.applyMildShadow()
             if style == .top {
                 view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             } else if style == .bottom {

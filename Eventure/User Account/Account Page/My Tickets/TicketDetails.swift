@@ -52,7 +52,9 @@ class TicketDetails: UITableViewController {
             return
         }
         if ticket.eventID == dict["eventId"] {
+            print(dict)
             ticket.activationDate = DATE_FORMATTER.date(from: dict["date"] ?? "")
+            ticket.remaining = Int(dict["remaining"] ?? "") ?? 0
             tableView.reloadData()
         }
     }

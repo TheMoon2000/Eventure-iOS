@@ -60,6 +60,7 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
             field.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             field.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -18).isActive = true
             field.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            field.heightAnchor.constraint(equalTo: heightAnchor, constant: -5).isActive = true
             
             field.addTarget(self, action: #selector(textfieldDidChange), for: .editingChanged)
             

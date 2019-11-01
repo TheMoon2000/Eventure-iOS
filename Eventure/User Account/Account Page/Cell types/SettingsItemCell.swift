@@ -57,24 +57,24 @@ class SettingsItemCell: UITableViewCell {
             spacingConstraint = label.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: 15)
             spacingConstraint.isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
             return label
         }()
         
         valueLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
-            label.numberOfLines = 3
             label.textAlignment = .right
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .right
             addSubview(label)
             
-            label.leftAnchor.constraint(greaterThanOrEqualTo: titleLabel.leftAnchor, constant: 20).isActive = true
+            label.leftAnchor.constraint(greaterThanOrEqualTo: titleLabel.rightAnchor, constant: 16).isActive = true
             let constant: CGFloat = withAccessory ? -38 : -20
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: constant).isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+            label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
             
             return label
         } ()

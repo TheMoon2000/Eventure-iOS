@@ -18,7 +18,7 @@ class NewEventNotification: AccountNotification {
     var eventSummary = ""
     var coverImage: UIImage?
     
-    override var type: AccountNotification.ContentType {
+    override var contentType: AccountNotification.ContentType {
         return .newEvent
     }
     

@@ -37,10 +37,10 @@ class AccountNotification: CustomStringConvertible {
     let sender: Sender
     var read = true
     
-    private var contentType: ContentType?
+    private let _rawType: String
     
-    var type: ContentType {
-        return contentType ?? .unsupported
+    var contentType: ContentType {
+        return ContentType(rawValue: _rawType) ?? .unsupported
     }
     
     private var message: String
@@ -71,7 +71,7 @@ class AccountNotification: CustomStringConvertible {
             self.rawContent = JSON(parseJSON: dictionary["Content"]!.stringValue)
         }
         
-        self.contentType = ContentType(rawValue: dictionary["Type"]?.string ?? "")
+        self._rawType = dictionary["Type"]?.string ?? ""
         
         let senderID = dictionary["Sender"]?.string ?? AccountNotification.SYSTEM_ID
         let senderName = dictionary["Sender title"]?.string ?? "Unknown"
@@ -94,6 +94,8 @@ class AccountNotification: CustomStringConvertible {
             return InviteNotification(json: json)
         case .eventUpdate:
             return EventUpdateNotification(json: json)
+        case .newTicket:
+            return TicketNotification(json: json)
         default:
             return AccountNotification(json: json)
         }
@@ -135,6 +137,7 @@ class AccountNotification: CustomStringConvertible {
     static func syncFromServer(_ handler: ((Bool) -> ())?) {
         
         guard let userID = User.current?.userID else { return }
+        guard let filter = User.current?.enabledNotifications else { return }
         
         let currentTime = currentUpdateTime
         
@@ -172,6 +175,17 @@ class AccountNotification: CustomStringConvertible {
                     }
                     
                     if let new = new(json: rawNotification) {
+                        
+                        let type = new.contentType
+                        
+                        if type == .membershipInvite && !filter.contains(.membershipInvites)
+                            || type == .eventUpdate && !filter.contains(.eventUpdates)
+                            || type == .newEvent && !filter.contains(.newEvents)
+                            || type == .newTicket && !filter.contains(.newTickets)
+                            || type == .unsupported && !filter.contains(.others) {
+                            continue
+                        }
+                        
                         if tmp[new.sender] == nil {
                             tmp[new.sender] = [new]
                         } else {
@@ -205,9 +219,9 @@ class AccountNotification: CustomStringConvertible {
     var encodedJSON: JSON {
         var json = JSON()
         json.dictionaryObject?["User ID"] = userID
-        json.dictionaryObject?["Type"] = type.rawValue
+        json.dictionaryObject?["Type"] = _rawType
         json.dictionaryObject?["Date"] = PRECISE_FORMATTER.string(from: creationDate)
-        if type == .plain {
+        if contentType == .plain {
             json.dictionaryObject?["Content"] = message
         } else {
             json.dictionaryObject?["Content"] = rawContent

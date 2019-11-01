@@ -40,7 +40,7 @@ class DraftTicketsPage: UITableViewController {
     // MARK: - Table view data source
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.row == 1 && !draftPage.draft.requiresTicket {
+        if (indexPath.row == 1 || indexPath.row == 2) && !draftPage.draft.requiresTicket {
             return 0
         }
         
@@ -66,10 +66,12 @@ class DraftTicketsPage: UITableViewController {
                 self.draftPage.draft.requiresTicket = on
                 self.draftPage.edited = true
                 
-                if let bottom = tableView.cellForRow(at: [0, 1]) as? DatePickerTopCell {
-                    UIView.animate(withDuration: 0.2) {
-                        for item in [bottom.leftLabel, bottom.rightLabel, bottom.indicator] {
-                            item?.alpha = on ? 1.0 : 0.0
+                for i in [1, 2] {
+                    if let bottom = tableView.cellForRow(at: [0, i]) as? DatePickerTopCell {
+                        UIView.animate(withDuration: 0.2) {
+                            for item in [bottom.leftLabel, bottom.rightLabel, bottom.indicator] {
+                                item?.alpha = on ? 1.0 : 0.0
+                            }
                         }
                     }
                 }

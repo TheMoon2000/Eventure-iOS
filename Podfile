@@ -11,6 +11,7 @@ target 'Eventure' do
   pod 'SwiftCSVExport'
   pod 'SwiftLoggly', '~> 1.0'
   pod 'BonMot'
+  pod 'Charts'
   # pod 'Braintree'
   # pod 'Braintree/DataCollector'
   # pod 'Braintree/Venmo'

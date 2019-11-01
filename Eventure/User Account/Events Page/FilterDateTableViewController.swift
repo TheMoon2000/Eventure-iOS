@@ -44,6 +44,7 @@ class FilterDateTableViewController: UITableViewController {
         let startTopCell = DatePickerTopCell(title: "Start time:")
         
         startTopCell.rightLabel.text = "Present"
+        startTopCell.backgroundColor = tableView.backgroundColor
         contentCells.append(startTopCell)
         
         
@@ -65,6 +66,7 @@ class FilterDateTableViewController: UITableViewController {
         contentCells.append(startBottomCell)
         
         let endTopCell = DatePickerTopCell(title: "End time:")
+        endTopCell.backgroundColor = tableView.backgroundColor
         endTopCell.rightLabel.text = "Distant future"
         contentCells.append(endTopCell)
         
