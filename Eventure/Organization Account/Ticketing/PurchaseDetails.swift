@@ -87,7 +87,7 @@ class PurchaseDetails: UITableViewController {
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return ticket.transferable ? 2 : 1
+        return historyUsers.isEmpty ? 1 : 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -119,6 +119,7 @@ class PurchaseDetails: UITableViewController {
                 alert.addAction(.init(title: "Cancel", style: .cancel))
                 alert.addAction(.init(title: "Continue", style: .default, handler: { _ in
                     self.toggleTransferable(cell: cell, on: on)
+                    self.ticket.transferable = on
                 }))
                 self.present(alert, animated: true)
             }
