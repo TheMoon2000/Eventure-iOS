@@ -33,7 +33,7 @@ class EventsCell: UITableViewCell {
             addSubview(iv)
             
             iv.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 18).isActive = true
-            imageWidthConstraint = iv.widthAnchor.constraint(equalToConstant: 60)
+            imageWidthConstraint = iv.widthAnchor.constraint(equalToConstant: 56)
             imageWidthConstraint.isActive = true
             iv.heightAnchor.constraint(equalTo: iv.widthAnchor).isActive = true
             iv.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

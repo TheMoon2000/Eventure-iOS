@@ -360,6 +360,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         spinner.stopAnimating()
         self.cameraPrompt.text = self.cameraDefaultText
         self.cameraPrompt.textColor = .white
+        session.startRunning()
     }
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {

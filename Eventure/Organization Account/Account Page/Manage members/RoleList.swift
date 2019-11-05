@@ -15,6 +15,7 @@ class RoleList: UIViewController {
     private var parentVC: AddMemberPage!
     private(set) var memberProfile: Membership!
     private var loadingBG: UIView!
+    private var emptyLabel: UILabel!
     private var roleTable: UITableView!
     private(set) var roleList = [String]()
     private var prevRow = -1
@@ -55,6 +56,19 @@ class RoleList: UIViewController {
             return tb
         }()
         
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: roleTable.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: roleTable.centerYAnchor).isActive = true
+            
+            
+            return label
+        }()
+        
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -65,6 +79,7 @@ class RoleList: UIViewController {
     private func refreshRoles() {
         roleList = Organization.current!.roles.sorted(by: <)
         prevRow = roleList.firstIndex(of: memberProfile.role) ?? -1
+        emptyLabel.text = roleList.isEmpty ? "No roles." : ""
     }
     
     @objc private func addRole() {

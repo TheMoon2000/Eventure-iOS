@@ -81,6 +81,7 @@ class StatEventList: UIViewController, IndicatorInfoProvider {
             }
             
             let banner = UIVisualEffectView(effect: effect)
+            banner.isHidden = true
             banner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(banner)
             
@@ -162,7 +163,7 @@ class StatEventList: UIViewController, IndicatorInfoProvider {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.async {
                 self.loader.isHidden = true
                 self.refreshControl.endRefreshing()
             }
@@ -189,6 +190,7 @@ class StatEventList: UIViewController, IndicatorInfoProvider {
                 DispatchQueue.global(qos: .default).async {
                     self.eventCollection = tmp
                     DispatchQueue.main.async {
+                        self.bottomBanner.isHidden = false
                         self.emptyLabel.text = tmp.isEmpty ? "No Events" : ""
                         self.tableView.reloadData()
                         let s = tmp.count == 1 ? "" : "s"

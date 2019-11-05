@@ -73,6 +73,9 @@ struct AppColors {
     /// The disabled theme color.
     static var mainDisabled = UIColor(named: "AppColors.mainDisabled")!
     
+    /// A lighter version of the main tint.
+    static var mainLight = UIColor(named: "AppColors.mainLight")!
+    
     /// The darker theme color.
     static var mainDark = UIColor(named: "AppColors.mainDark")!
     

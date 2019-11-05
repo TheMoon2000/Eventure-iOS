@@ -210,7 +210,7 @@ class CreateNewTicket: UITableViewController {
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
-            
+                        
             DispatchQueue.main.async {
                 self.navigationItem.rightBarButtonItem = self.buttonItem
             }

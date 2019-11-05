@@ -162,6 +162,10 @@
 		CCAC06232361801300F03793 /* MessageSettingsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAC06222361801300F03793 /* MessageSettingsMenu.swift */; };
 		CCAFC82723127899005FC231 /* DraftLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCAFC82623127899005FC231 /* DraftLocationCell.swift */; };
 		CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */; };
+		CCB6C8D5236FFD7B00C6BC85 /* StatsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB6C8D4236FFD7B00C6BC85 /* StatsManager.swift */; };
+		CCB6C8D7236FFDD100C6BC85 /* Attendee.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB6C8D6236FFDD100C6BC85 /* Attendee.swift */; };
+		CCB6C8D923700D2500C6BC85 /* EventOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB6C8D823700D2500C6BC85 /* EventOverview.swift */; };
+		CCB6C8DB23701EED00C6BC85 /* PopularityRankingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB6C8DA23701EED00C6BC85 /* PopularityRankingCell.swift */; };
 		CCBA13D723389DA100E282AD /* TicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13D623389DA100E282AD /* TicketRequest.swift */; };
 		CCBA13D923396B9300E282AD /* PurchaseDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13D823396B9300E282AD /* PurchaseDetailsCell.swift */; };
 		CCBA13DB23399BC000E282AD /* PurchaseDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBA13DA23399BC000E282AD /* PurchaseDetails.swift */; };
@@ -402,6 +406,10 @@
 		CCAFC82623127899005FC231 /* DraftLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftLocationCell.swift; sourceTree = "<group>"; };
 		CCB533DB23245B370058C125 /* Eventure.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Eventure.entitlements; sourceTree = "<group>"; };
 		CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFooterView.swift; sourceTree = "<group>"; };
+		CCB6C8D4236FFD7B00C6BC85 /* StatsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsManager.swift; sourceTree = "<group>"; };
+		CCB6C8D6236FFDD100C6BC85 /* Attendee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attendee.swift; sourceTree = "<group>"; };
+		CCB6C8D823700D2500C6BC85 /* EventOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventOverview.swift; sourceTree = "<group>"; };
+		CCB6C8DA23701EED00C6BC85 /* PopularityRankingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularityRankingCell.swift; sourceTree = "<group>"; };
 		CCBA13D623389DA100E282AD /* TicketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketRequest.swift; sourceTree = "<group>"; };
 		CCBA13D823396B9300E282AD /* PurchaseDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDetailsCell.swift; sourceTree = "<group>"; };
 		CCBA13DA23399BC000E282AD /* PurchaseDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDetails.swift; sourceTree = "<group>"; };
@@ -490,6 +498,7 @@
 				CC0329B6236A1AE3000376D3 /* OverviewStats.swift */,
 				CCE40B9A236A1C8D00903004 /* StatEventList.swift */,
 				CC8B62FD236BFD05007BEC57 /* MajorDistributionCell.swift */,
+				CCB6C8DA23701EED00C6BC85 /* PopularityRankingCell.swift */,
 			);
 			path = Statistics;
 			sourceTree = "<group>";
@@ -510,6 +519,9 @@
 				CC686ED1232F459100144CBF /* Ticket.swift */,
 				CCBA13D623389DA100E282AD /* TicketRequest.swift */,
 				CC9E1DFC233EE23B00931BFD /* Major.swift */,
+				CCB6C8D823700D2500C6BC85 /* EventOverview.swift */,
+				CCB6C8D6236FFDD100C6BC85 /* Attendee.swift */,
+				CCB6C8D4236FFD7B00C6BC85 /* StatsManager.swift */,
 				CC595CEB235B1211003D74F6 /* Account Notifications */,
 			);
 			path = "Data structure";
@@ -1187,6 +1199,7 @@
 				CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
+				CCB6C8D923700D2500C6BC85 /* EventOverview.swift in Sources */,
 				CCAB8854235D5BA30053AA20 /* EventUpdateNotification.swift in Sources */,
 				CC04666923372A8700BB2754 /* RequestCell.swift in Sources */,
 				CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */,
@@ -1230,6 +1243,7 @@
 				CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */,
 				CC247A79234196FD00C4EE75 /* BasicSwitchCell.swift in Sources */,
 				CCF5896C22A22E0300F509C4 /* LoginViewController.swift in Sources */,
+				CCB6C8DB23701EED00C6BC85 /* PopularityRankingCell.swift in Sources */,
 				CCE214272314ED4500E9B137 /* GenericTextCell.swift in Sources */,
 				D5216649231D828600A54F21 /* FilterDateTableViewController.swift in Sources */,
 				CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */,
@@ -1272,6 +1286,7 @@
 				67E89387231C57F4004896F7 /* LikedEvents.swift in Sources */,
 				CC9A74F52330A97B0021A790 /* TicketDetails.swift in Sources */,
 				CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */,
+				CCB6C8D5236FFD7B00C6BC85 /* StatsManager.swift in Sources */,
 				CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */,
 				CC2CCD4F2331CF7B000C65E2 /* AdmissionType.swift in Sources */,
 				CC188CFA236649B90060909D /* FavoritePreference.swift in Sources */,
@@ -1308,6 +1323,7 @@
 				CC686ECE232F40DD00144CBF /* TicketsList.swift in Sources */,
 				CC101FFD22F558890025217A /* ChooseImageCell.swift in Sources */,
 				CC2CCD452330B517000C65E2 /* TicketsOverview.swift in Sources */,
+				CCB6C8D7236FFDD100C6BC85 /* Attendee.swift in Sources */,
 				CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */,
 				CCCE5DB923603519005CE5D7 /* NewEventCell.swift in Sources */,
 				CC247A7723412D0500C4EE75 /* TicketScannedPage.swift in Sources */,

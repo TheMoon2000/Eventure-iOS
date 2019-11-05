@@ -111,13 +111,13 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             scanner.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(scanner, animated: true)
         case (2, 1):
-            // let stats = EventStatistics()
-            // stats.hidesBottomBarWhenPushed = true
-            // navigationController?.pushViewController(stats, animated: true)
-            
+            let stats = EventStatistics()
+            stats.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(stats, animated: true)
+            /*
             let alert = UIAlertController(title: "Feature unavailable", message: "We are still working on this feature. Please wait a few weeks for our next release.", preferredStyle: .alert)
             alert.addAction(.init(title: "OK", style: .cancel))
-            present(alert, animated: true)
+            present(alert, animated: true)*/
         case (2, 2):
             let subscriber = SubscriberListPage()
             subscriber.hidesBottomBarWhenPushed = true

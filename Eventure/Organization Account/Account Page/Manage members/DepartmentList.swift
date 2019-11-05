@@ -15,6 +15,7 @@ class DepartmentList: UIViewController {
     private var parentVC: AddMemberPage!
     private(set) var memberProfile: Membership!
     private var loadingBG: UIView!
+    private var emptyLabel: UILabel!
     private var departmentTable: UITableView!
     private(set) var deptList = [String]()
     private var prevRow = -1
@@ -55,6 +56,19 @@ class DepartmentList: UIViewController {
             return tb
         }()
         
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = .gray
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: departmentTable.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: departmentTable.centerYAnchor).isActive = true
+            
+            
+            return label
+        }()
+        
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -67,6 +81,7 @@ class DepartmentList: UIViewController {
         if memberProfile.department != nil {
             prevRow = deptList.firstIndex(of: memberProfile.department!) ?? -1
         }
+        emptyLabel.text = deptList.isEmpty ? "No departments." : ""
     }
 
     
