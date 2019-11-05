@@ -66,7 +66,7 @@ class StatsManager {
         var allEvents = [(title: String, views: Int, interested: Int, attended: Int)]()
         
         events.forEach { eventID, info in
-            allEvents.append((info.eventTitle, info.uniqueViews, info.interested, info.attendees.count))
+            allEvents.append((info.eventTitle, info.views, info.interested, info.attendees.count))
         }
         
         allEvents.sort { event1, event2 in
@@ -76,9 +76,7 @@ class StatsManager {
             
             return max1 < max2
         }
-        
-        print(allEvents)
-        
+                
         if allEvents.count > 10 {
             allEvents = Array(allEvents[0..<10])
         }

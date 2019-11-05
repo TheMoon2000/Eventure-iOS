@@ -207,7 +207,9 @@ class EventDetailPage: UIViewController {
         bottom.topAnchor.constraint(equalTo: tabStrip.view.topAnchor).isActive = true
         bottom.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
-        
+        if Organization.current == nil {
+            User.viewEvent(id: event.uuid)
+        }
     }
     
     @objc private func changedFavoriteStatus() {

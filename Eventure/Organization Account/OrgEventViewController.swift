@@ -423,12 +423,8 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
 // MARK: - Extension on flow layout
 extension OrgEventViewController: UICollectionViewDelegateFlowLayout {
     var cardWidth: CGFloat {
-        if usableWidth < 500 {
-            return usableWidth - 16
-        } else {
-            let numFit = floor(usableWidth / 320)
-            return ((usableWidth - 8) / numFit) - 8
-        }
+        let numFit = floor(usableWidth / 320)
+        return ((usableWidth - 8) / numFit) - 8
     }
     
     var usableWidth: CGFloat {

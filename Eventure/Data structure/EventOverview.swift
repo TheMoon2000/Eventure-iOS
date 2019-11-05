@@ -16,6 +16,7 @@ class EventOverview {
     let interested: Int
     let favorites: Int
     let uniqueViews: Int
+    let views: Int
     var attendees = [Attendee]()
     
     init(json: JSON) {
@@ -35,6 +36,8 @@ class EventOverview {
         } else {
             favorites = 0
         }
+        
+        views = dictionary["Views"]?.int ?? 0
         
         if let uniqueViewRaw = dictionary["Viewed by"]?.string {
             uniqueViews = JSON(parseJSON: uniqueViewRaw).arrayValue.count

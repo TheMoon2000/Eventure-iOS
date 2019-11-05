@@ -207,6 +207,7 @@ class AccountNotification: CustomStringConvertible {
                     handler?(true)
                 }
             } else {
+                print(String(data: data!, encoding: .utf8)!)
                 DispatchQueue.main.async {
                     handler?(false)
                 }

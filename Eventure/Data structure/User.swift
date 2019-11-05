@@ -20,6 +20,7 @@ class User: Profile {
                 Ticket.userTickets = Ticket.readFromFile()[current!.userID] ?? []
                 Ticket.updateTickets()
                 current?.saveEnabled = true
+                User.viewedEvents.removeAll()
                 print("Saving for user <\(current!.name)> is enabled at \(CURRENT_USER_PATH)")
             } else if oldValue != nil {
                 Ticket.userTickets = []
@@ -36,6 +37,8 @@ class User: Profile {
             }
         }
     }
+    
+    static var viewedEvents = Set<String>()
     
     var editable: Bool { return true }
         
@@ -669,6 +672,32 @@ class User: Profile {
             }
         }
         
+        task.resume()
+    }
+    
+    static func viewEvent(id: String) {
+        
+        if User.viewedEvents.contains(id) { return }
+                
+        var parameters = ["eventId": id]
+        parameters["userId"] = User.current?.userID.description
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/ViewEvent",
+                           parameters: parameters)!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            let msg = String(data: data!, encoding: .utf8)
+            if msg != "success" {
+                print("WARNING: could not increment event view count!")
+            } else {
+                User.viewedEvents.insert(id)
+            }
+        }
         task.resume()
     }
     

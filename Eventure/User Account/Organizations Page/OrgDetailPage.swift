@@ -34,6 +34,8 @@ class OrgDetailPage: UIViewController {
     private var blockBG: UIView!
     private var blockText: UILabel!
     
+    var isSplit = false
+    
     required init(organization: Organization) {
         super.init(nibName: nil, bundle: nil)
         
@@ -58,7 +60,7 @@ class OrgDetailPage: UIViewController {
         
         view.layoutIfNeeded()
         
-        if view.frame.height < 450 {
+        if view.frame.height < 450 || isSplit {
             self.title = organization.title
             self.navigationController?.navigationBar.setNeedsDisplay()
         }
@@ -300,7 +302,7 @@ class OrgDetailPage: UIViewController {
         coordinator.animate(alongsideTransition: { context in
             if size.height >= 450 {
                 self.tabTopConstraint.constant = 100
-                self.title = nil
+                self.title = self.isSplit ? self.organization.title : nil
                 self.previewContainer.isHidden = false
             } else {
                 self.tabTopConstraint.constant = 0

@@ -165,6 +165,9 @@ struct AppColors {
     
     /// Spinner tint color.
     static var lightControl = UIColor(named: "AppColors.lightControl")!
+    
+    /// A light gray tint color.
+    static var lightGray = UIColor(named: "AppColors.views")!
 }
 
 let SAMPLE_TEXT = """
@@ -853,6 +856,18 @@ extension UIViewController {
             return self
         }
     }
+}
+
+class GenericNavigationController: UINavigationController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        navigationBar.barTintColor = AppColors.navbar
+        navigationBar.tintColor = AppColors.main
+        navigationBar.isTranslucent = false
+    }
+    
 }
 
 /// Documents directory URL.

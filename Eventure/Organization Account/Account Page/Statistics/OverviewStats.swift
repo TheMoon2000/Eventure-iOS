@@ -30,6 +30,7 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
         view.backgroundColor = AppColors.tableBG
         
         refreshControl.tintColor = AppColors.lightControl
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         
         let topLine: UIView = {
             let line = UIView()
@@ -74,9 +75,15 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
         fetchStats()
     }
     
-    private func fetchStats() {
+    @objc private func pullToRefresh() {
+        fetchStats(pulled: true)
+    }
+    
+    private func fetchStats(pulled: Bool = false) {
         
-        loadingBG.isHidden = false
+        if !pulled {
+            loadingBG.isHidden = false
+        }
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetPastAttendees",
@@ -89,6 +96,7 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
             
             DispatchQueue.main.async {
                 self.loadingBG.isHidden = true
+                self.refreshControl.endRefreshing()
             }
             
             guard error == nil else {

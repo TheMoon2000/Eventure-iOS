@@ -118,7 +118,6 @@ class PopularityRankingCell: UICollectionViewCell {
             let label = UILabel()
             label.attributedText = "No event selected.".styled(with: .basicStyle)
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 16)
             label.textColor = AppColors.plainText
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -158,7 +157,7 @@ class PopularityRankingCell: UICollectionViewCell {
         let set = BarChartDataSet(entries: entries, label: "")
         set.stackLabels = ["Attended", "Interested", "Views"]
         set.drawIconsEnabled = false
-        set.colors = [AppColors.main, AppColors.mainLight, AppColors.mainDisabled]
+        set.colors = [AppColors.main, AppColors.mainLight, AppColors.lightGray]
         
         let data = BarChartData(dataSet: set)
         data.setValueFormatter(IntegerFormatter())
@@ -234,9 +233,9 @@ extension PopularityRankingCell: ChartViewDelegate {
             if value == values[0] {
                 return Int(value).description
             } else if value == values[1] {
-                return Int(value + values[0]).description
+                return Int(value + max(0, values[0])).description
             } else {
-                return Int(value + values[0] + values[1]).description
+                return Int(value + max(0, values[0]) + max(0, values[1])).description
             }
         }
     }

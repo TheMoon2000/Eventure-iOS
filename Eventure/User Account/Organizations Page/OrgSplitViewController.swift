@@ -11,38 +11,35 @@ import UIKit
 class OrgSplitViewController: UISplitViewController, UISplitViewControllerDelegate {
     
     private var orgList: OrganizationsViewController!
-    private var orgDetail: OrgDetailPage!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Organizations"
 
-        orgList = OrganizationsViewController()
-        let listNV = UINavigationController(rootViewController: orgList)
-        listNV.navigationBar.barTintColor = AppColors.navbar
+        let orgList = OrganizationsViewController()
+        let listNV = GenericNavigationController(rootViewController: orgList)
         
-        orgDetail = OrgDetailPage(organization: .empty)
-        let detail = UINavigationController(rootViewController: orgDetail)
-        detail.navigationBar.barTintColor = AppColors.navbar
-        viewControllers = [listNV, detail]
+        let blank = BlankScreen()
+        let blankNav = GenericNavigationController(rootViewController: blank)
+        viewControllers = [listNV, blankNav]
         
         delegate = self
         preferredPrimaryColumnWidthFraction = 0.35
         preferredDisplayMode = .allVisible
-        minimumPrimaryColumnWidth = 300
+        minimumPrimaryColumnWidth = 320
         maximumPrimaryColumnWidth = 400
         
         orgList.customPushHandler = { org in
-            self.orgDetail = OrgDetailPage(organization: org)
-            let detail = UINavigationController(rootViewController: self.orgDetail)
-            detail.navigationBar.barTintColor = AppColors.navbar
+            let detailVC = OrgDetailPage(organization: org)
+            detailVC.isSplit = true
+            let detailNav = GenericNavigationController(rootViewController: detailVC)
             DispatchQueue.main.async {
-                self.orgDetail.loadViewIfNeeded()
-                if self.orgDetail.tabStrip.buttonBarView != nil {
-                    self.orgDetail.tabStrip.reloadPagerTabStripView()
+                detailVC.loadViewIfNeeded()
+                if detailVC.tabStrip.buttonBarView != nil {
+                    detailVC.tabStrip.reloadPagerTabStripView()
                 }
-                self.viewControllers[1] = detail
+                self.viewControllers[1] = detailNav
             }
         }
     }
