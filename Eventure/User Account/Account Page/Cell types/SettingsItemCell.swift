@@ -71,7 +71,7 @@ class SettingsItemCell: UITableViewCell {
             addSubview(label)
             
             label.leftAnchor.constraint(greaterThanOrEqualTo: titleLabel.rightAnchor, constant: 16).isActive = true
-            let constant: CGFloat = withAccessory ? -38 : -20
+            let constant: CGFloat = withAccessory ? -36 : -20
             label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: constant).isActive = true
             label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)

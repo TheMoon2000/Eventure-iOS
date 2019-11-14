@@ -74,7 +74,8 @@ class StatsManager {
             let max1 = max(event1.views, event1.interested, event1.attended)
             let max2 = max(event2.views, event2.interested, event2.attended)
             
-            return max1 < max2
+            if max1 != max2 { return max1 < max2 }
+            return event1.attended <= event2.attended
         }
                 
         if allEvents.count > 10 {

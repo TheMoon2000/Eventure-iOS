@@ -369,6 +369,7 @@ class EventDetailPage: UIViewController {
     @objc private func imageTapped() {
         if let cover = event.eventVisual {
             let fullScreen = ImageFullScreenPage(image: cover)
+            fullScreen.modalPresentationStyle = .fullScreen
             present(fullScreen, animated: false)
         }
     }

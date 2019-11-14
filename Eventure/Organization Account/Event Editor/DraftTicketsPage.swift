@@ -68,11 +68,11 @@ class DraftTicketsPage: UITableViewController {
                 
                 for i in [1, 2] {
                     if let bottom = tableView.cellForRow(at: [0, i]) as? DatePickerTopCell {
-                        UIView.animate(withDuration: 0.2) {
+                        UIView.transition(with: bottom, duration: 0.2, options: .curveEaseInOut, animations: {
                             for item in [bottom.leftLabel, bottom.rightLabel, bottom.indicator] {
                                 item?.alpha = on ? 1.0 : 0.0
                             }
-                        }
+                        })
                     }
                 }
                 self.tableView.beginUpdates()
@@ -92,6 +92,9 @@ class DraftTicketsPage: UITableViewController {
         case 2:
             let cell = DatePickerTopCell(title: "Ticket QR code layout")
             cell.rightLabel.text = ["Standard", "Image below"][draftPage.draft.ticketStyle.rawValue]
+            if !draftPage.draft.requiresTicket {
+                [cell.leftLabel, cell.rightLabel, cell.indicator].forEach { $0?.alpha = 0.0 }
+            }
             
             return cell
         case 3:

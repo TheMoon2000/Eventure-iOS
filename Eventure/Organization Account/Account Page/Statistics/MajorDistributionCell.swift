@@ -128,6 +128,11 @@ class MajorDistributionCell: UICollectionViewCell {
     
     func setup(_ statManager: StatsManager) {
         let majorData = statManager.top10Majors
+        if majorData.isEmpty {
+            bottomLabel.attributedText = "No one checked in at your event.".styled(with: .basicStyle)
+            bottomLabel.textAlignment = .center
+            return
+        }
         
         var entries = majorData.map { (data) -> PieChartDataEntry in
             // IMPORTANT: In a PieChart, no values (Entry) should have the same xIndex (even if from different DataSets), since no values can be drawn above each other.
@@ -148,6 +153,8 @@ class MajorDistributionCell: UICollectionViewCell {
         set.colors = ChartColorTemplates.material()
             + ChartColorTemplates.colorful()
             + ChartColorTemplates.colorful()
+        
+        set.colors[entries.count - 1] = AppColors.lightControl
         
         let data = PieChartData(dataSet: set)
         

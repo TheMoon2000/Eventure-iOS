@@ -1,26 +1,34 @@
 //
-//  OverviewStats.swift
+//  EventDetailStats.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/10/30.
+//  Created by Jia Rui Shan on 2019/11/11.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
 import UIKit
 import XLPagerTabStrip
-import Charts
 import SwiftyJSON
-import BonMot
 
-class OverviewStats: UIViewController, IndicatorInfoProvider {
+class EventDetailStats: UIViewController {
+
+    private var event: Event!
     
     private var statCollection: UICollectionView!
     private var refreshControl = UIRefreshControl()
     
+    /// A `StatManager` instance with information about the statistics for the current event.
     private var currentStats: StatsManager?
     
     private var loadingBG: UIView!
     private var emptyLabel: UILabel!
+    
+    required init(event: Event) {
+        super.init(nibName: nil, bundle: nil)
+        
+        title = "Event Stats"
+        self.event = event
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +63,7 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
             col.backgroundColor = AppColors.canvas
             col.register(MajorDistributionCell.classForCoder(), forCellWithReuseIdentifier: "majors")
             col.register(PopularityRankingCell.classForCoder(), forCellWithReuseIdentifier: "top events")
+            col.register(EventAttendanceCell.classForCoder(), forCellWithReuseIdentifier: "attendance")
             col.contentInsetAdjustmentBehavior = .always
             col.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(col)
@@ -84,9 +93,14 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
             loadingBG.isHidden = false
         }
         
+        let parameters = [
+            "orgId": Organization.current!.id,
+            "eventId": event.uuid
+        ]
+        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/GetPastAttendees",
-                           parameters: ["orgId": Organization.current!.id])!
+                           parameters: parameters)!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         
@@ -126,11 +140,14 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
         return IndicatorInfo(title: "Overview")
     }
     
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
 }
 
 
-extension OverviewStats: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+extension EventDetailStats: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     /// A shortcut to access the current content size.
     var usableSize: CGSize {
@@ -172,7 +189,7 @@ extension OverviewStats: UICollectionViewDataSource, UICollectionViewDelegate, U
         
             return cell
         case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "top events", for: indexPath) as! PopularityRankingCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "attendance", for: indexPath) as! EventAttendanceCell
             cell.setup(statsManager: currentStats!)
             
             return cell
@@ -211,4 +228,5 @@ extension OverviewStats: UICollectionViewDataSource, UICollectionViewDelegate, U
             self.statCollection.collectionViewLayout.invalidateLayout()
         }, completion: nil)
     }
+    
 }

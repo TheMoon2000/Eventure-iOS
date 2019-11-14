@@ -1,8 +1,8 @@
 //
-//  PopularityRankingCell.swift
+//  EventAttendanceCell.swift
 //  Eventure
 //
-//  Created by Jia Rui Shan on 2019/11/4.
+//  Created by Jia Rui Shan on 2019/11/11.
 //  Copyright © 2019 UC Berkeley. All rights reserved.
 //
 
@@ -10,15 +10,11 @@ import UIKit
 import Charts
 import BonMot
 
-class PopularityRankingCell: UICollectionViewCell {
+class EventAttendanceCell: UICollectionViewCell {
     
     private var bgView: UIView!
     private var titleLabel: UILabel!
-    private var captionLabel: UILabel!
-    
-    private var barChart: HorizontalBarChartView!
-    
-    private var top10Events = [(title: String, views: Int, interested: Int, attended: Int)]()
+    private var barChart: BarChartView!
     private var lastSelected: ChartDataEntry?
     
     override init(frame: CGRect) {
@@ -45,7 +41,7 @@ class PopularityRankingCell: UICollectionViewCell {
                 
         titleLabel = {
             let label = UILabel()
-            label.text = "Most Popular Events"
+            label.text = "Event Attendance"
             label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -58,7 +54,7 @@ class PopularityRankingCell: UICollectionViewCell {
         }()
         
         barChart = {
-            let bar = HorizontalBarChartView()
+            let bar = BarChartView()
             
             bar.drawBarShadowEnabled = false
             bar.highlightFullBarEnabled = true
@@ -66,6 +62,7 @@ class PopularityRankingCell: UICollectionViewCell {
             bar.doubleTapToZoomEnabled = false
             bar.maxHighlightDistance = 100
             bar.highlightPerDragEnabled = false
+            bar.highlightPerTapEnabled = false
             
             bar.xAxis.labelFont = .systemFont(ofSize: 10)
             bar.xAxis.labelTextColor = AppColors.value
@@ -73,7 +70,7 @@ class PopularityRankingCell: UICollectionViewCell {
             // bar.xAxis.axisMinimum = 1
             bar.xAxis.granularity = 1
             bar.xAxis.labelCount = 10
-            bar.xAxis.gridColor = AppColors.lightControl
+            bar.xAxis.drawGridLinesEnabled = false
             bar.xAxis.xOffset = 8
             
             bar.leftAxis.labelFont = .systemFont(ofSize: 10)
@@ -105,59 +102,29 @@ class PopularityRankingCell: UICollectionViewCell {
             bar.legend.textColor = AppColors.label
             
             bar.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(bar)
+            bgView.addSubview(bar)
             
-            bar.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            bar.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
+            bar.leftAnchor.constraint(equalTo: bgView.leftAnchor, constant: 20).isActive = true
+            bar.rightAnchor.constraint(equalTo: bgView.rightAnchor, constant: -20).isActive = true
             bar.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+            bar.bottomAnchor.constraint(equalTo: bgView.bottomAnchor, constant: -20).isActive = true
             
             return bar
-        }()
-        
-        captionLabel = {
-            let label = UILabel()
-            label.attributedText = "No event selected.".styled(with: .basicStyle)
-            label.numberOfLines = 5
-            label.textColor = AppColors.plainText
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(label)
-            
-            label.topAnchor.constraint(equalTo: barChart.bottomAnchor, constant: 15).isActive = true
-            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
-            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20).isActive = true
-            
-            
-            return label
         }()
     }
     
     func setup(statsManager: StatsManager) {
-        let eventData = statsManager.top10Events
-        self.top10Events = eventData
+        let eventData = statsManager.events.values.first!
         
         var entries = [BarChartDataEntry]()
-        let offset = max(0, 5 - eventData.count)
         
-        
-        if eventData.count < 5 {
-            for i in 0..<offset {
-                entries.append(.init(x: Double(i), yValues: []))
-            }
-        }
-        
-        for i in 0..<eventData.count {
-            let attended = Double(eventData[i].attended)
-            let interestedOnly = max(0, Double(eventData[i].interested) - attended)
-            let viewsOnly = Double(eventData[i].views) - attended - interestedOnly
-            entries.append(BarChartDataEntry(x: Double(i + offset), yValues: [attended, interestedOnly, viewsOnly]))
-        }
+        entries.append(BarChartDataEntry(x: 0, y: Double(eventData.views)))
+        entries.append(BarChartDataEntry(x: 1, y: Double(eventData.interested)))
+        entries.append(BarChartDataEntry(x: 2, y: Double(eventData.attendees.count)))
                 
         let set = BarChartDataSet(entries: entries, label: "")
-        set.stackLabels = ["Attended", "Interested", "Views"]
         set.drawIconsEnabled = false
-        set.colors = [AppColors.main, AppColors.mainLight, AppColors.lightGray]
+        set.colors = [AppColors.lightGray, AppColors.mainLight, AppColors.main]
         
         let data = BarChartData(dataSet: set)
         data.setValueFormatter(IntegerFormatter())
@@ -165,7 +132,7 @@ class PopularityRankingCell: UICollectionViewCell {
         data.setValueTextColor(AppColors.value)
         
         barChart.data = data
-         barChart.xAxis.valueFormatter = InvertedFormatter(total: max(5, eventData.count))
+        barChart.xAxis.valueFormatter = XAxisFormatter()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -180,63 +147,19 @@ class PopularityRankingCell: UICollectionViewCell {
     
 }
 
-extension PopularityRankingCell: ChartViewDelegate {
-    
-    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        
-        guard let entry = entry as? BarChartDataEntry else { return }
-        
-        let entryIndex = Int(entry.x) - max(0, 5 - top10Events.count)
-        if entryIndex >= top10Events.count { return }
-        
-        UISelectionFeedbackGenerator().selectionChanged()
-        if lastSelected != entry {
-            self.lastSelected = entry
-            captionLabel.attributedText = NSAttributedString.composed(of: [
-                "Event: ".styled(with: .basicStyle),
-                top10Events[entryIndex].title.styled(with: .valueStyle)
-            ])
-            captionLabel.textAlignment = .center
-        }
-    }
-    
-    func chartValueNothingSelected(_ chartView: ChartViewBase) {
-        if lastSelected == nil { return }
-        UISelectionFeedbackGenerator().selectionChanged()
-        self.lastSelected = nil
-        captionLabel.attributedText = "No event selected.".styled(with: .basicStyle)
-        captionLabel.textAlignment = .center
-    }
-    
-    class InvertedFormatter: IAxisValueFormatter {
-        
-        private var totalColumns = 0
-        
-        init(total: Int) {
-            totalColumns = total
-        }
-        
-        func stringForValue(_ value: Double, axis: AxisBase?) -> String {
-            let value = (totalColumns - Int(value))
-            if value == 0 || value > totalColumns { return "" }
-            return "No. \(value.description)"
-        }
-    }
-    
+
+extension EventAttendanceCell: ChartViewDelegate {
+
     class IntegerFormatter: IValueFormatter {
         func stringForValue(_ value: Double, entry: ChartDataEntry, dataSetIndex: Int, viewPortHandler: ViewPortHandler?) -> String {
                         
-            guard let values = (entry as? BarChartDataEntry)?.yValues else { return "error" }
-            
-            if values.isEmpty { return "" }
-            
-            if value == values[0] {
-                return Int(value).description
-            } else if value == values[1] {
-                return Int(value + max(0, values[0])).description
-            } else {
-                return Int(value + max(0, values[0]) + max(0, values[1])).description
-            }
+            return Int(value).description
+        }
+    }
+    
+    class XAxisFormatter: IAxisValueFormatter {
+        func stringForValue(_ value: Double, axis: AxisBase?) -> String {
+            return ["Views", "Interested", "Attended"][Int(value)]
         }
     }
     

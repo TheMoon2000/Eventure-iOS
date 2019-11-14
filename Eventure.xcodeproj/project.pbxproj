@@ -115,6 +115,8 @@
 		CC595CF1235C1A3E003D74F6 /* InviteNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CF0235C1A3E003D74F6 /* InviteNotification.swift */; };
 		CC5E8FE9232BFE2A00962B8B /* CheckinTimeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */; };
 		CC5F1F0123345CEF00C2738A /* CreateNewTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */; };
+		CC5FB2E32379DF350069AEC1 /* EventDetailStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5FB2E22379DF340069AEC1 /* EventDetailStats.swift */; };
+		CC5FB2E5237A221F0069AEC1 /* EventAttendanceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5FB2E4237A221F0069AEC1 /* EventAttendanceCell.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
 		CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */; };
 		CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */; };
@@ -359,6 +361,8 @@
 		CC595CF0235C1A3E003D74F6 /* InviteNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteNotification.swift; sourceTree = "<group>"; };
 		CC5E8FE8232BFE2A00962B8B /* CheckinTimeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinTimeCell.swift; sourceTree = "<group>"; };
 		CC5F1F0023345CEF00C2738A /* CreateNewTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewTicket.swift; sourceTree = "<group>"; };
+		CC5FB2E22379DF340069AEC1 /* EventDetailStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailStats.swift; sourceTree = "<group>"; };
+		CC5FB2E4237A221F0069AEC1 /* EventAttendanceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventAttendanceCell.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
 		CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinSortSettings.swift; sourceTree = "<group>"; };
 		CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSettingsCell.swift; sourceTree = "<group>"; };
@@ -499,8 +503,10 @@
 				CC0329B4236A1A87000376D3 /* EventStatistics.swift */,
 				CC0329B6236A1AE3000376D3 /* OverviewStats.swift */,
 				CCE40B9A236A1C8D00903004 /* StatEventList.swift */,
+				CC5FB2E22379DF340069AEC1 /* EventDetailStats.swift */,
 				CC8B62FD236BFD05007BEC57 /* MajorDistributionCell.swift */,
 				CCB6C8DA23701EED00C6BC85 /* PopularityRankingCell.swift */,
+				CC5FB2E4237A221F0069AEC1 /* EventAttendanceCell.swift */,
 			);
 			path = Statistics;
 			sourceTree = "<group>";
@@ -1198,6 +1204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
+				CC5FB2E5237A221F0069AEC1 /* EventAttendanceCell.swift in Sources */,
 				CCCE5DB7235FEBCB005CE5D7 /* EventUpdateCell.swift in Sources */,
 				CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
@@ -1346,6 +1353,7 @@
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCAB8850235D34510053AA20 /* MessageSearchResults.swift in Sources */,
+				CC5FB2E32379DF350069AEC1 /* EventDetailStats.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
@@ -1569,7 +1577,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1577,7 +1585,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1598,7 +1606,7 @@
 				CODE_SIGN_ENTITLEMENTS = Eventure/Eventure.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 23;
 				DEVELOPMENT_TEAM = US8T2D45H8;
 				INFOPLIST_FILE = Eventure/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -1606,7 +1614,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.calpha.Eventure;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
