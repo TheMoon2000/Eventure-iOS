@@ -39,7 +39,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         title = "Interested"
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         
         myTableView = {
             let tv = UITableView(frame: .zero, style: .grouped)

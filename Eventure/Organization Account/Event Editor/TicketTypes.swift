@@ -125,6 +125,7 @@ class TicketTypes: UITableViewController {
     @objc private func addTicket() {
         let newType = AdmissionType.init(eventID: draftPage.draft.uuid)
         sortedAdmissionTypes.append(newType)
+        emptyLabel.isHidden = !draftPage.draft.admissionTypes.isEmpty
         let vc = TicketInfoEditor(parentVC: self, admissionInfo: newType)
         navigationController?.pushViewController(vc, animated: true)
     }

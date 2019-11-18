@@ -140,9 +140,11 @@ class MajorDistributionCell: UICollectionViewCell {
                                      label: data.major)
         }
         
+        var hasUndeclared = false
         if statManager.undeclaredCount > 0 {
             entries.append(.init(value: Double(statManager.undeclaredCount),
                                  label: "Unknown / Undeclared"))
+            hasUndeclared = true
         }
         
         let set = PieChartDataSet(entries: entries, label: "")
@@ -150,11 +152,29 @@ class MajorDistributionCell: UICollectionViewCell {
         set.sliceSpace = 1.0
         set.selectionShift = 8
         
-        set.colors = ChartColorTemplates.material()
-            + ChartColorTemplates.colorful()
-            + ChartColorTemplates.colorful()
+        set.colors = [
+            UIColor(red: 0xf8/255, green: 0x68/255, blue: 0x5d/255, alpha: 1),
+            UIColor(red: 0xff/255, green: 0xc7/255, blue: 0x46/255, alpha: 1),
+            UIColor(red: 0x5a/255, green: 0xcc/255, blue: 0x53/255, alpha: 1),
+            UIColor(red: 0x57/255, green: 0xc0/255, blue: 0xb5/255, alpha: 1),
+            UIColor(red: 0x56/255, green: 0x98/255, blue: 0xf5/255, alpha: 1),
+            UIColor(red: 0x96/255, green: 0x84/255, blue: 0xde/255, alpha: 1),
+            UIColor(red: 0xb5/255, green: 0xdb/255, blue: 0x6f/255, alpha: 1),
+            UIColor(red: 0x7b/255, green: 0x9f/255, blue: 0xd4/255, alpha: 1),
+            UIColor(red: 0xe7/255, green: 0xa7/255, blue: 0xd3/255, alpha: 1),
+            UIColor(red: 0x91/255, green: 0x7f/255, blue: 0x6b/255, alpha: 1),
+            UIColor(red: 0x54/255, green: 0x6d/255, blue: 0xbb/255, alpha: 1),
+            UIColor(red: 0x98/255, green: 0xbc/255, blue: 0xb0/255, alpha: 1),
+            UIColor(red: 0xc6/255, green: 0xc2/255, blue: 0xa8/255, alpha: 1),
+            UIColor(red: 0x4b/255, green: 0x9c/255, blue: 0x82/255, alpha: 1),
+            UIColor(red: 0xbf/255, green: 0x89/255, blue: 0x89/255, alpha: 1),
+            UIColor(red: 0x8e/255, green: 0xa9/255, blue: 0xc9/255, alpha: 1),
+            UIColor(red: 0x96/255, green: 0x3a/255, blue: 0x5c/255, alpha: 1),
+        ]
         
-        set.colors[entries.count - 1] = AppColors.lightControl
+        if hasUndeclared {
+            set.colors[entries.count - 1] = AppColors.lightControl
+        }
         
         let data = PieChartData(dataSet: set)
         

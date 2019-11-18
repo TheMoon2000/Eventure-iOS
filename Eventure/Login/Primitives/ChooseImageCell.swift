@@ -98,7 +98,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         }
         
         let picker = UIImagePickerController()
-        picker.sourceType = .photoLibrary
+        picker.sourceType = .savedPhotosAlbum
         picker.delegate = self
         parentVC.present(picker, animated: true, completion: nil)
     }

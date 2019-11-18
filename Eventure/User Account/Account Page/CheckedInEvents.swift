@@ -40,7 +40,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         super.viewDidLoad()
         
         title = "Events I Checked In"
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         
         myTableView = {
             let tv = UITableView(frame: .zero, style: .grouped)

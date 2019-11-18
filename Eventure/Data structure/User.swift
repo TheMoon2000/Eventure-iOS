@@ -327,7 +327,7 @@ class User: Profile {
                 User.current?.calendarIdentifiers = calendarIdentifiers ?? [:]
                 NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
             } else {
-                print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'")
+                print("WARNING: cannot parse '\(String(data: data!, encoding: .utf8)!)'; response: \(response!)")
                 NotificationCenter.default.post(name: USER_SYNC_FAILED, object: nil)
             }
         }

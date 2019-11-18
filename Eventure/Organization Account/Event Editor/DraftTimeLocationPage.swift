@@ -16,9 +16,12 @@ class DraftTimeLocationPage: UITableViewController {
     var startTimeExpanded = false
     var endTimeExpanded = false
     var checkinTimeExpanded = false
+    var currentKeyboardSize: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
 
         view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
@@ -115,15 +118,19 @@ class DraftTimeLocationPage: UITableViewController {
         
         let locationCell = DraftLocationCell()
         locationCell.valueText.insertText(draftPage.draft.location)
-        locationCell.textChangeHandler = { [weak self] textView in
+        locationCell.textChangeHandler = { textView in
             UIView.performWithoutAnimation {
-                self?.tableView.beginUpdates()
-                self?.tableView.endUpdates()
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
             }
-            self?.draftPage.draft.location = textView.text
-            self?.draftPage.edited = true
+            self.draftPage.draft.location = textView.text
+            self.draftPage.edited = true
             if textView.selectedRange.location == textView.text.count {
-                self?.tableView.scrollToRow(at: [0, 4], at: .bottom, animated: false)
+//                self?.tableView.scrollToRow(at: [0, 4], at: .bottom, animated: false)
+                self.tableView.layoutIfNeeded()
+                
+                let offset = self.tableView.contentSize.height - self.tableView.frame.height + self.currentKeyboardSize
+                self.tableView.setContentOffset(.init(x: 0, y: max(0, offset + 8)), animated: true)
             }
         }
         contentCells.append(locationCell)
@@ -225,6 +232,10 @@ class DraftTimeLocationPage: UITableViewController {
         default:
             break
         }
+    }
+    
+    @objc private func keyboardDidShow(_ notification: Notification) {
+        currentKeyboardSize = ((notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey]) as! CGRect).size.height
     }
 
 }

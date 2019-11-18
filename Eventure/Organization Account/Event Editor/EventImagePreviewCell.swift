@@ -123,7 +123,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
         alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
             let picker = UIImagePickerController()
             picker.delegate = self
-            picker.sourceType = .photoLibrary
+            picker.sourceType = .savedPhotosAlbum
             self.parentVC.present(picker, animated: true)
         }))
         alert.addAction(.init(title: "Camera", style: .default, handler: { _ in

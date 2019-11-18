@@ -172,6 +172,7 @@ class OrgContactInfo: UIViewController, IndicatorInfoProvider {
         }
         if let url = URL(string: link) {
             let vc = SFSafariViewController(url: url)
+            vc.preferredControlTintColor = AppColors.main
             present(vc, animated: true, completion: nil)
         } else {
             print(organization.website + " cannot be opened")

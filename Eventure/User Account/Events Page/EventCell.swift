@@ -276,6 +276,8 @@ class EventCell: UICollectionViewCell {
         locationText.text = event.location
         eventHostText.text = event.hostTitle
         
+        titleText.textColor = event.isPublic ? AppColors.label : AppColors.emphasis
+        
         if User.current == nil {
             interestedButton.setImage(#imageLiteral(resourceName: "star_empty").withRenderingMode(.alwaysTemplate), for: .normal)
         } else {

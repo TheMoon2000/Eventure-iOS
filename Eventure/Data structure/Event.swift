@@ -29,7 +29,7 @@ class Event {
     var interested = Set<Int>()
     var favorited = Set<Int>()
     var tags = Set<String>()
-    var membersOnly = false
+    var isPublic = true
     var capacity = 0
     var secureCheckin = false
     var requiresTicket = false
@@ -152,6 +152,7 @@ class Event {
         capacity = dictionary["Capacity"]?.int ?? 0
         secureCheckin = (dictionary["Strict"]?.int ?? 0) == 1
         requiresTicket = (dictionary["Requires ticket"]?.int ?? 0) == 1
+        isPublic = (dictionary["Public"]?.int ?? 0) == 1
         
         if let int_raw = dictionary["Interested"]?.string {
             if let intArray = JSON(parseJSON: int_raw).arrayObject as? [Int] {
@@ -395,6 +396,7 @@ class Event {
         main.dictionaryObject?["Organization title"] = hostTitle
         main.dictionaryObject?["Organization"] = hostID
         main.dictionaryObject?["Published"] = published ? 1 : 0
+        main.dictionaryObject?["Public"] = isPublic ? 1 : 0
         main.dictionaryObject?["Tags"] = tags.description
         main.dictionaryObject?["Has cover"] = hasVisual
         main.dictionaryObject?["Has banner"] = hasBannerImage

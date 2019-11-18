@@ -304,6 +304,7 @@ extension AddMemberPage {
             cell.inputField.enablesReturnKeyAutomatically = true
             cell.inputField.text = self.memberProfile.email
             cell.inputField.returnKeyType = .next
+            cell.inputField.isUserInteractionEnabled = backup == nil
             
             cell.changeHandler = { textfield in
                 self.memberProfile.email = textfield.text!

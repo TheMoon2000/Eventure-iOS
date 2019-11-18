@@ -39,7 +39,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         title = "Favorites"
         
         // Do any additional setup after loading the view.
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.tableBG
         
         myTableView = {
             let tv = UITableView(frame: .zero, style: .grouped)

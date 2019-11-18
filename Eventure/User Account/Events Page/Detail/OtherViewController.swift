@@ -8,6 +8,8 @@
 
 import UIKit
 import XLPagerTabStrip
+import MapKit
+import CoreLocation
 
 class OtherViewController: UIViewController, IndicatorInfoProvider {
     
@@ -22,7 +24,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     private var hostLink: UIButton!
     
     private var locationLabel: UILabel!
-    private(set) var locationText: UILabel!
+    private(set) var locationText: UIButton!
     
     private var startLabel: UILabel!
     private(set) var startDate: UILabel!
@@ -120,21 +122,22 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         }()
         
         locationText = {
-            let label = UILabel()
-            label.textAlignment = .right
-            label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17)
-            label.textColor = AppColors.value
-            label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(label)
+            let button = UIButton(type: .system)
+            button.titleLabel?.font = .systemFont(ofSize: 17)
+            button.titleLabel?.textAlignment = .right
+            button.titleLabel?.numberOfLines = 0
+            button.setTitleColor(AppColors.value, for: .normal)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(button)
             
-            label.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
-            label.topAnchor.constraint(equalTo: locationLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: hostLink.titleLabel!.rightAnchor).isActive = true
+            button.titleLabel?.leftAnchor.constraint(equalTo: locationLabel.rightAnchor, constant: 10).isActive = true
+            button.titleLabel?.topAnchor.constraint(equalTo: locationLabel.topAnchor).isActive = true
+            button.titleLabel?.rightAnchor.constraint(equalTo: hostLink.titleLabel!.rightAnchor).isActive = true
             
-            return label
+            button.addTarget(self, action: #selector(openLocation(_:)), for: .touchUpInside)
+            
+            return button
         }()
-        
         
         startLabel = {
             let label = UILabel()
@@ -271,7 +274,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
     }
     
     func refreshValues() {
-        locationText.text = event.location.isEmpty ? "TBA" : event.location
+        locationText.setTitle(event.location.isEmpty ? "TBA" : event.location, for: .normal) 
         startDate.text = event.startTime?.readableString() ?? "Unspecified"
         endDate.text = event.duration
         interestedText.text = String(event.interested.count)
@@ -305,6 +308,39 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             alert.addAction(.init(title: "Dismiss", style: .cancel))
             detailPage.present(alert, animated: true)
         }
+    }
+    
+    @objc private func openLocation(_ sender: UIButton) {
+        guard let location = sender.title(for: .normal) else { return }
+        guard location != "TBA" else { return }
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        CLGeocoder().geocodeAddressString(location) { placemarks, error in
+            
+            print(placemarks as Any, error as Any)
+            
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            guard let placemark = placemarks?.first else { return }
+            
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: "Open location in maps?", message: "Maps can attempt to look up the location of this event.", preferredStyle: .actionSheet)
+                alert.addAction(.init(title: "Cancel", style: .cancel, handler: nil))
+                alert.addAction(.init(title: "Open in Maps", style: .default, handler: { _ in
+                    let mapItem = MKMapItem(placemark: .init(placemark: placemark))
+                    mapItem.name = location
+                    mapItem.openInMaps(launchOptions: nil)
+                }))
+                
+                if let popoverController = alert.popoverPresentationController {
+                    popoverController.sourceView = sender
+                    popoverController.sourceRect = sender.frame
+                }
+                
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
+        
     }
     
     @objc private func showTickets() {

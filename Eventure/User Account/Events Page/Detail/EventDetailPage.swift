@@ -259,7 +259,9 @@ class EventDetailPage: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.eventTitle.text = event.title
+        eventTitle.text = event.title
+        eventTitle.textColor = event.isPublic ? AppColors.label : AppColors.emphasis
+
         if event.eventVisual != nil {
             emptyImageHeightConstraint?.isActive = false
             coverImage.image = event.eventVisual

@@ -116,6 +116,7 @@ extension AboutPage: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         if (URL.absoluteString.hasPrefix("http://") || URL.absoluteString.hasPrefix("https://")) && interaction == .invokeDefaultAction {
             let vc = SFSafariViewController(url: URL)
+            vc.preferredControlTintColor = AppColors.main
             self.present(vc, animated: true)
             return false
         }

@@ -214,6 +214,9 @@ class OrgEventCell: UICollectionViewCell {
         titleText.text = event.title.isEmpty ? "Untitled" : event.title
         timeText.text = event.timeDescription
         locationText.text = event.location.isEmpty ? "TBA" : event.location
+        
+        titleText.textColor = event.isPublic ? AppColors.label : AppColors.emphasis
+        
         if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
             descriptionText.setText(event.eventDescription.attributedText(style: PLAIN_DARK))
             if event.eventDescription.isEmpty {
@@ -270,6 +273,7 @@ extension OrgEventCell: TTTAttributedLabelDelegate {
         alert.addAction(.init(title: "Cancel", style: .cancel))
         alert.addAction(.init(title: "Go", style: .default, handler: { action in
             let vc = SFSafariViewController(url: url)
+            vc.preferredControlTintColor = AppColors.main
             self.parentVC?.present(vc, animated: true)
         }))
         parentVC?.present(alert, animated: true, completion: nil)

@@ -287,7 +287,10 @@ class EventViewController: UIViewController, EventProvider {
                 DispatchQueue.global(qos: .default).async {
                     var tmp = [Event]()
                     for event in eventsList {
-                        tmp.append(Event(eventInfo: event))
+                        let newEvent = Event(eventInfo: event)
+                        if newEvent.isPublic || (User.current?.memberships.contains { $0.orgID == newEvent.hostID } ?? false) {
+                            tmp.append(newEvent)
+                        }
                     }
                     tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
                         return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)

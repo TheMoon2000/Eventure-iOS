@@ -95,6 +95,11 @@ class DraftTicketsPage: UITableViewController {
             if !draftPage.draft.requiresTicket {
                 [cell.leftLabel, cell.rightLabel, cell.indicator].forEach { $0?.alpha = 0.0 }
             }
+            if optionsExpanded {
+                UIView.performWithoutAnimation {
+                    cell.expand()
+                }
+            }
             
             return cell
         case 3:
@@ -186,7 +191,7 @@ class DraftTicketsPage: UITableViewController {
                 alert.addAction(.init(title: "Pick Now", style: .default, handler: { _ in
                     let picker = UIImagePickerController()
                     picker.delegate = self
-                    picker.sourceType = .photoLibrary
+                    picker.sourceType = .savedPhotosAlbum
                     self.present(picker, animated: true)
                 }))
                 self.present(alert, animated: true)
@@ -197,7 +202,7 @@ class DraftTicketsPage: UITableViewController {
                 alert.addAction(.init(title: "Update Image", style: .default, handler: { _ in
                     let picker = UIImagePickerController()
                     picker.delegate = self
-                    picker.sourceType = .photoLibrary
+                    picker.sourceType = .savedPhotosAlbum
                     self.present(picker, animated: true)
                 }))
                 self.present(alert, animated: true)

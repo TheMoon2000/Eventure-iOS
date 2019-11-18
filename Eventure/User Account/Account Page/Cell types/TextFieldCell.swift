@@ -126,6 +126,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
         guard currentLink != nil else { return }
         if let url = URL(string: currentLink!) {
             let vc = SFSafariViewController(url: url)
+            vc.preferredControlTintColor = AppColors.main
             parentVC.present(vc, animated: true, completion: nil)
         } else {
             print(currentLink! + " cannot be opened")

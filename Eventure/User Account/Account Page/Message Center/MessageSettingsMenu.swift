@@ -35,7 +35,7 @@ class MessageSettingsMenu: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [5, 1][section]
+        return [5, 2][section]
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -84,6 +84,25 @@ class MessageSettingsMenu: UITableViewController {
             label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
             
             return cell
+        case [1, 1]:
+            let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
+            
+            let label = UILabel()
+            label.textColor = AppColors.fatal
+            label.text = "Clear All Messages"
+            label.font = .systemFont(ofSize: 17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            return cell
         default:
             break
         }
@@ -114,6 +133,20 @@ class MessageSettingsMenu: UITableViewController {
                 AccountNotification.cachedLogos.removeAll()
                 // AccountNotification.current.removeAll()
                 // AccountNotification.currentUpdateTime = .distantPast
+                AccountNotification.save()
+                self.parentVC.loadingBG.isHidden = false
+                self.parentVC.groupNotifications()
+                self.parentVC.tableView.reloadData()
+                self.parentVC.updateMessages()
+            }))
+            
+            present(alert, animated: true, completion: nil)
+        } else if indexPath == [1, 1] {
+            let alert = UIAlertController(title: "Clear messages?", message: "All cached messages will be erased. New data will be synced from the server.", preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Clear Messages", style: .destructive, handler: { _ in
+                AccountNotification.current.removeAll()
+                AccountNotification.currentUpdateTime = .distantPast
                 AccountNotification.save()
                 self.parentVC.loadingBG.isHidden = false
                 self.parentVC.groupNotifications()
