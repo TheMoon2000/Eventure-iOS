@@ -41,6 +41,11 @@ class Organization: CustomStringConvertible {
     var website: String { didSet { save() } }
     var contactEmail: String { didSet { save() } }
     var orgDescription: String { didSet { save(requireReupload: false) } }
+    
+    // Applications
+    var appURL: URL?
+    var appStart: Date?
+    var appDeadline: Date?
 
     var saveEnabled: Bool = false
 
@@ -131,6 +136,19 @@ class Organization: CustomStringConvertible {
                 subscribers = Set(subArray)
             }
         }
+        
+        // Applications
+        
+        appURL = dictionary["Application URL"]?.url
+        
+        if let appStartDateString = dictionary["Application start"]?.string {
+            appStart = DATE_FORMATTER.date(from: appStartDateString)
+        }
+        
+        if let appDeadlineString = dictionary["Application deadline"]?.string {
+            appDeadline = DATE_FORMATTER.date(from: appDeadlineString)
+        }
+                
     }
 
     var description: String {
@@ -234,6 +252,20 @@ class Organization: CustomStringConvertible {
             body.dictionaryObject?["Departments"] = departments.description
         }
         
+        if settings.contains(.appURL) {
+            body.dictionaryObject?["Application URL"] = appURL?.path
+        }
+        
+        if settings.contains(.appStartEnd) {
+            if appStart != nil {
+                body.dictionaryObject?["Application start"] = DATE_FORMATTER.string(from: appStart!)
+            }
+            
+            if appDeadline != nil {
+                body.dictionaryObject?["Application deadline"] = DATE_FORMATTER.string(from: appDeadline!)
+            }
+        }
+        
         pushToServer(handler, customJSON: body)
     }
     
@@ -293,6 +325,16 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Members"] = members.map { $0.encodedJSON }
         json.dictionaryObject?["Departments"] = departments.description
         json.dictionaryObject?["Roles"] = roles.description
+        
+        json.dictionaryObject?["Application URL"] = appURL?.path
+        
+        if appStart != nil {
+            json.dictionaryObject?["Application start"] = DATE_FORMATTER.string(from: appStart!)
+        }
+        
+        if appDeadline != nil {
+            json.dictionaryObject?["Application deadline"] = DATE_FORMATTER.string(from: appDeadline!)
+        }
         
         return json
     }
@@ -522,5 +564,7 @@ extension Organization {
         static let website          = PushableSettings(rawValue: 1 << 5)
         static let roles            = PushableSettings(rawValue: 1 << 6)
         static let departments      = PushableSettings(rawValue: 1 << 7)
+        static let appURL           = PushableSettings(rawValue: 1 << 8)
+        static let appStartEnd      = PushableSettings(rawValue: 1 << 9)
     }
 }
