@@ -24,8 +24,8 @@ let API_BASE_URL = "https://api.eventure-app.com/"
 let PHP7_API_BASE_URL = "https://php7.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "Eventure 1.1.2"
-let PASSWORD = "fdbc9821a545178efe85333f6c7ffa3338cd"
+let USERNAME = "__replace__"
+let PASSWORD = "__replace__"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
