@@ -62,7 +62,7 @@ class EventDetailPage: UIViewController {
                 rightButton.image = #imageLiteral(resourceName: "heart")
             }
         } else if Organization.current?.id == event.hostID {
-            rightButton = UIBarButtonItem(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(moreActions))
+            rightButton = UIBarButtonItem(image: UIImage(named: "more"), style: .plain, target: self, action: #selector(moreActions))
             navigationItem.rightBarButtonItem = rightButton
         }
 
