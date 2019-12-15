@@ -218,6 +218,9 @@ class Organization: CustomStringConvertible {
      */
     
     func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())? = nil) {
+        
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
         var body = JSON()
         
         if settings.contains(.orgTitle) {
@@ -283,6 +286,10 @@ class Organization: CustomStringConvertible {
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
             
             guard error == nil else {
                 DispatchQueue.main.async {

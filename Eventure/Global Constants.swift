@@ -462,6 +462,20 @@ extension Date {
         return formatter
     }()
     
+    static let sameYearFull: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM. d, h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
+    static let differentYearFull: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy MMM. d, h:mm a"
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
     /// Truncates the hour, minute and second components of the date.
     var midnight: Date {
         let formatter = DateFormatter()
@@ -487,6 +501,15 @@ extension Date {
             return "on " + Date.shortFormatter.string(from: self)
         } else {
             return "at " + Date.timeFormatter.string(from: self)
+        }
+    }
+    
+    
+    var fullString: String {
+        if YEAR_FORMATTER.string(from: Date()) != YEAR_FORMATTER.string(from: self) {
+            return Date.differentYearFull.string(from: self)
+        } else {
+            return Date.sameYearFull.string(from: self)
         }
     }
     

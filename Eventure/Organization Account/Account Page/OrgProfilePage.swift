@@ -18,6 +18,9 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
     private var saveBarButton: UIBarButtonItem!
     private var spinner: UIActivityIndicatorView!
     
+    private var appStartExpanded = false
+    private var appEndExpanded = false
+    
     var cellsEditable: Bool { return true }
     
     override func viewDidLoad() {
@@ -141,6 +144,56 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         
         contentCells.append(section3)
         
+        let section4: [UITableViewCell] = {
+            var section = [UITableViewCell]()
+            
+            let startDateHeader = SettingsItemCell(withAccessory: false)
+            startDateHeader.icon.image = #imageLiteral(resourceName: "start_time").withRenderingMode(.alwaysTemplate)
+            startDateHeader.titleLabel.text = "Start Date"
+            
+            section.append(startDateHeader)
+            
+            let startDateChooser = ApplicationDateCell()
+            startDateChooser.dateChangedHandler = { date in
+                Organization.current?.appStart = date
+                Organization.current?.pushSettings(.appStartEnd)
+                startDateHeader.valueLabel.text = date.fullString
+            }
+            
+            if let startDate = Organization.current?.appStart {
+                startDateHeader.valueLabel.textColor = AppColors.link
+                startDateHeader.valueLabel.text = startDate.fullString
+                startDateChooser.picker.date = startDate
+            }
+            
+            section.append(startDateChooser)
+            
+            let endDateHeader = SettingsItemCell(withAccessory: false)
+            endDateHeader.icon.image = #imageLiteral(resourceName: "deadline").withRenderingMode(.alwaysTemplate)
+            endDateHeader.titleLabel.text = "End Date"
+            
+            section.append(endDateHeader)
+            
+            let endDateChooser = ApplicationDateCell()
+            endDateChooser.dateChangedHandler = { date in
+                Organization.current?.appDeadline = date
+                Organization.current?.pushSettings(.appStartEnd)
+                endDateHeader.valueLabel.text = date.fullString
+            }
+            
+            if let endDate = Organization.current?.appDeadline {
+                endDateHeader.valueLabel.textColor = AppColors.link
+                endDateHeader.valueLabel.text = endDate.fullString
+                endDateChooser.picker.date = endDate
+            }
+            
+            section.append(endDateChooser)
+            
+            return section
+        }()
+        
+        contentCells.append(section4)
+        
         spinner = UIActivityIndicatorView(style: .gray)
         spinner.startAnimating()
         
@@ -155,7 +208,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             "Contact Email",
             "Organization Tags",
             "Organization Description",
-            nil
+            "Application Window"
             ][section]
     }
     
@@ -204,32 +257,6 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         }
     }
     
-    //Add header
-    //FIXME: how to make this compatible
-//    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//
-//        if section != 0 { return nil }
-//
-//        let header = UIView()
-//
-//        let title = UILabel()
-//        title.numberOfLines = 5
-//        title.lineBreakMode = .byWordWrapping
-//        title.textAlignment = .center
-//        title.attributedText = "Let people know more about this organization from event check-ins by filling out profile information!".attributedText()
-//        title.font = .systemFont(ofSize: 16)
-//        title.translatesAutoresizingMaskIntoConstraints = false
-//        header.addSubview(title)
-//
-//        title.leftAnchor.constraint(equalTo: header.leftAnchor, constant: 30).isActive = true
-//        title.rightAnchor.constraint(equalTo: header.rightAnchor, constant: -30).isActive = true
-//        title.topAnchor.constraint(equalTo: header.topAnchor, constant: 20).isActive = true
-//        title.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -20).isActive = true
-//
-//        return header
-//    }
-    
-    //number of sections
     override func numberOfSections(in tableView: UITableView) -> Int {
         return contentCells.count
     }
@@ -241,6 +268,16 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         return contentCells[indexPath.section][indexPath.row]
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath == [4, 1] {
+            return appStartExpanded ? 220 : 0
+        } else if indexPath == [4, 3] {
+            return appEndExpanded ? 220 : 0
+        }
+        
+        return super.tableView(tableView, heightForRowAt: indexPath)
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -284,6 +321,32 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             tagPicker.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(tagPicker, animated: true)
         
+        case [4, 0]:
+            appStartExpanded.toggle()
+            if let startDateCell = tableView.cellForRow(at: [4, 1]) as? ApplicationDateCell {
+                startDateCell.picker.isUserInteractionEnabled = appStartExpanded
+                UIView.animate(withDuration: 0.2) {
+                    startDateCell.picker.alpha = self.appStartExpanded ? 1.0 : 0.0
+                }
+            }
+            
+            tableView.beginUpdates()
+            tableView.endUpdates()
+            tableView.scrollToRow(at: [4, 1], at: .none, animated: true)
+        
+        case [4, 2]:
+            appEndExpanded.toggle()
+            if let endDateCell = tableView.cellForRow(at: [4, 3]) as? ApplicationDateCell {
+                endDateCell.picker.isUserInteractionEnabled = appEndExpanded
+                UIView.animate(withDuration: 0.2) {
+                    endDateCell.picker.alpha = self.appEndExpanded ? 1.0 : 0.0
+                }
+            }
+            
+            tableView.beginUpdates()
+            tableView.endUpdates()
+            tableView.scrollToRow(at: [4, 3], at: .none, animated: true)
+    
         default:
             break
         }

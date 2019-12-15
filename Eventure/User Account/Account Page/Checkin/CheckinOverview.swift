@@ -432,7 +432,7 @@ class CheckinOverview: UIViewController {
             
             let msg = String(data: data!, encoding: .utf8)
             
-            let alert: UIAlertController
+            var alert: UIAlertController?
             
             switch msg {
             case INTERNAL_ERROR :
@@ -445,46 +445,56 @@ class CheckinOverview: UIViewController {
                     self.sheetInfo.currentOccupied += 1
                     self.sheetInfo.currentUserCheckedIn = true
                     self.refreshUI()
+                    alert = UIAlertController(title: "Successfully checked in!", message: "You name is now on the list!", preferredStyle: .alert)
+                    alert!.addAction(.init(title: "Close", style: .cancel, handler: { action in
+                        self.dismiss(animated: true, completion: nil)
+                    }))
+                    alert!.addAction(.init(title: "View Details", style: .default, handler: { _ in
+                        self.parentVC.flipPage()
+                    }))
                 }
-                alert = UIAlertController(title: "Successfully checked in!", message: "You name is now on the list!", preferredStyle: .alert)
-                alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
-                    self.dismiss(animated: true, completion: nil)
-                }))
-                alert.addAction(.init(title: "View Details", style: .default, handler: { _ in
-                    self.parentVC.flipPage()
-                }))
             case "full":
-                alert = UIAlertController(title: "You're too late!", message: "Unfortunately, the check-in list for this event has already met its capacity of \(self.event.capacity). Please check-in earlier next time!", preferredStyle: .alert)
-                alert.addAction(.init(title: "Close", style: .cancel, handler: { action in
-                    self.dismiss(animated: true, completion: nil)
-                }))
-            case "incorrect":
-                alert = UIAlertController(title: "Incorrect code", message: "Please confirm your check-in code with the event organizer.", preferredStyle: .alert)
-                alert.addAction(.init(title: "Dismiss", style: .cancel))
-            case "auth", "wait":
-                alert = UIAlertController(title: "Enter one-time code to check-in", message: "The event has been configured to require check-in verification. Please contact '\(self.event.hostTitle)' for your 6-digit code.", preferredStyle: .alert)
-                
-                let proceed = UIAlertAction(title: "Check in", style: .default) {
-                    _ in
-                    self.authenticateCheckin(code: alert.textFields![0].text ?? "")
+                DispatchQueue.main.async {
+                    alert = UIAlertController(title: "You're too late!", message: "Unfortunately, the check-in list for this event has already met its capacity of \(self.event.capacity). Please check-in earlier next time!", preferredStyle: .alert)
+                    alert!.addAction(.init(title: "Close", style: .cancel, handler: { action in
+                        self.dismiss(animated: true, completion: nil)
+                    }))
                 }
-                
-                alert.addAction(proceed)
-                alert.addAction(.init(title: "Cancel", style: .cancel))
-                
-                alert.addTextField { textfield in
-                    textfield.placeholder = "6-digit code"
-                    textfield.keyboardType = .numberPad
-                    textfield.autocorrectionType = .no
-                    textfield.enablesReturnKeyAutomatically = true
+            case "incorrect":
+                DispatchQueue.main.async {
+                    alert = UIAlertController(title: "Incorrect code", message: "Please confirm your check-in code with the event organizer.", preferredStyle: .alert)
+                    alert!.addAction(.init(title: "Dismiss", style: .cancel))
+                }
+            case "auth", "wait":
+                DispatchQueue.main.async {
+                    alert = UIAlertController(title: "Enter one-time code to check-in", message: "The event has been configured to require check-in verification. Please contact '\(self.event.hostTitle)' for your 6-digit code.", preferredStyle: .alert)
+                    
+                    let proceed = UIAlertAction(title: "Check in", style: .default) {
+                        _ in
+                        self.authenticateCheckin(code: alert!.textFields![0].text ?? "")
+                    }
+                    
+                    alert!.addAction(proceed)
+                    alert!.addAction(.init(title: "Cancel", style: .cancel))
+                    
+                    alert!.addTextField { textfield in
+                        textfield.placeholder = "6-digit code"
+                        textfield.keyboardType = .numberPad
+                        textfield.autocorrectionType = .no
+                        textfield.enablesReturnKeyAutomatically = true
+                    }
                 }
             default:
                 print(msg!)
-                alert = UIAlertController(title: "Unable to check in", message: "An unknown error has occurred.", preferredStyle: .alert)
-                alert.addAction(.init(title: "Dismiss", style: .cancel))
+                DispatchQueue.main.async {
+                    alert = UIAlertController(title: "Unable to check in", message: "An unknown error has occurred.", preferredStyle: .alert)
+                    alert!.addAction(.init(title: "Dismiss", style: .cancel))
+                }
             }
             DispatchQueue.main.async {
-                self.present(alert, animated: true, completion: nil)
+                if alert != nil {
+                    self.present(alert!, animated: true, completion: nil)
+                }
             }
         }
         

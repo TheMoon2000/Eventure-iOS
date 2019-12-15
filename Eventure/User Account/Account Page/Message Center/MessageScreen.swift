@@ -317,6 +317,12 @@ extension MessageScreen: UITableViewDelegate, UITableViewDataSource {
                 
             } else {
                 print("Unable to parse '\(String(data: data!, encoding: .utf8)!)'")
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Event Not Found", message: "The event you were looking for appears to have been deleted by its organizer.", preferredStyle: .alert)
+                    alert.addAction(.init(title: "Cancel", style: .cancel))
+                    self.present(alert, animated: true)
+                    
+                }
             }
         }
         

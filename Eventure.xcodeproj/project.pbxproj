@@ -185,6 +185,7 @@
 		CCCE5DB923603519005CE5D7 /* NewEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DB823603519005CE5D7 /* NewEventCell.swift */; };
 		CCCE5DBB23610328005CE5D7 /* BadgeCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DBA23610328005CE5D7 /* BadgeCount.swift */; };
 		CCD65519231F4A3400088646 /* EventSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD65518231F4A3400088646 /* EventSearchResults.swift */; };
+		CCDBEF8B23A60A9400B445D1 /* ApplicationDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */; };
 		CCDC0B8323715B6400F8F8EA /* BlankScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC0B8223715B6400F8F8EA /* BlankScreen.swift */; };
 		CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */; };
 		CCE176A722BD742F003E3315 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCE176A622BD742F003E3315 /* MessageCell.swift */; };
@@ -432,6 +433,7 @@
 		CCCE5DB823603519005CE5D7 /* NewEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventCell.swift; sourceTree = "<group>"; };
 		CCCE5DBA23610328005CE5D7 /* BadgeCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeCount.swift; sourceTree = "<group>"; };
 		CCD65518231F4A3400088646 /* EventSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchResults.swift; sourceTree = "<group>"; };
+		CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDateCell.swift; sourceTree = "<group>"; };
 		CCDC0B8223715B6400F8F8EA /* BlankScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlankScreen.swift; sourceTree = "<group>"; };
 		CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePickerCell.swift; sourceTree = "<group>"; };
 		CCDEE71F231601C100D8EB43 /* EventImagePreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePreviewCell.swift; sourceTree = "<group>"; };
@@ -847,6 +849,7 @@
 				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
 				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
+				CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */,
 				CC2B99CE2365052800E1AC42 /* Manage members */,
 				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				CC0329B3236A1A55000376D3 /* Statistics */,
@@ -1349,6 +1352,7 @@
 				CCAB884B235D0F930053AA20 /* MessageCenter.swift in Sources */,
 				CC20505B2335F1F000F6A114 /* ActivateTicket.swift in Sources */,
 				CC3312822322121C00DC03D2 /* AboutPage.swift in Sources */,
+				CCDBEF8B23A60A9400B445D1 /* ApplicationDateCell.swift in Sources */,
 				CC2CCD47233184CD000C65E2 /* TicketTypes.swift in Sources */,
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
