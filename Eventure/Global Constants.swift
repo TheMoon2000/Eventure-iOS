@@ -168,6 +168,9 @@ struct AppColors {
     
     /// A light gray tint color.
     static var lightGray = UIColor(named: "AppColors.views")!
+    
+    /// Application start time color.
+    static var startTime = UIColor(named: "AppColors.start")!
 }
 
 let SAMPLE_TEXT = """

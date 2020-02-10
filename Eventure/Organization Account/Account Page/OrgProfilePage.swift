@@ -31,7 +31,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
         
         tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = AppColors.canvas
+        tableView.backgroundColor = AppColors.tableBG
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.contentInset.top = 5
         tableView.contentInset.bottom = 10
@@ -149,6 +149,7 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             
             let startDateHeader = SettingsItemCell(withAccessory: false)
             startDateHeader.icon.image = #imageLiteral(resourceName: "start_time").withRenderingMode(.alwaysTemplate)
+            startDateHeader.icon.tintColor = AppColors.startTime
             startDateHeader.titleLabel.text = "Start Date"
             
             section.append(startDateHeader)

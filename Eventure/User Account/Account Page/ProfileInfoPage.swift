@@ -417,25 +417,24 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         case [0, 3]:
             view.endEditing(true)
             graduationCellExpanded.toggle()
-            refreshGradCell()
+            
+            if let chooserCell = contentCells[0][4] as? GraduationYearChooser {
+                chooserCell.picker.isUserInteractionEnabled = graduationCellExpanded
+            
+                UIView.animate(withDuration: 0.2) {
+                    chooserCell.picker.alpha = self.graduationCellExpanded ? 1.0 : 0.0
+                }
+                
+//                chooserCell.valueChanged(setup: true)
+                
+            }
+            
+            tableView.beginUpdates()
+            tableView.endUpdates()
+            tableView.scrollToRow(at: [0, 4], at: .none, animated: true)
         default:
             break
         }
-    }
-    
-    private func refreshGradCell() {
-        
-        let chooserCell = contentCells[0][4] as! GraduationYearChooser
-        chooserCell.picker.isUserInteractionEnabled = graduationCellExpanded
-        
-        UIView.animate(withDuration: 0.2) {
-            chooserCell.picker.alpha = self.graduationCellExpanded ? 1.0 : 0.0
-        }
-        
-        chooserCell.valueChanged(setup: true)
-        
-         tableView.beginUpdates()
-         tableView.endUpdates()
     }
     
     
