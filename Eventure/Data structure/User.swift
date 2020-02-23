@@ -65,7 +65,7 @@ class User: Profile {
     /// Maps events to their calendar identifiers.
     var calendarIdentifiers: [String : String] { didSet { save() } }
     var subscriptions = Set<String>() { didSet { save() } }
-    var tags = Set<String>() { didSet { save() } }
+    var tags = Set<Int>() { didSet { save() } }
     var memberships = Set<Membership>()
     let dateRegistered: String // Only for debugging purpose
     
@@ -145,7 +145,7 @@ class User: Profile {
         }
         
         if let tags_raw = dictionary["Tags"]?.string {
-            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [Int]) ?? [Int]()
             tags = Set(tagsArray)
         }
         

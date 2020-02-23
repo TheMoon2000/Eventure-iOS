@@ -9,10 +9,7 @@
 import Foundation
 import SwiftyJSON
 
-class Major: Hashable {
-    
-    /// Maps a major ID to a `Major` object.
-    static var currentMajors = [Int: Major]()
+class Major {
     
     var id: Int
     var fullName: String
@@ -25,15 +22,7 @@ class Major: Hashable {
         abbreviation = dictionary["Abbreviation"]?.string
     }
     
-    static func ==(lhs: Major, rhs: Major) -> Bool {
-        return lhs.fullName.lowercased() == rhs.fullName.lowercased()
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(fullName.lowercased())
-    }
-    
-    private var encodedJSON: JSON {
+    var encodedJSON: JSON {
         var json = JSON()
         json.dictionaryObject?["id"] = id
         json.dictionaryObject?["Full name"] = fullName
@@ -42,60 +31,17 @@ class Major: Hashable {
         return json
     }
     
-    static func recoverCache() {
-        
-        guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: MAJORS_PATH) else {
-            return
-        }
-        
-        guard let cache = fileData as? [Int : Data] else {
-            print("WARNING: Cannot read cache as [String : Data]!")
-            return
-        }
-        
-        for cachedMajor in cache {
-            if let data = try? JSON(data: cachedMajor.value) {
-                currentMajors[cachedMajor.key] = Major(json: data)
-            }
-        }
+}
+
+
+extension Major: Hashable {
+    
+    static func ==(lhs: Major, rhs: Major) -> Bool {
+        return lhs.fullName.lowercased() == rhs.fullName.lowercased()
     }
     
-    static func save() {
-        let data = currentMajors.mapValues { try! $0.encodedJSON.rawData() }
-        NSKeyedArchiver.archiveRootObject(data, toFile: MAJORS_PATH)
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(fullName.lowercased())
     }
     
-    static func updateCurrentMajors(_ handler: (() -> ())?) {
-        
-        let url = URL(string: API_BASE_URL + "Majors")!
-        let task = CUSTOM_SESSION.dataTask(with: url) {
-            data, response, error in
-            
-            guard error == nil else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                    updateCurrentMajors(handler)
-                }
-                return
-            }
-            
-            if let json = try? JSON(data: data!), let array = json.array {
-                var allMajors = [Int: Major]()
-                for m in array {
-                    let major = Major(json: m)
-                    allMajors[major.id] = major
-                }
-                if !allMajors.isEmpty {
-                    Major.currentMajors = allMajors
-                    Major.save()
-                    print("\(allMajors.count) majors are loaded")
-                }
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 15) {
-                    updateCurrentMajors(handler)
-                }
-            }
-        }
-        
-        task.resume()
-    }
 }

@@ -36,7 +36,7 @@ class MessageDateHeaderView: UIView {
             let label = UILabel()
             label.text = "Replace me with a date"
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 13)
+            label.font = .appFontRegular(13)
             label.textAlignment = .center
             label.textColor = UIColor(named: "AppColors.lightText")!
             label.translatesAutoresizingMaskIntoConstraints = false

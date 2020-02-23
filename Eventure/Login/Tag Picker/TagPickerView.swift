@@ -28,8 +28,9 @@ class TagPickerView: UIViewController {
     var maxPicks: Int?
     
     var tagPicker: UICollectionView!
-    private var tags = [String]()
-    var selectedTags = Set<String>() {
+    private var tags = [Tag]()
+    
+    var selectedTags = Set<Int>() {
         didSet {
             if tags.isEmpty { return }
             updateUI()
@@ -38,7 +39,7 @@ class TagPickerView: UIViewController {
     
     var errorHandler: (() -> ())?
     
-    var customDisappearHandler: ((Set<String>) -> ())?
+    var customDisappearHandler: ((Set<Int>) -> ())?
     
     private func updateUI() {
         if minPicks > selectedTags.count || maxPicks != nil && maxPicks! < selectedTags.count {
@@ -217,49 +218,36 @@ class TagPickerView: UIViewController {
         loadTags()
     }
 
-    private func loadTags() {
+    private func loadTags(_ pulled: Bool = false) {
         
-        loadingBG.isHidden = false
-        
-        self.continueButton.backgroundColor = AppColors.mainDisabled
-        self.continueButton.isUserInteractionEnabled = false
-        
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/Tags",
-                           parameters: ["withDefault": "1"])!
-        
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-        
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
+        // By default, we can directly use the cache.
+        if !pulled && !LocalStorage.tags.isEmpty {
+            self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }
+            self.tagPicker.reloadSections(IndexSet(arrayLiteral: 0))
+            self.updateUI()
+        } else {
+            continueButton.backgroundColor = AppColors.mainDisabled
+            continueButton.isUserInteractionEnabled = false
+            loadingBG.isHidden = false
             
-            guard error == nil else {
-                DispatchQueue.main.async {
+            LocalStorage.updateTags { status in
+                self.loadingBG.isHidden = true
+                
+                if status == 0 {
+                    self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }
+                    self.tagPicker.reloadSections(IndexSet(arrayLiteral: 0))
+                    self.updateUI()
+                } else if status == -1 {
                     internetUnavailableError(vc: self) {
                         self.errorHandler?()
                     }
-                }
-                return
-            }
-            
-            if let json = try? JSON(data: data!).dictionary {
-                if json?["status"]!.stringValue == INTERNAL_ERROR {
+                } else if status == -2 {
                     serverMaintenanceError(vc: self) {
                         self.errorHandler?()
-                    }
-                } else {
-                    self.tags = json?["tags"]!.arrayObject as! [String]
-                    DispatchQueue.main.async {
-                        self.loadingBG.isHidden = true
-                        self.tagPicker.reloadSections(IndexSet(arrayLiteral: 0))
-                        self.updateUI()
                     }
                 }
             }
         }
-        
-        task.resume()
     }
     
     @objc private func buttonPressed() {
@@ -297,8 +285,7 @@ class TagPickerView: UIViewController {
         
         var body = JSON()
         body.dictionaryObject?["uuid"] = User.current?.uuid
-        let tagsArray = selectedTags.map { $0 }
-        body.dictionaryObject?["tags"] = tagsArray
+        body.dictionaryObject?["tags"] = Array(selectedTags)
         request.httpBody = try? body.rawData()
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
@@ -315,7 +302,7 @@ class TagPickerView: UIViewController {
                 serverMaintenanceError(vc: self)
             case "success":
                 print("successfully updated tags")
-                User.current!.tags = Set(tagsArray)
+                User.current!.tags = self.selectedTags
                 DispatchQueue.main.async {
                     MainTabBarController.current.openScreen()
                 }
@@ -345,8 +332,8 @@ extension TagPickerView: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let tagCell = collectionView.dequeueReusableCell(withReuseIdentifier: "tag", for: indexPath) as! TagCell
-        tagCell.tagLabel.text = tags[indexPath.row]
-        tagCell.isSelected = selectedTags.contains(tags[indexPath.row])
+        tagCell.tagLabel.text = tags[indexPath.row].name
+        tagCell.isSelected = selectedTags.contains(tags[indexPath.row].id)
         if tagCell.isSelected {
             collectionView.selectItem(at: indexPath, animated: true, scrollPosition: .init())
         }
@@ -363,12 +350,12 @@ extension TagPickerView: UICollectionViewDataSource {
 extension TagPickerView: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedTags.insert(tags[indexPath.row])
+        selectedTags.insert(tags[indexPath.row].id)
     }
 
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        selectedTags.remove(tags[indexPath.row])
+        selectedTags.remove(tags[indexPath.row].id)
     }
 }
 

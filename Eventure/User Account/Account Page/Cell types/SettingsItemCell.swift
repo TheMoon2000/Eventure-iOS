@@ -50,7 +50,7 @@ class SettingsItemCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 0
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -64,6 +64,7 @@ class SettingsItemCell: UITableViewCell {
         
         valueLabel = {
             let label = UILabel()
+            label.font = .appFontRegular(17)
             label.textAlignment = .right
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false

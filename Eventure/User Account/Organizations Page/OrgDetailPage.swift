@@ -126,7 +126,7 @@ class OrgDetailPage: UIViewController {
                 let label = UILabel()
                 label.numberOfLines = 2
                 label.text = organization.title
-                label.font = .systemFont(ofSize: 18, weight: .semibold)
+                label.font = .appFontSemibold(18)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 
                 return label
@@ -134,7 +134,7 @@ class OrgDetailPage: UIViewController {
             
             descriptionLabel = {
                 let label = UILabel()
-                label.font = .systemFont(ofSize: 16.5)
+                label.font = .appFontRegular(16.5)
                 label.textColor = .lightGray
                 let noun = organization.subscribers.count == 1 ? "Subscriber" : "Subscribers"
                 label.text = "\(organization.subscribers.count) " + noun
@@ -219,6 +219,7 @@ class OrgDetailPage: UIViewController {
             let label = UILabel()
             label.text = "Nothing to show."
             label.textColor = .darkGray
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             blockBG.addSubview(label)
             

@@ -21,7 +21,7 @@ class EventDetailPage: UIViewController {
         return [
             NSAttributedString.Key.paragraphStyle: pStyle,
             NSAttributedString.Key.foregroundColor: UIColor.darkGray,
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16.5),
+            NSAttributedString.Key.font: UIFont.appFontRegular(16.5),
             NSAttributedString.Key.kern: 0.2
         ]
     }()
@@ -93,7 +93,6 @@ class EventDetailPage: UIViewController {
             iv.topAnchor.constraint(lessThanOrEqualTo: canvas.topAnchor).isActive = true
             iv.centerXAnchor.constraint(equalTo: canvas.centerXAnchor).isActive = true
             iv.widthAnchor.constraint(lessThanOrEqualToConstant: 400).isActive = true
-            iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
             
             iv.leftAnchor.constraint(greaterThanOrEqualTo: canvas.leftAnchor).isActive = true
             iv.rightAnchor.constraint(lessThanOrEqualTo: canvas.rightAnchor).isActive = true
@@ -112,8 +111,10 @@ class EventDetailPage: UIViewController {
                     event.getCover { withImage in
                         iv.image = withImage.eventVisual
                     }
+                    iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
                 } else {
-                    iv.image = #imageLiteral(resourceName: "berkeley")
+                    // iv.image = #imageLiteral(resourceName: "berkeley")
+                    iv.heightAnchor.constraint(equalToConstant: 0).isActive = true
                 }
             }
             
@@ -127,7 +128,7 @@ class EventDetailPage: UIViewController {
             let label = UILabel()
             label.numberOfLines = 10
             label.text = event.title
-            label.font = .systemFont(ofSize: 20, weight: .semibold)
+            label.font = .appFontSemibold(20)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -274,6 +275,8 @@ class EventDetailPage: UIViewController {
         if let v = tabStrip.viewControllers.first as? AboutViewController {
             v.event = self.event
         }
+        
+        navigationController?.navigationBar.shadowImage = nil
     }
     
     @objc private func interestedAction() {

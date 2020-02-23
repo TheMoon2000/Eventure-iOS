@@ -21,6 +21,8 @@ class Organization: CustomStringConvertible {
             }
         }
     }
+    
+    static var cachedLogos = [String: UIImage]()
 
     let id: String
     var title: String { didSet { save() } }
@@ -37,7 +39,7 @@ class Organization: CustomStringConvertible {
 
     // Profile Information
     var contactName: String { didSet { save() } }
-    var tags = Set<String>() { didSet { save() } }
+    var tags = Set<Int>() { didSet { save() } }
     var website: String { didSet { save() } }
     var contactEmail: String { didSet { save() } }
     var orgDescription: String { didSet { save(requireReupload: false) } }
@@ -105,7 +107,7 @@ class Organization: CustomStringConvertible {
         website = dictionary["Website"]?.string ?? ""
 
         if let tags_raw = dictionary["Tags"]?.string {
-            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [String]) ?? [String]()
+            let tagsArray = (JSON(parseJSON: tags_raw).arrayObject as? [Int]) ?? [Int]()
             tags = Set(tagsArray)
         }
         
@@ -382,6 +384,42 @@ class Organization: CustomStringConvertible {
                 self.logoImage = newLogo
                 DispatchQueue.main.async {
                     handler?(self)
+                }
+            }
+        }
+
+        task.resume()
+    }
+    
+    static func getLogoImage(orgID: String, _ handler: @escaping ((UIImage?) -> ())) {
+        
+        // Use cache if available
+        if let img = cachedLogos[orgID] {
+            handler(img)
+            return
+        }
+        
+        let url = URL.with(base: API_BASE_URL,
+                           API_Name: "events/GetLogo",
+                           parameters: ["id": orgID])!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+
+            guard error == nil else {
+                print("WARNING: Get logo image returned error for organization!")
+                return
+            }
+            DispatchQueue.main.async {
+                if let img = cachedLogos[orgID] {
+                    handler(img)
+                } else if let imgData = UIImage(data: data!) {
+                    cachedLogos[orgID] = imgData
+                    handler(imgData)
+                } else {
+                    handler(nil)
                 }
             }
         }

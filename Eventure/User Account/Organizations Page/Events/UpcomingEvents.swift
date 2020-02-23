@@ -32,7 +32,7 @@ class UpcomingEvents: OrgEventViewController, IndicatorInfoProvider {
         super.init(nibName: nil, bundle: nil)
         
         self.detailPage = detailPage
-        lowerBound = Date()
+        start = Date()
     }
     
     override func viewDidLoad() {

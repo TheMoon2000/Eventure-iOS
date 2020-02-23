@@ -52,6 +52,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             handleAPSPacket(packet: JSON(aps))
         }
         
+        for state in [UIControl.State.normal, .highlighted, .selected, .disabled] {
+            UIBarButtonItem.appearance().setTitleTextAttributes([.font: UIFont.appFontMedium(16.5)], for: state)
+        }
+                
         return true
     }
     

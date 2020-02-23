@@ -71,7 +71,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.text = "Host: "
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -85,7 +85,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         
         hostLink = {
             let button = UIButton(type: .system)
-            button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(17)
             button.titleLabel?.numberOfLines = 0
             button.titleLabel?.textAlignment = .right
             button.setTitle(event.hostTitle, for: .normal)
@@ -109,7 +109,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.text = "Location: "
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -123,7 +123,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         
         locationText = {
             let button = UIButton(type: .system)
-            button.titleLabel?.font = .systemFont(ofSize: 17)
+            button.titleLabel?.font = .appFontRegular(17)
             button.titleLabel?.textAlignment = .right
             button.titleLabel?.numberOfLines = 0
             button.setTitleColor(AppColors.value, for: .normal)
@@ -143,12 +143,12 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.text = "Start time: "
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
-            label.topAnchor.constraint(equalTo: locationText.bottomAnchor, constant: verticalSpacing).isActive = true
+            label.topAnchor.constraint(equalTo: locationText.titleLabel!.bottomAnchor, constant: verticalSpacing).isActive = true
             
             label.setContentCompressionResistancePriority(.required, for: .horizontal)
             
@@ -159,7 +159,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -175,16 +175,15 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.text = "Duration: "
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
             label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
             label.topAnchor.constraint(equalTo: startDate.bottomAnchor, constant: verticalSpacing).isActive = true
             
-            label.layoutIfNeeded()
-            label.widthAnchor.constraint(equalToConstant: label.frame.width).isActive = true
-            
+            label.setContentCompressionResistancePriority(.required, for: .horizontal)
+
             return label
         }()
         
@@ -192,7 +191,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -209,7 +208,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.text = "Interested: "
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -225,7 +224,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             let label = UILabel()
             label.textAlignment = .right
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -240,7 +239,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         ticketLabel = {
             let label = UILabel()
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -278,7 +277,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         startDate.text = event.startTime?.readableString() ?? "Unspecified"
         endDate.text = event.duration
         interestedText.text = String(event.interested.count)
-        ticketValue.titleLabel?.font = .systemFont(ofSize: 17)
+        ticketValue.titleLabel?.font = .appFontRegular(17)
         if User.current != nil {
             ticketLabel.text = "Tickets:"
             if event.requiresTicket {

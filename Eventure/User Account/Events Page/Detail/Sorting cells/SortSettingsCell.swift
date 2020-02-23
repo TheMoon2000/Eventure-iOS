@@ -66,7 +66,7 @@ class SortSettingsCell: UITableViewCell {
         sortTitle = {
             let label = UILabel()
             label.alpha = 0.0
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)

@@ -37,6 +37,7 @@ class MajorPreviewCell: UITableViewCell {
             let label = UILabel()
             label.lineBreakMode = .byCharWrapping
             label.numberOfLines = 10
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

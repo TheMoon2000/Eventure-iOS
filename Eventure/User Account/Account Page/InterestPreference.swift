@@ -42,7 +42,7 @@ class InterestPreference: UITableViewController {
         title.textAlignment = .center
         title.attributedText = "Should interested events be automatically added to your calendar?".attributedText()
         title.textColor = AppColors.prompt
-        title.font = .systemFont(ofSize: 16)
+        title.font = .appFontRegular(16)
         title.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(title)
         
@@ -59,6 +59,7 @@ class InterestPreference: UITableViewController {
         cell.selectionStyle = .none
         cell.backgroundColor = AppColors.background
         cell.textLabel?.text = choices[indexPath.row].description
+        cell.textLabel?.font = .appFontRegular(17)
         cell.accessoryType = User.current!.interestPreference == choices[indexPath.row] ? .checkmark : .none
 
         return cell

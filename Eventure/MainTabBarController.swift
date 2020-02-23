@@ -77,8 +77,9 @@ class MainTabBarController: UITabBarController {
     
     private func setupUserTabs() {
                 
-        let tab1 = EventViewController()
+        let tab1 = EventHomePage() // EventViewController()
         tab1.tabBarItem = UITabBarItem(title: "Events", image: #imageLiteral(resourceName: "search"), tag: 0)
+        tab1.tabBarItem.setTitleTextAttributes([.font: UIFont.appFontRegular(12)], for: .normal)
 
         let tab2: UIViewController
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -87,9 +88,11 @@ class MainTabBarController: UITabBarController {
             tab2 = OrganizationsViewController()
         }
         tab2.tabBarItem = UITabBarItem(title: "Organizations", image: #imageLiteral(resourceName: "organization"), tag: 1)
+        tab2.tabBarItem.setTitleTextAttributes([.font: UIFont.appFontRegular(12)], for: .normal)
         
         let tab3 = AccountViewController()
         tab3.tabBarItem = UITabBarItem(title: "Me", image: #imageLiteral(resourceName: "home"), tag: 2)
+        tab3.tabBarItem.setTitleTextAttributes([.font: UIFont.appFontRegular(12)], for: .normal)
         
         viewControllers = [tab1, tab2, tab3].map { vc in
             if vc is OrgSplitViewController {
@@ -99,8 +102,7 @@ class MainTabBarController: UITabBarController {
             let nav = UINavigationController(rootViewController: vc)
             
             /// REPLACE
-            nav.navigationBar.barTintColor = AppColors.navbar
-            nav.navigationBar.isTranslucent = false
+            nav.navigationBar.customize()
          
             return nav
         }
@@ -154,10 +156,10 @@ class MainTabBarController: UITabBarController {
     
     func loginSetup() {
         
+        // Application setup
         loadSupportedCampuses()
         checkForNotices()
-        Major.recoverCache()
-        Major.updateCurrentMajors(nil)
+        LocalStorage.recoverFromCache()
         
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {

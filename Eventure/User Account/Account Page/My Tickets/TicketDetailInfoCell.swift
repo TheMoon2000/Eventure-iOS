@@ -31,7 +31,7 @@ class TicketDetailInfoCell: UITableViewCell {
         
         providerLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.text = "Ticket provider:"
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,7 @@ class TicketDetailInfoCell: UITableViewCell {
         
         paymentDateLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.text = "Date of purchase:"
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -83,7 +83,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.numberOfLines = 2
             label.text = ticket.transactionDate?.readableString() ?? "Unrecorded"
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -97,7 +97,7 @@ class TicketDetailInfoCell: UITableViewCell {
         
         paymentTypeLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.text = "Payment type:"
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -115,7 +115,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.numberOfLines = 2
             label.text = ticket.paymentType.rawValue
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -129,7 +129,7 @@ class TicketDetailInfoCell: UITableViewCell {
         
         ticketPriceLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.text = "Ticket price:"
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -146,7 +146,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.text = String(format: "$%.02f", ticket.ticketPrice)
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -160,7 +160,7 @@ class TicketDetailInfoCell: UITableViewCell {
         
         amountPaidLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.text = "Amount paid:"
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -178,7 +178,7 @@ class TicketDetailInfoCell: UITableViewCell {
             label.numberOfLines = 2
             label.text = String(format: "$%.02f", ticket.paymentAmount)
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -197,7 +197,7 @@ class TicketDetailInfoCell: UITableViewCell {
         
         notesLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.text = "Notes:"
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -213,7 +213,7 @@ class TicketDetailInfoCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 20
             label.text = ticket.notes
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             if label.text!.isEmpty {
                 label.text = "The event host did not leave a note."
             }

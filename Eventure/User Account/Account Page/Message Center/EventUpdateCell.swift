@@ -56,7 +56,7 @@ class EventUpdateCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.label
             label.text = "Event Update"
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -117,7 +117,7 @@ class EventUpdateCell: UITableViewCell {
             button.setTitleColor(AppColors.value, for: .normal)
             button.contentHorizontalAlignment = .left
             button.titleEdgeInsets.left = 15
-            button.titleLabel?.font = .systemFont(ofSize: 15)
+            button.titleLabel?.font = .appFontRegular(15)
             button.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(button)
             

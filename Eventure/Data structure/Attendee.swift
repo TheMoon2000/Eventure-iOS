@@ -42,7 +42,7 @@ class Attendee {
         if let majorList = JSON(parseJSON: dictionary["Major"]!.stringValue).arrayObject as? [Int] {
             var tmp = [Major]()
             for majorIndex in majorList {
-                if let major = Major.currentMajors[majorIndex] {
+                if let major = LocalStorage.majors[majorIndex] {
                     tmp.append(major)
                 }
             }

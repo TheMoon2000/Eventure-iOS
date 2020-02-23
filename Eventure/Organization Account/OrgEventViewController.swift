@@ -30,8 +30,8 @@ class OrgEventViewController: UIViewController, EventProvider {
     ]
     
     // Date bounds
-    var lowerBound: Date?
-    var upperBound: Date?
+    var start: Date?
+    var end: Date?
     
     private var searchController: UISearchController!
     private var searchResults: EventSearchResults!
@@ -191,7 +191,7 @@ class OrgEventViewController: UIViewController, EventProvider {
             let label = UILabel()
             label.text = "Loading events..."
             label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -205,7 +205,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         publishedLabel = {
             let label = UILabel()
             label.textColor = AppColors.prompt
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
@@ -219,7 +219,7 @@ class OrgEventViewController: UIViewController, EventProvider {
             let label = UILabel()
             label.isHidden = true
             label.textColor = AppColors.prompt
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
@@ -247,6 +247,10 @@ class OrgEventViewController: UIViewController, EventProvider {
         if let orgSpecificEvents = Event.readFromFile(path: DRAFTS_PATH.path)[Organization.current!.id] {
             allDrafts = orgSpecificEvents
         }
+    }
+    
+    func fetchEventsIfNeeded() {
+        updateEvents()
     }
     
     @objc private func updateEvents(pulled: Bool = false) {
@@ -494,8 +498,8 @@ extension OrgEventViewController {
             return false
         }
         
-        let lowCond = lowerBound == nil || event.startTime!.timeIntervalSince(lowerBound!) >= 0
-        let highCond = upperBound == nil || event.endTime == nil || event.endTime!.timeIntervalSince(upperBound!) <= 0
+        let lowCond = end == nil || event.startTime!.timeIntervalSince(end!) >= 0
+        let highCond = start == nil || event.endTime == nil || event.endTime!.timeIntervalSince(start!) <= 0
         let hostCond = orgID == nil || event.hostID == orgID
         
         return lowCond && highCond && hostCond

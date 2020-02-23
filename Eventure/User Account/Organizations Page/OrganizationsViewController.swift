@@ -70,6 +70,8 @@ class OrganizationsViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
+        searchController.searchBar.searchTextField.font = .appFontRegular(17)
+        
         refreshControl.tintColor = AppColors.lightControl
         refreshControl.addTarget(self, action: #selector(loadOrganizations), for: .valueChanged)
                 
@@ -99,6 +101,7 @@ class OrganizationsViewController: UIViewController {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
+            tab.setTitleTextAttributes([.font: UIFont.appFontMedium(15.5)], for: .normal)
             tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
@@ -152,7 +155,7 @@ class OrganizationsViewController: UIViewController {
         spinnerLabel = {
             let label = UILabel()
             label.text = "Loading organizations..."
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -166,7 +169,7 @@ class OrganizationsViewController: UIViewController {
         emptyLabel = {
             let label = UILabel()
             label.textColor = .gray
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             
@@ -177,6 +180,12 @@ class OrganizationsViewController: UIViewController {
         }()
         
         loadOrganizations()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.shadowImage = nil
     }
     
     @objc private func selectionChanged() {
@@ -287,7 +296,7 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
         if tableView.numberOfSections == 1 || organizations.isEmpty { return nil }
         
         let container = UIView()
-        container.backgroundColor = AppColors.canvas.withAlphaComponent(0.95)
+        container.backgroundColor = AppColors.canvas.withAlphaComponent(0.92)
         
         let label = UILabel()
         label.layoutMargins.left = 10
@@ -297,12 +306,12 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
         } else {
             label.text = "All Organizations"
         }
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .appFontRegular(14)
         label.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(label)
         
         label.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 6).isActive = true
-        label.topAnchor.constraint(equalTo: container.topAnchor, constant: 2).isActive = true
+        label.topAnchor.constraint(equalTo: container.topAnchor, constant: 3).isActive = true
         label.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -2).isActive = true
         
         return container

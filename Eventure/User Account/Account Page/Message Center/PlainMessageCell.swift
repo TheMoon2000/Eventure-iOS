@@ -42,7 +42,7 @@ class PlainMessageCell: UITableViewCell {
             let label = UILabel()
             label.text = content.shortString.string
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.textAlignment = .center
             label.textColor = AppColors.invertedLabel
             label.translatesAutoresizingMaskIntoConstraints = false

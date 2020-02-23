@@ -38,6 +38,7 @@ class MessageCenter: UIViewController {
             sc.searchResultsUpdater = searchResults
             sc.searchBar.placeholder = "Search"
             sc.searchBar.tintColor = AppColors.main
+            sc.searchBar.searchTextField.font = .appFontRegular(17)
             sc.dimsBackgroundDuringPresentation = true
             
             navigationItem.searchController = sc
@@ -72,6 +73,7 @@ class MessageCenter: UIViewController {
             let label = UILabel()
             label.isHidden = true
             label.text = "No messages."
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -204,6 +206,11 @@ extension MessageCenter: UITableViewDelegate, UITableViewDataSource {
         navigationController?.pushViewController(messageScreen, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.font = .appFontRegular(13.5)
+        }
+    }
     
 }
 

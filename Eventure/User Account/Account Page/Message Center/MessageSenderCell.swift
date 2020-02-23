@@ -13,7 +13,7 @@ class MessageSenderCell: UITableViewCell {
     
     static let PREVIEW_STYLE = """
         body {
-            font-family: -apple-system;
+            font-family: "ProximaNova-Regular";
             font-size: 15.5px;
             line-height: 1.25;
             letter-spacing: 1%;
@@ -56,7 +56,7 @@ class MessageSenderCell: UITableViewCell {
         dateLabel = {
             let label = UILabel()
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 13)
+            label.font = .appFontRegular(13)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -72,7 +72,7 @@ class MessageSenderCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 3
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -87,7 +87,7 @@ class MessageSenderCell: UITableViewCell {
         
         messageOverview = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.numberOfLines = 2
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false

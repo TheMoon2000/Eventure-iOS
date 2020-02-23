@@ -42,7 +42,7 @@ class UnsupportedContentCell: UITableViewCell {
             let label = UILabel()
             label.text = "Unsupported content type. Please update Eventure to view this message."
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 14)
+            label.font = .appFontRegular(14)
             label.textAlignment = .center
             label.textColor = UIColor(named: "AppColors.lightText")!
             label.translatesAutoresizingMaskIntoConstraints = false

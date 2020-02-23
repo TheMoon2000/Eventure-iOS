@@ -41,7 +41,7 @@ class TicketQRCell: UITableViewCell {
             label.numberOfLines = 5
             label.textAlignment = .center
             label.text = ticket.typeName
-            label.font = .systemFont(ofSize: 24, weight: .medium)
+            label.font = .appFontSemibold(24)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -58,6 +58,7 @@ class TicketQRCell: UITableViewCell {
             let label = UILabel()
             label.textAlignment = .center
             label.textColor = .gray
+            label.font = .appFontRegular(17)
             let noun = ticket.quantity == 1 ? "Ticket" : "Tickets"
             
             var remaining = ""
@@ -104,7 +105,7 @@ class TicketQRCell: UITableViewCell {
                 label.attributedText = "Activated \(activationDate.inlineString())".attributedText()
                 qrCode.alpha = 0.09
             }
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.textAlignment = .center
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false

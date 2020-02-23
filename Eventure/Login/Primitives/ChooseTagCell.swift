@@ -133,7 +133,7 @@ class ChooseTagCell: UITableViewCell {
         }
     }
     
-    func reloadTagPrompt(tags: Set<String>) {
+    func reloadTagPrompt(tags: Set<Int>) {
         if tags.count >= 1 && (maxPicks == nil || tags.count <= maxPicks!) {
             status = .done
             let tagword = tags.count == 1 ? "tag" : "tags"

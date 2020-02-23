@@ -457,14 +457,7 @@ class LoginViewController: UIViewController {
         
         func handleUserLogin(user: User) {
             User.current = user
-            
-            if user.tags.isEmpty {
-                let nextVC = TagPickerView()
-                nextVC.loginVC = self
-                present(nextVC, animated: true, completion: nil)
-            } else {
-                MainTabBarController.current.openScreen()
-            }
+            MainTabBarController.current.openScreen()
         }
         
         func handleOrgLogin(org: Organization) {

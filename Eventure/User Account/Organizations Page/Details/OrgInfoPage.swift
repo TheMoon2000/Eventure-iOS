@@ -75,7 +75,7 @@ class OrgInfoPage: UIViewController {
             label.textAlignment = .center
             label.text = organization.title
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 21, weight: .semibold)
+            label.font = .appFontSemibold(21)
             label.isHidden = view.frame.height < 500
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -93,7 +93,7 @@ class OrgInfoPage: UIViewController {
             label.numberOfLines = 3
             label.text = organization.title
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 21, weight: .semibold)
+            label.font = .appFontSemibold(21)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             

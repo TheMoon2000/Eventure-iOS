@@ -53,6 +53,7 @@ class GenericTextCell: UITableViewCell, UITextFieldDelegate {
             field.returnKeyType = .done
             field.textColor = AppColors.value
             field.delegate = self
+            field.font = .appFontRegular(17)
             field.enablesReturnKeyAutomatically = true
             field.translatesAutoresizingMaskIntoConstraints = false
             addSubview(field)

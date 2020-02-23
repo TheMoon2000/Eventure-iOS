@@ -50,7 +50,7 @@ class DatePickerTopCell: UITableViewCell {
             let label = UILabel()
             label.text = title
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -82,7 +82,7 @@ class DatePickerTopCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 2
             label.text = "No time selected"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontMedium(16)
             label.textAlignment = .right
             label.textColor = AppColors.main
             label.translatesAutoresizingMaskIntoConstraints = false

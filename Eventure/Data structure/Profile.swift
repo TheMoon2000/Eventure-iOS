@@ -37,7 +37,7 @@ extension Profile {
     }
     
     var majorDescription: String {
-        let objects = majors.map { Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        let objects = majors.map { LocalStorage.majors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
         
         if objects.isEmpty {
             return "Undeclared"
@@ -47,7 +47,7 @@ extension Profile {
     }
     
     var shortMajorDescription: String {
-        let objects = majors.map { Major.currentMajors[$0]?.abbreviation ?? Major.currentMajors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
+        let objects = majors.map { LocalStorage.majors[$0]?.abbreviation ?? LocalStorage.majors[$0]?.fullName } .filter { $0 != nil } . map { $0! }
         
         if objects.isEmpty {
             return "Undeclared"

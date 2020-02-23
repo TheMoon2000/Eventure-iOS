@@ -373,7 +373,7 @@ class ProfileInfoPage: UITableViewController, EditableInfoProvider {
         title.textAlignment = .center
         title.attributedText = PROMPT.attributedText()
         title.textColor = AppColors.prompt
-        title.font = .systemFont(ofSize: 16)
+        title.font = .appFontRegular(16)
         title.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(title)
         

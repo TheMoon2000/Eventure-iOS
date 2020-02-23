@@ -38,7 +38,7 @@ class OrganizationCell: UITableViewCell {
         
         orgTitle = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.numberOfLines = 3
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

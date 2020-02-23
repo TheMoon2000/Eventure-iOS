@@ -25,7 +25,7 @@ class OrgInfoTabStrip: ButtonBarPagerTabStripViewController {
         settings.style.buttonBarBackgroundColor = AppColors.tab
         settings.style.buttonBarItemBackgroundColor = AppColors.tab
         settings.style.selectedBarBackgroundColor = AppColors.main
-        settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
+        settings.style.buttonBarItemFont = .appFontSemibold(15)
         settings.style.selectedBarHeight = 2.0
         settings.style.buttonBarMinimumLineSpacing = 0
         settings.style.buttonBarItemTitleColor = AppColors.main

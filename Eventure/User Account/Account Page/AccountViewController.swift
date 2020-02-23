@@ -10,7 +10,7 @@ import SwiftyJSON
 import UIKit
 import TOCropViewController
 
-class AccountViewController: UIViewController, UITableViewDelegate, UITableViewDataSource,UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
+class AccountViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate  {
     
     private(set) var myTableView: UITableView!
     
@@ -70,313 +70,10 @@ class AccountViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-    //when table view is tapped
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        
-        if indexPath.section != 4 {
-            guard User.current != nil else {
-                popLoginReminder()
-            return
-            }
-        }
-        
-        switch (indexPath.section, indexPath.row) {
-        case (0, 0):
-            let alert = UIAlertController(title: "Update Profile Picture", message: nil, preferredStyle: .actionSheet)
-            alert.addAction(.init(title: "Cancel", style: .cancel))
-            alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
-                let picker = UIImagePickerController()
-                picker.delegate = self
-                picker.sourceType = .photoLibrary
-                self.present(picker, animated: true)
-            }))
-            alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
-                let picker = UIImagePickerController()
-                picker.delegate = self
-                picker.sourceType = .camera
-                self.present(picker, animated: true)
-            }))
-            
-            if let popoverController = alert.popoverPresentationController {
-                popoverController.sourceView = tableView
-                let cellRect = tableView.rectForRow(at: indexPath)
-                popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
-                popoverController.permittedArrowDirections = .up
-            }
-            
-            present(alert, animated: true)
-            
-        case (1, 0): // if the user tries to change account information
-            let personalInfo = PersonalInfoPage()
-            personalInfo.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(personalInfo, animated: true)
-        case (1, 1):
-            let profileInfo = ProfileInfoPage(profile: User.current)
-            profileInfo.parentVC = self
-            profileInfo.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(profileInfo, animated: true)
-        case (1, 2):
-            let messageCenter = MessageCenter()
-            messageCenter.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(messageCenter, animated: true)
-        case (2, 0):
-            let scanVC = UserScanner()
-            scanVC.accountVC = self
-            scanVC.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(scanVC, animated: true)
-        case (2, 1):
-            let checkedInPage = CheckedInEvents()
-            checkedInPage.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(checkedInPage, animated: true)
-        case (2, 2):
-            let ticketsPage = TicketsOverview()
-            ticketsPage.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(ticketsPage, animated: true)
-        case (3,0):
-            let likeEventsPage = LikedEvents()
-            likeEventsPage.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(likeEventsPage, animated: true)
-        case (3,1):
-            let interestedPage = InterestedEvents()
-            interestedPage.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(interestedPage, animated: true)
-        case (3, 2):
-            //if user wants to change the tags
-            let tagPicker = TagPickerView()
-            tagPicker.customTitle = "What interests you?"
-            tagPicker.customSubtitle = "Pick at least one. The more the better!"
-            tagPicker.customButtonTitle = "Done"
-            tagPicker.customContinueMethod = { tagPicker in
-                
-                tagPicker.loadingBG.isHidden = false
-                
-                User.current!.tags = tagPicker.selectedTags
-                
-                let url = URL(string: API_BASE_URL + "account/UpdateTags")!
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.addAuthHeader()
-                
-                var body = JSON()
-                body.dictionaryObject?["uuid"] = User.current?.uuid
-                let tagsArray = tagPicker.selectedTags.map { $0 }
-                body.dictionaryObject?["tags"] = tagsArray
-                request.httpBody = try? body.rawData()
-                
-                let task = CUSTOM_SESSION.dataTask(with: request) {
-                    data, response, error in
-                    
-                    DispatchQueue.main.async {
-                        tagPicker.loadingBG.isHidden = true
-                    }
-                    
-                    guard error == nil else {
-                        DispatchQueue.main.async {
-                            internetUnavailableError(vc: self)
-                        }
-                        return
-                    }
-                    
-                    let msg = String(data: data!, encoding: .ascii) ?? ""
-                    switch msg {
-                    case INTERNAL_ERROR:
-                        DispatchQueue.main.async {
-                            serverMaintenanceError(vc: self)
-                        }
-                    case "success":
-                        User.current!.tags = Set(tagsArray)
-                        DispatchQueue.main.async { self.navigationController?.popViewController(animated: true)
-                        }
-                    default:
-                        DispatchQueue.main.async {
-                            internetUnavailableError(vc: self)
-                        }
-                    }
-                }
-                
-                task.resume()
-            }
-            
-            tagPicker.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(tagPicker, animated: true)
-            
-            DispatchQueue.main.async {
-                tagPicker.selectedTags = User.current!.tags
-            }
-        case (4, 0):
-            let aboutPage = AboutPage()
-            aboutPage.hidesBottomBarWhenPushed = true
-            navigationController?.pushViewController(aboutPage, animated: true)
-        case (4, 1): // if the log out/sign in button is clicked
-            if (User.current == nil) {
-                let login = LoginViewController()
-                let nvc = InteractivePopNavigationController(rootViewController: login)
-                nvc.isNavigationBarHidden = true
-                login.navBar = nvc
-                present(nvc, animated: true)
-            } else {
-                //pop out an alert window
-                let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
-                    User.logout()
-                    MainTabBarController.current.openScreen(page: 2)
-                }))
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-                self.present(alert, animated: true)
-            }
-        default:
-            break
-        }
-    }
-    
     func openTickets() {
         let ticketsPage = TicketsOverview()
         ticketsPage.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(ticketsPage, animated: true)
-    }
-    
-    //create a cell for each table view row
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = SettingsItemCell()
-        
-        switch (indexPath.section, indexPath.row) {
-            
-        case (0, 0):
-            let profileCell = ProfilePreviewCell()
-            profileCell.icon.isUserInteractionEnabled = true
-            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
-            profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
-            if profileCell.titleLabel.text!.isEmpty {
-                profileCell.titleLabel.text = User.current!.email
-            }
-            if let count = User.current?.numberOfAttendedEvents {
-                let noun = count == 1 ? "event" : "events"
-                profileCell.subtitleLabel.text = "\(count) " + noun + " attended"
-            } else {
-                profileCell.subtitleLabel.text = "Log in to access more features."
-            }
-            if let image = User.current?.profilePicture {
-                profileCell.icon.image = image
-            } else {
-                profileCell.icon.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
-                User.current?.getProfilePicture { userWithProfile in
-                    profileCell.icon.image = userWithProfile.profilePicture
-                }
-            }
-            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
-            return profileCell
-        case (1, 0):
-            cell.icon.image = #imageLiteral(resourceName: "default_user")
-            cell.titleLabel.text = "Manage Account"
-        case (1, 1):
-            cell.icon.image = #imageLiteral(resourceName: "profile")
-            cell.titleLabel.text = "Professional Profile"
-            cell.valueLabel.text = User.current?.profileStatus
-        case (1, 2):
-            cell.icon.image = #imageLiteral(resourceName: "messages").withRenderingMode(.alwaysTemplate)
-            cell.icon.tintColor = UIColor(named: "AppColors.message")!
-            cell.titleLabel.text = "My Messages"
-            if User.current != nil {
-                cell.valueLabel.text = AccountNotification.unreadCount > 0 ? String(AccountNotification.unreadCount) : ""
-            }
-        case (2, 0):
-            cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Scan"
-        case (2, 1):
-            cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Events I Attended"
-        case (2, 2):
-            cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "My Tickets"
-            if User.current != nil {
-                cell.valueLabel.text = String(Ticket.userTickets.count) + " Total"
-            }
-        case (3, 0):
-            cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
-            cell.titleLabel.text = "Favorite Events"
-        case (3, 1):
-            cell.icon.image = #imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate)
-            cell.icon.tintColor = AppColors.interest
-            cell.titleLabel.text = "Interested Events"
-        case (3, 2):
-            cell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
-            cell.icon.tintColor = AppColors.link
-            cell.titleLabel.text = "My Tags"
-        case (4, 0):
-            let cell = UITableViewCell()
-            cell.backgroundColor = AppColors.background
-            let c = cell.heightAnchor.constraint(equalToConstant: 50)
-            c.priority = .defaultHigh
-            c.isActive = true
-            
-            let label = UILabel()
-            label.textColor = AppColors.label
-            label.text = "About Eventure"
-            label.font = .systemFont(ofSize: 17)
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            cell.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
-            
-            return cell
-        case (4, 1):
-            let cell = UITableViewCell()
-            cell.backgroundColor = AppColors.background
-            let c = cell.heightAnchor.constraint(equalToConstant: 50)
-            c.priority = .defaultHigh
-            c.isActive = true
-            
-            let label = UILabel()
-            label.textColor = AppColors.label
-            label.text = User.current != nil ? "Log Out" : "Log In"
-            label.font = .systemFont(ofSize: 17)
-            label.textAlignment = .center
-            label.translatesAutoresizingMaskIntoConstraints = false
-            cell.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
-            
-            return cell
-        default:
-            break
-        }
-        
-        return cell
-    }
-    
-    //number of sections
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
-    }
-    
-    //section titles
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return [
-            "",
-            "Personal Information",
-            "Events",
-            "Personal Interests",
-            nil
-        ][section]
-    }
-    
-    //rows in sections
-    func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
-        if User.current == nil {
-            return [1, 2, 3, 3, 2][section]
-        } else {
-            return [1, 3, 3, 3, 2][section]
-        }
-    }
-    
-    //eliminate first section header
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return [0, 30, 30, 30, 30][section]
     }
     
     
@@ -453,3 +150,247 @@ extension AccountViewController: TOCropViewControllerDelegate {
     }
 }
 
+
+
+extension AccountViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    // MARK: - Table view data source & delegate
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 5
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return [
+            "",
+            "Personal Information",
+            "Events",
+            "Personal Interests",
+            nil
+        ][section]
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.font = .appFontRegular(13.5)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView,numberOfRowsInSection section: Int) -> Int {
+        if User.current == nil {
+            return [1, 2, 3, 2, 2][section]
+        } else {
+            return [1, 3, 3, 2, 2][section]
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.section != 4 {
+            guard User.current != nil else {
+                popLoginReminder()
+            return
+            }
+        }
+        
+        switch (indexPath.section, indexPath.row) {
+        case (0, 0):
+            let alert = UIAlertController(title: "Update Profile Picture", message: nil, preferredStyle: .actionSheet)
+            alert.addAction(.init(title: "Cancel", style: .cancel))
+            alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .photoLibrary
+                self.present(picker, animated: true)
+            }))
+            alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                picker.sourceType = .camera
+                self.present(picker, animated: true)
+            }))
+            
+            if let popoverController = alert.popoverPresentationController {
+                popoverController.sourceView = tableView
+                let cellRect = tableView.rectForRow(at: indexPath)
+                popoverController.sourceRect = CGRect(x: cellRect.midX, y: cellRect.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = .up
+            }
+            
+            present(alert, animated: true)
+            
+        case (1, 0): // if the user tries to change account information
+            let personalInfo = PersonalInfoPage()
+            personalInfo.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(personalInfo, animated: true)
+        case (1, 1):
+            let profileInfo = ProfileInfoPage(profile: User.current)
+            profileInfo.parentVC = self
+            profileInfo.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(profileInfo, animated: true)
+        case (1, 2):
+            let messageCenter = MessageCenter()
+            messageCenter.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(messageCenter, animated: true)
+        case (2, 0):
+            let scanVC = UserScanner()
+            scanVC.accountVC = self
+            scanVC.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(scanVC, animated: true)
+        case (2, 1):
+            let checkedInPage = CheckedInEvents()
+            checkedInPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(checkedInPage, animated: true)
+        case (2, 2):
+            let ticketsPage = TicketsOverview()
+            ticketsPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(ticketsPage, animated: true)
+        case (3,0):
+            let likeEventsPage = LikedEvents()
+            likeEventsPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(likeEventsPage, animated: true)
+        case (3,1):
+            let interestedPage = InterestedEvents()
+            interestedPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(interestedPage, animated: true)
+        case (4, 0):
+            let aboutPage = AboutPage()
+            aboutPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(aboutPage, animated: true)
+        case (4, 1): // if the log out/sign in button is clicked
+            if (User.current == nil) {
+                let login = LoginViewController()
+                let nvc = InteractivePopNavigationController(rootViewController: login)
+                nvc.isNavigationBarHidden = true
+                login.navBar = nvc
+                present(nvc, animated: true)
+            } else {
+                //pop out an alert window
+                let alert = UIAlertController(title: "Do you want to log out?", message: "Changes you've made have been saved.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { action in
+                    User.logout()
+                    MainTabBarController.current.openScreen(page: 2)
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+                self.present(alert, animated: true)
+            }
+        default:
+            break
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = SettingsItemCell()
+        
+        switch (indexPath.section, indexPath.row) {
+            
+        case (0, 0):
+            let profileCell = ProfilePreviewCell()
+            profileCell.icon.isUserInteractionEnabled = true
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
+            profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
+            if profileCell.titleLabel.text!.isEmpty {
+                profileCell.titleLabel.text = User.current!.email
+            }
+            if let count = User.current?.numberOfAttendedEvents {
+                let noun = count == 1 ? "event" : "events"
+                profileCell.subtitleLabel.text = "\(count) " + noun + " attended"
+            } else {
+                profileCell.subtitleLabel.text = "Log in to access more features."
+            }
+            if let image = User.current?.profilePicture {
+                profileCell.icon.image = image
+            } else {
+                profileCell.icon.image = #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate)
+                User.current?.getProfilePicture { userWithProfile in
+                    profileCell.icon.image = userWithProfile.profilePicture
+                }
+            }
+            profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:))))
+            return profileCell
+        case (1, 0):
+            cell.icon.image = #imageLiteral(resourceName: "default_user")
+            cell.titleLabel.text = "Manage Account"
+        case (1, 1):
+            cell.icon.image = #imageLiteral(resourceName: "profile")
+            cell.titleLabel.text = "Professional Profile"
+            cell.valueLabel.text = User.current?.profileStatus
+        case (1, 2):
+            cell.icon.image = #imageLiteral(resourceName: "messages").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = UIColor(named: "AppColors.message")!
+            cell.titleLabel.text = "My Messages"
+            if User.current != nil {
+                cell.valueLabel.text = AccountNotification.unreadCount > 0 ? String(AccountNotification.unreadCount) : ""
+            }
+        case (2, 0):
+            cell.icon.image = #imageLiteral(resourceName: "scan").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "Scan"
+        case (2, 1):
+            cell.icon.image = #imageLiteral(resourceName: "qr").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "Events I Attended"
+        case (2, 2):
+            cell.icon.image = #imageLiteral(resourceName: "ticket").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "My Tickets"
+            if User.current != nil {
+                cell.valueLabel.text = String(Ticket.userTickets.count) + " Total"
+            }
+        case (3, 0):
+            cell.icon.image = #imageLiteral(resourceName: "heart").withRenderingMode(.alwaysTemplate)
+            cell.titleLabel.text = "Favorite Events"
+        case (3, 1):
+            cell.icon.image = #imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate)
+            cell.icon.tintColor = AppColors.interest
+            cell.titleLabel.text = "Interested Events"
+        case (4, 0):
+            let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
+            
+            let label = UILabel()
+            label.textColor = AppColors.label
+            label.text = "About Eventure"
+            label.font = .appFontRegular(17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            return cell
+        case (4, 1):
+            let cell = UITableViewCell()
+            cell.backgroundColor = AppColors.background
+            let c = cell.heightAnchor.constraint(equalToConstant: 50)
+            c.priority = .defaultHigh
+            c.isActive = true
+            
+            let label = UILabel()
+            label.textColor = AppColors.label
+            label.text = User.current != nil ? "Log Out" : "Log In"
+            label.font = .appFontRegular(17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            cell.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: cell.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: cell.centerYAnchor).isActive = true
+            
+            return cell
+        default:
+            break
+        }
+        
+        return cell
+    }
+    
+    // Eliminate first section header
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return [0, 30, 30, 30, 30][section]
+    }
+    
+}

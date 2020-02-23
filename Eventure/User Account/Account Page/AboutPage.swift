@@ -58,7 +58,7 @@ class AboutPage: UIViewController {
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
             label.text = "Eventure " + appVersion
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 20, weight: .medium)
+            label.font = .appFontMedium(20)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             

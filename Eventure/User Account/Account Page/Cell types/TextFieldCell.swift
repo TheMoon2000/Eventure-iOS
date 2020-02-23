@@ -87,6 +87,7 @@ class TextFieldCell: UITableViewCell, UITextFieldDelegate {
             tf.clearButtonMode = .whileEditing
             tf.returnKeyType = .next
             tf.autocorrectionType = .no
+            tf.font = .appFontRegular(17)
             tf.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tf)
             

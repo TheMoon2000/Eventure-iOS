@@ -27,7 +27,7 @@ class MajorCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.label
             label.numberOfLines = 10
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

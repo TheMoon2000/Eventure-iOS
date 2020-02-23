@@ -64,7 +64,7 @@ class EmailProfileCell: UITableViewCell {
         emailLabel = {
             let label = UILabel()
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

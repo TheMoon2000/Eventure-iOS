@@ -87,48 +87,28 @@ class MajorList: UIViewController {
         
         loadingBG.isHidden = false
         
-        let url = URL(string: API_BASE_URL + "Majors")!
-        let task = CUSTOM_SESSION.dataTask(with: url) {
-            data, response, error in
+        LocalStorage.updateMajors { status in
+            self.loadingBG.isHidden = true
             
-            DispatchQueue.main.async {
-                self.loadingBG.isHidden = true
-            }
-            
-            guard error == nil else {
-                DispatchQueue.main.async {
-                    internetUnavailableError(vc: self)
-                }
-                return
-            }
-            
-            if let json = try? JSON(data: data!), let array = json.array {
-                var tmp = [String: [Major]]()
-                var allMajors = [Int: Major]()
-                for m in array {
-                    let major = Major(json: m)
-                    allMajors[major.id] = major
+            if status == 0 {
+                // Group majors by their first letter
+                var grouped = [String: [Major]]()
+                for major in LocalStorage.majors.values {
                     let prefix = major.fullName.prefix(1).uppercased()
-                    if tmp[prefix] == nil {
-                        tmp[prefix] = [major]
+                    if grouped[prefix] == nil {
+                        grouped[prefix] = [major]
                     } else {
-                        tmp[prefix]?.append(major)
+                        grouped[prefix]?.append(major)
                     }
                 }
-                Major.currentMajors = allMajors
-                Major.save()
-                self.majorList = tmp
-                DispatchQueue.main.async {
-                    self.majorTable.reloadData()
-                }
-            } else {
-                DispatchQueue.main.async {
-                    serverMaintenanceError(vc: self)
-                }
+                self.majorList = grouped
+                self.majorTable.reloadData()
+            } else if status == -1 {
+                internetUnavailableError(vc: self)
+            } else if status == -2 {
+                serverMaintenanceError(vc: self)
             }
         }
-        
-        task.resume()
     }
 
     
@@ -174,7 +154,7 @@ extension MajorList: UITableViewDelegate, UITableViewDataSource {
         label.layoutMargins.left = 10
         label.textColor = .gray
         label.text = sectionTitles[section]
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .appFontMedium(14)
         label.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(label)
         

@@ -38,7 +38,7 @@ class UpdateNotice: UIViewController {
         titleLabel = {
             let label = UILabel()
             label.text = "Update Notice"
-            label.font = .systemFont(ofSize: 25, weight: .semibold)
+            label.font = .appFontSemibold(25)
             label.textAlignment = .center
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +70,7 @@ class UpdateNotice: UIViewController {
             let button = UIButton(type: .system)
             button.tintColor = .white
             button.setTitle("Update", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(20)
             button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
             button.translatesAutoresizingMaskIntoConstraints = false

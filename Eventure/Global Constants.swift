@@ -133,7 +133,7 @@ struct AppColors {
     /// Dark background for scrollviews. In light mode, this is a very light gray.
     static var canvas = UIColor(named: "AppColors.canvas")!
     
-    /// Background color for the tabs.
+    /// Background color for tab strips.
     static var tab = UIColor(named: "AppColors.tab")!
     
     /// Background color for grouped table views.
@@ -183,7 +183,7 @@ Ac dolor ac adipiscing amet bibendum nullam, lacus molestie ut libero nec, diam 
 
 let PLAIN_STYLE =  """
     body {
-        font-family: -apple-system;
+        font-family: "ProximaNova-Regular";
         font-size: 17px;
         line-height: 1.5;
         letter-spacing: 1.5%;
@@ -205,7 +205,7 @@ let PLAIN_STYLE =  """
 
 
     h1, h2, h3, h4, h5, h6 {
-        font-family: -apple-system;
+        font-family: "ProximaNova-Semibold";
         font-weight: 600;
         letter-spacing: 1.5%;
         color: rgb(255, 120, 104);
@@ -250,7 +250,7 @@ let PLAIN_DARK = PLAIN_STYLE.replacingOccurrences(of: "#525252", with: "#C4C4C5"
 
 let COMPACT_STYLE = """
     body {
-        font-family: -apple-system;
+        font-family: "ProximaNova-Regular";
         font-size: 16px;
         line-height: 1.25;
         letter-spacing: 1%;
@@ -267,7 +267,7 @@ let COMPACT_DARK = COMPACT_STYLE.replacingOccurrences(of: "#505050", with: "#D3D
 
 let TITLE_STYLE = """
     body {
-        font-family: -apple-system;
+        font-family: "ProximaNova-Semibold";
         font-size: 18px;
         line-height: 1.4;
         letter-spacing: 1%;
@@ -287,7 +287,6 @@ let ACCOUNT_DIR = FileManager.default.urls(for: .documentDirectory, in: .userDom
 
 let CURRENT_USER_PATH = ACCOUNT_DIR.path + "/" + "user"
 let TICKETS_PATH = ACCOUNT_DIR.path + "/" + "tickets"
-let MAJORS_PATH = ACCOUNT_DIR.path + "/" + "majors"
 let NOTIFICATIONS_PATH = ACCOUNT_DIR.path + "/" + "notifications"
 let LOGO_CACHE = ACCOUNT_DIR.path + "/" + "logos"
 
@@ -360,28 +359,46 @@ let DAY_FORMATTER: DateFormatter = {
 
 extension StringStyle {
     static let valueStyle = StringStyle(
-        .font(UIFont.systemFont(ofSize: 15.5, weight: .medium)),
+        .font(UIFont.appFontMedium(15.5)),
         .lineHeightMultiple(1.1),
         .color(AppColors.emphasis)
     )
     
     static let valueLarge = StringStyle(
-        .font(UIFont.systemFont(ofSize: 18, weight: .medium)),
+        .font(UIFont.appFontMedium(18)),
         .lineHeightMultiple(1.2),
         .color(AppColors.value)
     )
     
     static let basicStyle = StringStyle(
-        .font(UIFont.systemFont(ofSize: 15.5)),
+        .font(UIFont.appFontRegular(15.5)),
         .lineHeightMultiple(1.1),
         .color(AppColors.plainText)
     )
     
     static let basicLarge = StringStyle(
-        .font(UIFont.systemFont(ofSize: 18)),
+        .font(UIFont.appFontRegular(18)),
         .lineHeightMultiple(1.2),
         .color(AppColors.value)
     )
+}
+
+// Standardized app font
+extension UIFont {
+    static func appFontLight(_ size: CGFloat) -> UIFont {
+        return UIFont(name: "ProximaNova-Light", size: size)!
+    }
+    static func appFontRegular(_ size: CGFloat) -> UIFont{
+        return UIFont(name: "ProximaNova-Regular", size: size)!
+    }
+    
+    static func appFontMedium(_ size: CGFloat) -> UIFont {
+        return UIFont(name: "ProximaNova-Medium", size: size)!
+    }
+    
+    static func appFontSemibold(_ size: CGFloat) -> UIFont {
+        return UIFont(name: "ProximaNova-Semibold", size: size)!
+    }
 }
 
 extension String {
@@ -694,7 +711,7 @@ extension UIView {
             let label = UILabel()
             label.text = "Loading..."
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontLight(15)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             loadingBG.contentView.addSubview(label)
@@ -882,6 +899,17 @@ extension UIViewController {
             return self
         }
     }
+}
+
+extension UINavigationBar {
+    
+    func customize() {
+        barTintColor = AppColors.navbar
+        tintColor = AppColors.main
+        isTranslucent = false
+        titleTextAttributes = [.font: UIFont.appFontMedium(17)]
+    }
+    
 }
 
 class GenericNavigationController: UINavigationController {

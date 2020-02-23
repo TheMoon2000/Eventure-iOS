@@ -30,10 +30,10 @@ class EventViewController: UIViewController, EventProvider {
     // Refresh control
     private var refreshControl = UIRefreshControl()
     
-    private static var upToDate: Bool = false
-    public static var chosenTags = Set<String>()
+    private var upToDate: Bool = false
+    var chosenTags = Set<Tag>()
     
-    public static var start: Date? {
+    var start: Date? {
         didSet (oldValue) {
             let originalBound = oldValue ?? Date()
             let newBound = start ?? Date()
@@ -41,7 +41,7 @@ class EventViewController: UIViewController, EventProvider {
         }
     }
     
-    public static var end: Date? {
+    var end: Date? {
         didSet (oldValue) {
             let originalBound = oldValue ?? .distantFuture
             let newBound = end ?? .distantFuture
@@ -183,7 +183,7 @@ class EventViewController: UIViewController, EventProvider {
         spinnerLabel = {
             let label = UILabel()
             label.text = "Loading events..."
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -212,7 +212,7 @@ class EventViewController: UIViewController, EventProvider {
     
     /// Refreshes the displayed events, fetching data from the server if needed.
     func fetchEventsIfNeeded() {
-        if !EventViewController.upToDate {
+        if !upToDate {
             updateEvents()
         } else {
             refilter()
@@ -244,12 +244,12 @@ class EventViewController: UIViewController, EventProvider {
             parameters["userId"] = String(User.current!.uuid)
             parameters["userEmail"] = User.current!.email
         }
-        if let start = EventViewController.start {
+        if let start = self.start {
             parameters["lowerBound"] = DATE_FORMATTER.string(from: start)
         } else {
             parameters["lowerBound"] = DATE_FORMATTER.string(from: Date())
         }
-        if let end = EventViewController.end {
+        if let end = self.end {
             parameters["upperBound"] = DATE_FORMATTER.string(from: end)
         } else {
             parameters["upperBound"] = DATE_FORMATTER.string(from: .distantFuture)
@@ -295,7 +295,7 @@ class EventViewController: UIViewController, EventProvider {
                     tmp = tmp.sorted(by: { (e1: Event, e2: Event) -> Bool in
                         return (e1.startTime ?? Date.distantFuture) < (e2.startTime ?? Date.distantFuture)
                     })
-                    EventViewController.upToDate = true
+                    self.upToDate = true
                     self.allEvents = tmp
                     DispatchQueue.main.async {
                         self.updateFiltered() {
@@ -341,9 +341,8 @@ class EventViewController: UIViewController, EventProvider {
         let filterTable = FilterDateTableViewController(parentVC: self)
         let nav = UINavigationController(rootViewController:
             filterTable)
-        nav.navigationBar.barTintColor = AppColors.navbar
-        nav.navigationBar.tintColor = AppColors.main
-        nav.navigationBar.isTranslucent = false
+        nav.navigationBar.customize()
+        
         present(nav, animated: true)
     }
     
@@ -477,15 +476,15 @@ extension EventViewController {
             self.filteredEvents = self.allEvents.filter { (event: Event) -> Bool in
                 
                 if event.startTime == nil || event.endTime == nil { return false }
-                if event.startTime! < (EventViewController.start ?? Date()) {
+                if event.startTime! < (self.start ?? Date()) {
                     return false
                 }
                 
-                if let end = EventViewController.end, event.endTime! > end {
+                if let end = self.end, event.endTime! > end {
                     return false
                 }
                 
-                if !EventViewController.chosenTags.isEmpty && event.tags.intersection(EventViewController.chosenTags).isEmpty {
+                if !self.chosenTags.isEmpty && event.tags.intersection(self.chosenTags).isEmpty {
                     return false
                 }
                 

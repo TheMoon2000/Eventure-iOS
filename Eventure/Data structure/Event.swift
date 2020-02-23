@@ -28,7 +28,7 @@ class Event {
     var hostTitle: String
     var interested = Set<Int>()
     var favorited = Set<Int>()
-    var tags = Set<String>()
+    var tags = Set<Int>()
     var isPublic = true
     var capacity = 0
     var secureCheckin = false
@@ -88,12 +88,12 @@ class Event {
                      startTime: "",
                      endTime: "",
                      location: "",
-                     tags: Set<String>(),
+                     tags: Set<Int>(),
                      hostID: Organization.current?.id ?? "",
                      hostTitle: Organization.current?.title ?? "Untitled")
     }
     
-    init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<String>, hostID: String, hostTitle: String) {
+    init(uuid: String, title: String, description: String, startTime: String, endTime: String, location: String, tags: Set<Int>, hostID: String, hostTitle: String) {
         self.uuid = uuid
         self.title = title
         self.checkinTime = 3600
@@ -133,8 +133,10 @@ class Event {
         published = (dictionary["Published"]?.int ?? 0) == 1
         
         if let tags_raw = dictionary["Tags"]?.string {
-            if let tagsArray = JSON(parseJSON: tags_raw).arrayObject as? [String] {
-                tags = Set(tagsArray)
+            if let tagsArray = JSON(parseJSON: tags_raw).arrayObject as? [Int] {
+                for id in tagsArray {
+                    // look up a local cached version of cache
+                }
             }
         }
         

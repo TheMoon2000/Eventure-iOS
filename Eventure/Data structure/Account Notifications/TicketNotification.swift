@@ -25,7 +25,7 @@ class TicketNotification: AccountNotification {
     var displayString: NSAttributedString {
         
         let textStyle = StringStyle(
-            .font(UIFont.systemFont(ofSize: 15)),
+            .font(UIFont.appFontRegular(15)),
             .lineHeightMultiple(1.1),
             .color(AppColors.invertedLabel)
         )

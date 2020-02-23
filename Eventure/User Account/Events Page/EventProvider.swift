@@ -10,4 +10,7 @@ import UIKit
 
 protocol EventProvider: UIViewController {
     var eventsForSearch: [Event] { get }
+    var start: Date? { get set }
+    var end: Date? { get set }
+    func fetchEventsIfNeeded()
 }

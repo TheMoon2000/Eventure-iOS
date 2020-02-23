@@ -45,7 +45,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
 
         commentText = {
             let tv = UITextView()
-            tv.font = .systemFont(ofSize: 17)
+            tv.font = .appFontRegular(17)
             // tv.isScrollEnabled = false
             tv.delegate = self
             tv.textColor = AppColors.value

@@ -62,6 +62,11 @@
 		CC247A79234196FD00C4EE75 /* BasicSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC247A78234196FD00C4EE75 /* BasicSwitchCell.swift */; };
 		CC247A7D2341D0F800C4EE75 /* TransferHistoryUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC247A7C2341D0F800C4EE75 /* TransferHistoryUser.swift */; };
 		CC247A802342668700C4EE75 /* TicketCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC247A7F2342668700C4EE75 /* TicketCodeView.swift */; };
+		CC26DA112402769E0029E2E2 /* ProximaNova-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CC26DA102402769D0029E2E2 /* ProximaNova-Bold.otf */; };
+		CC2B454323FFAEBD00A2F4F6 /* EventOverviewTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2B454223FFAEBD00A2F4F6 /* EventOverviewTableCell.swift */; };
+		CC2B45582400A68300A2F4F6 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2B45572400A68300A2F4F6 /* LocalStorage.swift */; };
+		CC2B45592400B69200A2F4F6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
+		CC2B455C2400BD2900A2F4F6 /* GenericTableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2B455B2400BD2900A2F4F6 /* GenericTableButton.swift */; };
 		CC2CCD452330B517000C65E2 /* TicketsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD442330B516000C65E2 /* TicketsOverview.swift */; };
 		CC2CCD47233184CD000C65E2 /* TicketTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD46233184CD000C65E2 /* TicketTypes.swift */; };
 		CC2CCD49233184FE000C65E2 /* TicketTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD48233184FE000C65E2 /* TicketTypeCell.swift */; };
@@ -78,7 +83,6 @@
 		CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2CCD5E233407B7000C65E2 /* IssuedTicketCell.swift */; };
 		CC2D5906232B4F59004120E8 /* UpdateNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5905232B4F59004120E8 /* UpdateNotice.swift */; };
 		CC2D5908232B5289004120E8 /* EventCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2D5907232B5289004120E8 /* EventCodeView.swift */; };
-		CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */; };
 		CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */; };
 		CC2EB24D231F9E68004245F8 /* CheckinRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EB24C231F9E68004245F8 /* CheckinRecord.swift */; };
 		CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EE6EA2306F9750044C6ED /* OrgDetailPage.swift */; };
@@ -105,6 +109,10 @@
 		CC46772D2319956600A9FF18 /* Campus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC46772C2319956600A9FF18 /* Campus.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
+		CC4E5A6E23F275A8000F9636 /* EventHomePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4E5A6D23F275A8000F9636 /* EventHomePage.swift */; };
+		CC4E5A7023F276B4000F9636 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4E5A6F23F276B4000F9636 /* CategoryCell.swift */; };
+		CC4E5A7223F277C8000F9636 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4E5A7123F277C8000F9636 /* Tag.swift */; };
+		CC4E5A7523F28188000F9636 /* EventsInCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4E5A7423F28188000F9636 /* EventsInCategory.swift */; };
 		CC4EC93422FFBC0200F10938 /* EventDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */; };
 		CC4EC93722FFD0A500F10938 /* OrgEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */; };
 		CC595CDF235AEE03003D74F6 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC595CDE235AEE03003D74F6 /* NotificationService.swift */; };
@@ -125,7 +133,6 @@
 		CC686ED0232F41AE00144CBF /* TicketCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC686ECF232F41AE00144CBF /* TicketCell.swift */; };
 		CC686ED2232F459100144CBF /* Ticket.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC686ED1232F459100144CBF /* Ticket.swift */; };
 		CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC69A08D22F699F500C9920E /* SeparatorView.swift */; };
-		CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D276E22F23685007E2C5A /* TagPickerView.swift */; };
 		CC6D86AF23218F4B0068B7F2 /* SubscribersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */; };
 		CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */; };
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
@@ -185,6 +192,18 @@
 		CCCE5DB923603519005CE5D7 /* NewEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DB823603519005CE5D7 /* NewEventCell.swift */; };
 		CCCE5DBB23610328005CE5D7 /* BadgeCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DBA23610328005CE5D7 /* BadgeCount.swift */; };
 		CCD65519231F4A3400088646 /* EventSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCD65518231F4A3400088646 /* EventSearchResults.swift */; };
+		CCDACBAA2400E35800D00D98 /* MuseoSans-300.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBA92400E35800D00D98 /* MuseoSans-300.otf */; };
+		CCDACBAE2400E40E00D00D98 /* MuseoSans-100.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBAD2400E3F100D00D98 /* MuseoSans-100.otf */; };
+		CCDACBAF2400E43200D00D98 /* MuseoSans-700.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBAC2400E36200D00D98 /* MuseoSans-700.otf */; };
+		CCDACBB02400E43500D00D98 /* MuseoSans-500.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBAB2400E36200D00D98 /* MuseoSans-500.otf */; };
+		CCDACBBA2400E89300D00D98 /* ProximaNova-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBB92400E89300D00D98 /* ProximaNova-Regular.otf */; };
+		CCDACBBE2400E89A00D00D98 /* ProximaNova-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBBB2400E89A00D00D98 /* ProximaNova-Medium.otf */; };
+		CCDACBBF2400E89A00D00D98 /* ProximaNova-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBBC2400E89A00D00D98 /* ProximaNova-Light.otf */; };
+		CCDACBC02400E89A00D00D98 /* ProximaNova-Semibold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBBD2400E89A00D00D98 /* ProximaNova-Semibold.otf */; };
+		CCDACBC22400F03F00D00D98 /* Raleway-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBC12400F03F00D00D98 /* Raleway-Regular.ttf */; };
+		CCDACBC52400F06C00D00D98 /* Raleway-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBC32400F06C00D00D98 /* Raleway-Bold.ttf */; };
+		CCDACBC62400F06C00D00D98 /* Raleway-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBC42400F06C00D00D98 /* Raleway-SemiBold.ttf */; };
+		CCDACBC82400F0C800D00D98 /* Raleway-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCDACBC72400F08700D00D98 /* Raleway-Medium.ttf */; };
 		CCDBEF8B23A60A9400B445D1 /* ApplicationDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */; };
 		CCDC0B8323715B6400F8F8EA /* BlankScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC0B8223715B6400F8F8EA /* BlankScreen.swift */; };
 		CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */; };
@@ -304,6 +323,10 @@
 		CC247A78234196FD00C4EE75 /* BasicSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicSwitchCell.swift; sourceTree = "<group>"; };
 		CC247A7C2341D0F800C4EE75 /* TransferHistoryUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferHistoryUser.swift; sourceTree = "<group>"; };
 		CC247A7F2342668700C4EE75 /* TicketCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCodeView.swift; sourceTree = "<group>"; };
+		CC26DA102402769D0029E2E2 /* ProximaNova-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Bold.otf"; sourceTree = "<group>"; };
+		CC2B454223FFAEBD00A2F4F6 /* EventOverviewTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventOverviewTableCell.swift; sourceTree = "<group>"; };
+		CC2B45572400A68300A2F4F6 /* LocalStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorage.swift; sourceTree = "<group>"; };
+		CC2B455B2400BD2900A2F4F6 /* GenericTableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericTableButton.swift; sourceTree = "<group>"; };
 		CC2CCD442330B516000C65E2 /* TicketsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketsOverview.swift; sourceTree = "<group>"; };
 		CC2CCD46233184CD000C65E2 /* TicketTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTypes.swift; sourceTree = "<group>"; };
 		CC2CCD48233184FE000C65E2 /* TicketTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTypeCell.swift; sourceTree = "<group>"; };
@@ -351,6 +374,10 @@
 		CC46772C2319956600A9FF18 /* Campus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campus.swift; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationCell.swift; sourceTree = "<group>"; };
+		CC4E5A6D23F275A8000F9636 /* EventHomePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventHomePage.swift; sourceTree = "<group>"; };
+		CC4E5A6F23F276B4000F9636 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
+		CC4E5A7123F277C8000F9636 /* Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		CC4E5A7423F28188000F9636 /* EventsInCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsInCategory.swift; sourceTree = "<group>"; };
 		CC4EC93322FFBC0200F10938 /* EventDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailPage.swift; sourceTree = "<group>"; };
 		CC4EC93622FFD0A500F10938 /* OrgEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventViewController.swift; sourceTree = "<group>"; };
 		CC595CDC235AEE03003D74F6 /* CustomNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CustomNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -433,6 +460,18 @@
 		CCCE5DB823603519005CE5D7 /* NewEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventCell.swift; sourceTree = "<group>"; };
 		CCCE5DBA23610328005CE5D7 /* BadgeCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeCount.swift; sourceTree = "<group>"; };
 		CCD65518231F4A3400088646 /* EventSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchResults.swift; sourceTree = "<group>"; };
+		CCDACBA92400E35800D00D98 /* MuseoSans-300.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSans-300.otf"; sourceTree = "<group>"; };
+		CCDACBAB2400E36200D00D98 /* MuseoSans-500.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSans-500.otf"; sourceTree = "<group>"; };
+		CCDACBAC2400E36200D00D98 /* MuseoSans-700.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSans-700.otf"; sourceTree = "<group>"; };
+		CCDACBAD2400E3F100D00D98 /* MuseoSans-100.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MuseoSans-100.otf"; sourceTree = "<group>"; };
+		CCDACBB92400E89300D00D98 /* ProximaNova-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Regular.otf"; sourceTree = "<group>"; };
+		CCDACBBB2400E89A00D00D98 /* ProximaNova-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Medium.otf"; sourceTree = "<group>"; };
+		CCDACBBC2400E89A00D00D98 /* ProximaNova-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Light.otf"; sourceTree = "<group>"; };
+		CCDACBBD2400E89A00D00D98 /* ProximaNova-Semibold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ProximaNova-Semibold.otf"; sourceTree = "<group>"; };
+		CCDACBC12400F03F00D00D98 /* Raleway-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Regular.ttf"; sourceTree = "<group>"; };
+		CCDACBC32400F06C00D00D98 /* Raleway-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Bold.ttf"; sourceTree = "<group>"; };
+		CCDACBC42400F06C00D00D98 /* Raleway-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-SemiBold.ttf"; sourceTree = "<group>"; };
+		CCDACBC72400F08700D00D98 /* Raleway-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Raleway-Medium.ttf"; sourceTree = "<group>"; };
 		CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDateCell.swift; sourceTree = "<group>"; };
 		CCDC0B8223715B6400F8F8EA /* BlankScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlankScreen.swift; sourceTree = "<group>"; };
 		CCDEE71D2315FFD400D8EB43 /* EventImagePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagePickerCell.swift; sourceTree = "<group>"; };
@@ -532,6 +571,8 @@
 				CCB6C8D823700D2500C6BC85 /* EventOverview.swift */,
 				CCB6C8D6236FFDD100C6BC85 /* Attendee.swift */,
 				CCB6C8D4236FFD7B00C6BC85 /* StatsManager.swift */,
+				CC4E5A7123F277C8000F9636 /* Tag.swift */,
+				CC2B45572400A68300A2F4F6 /* LocalStorage.swift */,
 				CC595CEB235B1211003D74F6 /* Account Notifications */,
 			);
 			path = "Data structure";
@@ -563,6 +604,7 @@
 			children = (
 				CC18F54D229AD4EB008FABEA /* Eventure */,
 				CC18F569229AD570008FABEA /* README.md */,
+				CC2B454423FFC2F800A2F4F6 /* Fonts */,
 				CCFB7A1E229FA6810082FEC6 /* EventureAPITests */,
 				CC595CDD235AEE03003D74F6 /* CustomNotification */,
 				CC18F54C229AD4EB008FABEA /* Products */,
@@ -672,15 +714,45 @@
 		CC2538B122F4E4B300690503 /* Events Page */ = {
 			isa = PBXGroup;
 			children = (
+				CC4E5A7323F28167000F9636 /* New */,
 				CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */,
 				CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */,
 				CCD65518231F4A3400088646 /* EventSearchResults.swift */,
-				D5216648231D828600A54F21 /* FilterDateTableViewController.swift */,
+				CC2B455A2400BD0100A2F4F6 /* Filter settings */,
 				CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */,
 				CC3A3ED323235F3000D16A8C /* EventProvider.swift */,
 				DD1BB0D22310B1BC0082C4EE /* Detail */,
 			);
 			path = "Events Page";
+			sourceTree = "<group>";
+		};
+		CC2B454423FFC2F800A2F4F6 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				CCDACBAD2400E3F100D00D98 /* MuseoSans-100.otf */,
+				CCDACBA92400E35800D00D98 /* MuseoSans-300.otf */,
+				CCDACBAB2400E36200D00D98 /* MuseoSans-500.otf */,
+				CCDACBAC2400E36200D00D98 /* MuseoSans-700.otf */,
+				CCDACBB92400E89300D00D98 /* ProximaNova-Regular.otf */,
+				CCDACBBC2400E89A00D00D98 /* ProximaNova-Light.otf */,
+				CCDACBBB2400E89A00D00D98 /* ProximaNova-Medium.otf */,
+				CCDACBBD2400E89A00D00D98 /* ProximaNova-Semibold.otf */,
+				CC26DA102402769D0029E2E2 /* ProximaNova-Bold.otf */,
+				CCDACBC12400F03F00D00D98 /* Raleway-Regular.ttf */,
+				CCDACBC72400F08700D00D98 /* Raleway-Medium.ttf */,
+				CCDACBC42400F06C00D00D98 /* Raleway-SemiBold.ttf */,
+				CCDACBC32400F06C00D00D98 /* Raleway-Bold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		CC2B455A2400BD0100A2F4F6 /* Filter settings */ = {
+			isa = PBXGroup;
+			children = (
+				D5216648231D828600A54F21 /* FilterDateTableViewController.swift */,
+				CC2B455B2400BD2900A2F4F6 /* GenericTableButton.swift */,
+			);
+			path = "Filter settings";
 			sourceTree = "<group>";
 		};
 		CC2B99CE2365052800E1AC42 /* Manage members */ = {
@@ -740,6 +812,17 @@
 				CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */,
 			);
 			path = Details;
+			sourceTree = "<group>";
+		};
+		CC4E5A7323F28167000F9636 /* New */ = {
+			isa = PBXGroup;
+			children = (
+				CC4E5A6D23F275A8000F9636 /* EventHomePage.swift */,
+				CC4E5A6F23F276B4000F9636 /* CategoryCell.swift */,
+				CC4E5A7423F28188000F9636 /* EventsInCategory.swift */,
+				CC2B454223FFAEBD00A2F4F6 /* EventOverviewTableCell.swift */,
+			);
+			path = New;
 			sourceTree = "<group>";
 		};
 		CC4EC93922FFD1ED00F10938 /* Organization Account */ = {
@@ -1098,9 +1181,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CCDACBBA2400E89300D00D98 /* ProximaNova-Regular.otf in Resources */,
 				CC18F55C229AD4EC008FABEA /* LaunchScreen.storyboard in Resources */,
+				CCDACBAA2400E35800D00D98 /* MuseoSans-300.otf in Resources */,
+				CCDACBBF2400E89A00D00D98 /* ProximaNova-Light.otf in Resources */,
+				CCDACBC52400F06C00D00D98 /* Raleway-Bold.ttf in Resources */,
 				CC18F559229AD4EC008FABEA /* Assets.xcassets in Resources */,
+				CCDACBAE2400E40E00D00D98 /* MuseoSans-100.otf in Resources */,
+				CCDACBB02400E43500D00D98 /* MuseoSans-500.otf in Resources */,
+				CCDACBC22400F03F00D00D98 /* Raleway-Regular.ttf in Resources */,
 				CC18F554229AD4EB008FABEA /* Main.storyboard in Resources */,
+				CCDACBAF2400E43200D00D98 /* MuseoSans-700.otf in Resources */,
+				CCDACBC02400E89A00D00D98 /* ProximaNova-Semibold.otf in Resources */,
+				CCDACBBE2400E89A00D00D98 /* ProximaNova-Medium.otf in Resources */,
+				CC26DA112402769E0029E2E2 /* ProximaNova-Bold.otf in Resources */,
+				CCDACBC62400F06C00D00D98 /* Raleway-SemiBold.ttf in Resources */,
+				CCDACBC82400F0C800D00D98 /* Raleway-Medium.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1216,6 +1312,7 @@
 				CCAB8854235D5BA30053AA20 /* EventUpdateNotification.swift in Sources */,
 				CC04666923372A8700BB2754 /* RequestCell.swift in Sources */,
 				CC2CCD5723336D96000C65E2 /* TicketManagerMain.swift in Sources */,
+				CC2B45582400A68300A2F4F6 /* LocalStorage.swift in Sources */,
 				CC0B3A3D2320C9D200DE7203 /* Profile.swift in Sources */,
 				CCDC0B8323715B6400F8F8EA /* BlankScreen.swift in Sources */,
 				CC0646DC22FDF1EA000BF3CD /* Organization.swift in Sources */,
@@ -1237,6 +1334,7 @@
 				CC41B6EB2342B3B20005335A /* TicketStyleTypeCell.swift in Sources */,
 				CCA0381C231DBF330011AE22 /* CheckinTable.swift in Sources */,
 				CCBA13D723389DA100E282AD /* TicketRequest.swift in Sources */,
+				CC4E5A7023F276B4000F9636 /* CategoryCell.swift in Sources */,
 				CCA6CF78231A68A8005D8BB2 /* OrgAccountPageController.swift in Sources */,
 				CC2CCD4D2331C175000C65E2 /* TicketInfoEditor.swift in Sources */,
 				CC2167C0231B1719003B8DE7 /* TextFieldCell.swift in Sources */,
@@ -1290,6 +1388,7 @@
 				CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */,
 				CCE99AC323117EC800823A60 /* DatePickerTopCell.swift in Sources */,
 				CC1345F52367D5F900ACC6FC /* TicketNotificationCell.swift in Sources */,
+				CC2B454323FFAEBD00A2F4F6 /* EventOverviewTableCell.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				671346242364E735004C3CEA /* RoleList.swift in Sources */,
@@ -1312,16 +1411,19 @@
 				CC87D295235EF6C20070FA09 /* MessageScreen.swift in Sources */,
 				CC5E8FE9232BFE2A00962B8B /* CheckinTimeCell.swift in Sources */,
 				CCDEE71E2315FFD400D8EB43 /* EventImagePickerCell.swift in Sources */,
+				CC4E5A7523F28188000F9636 /* EventsInCategory.swift in Sources */,
 				CC2167BE231B0C46003B8DE7 /* GraduationYearChooser.swift in Sources */,
 				CC3D87602318DC4000F1F1E7 /* EmailCell.swift in Sources */,
 				CCBA13DB23399BC000E282AD /* PurchaseDetails.swift in Sources */,
 				CCF68B8D232239AE00942DD9 /* EmailProfileCell.swift in Sources */,
+				CC4E5A6E23F275A8000F9636 /* EventHomePage.swift in Sources */,
 				CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */,
 				CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
 				CC595CF1235C1A3E003D74F6 /* InviteNotification.swift in Sources */,
 				CC188CF8236648860060909D /* CalendarPreference.swift in Sources */,
+				CC2B45592400B69200A2F4F6 /* TagPickerView.swift in Sources */,
 				CC6D86B023218F4B0068B7F2 /* DescriptionEditPage.swift in Sources */,
 				677A8CAA231D8489007CB04F /* EventsCell.swift in Sources */,
 				EBF4DA422363B74F00B6056F /* ManageMemberPage.swift in Sources */,
@@ -1344,7 +1446,6 @@
 				CC9E1E01233F186F00931BFD /* MajorPreviewCell.swift in Sources */,
 				CC2050552334BA9B00F6A114 /* UserScanner.swift in Sources */,
 				CC18F54F229AD4EB008FABEA /* AppDelegate.swift in Sources */,
-				CC2DD02E22FF269B003AF5A0 /* EventViewController.swift in Sources */,
 				CC10200322F695770025217A /* ChooseTagCell.swift in Sources */,
 				CC9E1DFF233EFCD200931BFD /* MajorSearchResults.swift in Sources */,
 				CC69A08E22F699F500C9920E /* SeparatorView.swift in Sources */,
@@ -1366,13 +1467,14 @@
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC595CEF235B82C9003D74F6 /* TicketNotification.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
-				CC6D276F22F23685007E2C5A /* TagPickerView.swift in Sources */,
+				CC4E5A7223F277C8000F9636 /* Tag.swift in Sources */,
 				CC9A74F72330AC930021A790 /* TicketTabView.swift in Sources */,
 				CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */,
 				CCAB884E235D19590053AA20 /* MessageSenderCell.swift in Sources */,
 				EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */,
 				CC2DD03122FF2BD8003AF5A0 /* EventCell.swift in Sources */,
 				CC2167C4231C4A35003B8DE7 /* UICheckbox.swift in Sources */,
+				CC2B455C2400BD2900A2F4F6 /* GenericTableButton.swift in Sources */,
 				CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */,
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,

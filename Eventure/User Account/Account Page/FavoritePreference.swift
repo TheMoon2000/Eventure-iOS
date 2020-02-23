@@ -41,7 +41,7 @@ class FavoritePreference: UITableViewController {
         title.textAlignment = .center
         title.attributedText = "Should favorite events be automatically added to your calendar?".attributedText()
         title.textColor = AppColors.prompt
-        title.font = .systemFont(ofSize: 16)
+        title.font = .appFontRegular(16)
         title.translatesAutoresizingMaskIntoConstraints = false
         header.addSubview(title)
         
@@ -58,6 +58,7 @@ class FavoritePreference: UITableViewController {
         cell.selectionStyle = .none
         cell.backgroundColor = AppColors.background
         cell.textLabel?.text = choices[indexPath.row].description
+        cell.textLabel?.font = .appFontRegular(17)
         cell.accessoryType = User.current!.favoritePreference == choices[indexPath.row] ? .checkmark : .none
 
         return cell

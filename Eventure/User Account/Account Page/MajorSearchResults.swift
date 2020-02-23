@@ -70,7 +70,7 @@ class MajorSearchResults: UITableViewController, UISearchResultsUpdating {
         let key = searchText.lowercased()
         
         DispatchQueue.global(qos: .default).async {
-            self.filteredMajors = Major.currentMajors.values.filter { major -> Bool in
+            self.filteredMajors = LocalStorage.majors.values.filter { major -> Bool in
                 if key.isEmpty { return true }
                 
                 return major.fullName.lowercased().contains(key) || (major.abbreviation?.lowercased().contains(key) ?? false)

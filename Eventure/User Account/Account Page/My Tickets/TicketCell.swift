@@ -67,7 +67,7 @@ class TicketCell: UITableViewCell {
         orgTitle = {
             let label = UILabel()
             label.numberOfLines = 3
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -97,7 +97,7 @@ class TicketCell: UITableViewCell {
         eventTitle = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 20, weight: .semibold)
+            label.font = .appFontSemibold(20)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -112,7 +112,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.prompt
             label.text = "Date of event: "
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -127,7 +127,7 @@ class TicketCell: UITableViewCell {
             label.numberOfLines = 2
             label.textAlignment = .right
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -142,7 +142,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.prompt
             label.text = "Payment type: "
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -157,7 +157,7 @@ class TicketCell: UITableViewCell {
             label.textAlignment = .right
             label.numberOfLines = 2
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -172,7 +172,7 @@ class TicketCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.prompt
             label.text = "Party size: "
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -187,7 +187,7 @@ class TicketCell: UITableViewCell {
             label.textAlignment = .right
             label.numberOfLines = 2
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             

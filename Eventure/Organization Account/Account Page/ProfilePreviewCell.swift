@@ -47,7 +47,7 @@ class ProfilePreviewCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.label
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontSemibold(18)
             label.translatesAutoresizingMaskIntoConstraints = false
 
             return label
@@ -56,7 +56,7 @@ class ProfilePreviewCell: UITableViewCell {
         subtitleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             

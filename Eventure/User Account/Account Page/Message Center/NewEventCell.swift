@@ -77,7 +77,7 @@ class NewEventCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.label
             label.text = content.eventTitle
-            label.font = .systemFont(ofSize: 19, weight: .semibold)
+            label.font = .appFontSemibold(19)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -93,7 +93,7 @@ class NewEventCell: UITableViewCell {
             label.text = content.startTime.readableString() + "  |  " + content.location
             label.numberOfLines = 2
             label.textColor = AppColors.prompt
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

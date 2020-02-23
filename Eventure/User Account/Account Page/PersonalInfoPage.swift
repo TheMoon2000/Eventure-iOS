@@ -237,6 +237,12 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
         navigationController?.pushViewController(modifyAccount, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.font = .appFontRegular(13.5)
+        }
+    }
+    
 }
 
 extension PersonalInfoPage {

@@ -12,7 +12,7 @@ struct OrganizationRegistrationData {
     
     var title = ""
     var website = ""
-    var tags = Set<String>()
+    var tags = Set<Int>()
     var logo: UIImage?
     var orgID = "" {
         didSet {

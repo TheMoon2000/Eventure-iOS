@@ -60,7 +60,7 @@ class MembershipInvitationCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.label
             label.text = "Membership Invitation"
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -112,7 +112,7 @@ class MembershipInvitationCell: UITableViewCell {
                 button.setTitle("Accept", for: .normal)
                 button.setTitleColor(AppColors.plainText, for: .normal)
                 button.titleEdgeInsets.left = 8
-                button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+                button.titleLabel?.font = .appFontMedium(15)
                 button.translatesAutoresizingMaskIntoConstraints = false
                             
                 button.addTarget(self, action: #selector(acceptPressed), for: .touchDown)
@@ -127,7 +127,7 @@ class MembershipInvitationCell: UITableViewCell {
                 button.setTitle("Decline", for: .normal)
                 button.setTitleColor(AppColors.plainText, for: .normal)
                 button.titleEdgeInsets.left = 5
-                button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+                button.titleLabel?.font = .appFontMedium(15)
                 button.translatesAutoresizingMaskIntoConstraints = false
                 
                 button.addTarget(self, action: #selector(declinePressed), for: .touchDown)
