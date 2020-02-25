@@ -100,8 +100,9 @@ class AccountViewController: UIViewController, UINavigationControllerDelegate, U
         let alert = UIAlertController(title: "Do you want to log in?", message: "Log in to make changes to your account.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { action in
             let login = LoginViewController()
-            let nvc = InteractivePopNavigationController(rootViewController: login)
-            nvc.isNavigationBarHidden = true
+//            let nvc = InteractivePopNavigationController(rootViewController: login)
+            let nvc = UINavigationController(rootViewController: login)
+//            nvc.isNavigationBarHidden = true
             login.navBar = nvc
             self.present(nvc, animated: true)
         }))

@@ -15,7 +15,7 @@ class LocalStorage {
     static var CACHE_PATH = ACCOUNT_DIR.path + "/" + "LocalStorage"
     
     /// Internal representation of the local storage.
-    static private var rawCache = [String: [Int: Codable]]()
+    static private var rawCache = [String: [Int: Any]]()
     
     /// Maps tag IDs to Tag objects.
     static var tags = [Int: Tag]()
@@ -26,16 +26,13 @@ class LocalStorage {
     private init() {}
     
     static func recoverFromCache() {
-        guard let fileData = NSKeyedUnarchiver.unarchiveObject(withFile: CACHE_PATH) as? [String: [Int: Codable]] else {
-            print("Unable to read cache from \(CACHE_PATH)")
-            return
-        }
-        
+        let fileData = (NSKeyedUnarchiver.unarchiveObject(withFile: CACHE_PATH) as? [String: [Int: Any]]) ?? [:]
+                
         rawCache = fileData
         
-        if let majorData = fileData["Majors"] as? [Int: Data] {
+        if let majorData = fileData["Majors"] {
             for cachedMajor in majorData {
-                if let data = try? JSON(data: cachedMajor.value) {
+                if let data = try? JSON(data: cachedMajor.value as! Data) {
                     majors[cachedMajor.key] = Major(json: data)
                 }
             }
@@ -48,10 +45,16 @@ class LocalStorage {
                 tags[cachedTag.key] = Tag(id: cachedTag.key, name: cachedTag.value)
             }
         }
+        
+        updateMajors()
     }
     
     static func saveToCache() {
-        NSKeyedArchiver.archiveRootObject(rawCache, toFile: CACHE_PATH)
+        if !NSKeyedArchiver.archiveRootObject(rawCache, toFile: CACHE_PATH) {
+            print("Unable to save to location \(CACHE_PATH)")
+        } else {
+            print("Successfully cached local storage to \(CACHE_PATH)")
+        }
     }
     
 }
@@ -106,7 +109,7 @@ extension LocalStorage {
     
     /// Fetch major information from the server.
     
-    static func updateMajors(_ handler: ((Int) -> ())?) {
+    static func updateMajors(_ handler: ((Int) -> ())? = nil) {
         
         let url = URL(string: API_BASE_URL + "Majors")!
         let task = CUSTOM_SESSION.dataTask(with: url) {
@@ -129,8 +132,11 @@ extension LocalStorage {
                 if !allMajors.isEmpty {
                     majors = allMajors
                     rawCache["Majors"] = allMajors.mapValues { try! $0.encodedJSON.rawData() }
+                    saveToCache()
                     print("\(allMajors.count) majors are loaded")
                     DispatchQueue.main.async { handler?(0) }
+                } else {
+                    print("WARNING: 0 majors were loaded from server")
                 }
             } else {
                 DispatchQueue.main.async { handler?(-2) }

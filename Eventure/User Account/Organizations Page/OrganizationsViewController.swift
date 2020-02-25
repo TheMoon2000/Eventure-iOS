@@ -70,7 +70,10 @@ class OrganizationsViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
-        searchController.searchBar.searchTextField.font = .appFontRegular(17)
+        
+        if #available(iOS 13.0, *) {
+            searchController.searchBar.searchTextField.font = .appFontRegular(17)
+        }
         
         refreshControl.tintColor = AppColors.lightControl
         refreshControl.addTarget(self, action: #selector(loadOrganizations), for: .valueChanged)

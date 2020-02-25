@@ -76,6 +76,21 @@ class EventDetailStats: UIViewController {
             return col
         }()
         
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = AppColors.prompt
+            label.font = .appFontRegular(17)
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
         loadingBG = view.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: statCollection.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: statCollection.centerYAnchor).isActive = true
@@ -92,6 +107,8 @@ class EventDetailStats: UIViewController {
         if !pulled {
             loadingBG.isHidden = false
         }
+        
+        emptyLabel.text = ""
         
         let parameters = [
             "orgId": Organization.current!.id,
@@ -115,6 +132,7 @@ class EventDetailStats: UIViewController {
             guard error == nil else {
                 DispatchQueue.main.async {
                     internetUnavailableError(vc: self)
+                    self.emptyLabel.text = CONNECTION_ERROR
                 }
                 return
             }
@@ -129,6 +147,7 @@ class EventDetailStats: UIViewController {
             } catch {
                 DispatchQueue.main.async {
                     serverMaintenanceError(vc: self)
+                    self.emptyLabel.text = SERVER_ERROR
                 }
             }
         }

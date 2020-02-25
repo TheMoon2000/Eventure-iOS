@@ -108,7 +108,7 @@ class EventCell: UICollectionViewCell {
         
         titleText = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 21, weight: .bold)
+            label.font = .appFontBold(21)
             label.numberOfLines = 10
             label.textColor = AppColors.label
             label.textAlignment = .left
@@ -145,7 +145,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.text = "When:"
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -160,7 +160,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.value
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -176,7 +176,7 @@ class EventCell: UICollectionViewCell {
         
         locationLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.text = "Where:"
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -193,7 +193,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .right
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -209,7 +209,7 @@ class EventCell: UICollectionViewCell {
         
         eventHostLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.text = "Hosted by:"
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -227,7 +227,7 @@ class EventCell: UICollectionViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .right
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false

@@ -134,9 +134,7 @@ class Event {
         
         if let tags_raw = dictionary["Tags"]?.string {
             if let tagsArray = JSON(parseJSON: tags_raw).arrayObject as? [Int] {
-                for id in tagsArray {
-                    // look up a local cached version of cache
-                }
+                tags = Set(tags)
             }
         }
         

@@ -56,6 +56,8 @@ class OrgEventViewController: UIViewController, EventProvider {
         }
     }
     
+    var loadedOnce = false
+    
     var allDrafts = Set<Event>() {
         didSet {
             updateFiltered()
@@ -95,6 +97,9 @@ class OrgEventViewController: UIViewController, EventProvider {
         searchController.searchResultsUpdater = searchResults
         searchController.searchBar.tintColor = AppColors.main
         searchController.searchBar.placeholder = "Search Your Events"
+        if #available(iOS 13, *) {
+            searchController.searchBar.searchTextField.font = .appFontRegular(17)
+        }
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
         definesPresentationContext = true
@@ -122,9 +127,9 @@ class OrgEventViewController: UIViewController, EventProvider {
         }()
         
         topTab = {
-            let tab = UISegmentedControl(items: ["Published", "Drafts"])
+            let tab = UISegmentedControl(items: ["Drafts", "Published"])
             tab.tintColor = AppColors.main
-            tab.selectedSegmentIndex = 0
+            tab.selectedSegmentIndex = useRefreshControl ? 1 : 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
             
@@ -205,6 +210,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         publishedLabel = {
             let label = UILabel()
             label.textColor = AppColors.prompt
+            label.isHidden = topTab.selectedSegmentIndex == 0
             label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -217,8 +223,8 @@ class OrgEventViewController: UIViewController, EventProvider {
         
         draftLabel = {
             let label = UILabel()
-            label.isHidden = true
             label.textColor = AppColors.prompt
+            label.isHidden = topTab.selectedSegmentIndex == 1
             label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -234,7 +240,9 @@ class OrgEventViewController: UIViewController, EventProvider {
         refreshControl.tintColor = AppColors.lightControl
         
         // Fetch all events and draft events
-        updateEvents()
+        if useRefreshControl {
+            updateEvents()
+        }
         updateDrafts()
     }
     
@@ -256,6 +264,7 @@ class OrgEventViewController: UIViewController, EventProvider {
     @objc private func updateEvents(pulled: Bool = false) {
         
         publishedLabel.text = ""
+        loadedOnce = true
 
         if !pulled {
             spinner.startAnimating()
@@ -342,7 +351,7 @@ class OrgEventViewController: UIViewController, EventProvider {
     }
     
     @objc private func changedTab() {
-        let isDraftMode = topTab.selectedSegmentIndex == 1
+        let isDraftMode = topTab.selectedSegmentIndex == 0
         publishedLabel.isHidden = isDraftMode
         draftLabel.isHidden = !isDraftMode
         
@@ -354,6 +363,9 @@ class OrgEventViewController: UIViewController, EventProvider {
             navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
             spinner.alpha = 1.0
             spinnerLabel.alpha = 1.0
+            if !loadedOnce {
+                updateEvents()
+            }
         }
         topTab.isUserInteractionEnabled = false
         updateFiltered {
@@ -383,9 +395,9 @@ extension OrgEventViewController: UICollectionViewDelegate, UICollectionViewData
         
         let count = min(filteredEvents.count, eventsDisplayed)
         
-        if topTab.selectedSegmentIndex == 0 {
+        if topTab.selectedSegmentIndex == 1 {
             publishedLabel.text = count == 0 && !spinner.isAnimating ? EMPTY_STRING : ""
-        } else if topTab.selectedSegmentIndex == 1 {
+        } else {
             draftLabel.text = count == 0 ? "No Drafts" : ""
         }
         
@@ -512,7 +524,7 @@ extension OrgEventViewController {
     func updateFiltered(_ handler: (() -> ())? = nil) {
         let tab = topTab.selectedSegmentIndex
         DispatchQueue.global(qos: .default).async {
-            if tab == 0 {
+            if tab == 1 {
                 self.filteredEvents = self.allEvents.filter { self.filterFunction($0)
                 }
                 . sorted { self.sortFunction(event1: $0, event2: $1) }

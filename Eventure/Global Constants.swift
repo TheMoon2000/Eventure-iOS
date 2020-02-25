@@ -399,6 +399,10 @@ extension UIFont {
     static func appFontSemibold(_ size: CGFloat) -> UIFont {
         return UIFont(name: "ProximaNova-Semibold", size: size)!
     }
+    
+    static func appFontBold(_ size: CGFloat) -> UIFont {
+        return UIFont(name: "ProximaNova-Bold", size: size)!
+    }
 }
 
 extension String {

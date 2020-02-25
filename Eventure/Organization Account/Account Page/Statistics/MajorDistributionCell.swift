@@ -46,7 +46,7 @@ class MajorDistributionCell: UICollectionViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Attendee Composition"
-            label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+            label.font = .appFontSemibold(20)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -80,7 +80,7 @@ class MajorDistributionCell: UICollectionViewCell {
             pie.legend.xEntrySpace = 10.0
             pie.legend.yEntrySpace = 5.0
             pie.legend.formSize = 10
-            pie.legend.font = .systemFont(ofSize: 11)
+            pie.legend.font = .appFontRegular(11)
             pie.legend.horizontalAlignment = .center
             pie.legend.textColor = AppColors.label
             
@@ -101,7 +101,7 @@ class MajorDistributionCell: UICollectionViewCell {
             label.attributedText = noSelectionText.styled(with: .basicStyle)
             label.numberOfLines = 3
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.plainText
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -185,7 +185,7 @@ class MajorDistributionCell: UICollectionViewCell {
         pFormatter.percentSymbol = " %"
         data.setValueFormatter(DefaultValueFormatter(formatter: pFormatter))
         
-        data.setValueFont(.systemFont(ofSize: 12))
+        data.setValueFont(.appFontRegular(12))
         data.setValueTextColor(.white)
         
         pieChart.data = data

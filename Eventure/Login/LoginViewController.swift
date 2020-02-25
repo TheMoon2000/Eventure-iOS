@@ -49,6 +49,12 @@ class LoginViewController: UIViewController {
         gradientLayer.frame = self.view.frame
         self.view.layer.insertSublayer(gradientLayer, at: 0)
         
+        if let bar = navigationController?.navigationBar {
+            bar.barTintColor = AppColors.navbar
+            bar.tintColor = AppColors.main
+            bar.titleTextAttributes = [.font: UIFont.appFontMedium(17)]
+        }
+        
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     
         canvas = {
@@ -85,7 +91,7 @@ class LoginViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
+        self.navigationController?.navigationBar.isHidden = true
         //this will be called when the next VC is rotated and switched back to this one
         rotated(frame: view.frame)
     }
@@ -180,6 +186,7 @@ class LoginViewController: UIViewController {
             usr.keyboardType = .emailAddress
             usr.textContentType = .emailAddress
             usr.returnKeyType = .next
+            usr.font = .appFontRegular(17)
             prepareField(textfield: usr)
             usr.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(usr)
@@ -206,6 +213,7 @@ class LoginViewController: UIViewController {
             pswd.placeholder = "Password"
             pswd.isSecureTextEntry = true
             pswd.returnKeyType = .go
+            pswd.font = .appFontRegular(17)
             prepareField(textfield: pswd)
             pswd.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(pswd)
@@ -225,7 +233,7 @@ class LoginViewController: UIViewController {
         loginButton = {
             let button = UIButton(type: .system)
             button.setTitle("Sign In", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 17.2, weight: .semibold)
+            button.titleLabel?.font = .appFontSemibold(18)
             button.tintColor = .white
             button.backgroundColor = .init(white: 1, alpha: 0.05)
             button.layer.cornerRadius = 5
@@ -257,7 +265,7 @@ class LoginViewController: UIViewController {
             let button = UIButton(type: .system)
             button.isHidden = view.frame.height < MIN_HEIGHT
             button.setTitle("Continue as Guest", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(16)
             button.tintColor = .init(white: 1, alpha: 0.95)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -292,7 +300,7 @@ class LoginViewController: UIViewController {
         registerButton = {
             let button = UIButton(type: .system)
             button.setTitle("Register", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(16)
             button.tintColor = .init(white: 1, alpha: 0.9)
             button.translatesAutoresizingMaskIntoConstraints = false
             
@@ -316,7 +324,7 @@ class LoginViewController: UIViewController {
         forgotButton = {
             let button = UIButton(type: .system)
             button.setTitle("Forgot Password", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(16)
             button.tintColor = .init(white: 1, alpha: 0.95)
             button.translatesAutoresizingMaskIntoConstraints = false
             bottomStack.addArrangedSubview(button)

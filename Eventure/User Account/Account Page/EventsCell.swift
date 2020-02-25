@@ -46,7 +46,7 @@ class EventsCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.label
             label.numberOfLines = 10
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.lineBreakMode = .byWordWrapping
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -63,7 +63,7 @@ class EventsCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

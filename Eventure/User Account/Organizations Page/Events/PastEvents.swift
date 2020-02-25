@@ -40,7 +40,6 @@ class PastEvents: OrgEventViewController, IndicatorInfoProvider {
 
         // Do any additional setup after loading the view.
         view.backgroundColor = .init(white: 0.95, alpha: 1)
-        
     }
     
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {

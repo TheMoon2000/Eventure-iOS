@@ -82,6 +82,9 @@ class StatEventList: UIViewController, IndicatorInfoProvider {
             
             let banner = UIVisualEffectView(effect: effect)
             banner.isHidden = true
+            banner.layer.shadowOpacity = 0.05
+            banner.layer.shadowOffset = .init(width: 0, height: -1)
+            banner.layer.shadowRadius = 3
             banner.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(banner)
             
@@ -106,7 +109,7 @@ class StatEventList: UIViewController, IndicatorInfoProvider {
         bannerTitle = {
             let label = UILabel()
             label.text = "Loading..."
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false

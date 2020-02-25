@@ -15,7 +15,7 @@ class EventStatistics: ButtonBarPagerTabStripViewController {
         settings.style.buttonBarBackgroundColor = AppColors.navbar
         settings.style.buttonBarItemBackgroundColor = AppColors.navbar
         settings.style.selectedBarBackgroundColor = AppColors.main
-        settings.style.buttonBarItemFont = .boldSystemFont(ofSize: 15)
+        settings.style.buttonBarItemFont = .appFontSemibold(15)
         settings.style.selectedBarHeight = 2.0
         settings.style.buttonBarItemLeftRightMargin = 15
         settings.style.buttonBarItemTitleColor = AppColors.main

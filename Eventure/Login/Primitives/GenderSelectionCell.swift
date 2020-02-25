@@ -47,7 +47,7 @@ class GenderSelectionCell: UITableViewCell {
         let label = UILabel()
         label.text = "Gender"
         label.textColor = AppColors.label
-        label.font = .systemFont(ofSize: 18.2, weight: .semibold)
+        label.font = .appFontSemibold(18)
         label.translatesAutoresizingMaskIntoConstraints = false
         addSubview(label)
         

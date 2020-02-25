@@ -46,7 +46,7 @@ class PopularityRankingCell: UICollectionViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Most Popular Events"
-            label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+            label.font = .appFontSemibold(20)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -67,7 +67,7 @@ class PopularityRankingCell: UICollectionViewCell {
             bar.maxHighlightDistance = 100
             bar.highlightPerDragEnabled = false
             
-            bar.xAxis.labelFont = .systemFont(ofSize: 10)
+            bar.xAxis.labelFont = .appFontRegular(10)
             bar.xAxis.labelTextColor = AppColors.value
             bar.xAxis.labelPosition = .bottom
             // bar.xAxis.axisMinimum = 1
@@ -76,7 +76,7 @@ class PopularityRankingCell: UICollectionViewCell {
             bar.xAxis.gridColor = AppColors.lightControl
             bar.xAxis.xOffset = 8
             
-            bar.leftAxis.labelFont = .systemFont(ofSize: 10)
+            bar.leftAxis.labelFont = .appFontRegular(10)
             bar.leftAxis.labelTextColor = AppColors.prompt
             bar.leftAxis.drawGridLinesEnabled = true
             bar.leftAxis.drawAxisLineEnabled = true
@@ -85,7 +85,7 @@ class PopularityRankingCell: UICollectionViewCell {
             bar.leftAxis.gridColor = AppColors.placeholder
             bar.leftAxis.granularity = 1
             
-            bar.rightAxis.labelFont = .systemFont(ofSize: 10)
+            bar.rightAxis.labelFont = .appFontRegular(10)
             bar.rightAxis.labelTextColor = AppColors.prompt
             bar.rightAxis.drawAxisLineEnabled = true
             bar.rightAxis.axisMinimum = 0
@@ -101,7 +101,7 @@ class PopularityRankingCell: UICollectionViewCell {
             bar.legend.form = .square
             bar.legend.xEntrySpace = 10.0
             bar.legend.yEntrySpace = 5.0
-            bar.legend.font = .systemFont(ofSize: 11)
+            bar.legend.font = .appFontRegular(11)
             bar.legend.textColor = AppColors.label
             
             bar.translatesAutoresizingMaskIntoConstraints = false
@@ -161,7 +161,7 @@ class PopularityRankingCell: UICollectionViewCell {
         
         let data = BarChartData(dataSet: set)
         data.setValueFormatter(IntegerFormatter())
-        data.setValueFont(.systemFont(ofSize: 10))
+        data.setValueFont(.appFontRegular(10))
         data.setValueTextColor(AppColors.value)
         
         barChart.data = data

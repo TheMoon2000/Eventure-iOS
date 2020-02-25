@@ -116,6 +116,8 @@ class EventDetailPage: UIViewController {
                     // iv.image = #imageLiteral(resourceName: "berkeley")
                     iv.heightAnchor.constraint(equalToConstant: 0).isActive = true
                 }
+            } else {
+                iv.widthAnchor.constraint(equalTo: iv.heightAnchor, multiplier: 1.5).isActive = true
             }
             
             iv.isUserInteractionEnabled = true
@@ -185,7 +187,7 @@ class EventDetailPage: UIViewController {
             
             tabStrip.view.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             tabStrip.view.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 20).isActive = true
+            tabStrip.view.topAnchor.constraint(equalTo: eventTitle.bottomAnchor, constant: 30).isActive = true
             
             tabStrip.view.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
             

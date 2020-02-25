@@ -23,7 +23,7 @@ class RegisterTableController: UITableViewController {
     /// An object that stores the registration information.
     private var registrationData = UserRegistrationData() {
         didSet {
-            let buttonCell = self.contentCells[7] as! ButtonCell
+            let buttonCell = self.contentCells[6] as! ButtonCell
             if registrationData.isValid {
                 buttonCell.button.isEnabled = true
                 buttonCell.button.alpha = 1.0
@@ -36,6 +36,9 @@ class RegisterTableController: UITableViewController {
     
     /// A reference to all the pre-generated cells in the table view.
     private var contentCells = [UITableViewCell]()
+    
+    /// Acts as the background for the status bar.
+    private var coverView: UIView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,25 +49,14 @@ class RegisterTableController: UITableViewController {
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
         tableView.keyboardDismissMode = .interactive
-        
+                
         // Begin building content cells
         
-        // 0.0 (0)
-        let navCell: UITableViewCell = {
-            let cell = NavBackCell()
-            cell.action = {
-                self.navigationController?.popViewController(animated: true)
-            }
-            
-            return cell
-        }()
-        contentCells.append(navCell)
-        
-        // 1.0 (1)
+        // 0.0 (1)
         let titleCell: UITableViewCell = {
             let label = UILabel()
             label.text = "New Account"
-            label.font = .systemFont(ofSize: 28, weight: .semibold)
+            label.font = .appFontSemibold(28)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textColor = AppColors.prompt
             label.textAlignment = .center
@@ -76,13 +68,13 @@ class RegisterTableController: UITableViewController {
             
             label.leftAnchor.constraint(equalTo: cell.leftAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: cell.rightAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: cell.topAnchor, constant: 25).isActive = true
+            label.topAnchor.constraint(equalTo: cell.topAnchor, constant: 22).isActive = true
             label.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: -22).isActive = true
             return cell
         }()
         contentCells.append(titleCell)
         
-        // 1.1 (2)
+        // 0.1 (2)
         let emailCell: UITableViewCell = {
             let cell = EmailCell(parentVC: self)
             
@@ -104,7 +96,7 @@ class RegisterTableController: UITableViewController {
         }()
         contentCells.append(emailCell)
         
-        // 1.2 (3)
+        // 0.2 (3)
         let passwordCell: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.isSecureTextEntry = true
@@ -127,7 +119,7 @@ class RegisterTableController: UITableViewController {
         }()
         contentCells.append(passwordCell)
         
-        // 1.3 (4)
+        // 0.3 (4)
         let repeatCell: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.isSecureTextEntry = true
@@ -151,7 +143,7 @@ class RegisterTableController: UITableViewController {
         }()
         contentCells.append(repeatCell)
         
-        // 2.0 (5)
+        // 1.0 (5)
         let displayNameCell: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.placeholder = "Display Name"
@@ -175,7 +167,7 @@ class RegisterTableController: UITableViewController {
         }()
         contentCells.append(displayNameCell)
         
-        // 2.1 (6)
+        // 1.1 (6)
         let genderCell: UITableViewCell = {
             let cell = GenderSelectionCell()
             cell.gender = .unspecified
@@ -185,6 +177,7 @@ class RegisterTableController: UITableViewController {
         
         picker = {
             let picker = UIPickerView()
+            picker.backgroundColor = .clear
             picker.dataSource = self
             picker.delegate = self
             picker.showsSelectionIndicator = true
@@ -194,7 +187,7 @@ class RegisterTableController: UITableViewController {
             return picker
         }()
         
-        // 3.0 (7)
+        // 2.0 (7)
         let buttonCell: UITableViewCell = {
             let cell = ButtonCell(width: 225)
             cell.button.isEnabled = false
@@ -209,13 +202,34 @@ class RegisterTableController: UITableViewController {
             return cell
         }()
         contentCells.append(buttonCell)
+        
+        coverView = {
+            let v = UIView()
+            v.backgroundColor = .black
+            v.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(v)
+            
+            v.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            v.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            v.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            v.heightAnchor.constraint(equalToConstant: UIApplication.shared.statusBarFrame.height).isActive = true
+            
+            return v
+        }()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.isHidden = false
+        updateNavbarOpacity()
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 4
+        return 3
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -223,7 +237,7 @@ class RegisterTableController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if (indexPath == IndexPath(row: 2, section: 2)) {
+        if (indexPath == IndexPath(row: 2, section: 1)) {
             return showingPicker ? 216 : 0
         } else {
             return super.tableView(tableView, heightForRowAt: indexPath)
@@ -232,29 +246,28 @@ class RegisterTableController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return [1, 4, 3, 1][section]
+        return [4, 3, 1][section]
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
-            return contentCells[0] // Navigation cell
+            return contentCells[0] // Title
+        case (0, 1):
+            return contentCells[1] // Email
+        case (0, 2):
+            return contentCells[2] // Password
+        case (0, 3):
+            return contentCells[3] // Re-type password
         case (1, 0):
-            return contentCells[1] // Title
+            return contentCells[4] // Display name
         case (1, 1):
-            return contentCells[2] // Email
+            return contentCells[5] // Gender selection
         case (1, 2):
-            return contentCells[3] // Password
-        case (1, 3):
-            return contentCells[4] // Re-type password
-        case (2, 0):
-            return contentCells[5] // Display name
-        case (2, 1):
-            return contentCells[6] // Gender selection
-        case (2, 2):
             let cell = UITableViewCell()
             cell.selectionStyle = .none
+            cell.backgroundColor = .clear
             
             cell.addSubview(picker)
             
@@ -264,28 +277,26 @@ class RegisterTableController: UITableViewController {
             picker.bottomAnchor.constraint(equalTo: cell.bottomAnchor).isActive = true
             
             return cell
-        case (3, 0):
-            return contentCells[7] // Sign up button
+        case (2, 0):
+            return contentCells[6] // Sign up button
         default:
             return UITableViewCell()
         }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath == IndexPath(row: 1, section: 2) {
+        if indexPath == IndexPath(row: 1, section: 1) {
             view.endEditing(true) // dismiss the keyboard
             showingPicker = !showingPicker
             
-            tableView.reloadRows(at: [IndexPath(row: 2, section: 2)], with: .automatic)
+            tableView.reloadRows(at: [IndexPath(row: 2, section: 1)], with: .none)
             
-            tableView.scrollToRow(at: IndexPath(row: 2, section: 2),
-                                  at: .none, animated: true)
+            let newY = min(max(0, self.tableView.contentOffset.y), self.tableView.contentSize.height - self.tableView.frame.height)
+                        
+            self.tableView.setContentOffset(CGPoint(x: 0, y: newY), animated: true)
+            tableView.scrollToRow(at: IndexPath(row: 2, section: 1), at: .none, animated: true)
             
-            UIView.animate(withDuration: 0.2) {
-                tableView.contentOffset.y = max(-UIApplication.shared.statusBarFrame.height, tableView.contentOffset.y)
-            }
-            
-            let cell = self.contentCells[6] as! GenderSelectionCell
+            let cell = self.contentCells[5] as! GenderSelectionCell
             
             if showingPicker {
                 cell.expandDisclosure()
@@ -442,8 +453,33 @@ extension RegisterTableController: UIPickerViewDelegate, UIPickerViewDataSource 
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let cell = contentCells[6] as! GenderSelectionCell
+        let cell = contentCells[5] as! GenderSelectionCell
         cell.gender = [.unspecified, .male, .female, .non_binary][row]
         registrationData.gender = row - 1
     }
+
+}
+
+extension RegisterTableController {
+    
+    func updateNavbarOpacity() {
+        
+        guard navigationController != nil else { return }
+        
+        let top = navigationController!.navigationBar.frame.minY + navigationController!.navigationBar.frame.height
+        if top + tableView.contentOffset.y > 80 {
+            navigationController?.navigationBar.shadowImage = nil
+            navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+            navigationItem.title = "New Account"
+        } else {
+            navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+            navigationController?.navigationBar.shadowImage = UIImage()
+            navigationItem.title = nil
+        }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateNavbarOpacity()
+    }
+    
 }
