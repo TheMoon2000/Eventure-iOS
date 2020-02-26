@@ -290,6 +290,15 @@ class OrgEventViewController: UIViewController, EventProvider {
         var parameters = [String : String]()
         parameters["orgId"] = orgID
         
+        if let start = self.start {
+            parameters["lowerBound"] = DATE_FORMATTER.string(from: start)
+        }
+        if let end = self.end {
+            parameters["upperBound"] = DATE_FORMATTER.string(from: end)
+        }
+        
+        // print(parameters)
+        
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/List",
                            parameters: parameters)!
@@ -510,11 +519,11 @@ extension OrgEventViewController {
             return false
         }
         
-        let lowCond = end == nil || event.startTime!.timeIntervalSince(end!) >= 0
-        let highCond = start == nil || event.endTime == nil || event.endTime!.timeIntervalSince(start!) <= 0
+//        let lowCond = end == nil || event.startTime!.timeIntervalSince(end!) >= 0
+//        let highCond = start == nil || event.endTime == nil || event.endTime!.timeIntervalSince(start!) <= 0
         let hostCond = orgID == nil || event.hostID == orgID
         
-        return lowCond && highCond && hostCond
+        return hostCond
     }
 }
 
@@ -524,7 +533,7 @@ extension OrgEventViewController {
     func updateFiltered(_ handler: (() -> ())? = nil) {
         let tab = topTab.selectedSegmentIndex
         DispatchQueue.global(qos: .default).async {
-            if tab == 1 {
+            if tab == 1 || !self.showTopTab {
                 self.filteredEvents = self.allEvents.filter { self.filterFunction($0)
                 }
                 . sorted { self.sortFunction(event1: $0, event2: $1) }

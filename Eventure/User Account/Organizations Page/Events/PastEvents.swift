@@ -32,7 +32,7 @@ class PastEvents: OrgEventViewController, IndicatorInfoProvider {
         super.init(nibName: nil, bundle: nil)
         
         self.detailPage = detailPage
-        start = Date() // Set the present as the upper bound
+        end = Date() // Set the present as the upper bound
     }
 
     override func viewDidLoad() {
