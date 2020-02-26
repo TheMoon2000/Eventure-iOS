@@ -33,12 +33,13 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
             overlay.layer.cornerRadius = 7
             overlay.backgroundColor = AppColors.background
             overlay.layer.borderColor = AppColors.line.cgColor
+            overlay.applyMildShadow()
             overlay.translatesAutoresizingMaskIntoConstraints = false
             addSubview(overlay)
             
             overlay.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: sideInset).isActive = true
             overlay.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -sideInset).isActive = true
-            overlay.heightAnchor.constraint(equalToConstant: 60).isActive = true
+            overlay.heightAnchor.constraint(equalToConstant: 56).isActive = true
             overlay.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
             
             return overlay
@@ -83,10 +84,10 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
             logo.translatesAutoresizingMaskIntoConstraints = false
             addSubview(logo)
             
-            logo.widthAnchor.constraint(equalToConstant: 45).isActive = true
-            logo.heightAnchor.constraint(equalToConstant: 45).isActive = true
+            logo.widthAnchor.constraint(equalToConstant: 43).isActive = true
+            logo.heightAnchor.constraint(equalToConstant: 43).isActive = true
             logo.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-            logo.rightAnchor.constraint(equalTo: overlay.rightAnchor, constant: -12).isActive = true
+            logo.rightAnchor.constraint(equalTo: overlay.rightAnchor, constant: -10).isActive = true
             
             return logo
         }()

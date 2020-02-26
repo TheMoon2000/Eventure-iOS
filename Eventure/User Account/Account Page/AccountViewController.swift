@@ -263,7 +263,6 @@ extension AccountViewController: UITableViewDataSource, UITableViewDelegate {
             if (User.current == nil) {
                 let login = LoginViewController()
                 let nvc = InteractivePopNavigationController(rootViewController: login)
-                nvc.isNavigationBarHidden = true
                 login.navBar = nvc
                 present(nvc, animated: true)
             } else {

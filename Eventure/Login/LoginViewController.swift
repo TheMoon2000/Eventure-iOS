@@ -34,7 +34,9 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
+        setNeedsStatusBarAppearanceUpdate()
+        
         //self.view.backgroundColor = MAIN_TINT3
         let topColor = MAIN_TINT8
         let buttomColor = MAIN_TINT6
@@ -91,7 +93,8 @@ class LoginViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
         //this will be called when the next VC is rotated and switched back to this one
         rotated(frame: view.frame)
     }

@@ -108,7 +108,7 @@ class EventsInCategory: UIViewController, EventProvider {
         
         emptyLabel.text = ""
         
-        var parameters = ["category": category.name]
+        var parameters = ["categoryId": String(category.id)]
         
         if User.current != nil {
             parameters["userId"] = String(User.current!.uuid)

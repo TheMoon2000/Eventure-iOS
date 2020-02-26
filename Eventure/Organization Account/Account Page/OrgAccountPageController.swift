@@ -202,7 +202,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             let label = UILabel()
             label.textColor = AppColors.label
             label.text = "About Eventure"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(label)
@@ -222,7 +222,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             let label = UILabel()
             label.textColor = AppColors.label
             label.text = "Log Out"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(label)

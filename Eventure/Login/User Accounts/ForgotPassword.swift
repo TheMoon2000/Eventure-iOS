@@ -25,13 +25,6 @@ class ForgotPassword: UITableViewController {
         tableView.showsHorizontalScrollIndicator = false
         tableView.tintColor = AppColors.main
         
-        let navCell: UITableViewCell = {
-            let cell = NavBackCell()
-            cell.action = closeVC
-            return cell
-        }()
-        contentCells.append(navCell)
-        
         let messageCell: UITableViewCell = {
             let cell = MessageCell()
             cell.title = "Forgot Password"
@@ -51,7 +44,7 @@ class ForgotPassword: UITableViewController {
             cell.textField.returnKeyType = .send
             
             cell.changeHandler = { cell in
-                let buttonCell = self.contentCells[3] as! ButtonCell
+                let buttonCell = self.contentCells[2] as! ButtonCell
                 
                 if !cell.textField.text!.isEmpty {
                     buttonCell.button.isEnabled = true
@@ -70,7 +63,7 @@ class ForgotPassword: UITableViewController {
         }()
         contentCells.append(emailCell)
         
-        // 3
+        // 2
         let buttonCell: UITableViewCell = {
             let cell = ButtonCell(width: 270)
             cell.button.setTitle(buttonTitle, for: .normal)
@@ -94,11 +87,11 @@ class ForgotPassword: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return [1, 2, 1][section]
+        return [2, 1][section]
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -109,13 +102,11 @@ class ForgotPassword: UITableViewController {
 
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
-            return contentCells[0] // Navigation cell
+            return contentCells[0] // Message cell
+        case (0, 1):
+            return contentCells[1] // Email / ID cell
         case (1, 0):
-            return contentCells[1] // Message cell
-        case (1, 1):
-            return contentCells[2] // Email / ID cell
-        case (2, 0):
-            return contentCells[3] // Button cell
+            return contentCells[2] // Button cell
         default:
             return UITableViewCell()
         }
@@ -124,7 +115,7 @@ class ForgotPassword: UITableViewController {
  
     private func submitRequest(type: String? = nil) {
         
-        let id = (contentCells[2] as! MinimalTextCell).textField.text!
+        let id = (contentCells[1] as! MinimalTextCell).textField.text!
         
         guard !CharacterSet(charactersIn: id).isSubset(of: .whitespaces) else {
             contentCells[2].shake()
@@ -132,7 +123,7 @@ class ForgotPassword: UITableViewController {
         }
         
         tableView.endEditing(true)
-        let buttonCell = contentCells[3] as! ButtonCell
+        let buttonCell = contentCells[2] as! ButtonCell
         
         buttonCell.spinner.startAnimating()
         buttonCell.button.setTitle(nil, for: .normal)
@@ -248,5 +239,38 @@ class ForgotPassword: UITableViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateNavbarOpacity()
+    }
 
 }
+
+
+extension ForgotPassword {
+    
+    func updateNavbarOpacity() {
+        
+        guard navigationController != nil else { return }
+        
+        let top = navigationController!.navigationBar.frame.minY + navigationController!.navigationBar.frame.height
+        if top + tableView.contentOffset.y > 70 {
+            navigationController?.navigationBar.shadowImage = nil
+            navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+            navigationItem.title = "New Organization"
+            tableView.scrollIndicatorInsets.top = 0
+        } else {
+            navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+            navigationController?.navigationBar.shadowImage = UIImage()
+            navigationItem.title = nil
+            tableView.scrollIndicatorInsets.top = -navigationController!.navigationBar.frame.height
+        }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateNavbarOpacity()
+    }
+    
+}
+

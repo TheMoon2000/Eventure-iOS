@@ -38,11 +38,11 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
             
             spinner.stopAnimating()
             
-            var inset: CGFloat = -46
+            var inset: CGFloat = -45
             
             switch status {
             case .none:
-                inset = -20
+                inset = -16
                 self.auxiliaryView.setImage(nil, for: .normal)
             case .tick:
                 for state: UIControl.State in [.normal, .highlighted] {
@@ -130,7 +130,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
         aux.heightAnchor.constraint(equalToConstant: 25).isActive = true
         aux.centerYAnchor.constraint(equalTo: overlay.centerYAnchor).isActive = true
         aux.rightAnchor.constraint(equalTo: overlay.rightAnchor,
-                                   constant: -20).isActive = true
+                                   constant: -19).isActive = true
         
         return aux
     }
@@ -149,6 +149,7 @@ class MinimalTextCell: UITableViewCell, UITextFieldDelegate {
     
     private func configureTextfield() {
         textField.delegate = self
+        textField.font = .appFontRegular(17)
         textField.addTarget(self,
                             action: #selector(textDidChange),
                             for: .editingChanged)

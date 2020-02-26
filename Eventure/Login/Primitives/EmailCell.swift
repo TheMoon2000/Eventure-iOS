@@ -101,9 +101,9 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
             button.setTitleColor(AppColors.main, for: .normal)
             button.layer.borderColor = overlay.layer.borderColor
             button.layer.borderWidth = 1
-            button.contentEdgeInsets.left = 10
-            button.contentEdgeInsets.right = 12
-            button.titleLabel?.font = .systemFont(ofSize: 16.5)
+            button.contentEdgeInsets.left = 12
+            button.contentEdgeInsets.right = 15
+            button.titleLabel?.font = .appFontRegular(16.5)
             button.setTitle("@berkeley.edu", for: .normal)
             button.backgroundColor = AppColors.tab
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -126,6 +126,7 @@ class EmailCell: UITableViewCell, UITextFieldDelegate {
     
     private func configureTextfield() {
         textField.delegate = self
+        textField.font = .appFontRegular(17)
         textField.addTarget(self,
                             action: #selector(textDidChange),
                             for: .editingChanged)

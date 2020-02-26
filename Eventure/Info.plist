@@ -37,6 +37,18 @@
 	<string>You will be able to save images like QR codes to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>QR codes will be saved to your device.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>MuseoSans-100.otf</string>
+		<string>MuseoSans-300.otf</string>
+		<string>MuseoSans-500.otf</string>
+		<string>MuseoSans-700.otf</string>
+		<string>ProximaNova-Regular.otf</string>
+		<string>ProximaNova-Light.otf</string>
+		<string>ProximaNova-Medium.otf</string>
+		<string>ProximaNova-Semibold.otf</string>
+		<string>ProximaNova-Bold.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -66,17 +78,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>MuseoSans-100.otf</string>
-		<string>MuseoSans-300.otf</string>
-		<string>MuseoSans-500.otf</string>
-		<string>MuseoSans-700.otf</string>
-		<string>ProximaNova-Regular.otf</string>
-		<string>ProximaNova-Light.otf</string>
-		<string>ProximaNova-Medium.otf</string>
-		<string>ProximaNova-Semibold.otf</string>
-		<string>ProximaNova-Bold.otf</string>
-	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 </dict>
 </plist>

@@ -35,7 +35,7 @@ class MessageCell: UITableViewCell {
         pgStyle.lineSpacing = 3
         pgStyle.alignment = .center
         
-        attributes[.font] = UIFont.systemFont(ofSize: 17.5)
+        attributes[.font] = UIFont.appFontRegular(17)
         attributes[.paragraphStyle] = pgStyle
         attributes[.foregroundColor] = UIColor.gray
         
@@ -57,7 +57,7 @@ class MessageCell: UITableViewCell {
     
     private func makeTitle() -> UILabel {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 26, weight: .semibold)
+        label.font = .appFontSemibold(26)
         label.textColor = .darkGray
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -81,7 +81,7 @@ class MessageCell: UITableViewCell {
         textView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor,
                                        constant: 30).isActive = true
         textView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor,
-                                        constant: -20).isActive = true
+                                        constant: -30).isActive = true
         textView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
                                          constant: -10).isActive = true
         return textView

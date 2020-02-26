@@ -17,7 +17,7 @@ class RegisterOrganization: UITableViewController {
     
     var registrationData = OrganizationRegistrationData() {
         didSet {
-            let buttonCell = self.pageCells[11] as! ButtonCell
+            let buttonCell = self.pageCells[10] as! ButtonCell
             if registrationData.isValid {
                 buttonCell.button.isEnabled = true
                 buttonCell.button.alpha = 1.0
@@ -37,15 +37,8 @@ class RegisterOrganization: UITableViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.showsHorizontalScrollIndicator = false
         tableView.separatorStyle = .none
-        
+
         // 0.0 (0)
-        let navBackCell = NavBackCell()
-        navBackCell.action = {
-            self.loginView.navBar?.popViewController(animated: true)
-        }
-        pageCells.append(navBackCell)
-        
-        // 1.0 (1)
         let titleCell: UITableViewCell = {
             let label = UILabel()
             label.text = "New Organization"
@@ -61,13 +54,13 @@ class RegisterOrganization: UITableViewController {
             
             label.leftAnchor.constraint(equalTo: cell.leftAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: cell.rightAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: cell.topAnchor, constant: 25).isActive = true
+            label.topAnchor.constraint(equalTo: cell.topAnchor, constant: 30).isActive = true
             label.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: -22).isActive = true
             return cell
         }()
         pageCells.append(titleCell)
         
-        // 1.1 (2)
+        // 0.1 (1)
         let displayName: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.placeholder = "Organization Name"
@@ -85,14 +78,14 @@ class RegisterOrganization: UITableViewController {
             }
             
             cell.returnHandler = {
-                self.pageCells[3].becomeFirstResponder()
+                self.pageCells[2].becomeFirstResponder()
             }
             
             return cell
         }()
         pageCells.append(displayName)
         
-        // 1.2 (3)
+        // 0.2 (2)
         let website: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.placeholder = "Website (optional)"
@@ -119,12 +112,12 @@ class RegisterOrganization: UITableViewController {
         }()
         pageCells.append(website)
         
-        // 1.3 (4)
+        // 0.3 (3)
         let tagCell = ChooseTagCell(parentVC: self)
         tagCell.overlay.backgroundColor = AppColors.background
         pageCells.append(tagCell)
         
-        // 1.4 (5)
+        // 0.4 (4)
         let imagePicker = ChooseImageCell(parentVC: self)
         imagePicker.chooseImageHandler = { image in
             self.registrationData.logo = image
@@ -132,7 +125,7 @@ class RegisterOrganization: UITableViewController {
         pageCells.append(imagePicker)
         
         
-        // 2.0 (6)
+        // 1.0 (5)
         let orgID: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.placeholder = "Organization ID (permanent)"
@@ -152,14 +145,14 @@ class RegisterOrganization: UITableViewController {
             }
             
             cell.returnHandler = {
-                self.pageCells[7].becomeFirstResponder()
+                self.pageCells[6].becomeFirstResponder()
             }
             
             return cell
         }()
         pageCells.append(orgID)
         
-        // 2.1 (7)
+        // 1.1 (6)
         let password: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.placeholder = "Password (length ≥ 8)"
@@ -168,13 +161,40 @@ class RegisterOrganization: UITableViewController {
             
             cell.changeHandler = { cell in
                 self.verifyPassword(cell,
-                                    retypeCell: self.pageCells[8] as! MinimalTextCell,
+                                    retypeCell: self.pageCells[7] as! MinimalTextCell,
                                     editing: true)
                 self.registrationData.password = cell.textField.text!
             }
             
             cell.completionHandler = { cell in
-                self.verifyPassword(cell, retypeCell: self.pageCells[8] as! MinimalTextCell)
+                self.verifyPassword(cell, retypeCell: self.pageCells[7] as! MinimalTextCell)
+            }
+            
+            cell.returnHandler = {
+                self.pageCells[7].becomeFirstResponder()
+            }
+            
+            return cell
+        }()
+        pageCells.append(password)
+        
+        // 1.2 (7)
+        let passwordRepeat: UITableViewCell = {
+            let cell = MinimalTextCell()
+            cell.textField.placeholder = "Re-type Password"
+            cell.textField.isSecureTextEntry = true
+            cell.textField.textContentType = .password
+            
+            cell.changeHandler = { cell in
+                self.verifyRetype(self.pageCells[6] as! MinimalTextCell,
+                                  retypeCell: cell,
+                                  editing: true)
+                self.registrationData.retype = cell.textField.text!
+            }
+            
+            cell.completionHandler = { cell in
+                self.verifyRetype(self.pageCells[6] as! MinimalTextCell,
+                                  retypeCell: cell)
             }
             
             cell.returnHandler = {
@@ -183,36 +203,9 @@ class RegisterOrganization: UITableViewController {
             
             return cell
         }()
-        pageCells.append(password)
-        
-        // 2.2 (8)
-        let passwordRepeat: UITableViewCell = {
-            let cell = MinimalTextCell()
-            cell.textField.placeholder = "Re-type Password"
-            cell.textField.isSecureTextEntry = true
-            cell.textField.textContentType = .password
-            
-            cell.changeHandler = { cell in
-                self.verifyRetype(self.pageCells[7] as! MinimalTextCell,
-                                  retypeCell: cell,
-                                  editing: true)
-                self.registrationData.retype = cell.textField.text!
-            }
-            
-            cell.completionHandler = { cell in
-                self.verifyRetype(self.pageCells[7] as! MinimalTextCell,
-                                  retypeCell: cell)
-            }
-            
-            cell.returnHandler = {
-                self.pageCells[9].becomeFirstResponder()
-            }
-            
-            return cell
-        }()
         pageCells.append(passwordRepeat)
         
-        // 3.0 (9)
+        // 2.0 (8)
         let contactName: UITableViewCell = {
             let cell = MinimalTextCell()
             cell.textField.placeholder = "President / Contact Name"
@@ -229,14 +222,14 @@ class RegisterOrganization: UITableViewController {
             }
             
             cell.returnHandler = {
-                self.pageCells[10].becomeFirstResponder()
+                self.pageCells[9].becomeFirstResponder()
             }
             
             return cell
         }()
         pageCells.append(contactName)
         
-        // 3.1 (10)
+        // 2.1 (9)
         let contactEmail: UITableViewCell = {
             let cell = EmailCell(parentVC: self)
             
@@ -256,7 +249,7 @@ class RegisterOrganization: UITableViewController {
         }()
         pageCells.append(contactEmail)
         
-        // 4.0 (11)
+        // 3.0 (10)
         let registerButtonCell: UITableViewCell = {
             let cell = ButtonCell(width: 220)
             cell.button.setTitle("Register", for: .normal)
@@ -274,68 +267,52 @@ class RegisterOrganization: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 5
+        return 4
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return [1, 5, 3, 2, 1][section]
-    }
-    
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        switch section {
-        case 0:
-            fallthrough
-        case 1:
-            return UIView()
-        case 2:
-            fallthrough
-        case 3:
-            return SeparatorView()
-        case 4:
-            return UIView()
-        default:
-            return nil
-        }
+        return [6, 4, 3, 1][section]
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         switch (indexPath.section, indexPath.row) {
-        case (0, 0):
-            return pageCells[0] // Navigation back button
-        
+
         // Organization info
-        case (1, 0):
-            return pageCells[1] // Register title text
-        case (1, 1):
-            return pageCells[2] // Organization Title
-        case (1, 2):
-            return pageCells[3] // Website (optional)
-        case (1, 3):
-            return pageCells[4] // Tags (choose 1 - 3)
-        case (1, 4):
-            return pageCells[5] // Logo image (optional)
+        case (0, 0):
+            return pageCells[0] // Register title text
+        case (0, 1):
+            return pageCells[1] // Organization Title
+        case (0, 2):
+            return pageCells[2] // Website (optional)
+        case (0, 3):
+            return pageCells[3] // Tags (choose 1 - 3)
+        case (0, 4):
+            return pageCells[4] // Logo image (optional)
+        case (0, 5):
+            return SeparatorCell(top: 25, bottom: 20)
         
         // Login credentials
-        case (2, 0):
-            return pageCells[6] // Organization Account ID
-        case (2, 1):
-            return pageCells[7] // Password
-        case (2, 2):
-            return pageCells[8] // Password repeat
+        case (1, 0):
+            return pageCells[5] // Organization Account ID
+        case (1, 1):
+            return pageCells[6] // Password
+        case (1, 2):
+            return pageCells[7] // Password repeat
+        case (1, 3):
+            return SeparatorCell(top: 20, bottom: 20)
         
         // Contact
-        case (3, 0):
-            return pageCells[9] // Contact name
-        case (3, 1):
-            return pageCells[10] // Contact email
+        case (2, 0):
+            return pageCells[8] // Contact name
+        case (2, 1):
+            return pageCells[9] // Contact email
+        case (2, 2):
+            return SeparatorCell(top: 20, bottom: 20)
         
         // Button
-        case (4, 0):
-            return pageCells[11] // Register button
+        case (3, 0):
+            return pageCells[10] // Register button
         default:
             return UITableViewCell()
         }
@@ -375,6 +352,12 @@ class RegisterOrganization: UITableViewController {
         finishScreen.registrationData = registrationData
         
         present(finishScreen, animated: true, completion: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateNavbarOpacity()
     }
     
 }
@@ -564,3 +547,28 @@ extension RegisterOrganization {
     }
 }
 
+extension RegisterOrganization {
+    
+    func updateNavbarOpacity() {
+        
+        guard navigationController != nil else { return }
+        
+        let top = navigationController!.navigationBar.frame.minY + navigationController!.navigationBar.frame.height
+        if top + tableView.contentOffset.y > 70 {
+            navigationController?.navigationBar.shadowImage = nil
+            navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+            navigationItem.title = "New Organization"
+            tableView.scrollIndicatorInsets.top = 0
+        } else {
+            navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+            navigationController?.navigationBar.shadowImage = UIImage()
+            navigationItem.title = nil
+            tableView.scrollIndicatorInsets.top = -navigationController!.navigationBar.frame.height
+        }
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateNavbarOpacity()
+    }
+    
+}

@@ -36,6 +36,7 @@ class LocalStorage {
                     majors[cachedMajor.key] = Major(json: data)
                 }
             }
+            print("Loaded \(majors.count) majors from local cache")
         } else {
             print("Unable to load majors from cache")
         }

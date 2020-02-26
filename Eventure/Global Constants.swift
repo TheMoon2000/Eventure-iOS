@@ -183,7 +183,7 @@ Ac dolor ac adipiscing amet bibendum nullam, lacus molestie ut libero nec, diam 
 
 let PLAIN_STYLE =  """
     body {
-        font-family: "ProximaNova-Regular";
+        font-family: "Proxima Nova";
         font-size: 17px;
         line-height: 1.5;
         letter-spacing: 1.5%;
@@ -205,7 +205,7 @@ let PLAIN_STYLE =  """
 
 
     h1, h2, h3, h4, h5, h6 {
-        font-family: "ProximaNova-Semibold";
+        font-family: "Proxima Nova Semibold";
         font-weight: 600;
         letter-spacing: 1.5%;
         color: rgb(255, 120, 104);
@@ -250,7 +250,7 @@ let PLAIN_DARK = PLAIN_STYLE.replacingOccurrences(of: "#525252", with: "#C4C4C5"
 
 let COMPACT_STYLE = """
     body {
-        font-family: "ProximaNova-Regular";
+        font-family: "Proxima Nova";
         font-size: 16px;
         line-height: 1.25;
         letter-spacing: 1%;
@@ -267,7 +267,7 @@ let COMPACT_DARK = COMPACT_STYLE.replacingOccurrences(of: "#505050", with: "#D3D
 
 let TITLE_STYLE = """
     body {
-        font-family: "ProximaNova-Semibold";
+        font-family: "Proxima Nova Semibold";
         font-size: 18px;
         line-height: 1.4;
         letter-spacing: 1%;

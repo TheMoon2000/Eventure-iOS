@@ -8,12 +8,15 @@
 
 import UIKit
 
-class SeparatorView: UIView {
-
-    init() {
-        super.init(frame: .zero)
+class SeparatorCell: UITableViewCell {
+    
+    init(top: CGFloat, bottom: CGFloat) {
+        super.init(style: .default, reuseIdentifier: nil)
         
-        heightAnchor.constraint(equalToConstant: 50).isActive = true
+        backgroundColor = .clear
+        selectionStyle = .none
+        
+        heightAnchor.constraint(equalToConstant: 1 + top + bottom).isActive = true
         
         let separator = UIView()
         separator.backgroundColor = AppColors.line
@@ -22,8 +25,9 @@ class SeparatorView: UIView {
         
         separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
         separator.widthAnchor.constraint(equalToConstant: 90).isActive = true
-        separator.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        separator.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        separator.topAnchor.constraint(equalTo: topAnchor, constant: top).isActive = true
+        separator.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -bottom).isActive = true
+        separator.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
     }
     
     required init?(coder aDecoder: NSCoder) {

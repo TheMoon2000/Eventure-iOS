@@ -13,7 +13,7 @@ class MessageSenderCell: UITableViewCell {
     
     static let PREVIEW_STYLE = """
         body {
-            font-family: "ProximaNova-Regular";
+            font-family: "Proxima Nova";
             font-size: 15.5px;
             line-height: 1.25;
             letter-spacing: 1%;
