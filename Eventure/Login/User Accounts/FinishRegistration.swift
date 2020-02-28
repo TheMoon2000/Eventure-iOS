@@ -24,7 +24,7 @@ class FinishRegistration: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.background
         
         spinner = {
             let spinner = UIActivityIndicatorView(style: .whiteLarge)
@@ -46,7 +46,7 @@ class FinishRegistration: UIViewController {
             label.lineBreakMode = .byWordWrapping
             label.numberOfLines = 2
             label.text = "Creating your Account..."
-            label.font = .systemFont(ofSize: 18)
+            label.font = .appFontRegular(18)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -65,7 +65,7 @@ class FinishRegistration: UIViewController {
             let button = UIButton(type: .system)
             button.tintColor = AppColors.main
             button.isHidden = true
-            button.titleLabel?.font = .systemFont(ofSize: 19, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(19)
             button.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(button)
             

@@ -366,9 +366,7 @@ class EventDetailPage: UIViewController {
         editor.orgEventView = self.orgEventView
         editor.isEditingExistingEvent = true
         let nav = UINavigationController(rootViewController: editor)
-        nav.navigationBar.tintColor = AppColors.main
-        nav.navigationBar.barTintColor = AppColors.navbar
-        nav.navigationBar.isTranslucent = false
+        nav.navigationBar.customize()
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true)
     }

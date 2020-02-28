@@ -48,7 +48,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         titleLabel = {
             let label = UILabel()
             label.text = "Logo (optional):"
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -60,7 +60,7 @@ class ChooseImageCell: UITableViewCell, UIImagePickerControllerDelegate, UINavig
         clearButton = {
             let button = UIButton(type: .system)
             button.setTitle("Clear", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+            button.titleLabel?.font = .appFontSemibold(17)
             button.isHidden = true
             button.translatesAutoresizingMaskIntoConstraints = false
             addSubview(button)

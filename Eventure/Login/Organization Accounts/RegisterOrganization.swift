@@ -42,7 +42,7 @@ class RegisterOrganization: UITableViewController {
         let titleCell: UITableViewCell = {
             let label = UILabel()
             label.text = "New Organization"
-            label.font = .systemFont(ofSize: 27, weight: .semibold)
+            label.font = .appFontSemibold(28)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textColor = AppColors.prompt
             label.textAlignment = .center
@@ -373,7 +373,7 @@ extension RegisterOrganization {
         } else if !editing {
             
             // Organization ID should not be blank
-            guard !CharacterSet(charactersIn: cell.textField.text!).isSubset(of: .whitespaces) else {
+            guard !CharacterSet(charactersIn: cell.textField.text!).isSubset(of: .whitespacesAndNewlines) else {
                 cell.status = .fail
                 return
             }

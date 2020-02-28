@@ -154,10 +154,10 @@ class DraftOtherInfoPage: UITableViewController {
         case [0, 4]:
             previewImageVisible.toggle()
             
-            let topCell = contentCells[3] as! EventImagePickerCell
+            let topCell = contentCells[4] as! EventImagePickerCell
             previewImageVisible ? topCell.expand() : topCell.collapse()
             
-            let bottomCell = self.contentCells[4] as! EventImagePreviewCell
+            let bottomCell = self.contentCells[5] as! EventImagePreviewCell
             bottomCell.previewImage.isUserInteractionEnabled = self.previewImageVisible
             
             UIView.animate(withDuration: 0.2) {

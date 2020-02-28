@@ -104,7 +104,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         navigationItem.searchController = searchController
         definesPresentationContext = true
         
-        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .refresh, target: self, action: #selector(refresh))
+        navigationItem.rightBarButtonItem = .init(barButtonSystemItem: .add, target: self, action: #selector(createNewEvent))
         
         topTabBg = {
             let ev = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
@@ -129,6 +129,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         topTab = {
             let tab = UISegmentedControl(items: ["Drafts", "Published"])
             tab.tintColor = AppColors.main
+            tab.setTitleTextAttributes([.font: UIFont.appFontRegular(15)], for: .normal)
             tab.selectedSegmentIndex = useRefreshControl ? 1 : 0
             tab.translatesAutoresizingMaskIntoConstraints = false
             topTabBg.contentView.addSubview(tab)
@@ -388,8 +389,7 @@ class OrgEventViewController: UIViewController, EventProvider {
         let editor = EventDraft(event: draftEvent)
         editor.orgEventView = self
         let nav = UINavigationController(rootViewController: editor)
-        nav.navigationBar.tintColor = AppColors.main
-        nav.navigationBar.barTintColor = AppColors.navbar
+        nav.navigationBar.customize()
         nav.navigationBar.shadowImage = UIImage()
         present(nav, animated: true, completion: nil)
     }

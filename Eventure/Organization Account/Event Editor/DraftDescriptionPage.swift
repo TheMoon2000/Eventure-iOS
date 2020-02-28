@@ -77,7 +77,7 @@ class DraftDescriptionPage: UIViewController {
             tv.textContainerInset.top = 12
             tv.textContainerInset.bottom = 12
             tv.textContainer.lineFragmentPadding = 5
-            tv.font = .systemFont(ofSize: 24, weight: .semibold)
+            tv.font = .appFontSemibold(24)
             tv.allowsEditingTextAttributes = false
             tv.insertText(draftPage.draft.title)
             tv.delegate = self
@@ -95,7 +95,7 @@ class DraftDescriptionPage: UIViewController {
         
         titlePlaceholder = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 24, weight: .medium)
+            label.font = .appFontMedium(24)
             label.textColor = AppColors.placeholder
             label.isHidden = !draftPage.draft.title.isEmpty
             label.text = "My Event Title"
@@ -190,7 +190,7 @@ class DraftDescriptionPage: UIViewController {
         charCount = {
             let label = UILabel()
             label.textColor = .gray
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -204,7 +204,7 @@ class DraftDescriptionPage: UIViewController {
         descriptionPlaceholder = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.isHidden = !draftPage.draft.eventDescription.isEmpty
             label.text = "Here, describe your event within \(descriptionMaxLength) characters. Markdown is supported!"
             label.textColor = AppColors.placeholder
@@ -225,7 +225,7 @@ class DraftDescriptionPage: UIViewController {
             tv.isEditable = false
             tv.delegate = self
             tv.isScrollEnabled = false
-            tv.font = .systemFont(ofSize: 17)
+            tv.font = .appFontRegular(17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -253,7 +253,7 @@ class DraftDescriptionPage: UIViewController {
     
     func textViewFormatter(tv: UITextView) {
         tv.backgroundColor = nil
-        tv.font = .systemFont(ofSize: 18)
+        tv.font = .appFontRegular(18)
         tv.allowsEditingTextAttributes = false
         
         let pStyle = NSMutableParagraphStyle()
@@ -278,9 +278,9 @@ class DraftDescriptionPage: UIViewController {
     
     @objc private func editButtonPressed() {
         editButton.setTitleColor(AppColors.main, for: .normal)
-        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        editButton.titleLabel?.font = .appFontMedium(16)
         previewButton.setTitleColor(AppColors.control, for: .normal)
-        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        previewButton.titleLabel?.font = .appFontRegular(16)
         previewText.isHidden = true
         descriptionText.isHidden = false
         let tmp = draftPage.edited
@@ -305,9 +305,9 @@ class DraftDescriptionPage: UIViewController {
         }
         
         editButton.setTitleColor(AppColors.control, for: .normal)
-        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        editButton.titleLabel?.font = .appFontRegular(16)
         previewButton.setTitleColor(AppColors.main, for: .normal)
-        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        previewButton.titleLabel?.font = .appFontMedium(16)
         descriptionText.isHidden = true
         previewText.isHidden = false
         descriptionPlaceholder.isHidden = true

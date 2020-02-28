@@ -72,7 +72,7 @@ class ChooseTagCell: UITableViewCell {
             let label = UILabel()
             label.text = "Pick Tags..."
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontMedium(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -101,7 +101,7 @@ class ChooseTagCell: UITableViewCell {
             let label = UILabel()
             label.textColor = .lightGray
             label.text = "Choose"
-            label.font = .systemFont(ofSize: 16, weight: .medium)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

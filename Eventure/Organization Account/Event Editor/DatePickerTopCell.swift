@@ -50,7 +50,7 @@ class DatePickerTopCell: UITableViewCell {
             let label = UILabel()
             label.text = title
             label.textColor = AppColors.label
-            label.font = .appFontMedium(16)
+            label.font = .appFontMedium(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

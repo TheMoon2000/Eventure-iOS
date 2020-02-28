@@ -52,7 +52,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         promptLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.text = "Location:"
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -66,7 +66,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
         
         valueText = {
             let tv = UITextView()
-            tv.font = .systemFont(ofSize: 17)
+            tv.font = .appFontRegular(17)
             tv.isScrollEnabled = false
             tv.delegate = self
             tv.backgroundColor = .clear

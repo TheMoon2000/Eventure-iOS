@@ -911,7 +911,7 @@ extension UINavigationBar {
         barTintColor = AppColors.navbar
         tintColor = AppColors.main
         isTranslucent = false
-        titleTextAttributes = [.font: UIFont.appFontMedium(17)]
+        titleTextAttributes = [.font: UIFont.appFontSemibold(17)]
     }
     
 }

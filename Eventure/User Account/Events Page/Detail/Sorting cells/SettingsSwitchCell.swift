@@ -54,7 +54,7 @@ class SettingsSwitchCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Ascending"
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)

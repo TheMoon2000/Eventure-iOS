@@ -155,6 +155,8 @@ class TagPickerView: UIViewController {
             picker.contentInsetAdjustmentBehavior = .always
             picker.delegate = self
             picker.dataSource = self
+            picker.refreshControl = UIRefreshControl()
+            picker.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
             picker.translatesAutoresizingMaskIntoConstraints = false
             view.insertSubview(picker, belowSubview: topBanner)
             
@@ -189,7 +191,7 @@ class TagPickerView: UIViewController {
         continueButton = {
             let button = UIButton()
             button.setTitle(customButtonTitle ?? "Continue", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+            button.titleLabel?.font = .appFontSemibold(18)
             button.backgroundColor = MAIN_DISABLED
             button.isUserInteractionEnabled = false
             button.layer.cornerRadius = 25
@@ -218,6 +220,10 @@ class TagPickerView: UIViewController {
         loadTags()
     }
 
+    @objc private func pullToRefresh() {
+        loadTags(true)
+    }
+    
     private func loadTags(_ pulled: Bool = false) {
         
         // By default, we can directly use the cache.
@@ -232,6 +238,7 @@ class TagPickerView: UIViewController {
             
             LocalStorage.updateTags { status in
                 self.loadingBG.isHidden = true
+                self.tagPicker.refreshControl?.endRefreshing()
                 
                 if status == 0 {
                     self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }

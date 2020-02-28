@@ -88,7 +88,7 @@ class CheckinTimeCell: UITableViewCell {
         
         caption = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false

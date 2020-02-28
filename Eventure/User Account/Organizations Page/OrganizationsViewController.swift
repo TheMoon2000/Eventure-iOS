@@ -104,7 +104,7 @@ class OrganizationsViewController: UIViewController {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
-            tab.setTitleTextAttributes([.font: UIFont.appFontMedium(15.5)], for: .normal)
+            tab.setTitleTextAttributes([.font: UIFont.appFontMedium(15)], for: .normal)
             tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
