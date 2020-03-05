@@ -92,7 +92,7 @@ extension LocalStorage {
                 if json?["status"]!.stringValue == INTERNAL_ERROR {
                     DispatchQueue.main.async { handler?(-2) }
                 } else {
-                    for (tagIndex, tagName) in json?["tags"]?.dictionaryValue ?? [:] {
+                    for (tagIndex, tagName) in json?["tagIDs"]?.dictionaryValue ?? [:] {
                         let tag = Tag(id: Int(tagIndex) ?? -1, name: tagName.stringValue)
                         self.tags[tag.id] = tag
                     }
