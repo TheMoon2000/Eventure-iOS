@@ -800,6 +800,9 @@ extension Data {
 }
 
 extension UIImage {
+    
+    static let empty = UIImage()
+    
     func fixedOrientation() -> UIImage {
         if imageOrientation == .up {
             return self

@@ -419,6 +419,7 @@ class Organization: CustomStringConvertible {
                     cachedLogos[orgID] = imgData
                     handler(imgData)
                 } else {
+                    cachedLogos[orgID] = UIImage.empty
                     handler(nil)
                 }
             }

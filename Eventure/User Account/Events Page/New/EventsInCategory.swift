@@ -214,14 +214,18 @@ extension EventsInCategory: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "event", for: indexPath) as! EventOverviewTableCell
+        let cell = EventOverviewTableCell()
         cell.eventTitle.text = allEvents[indexPath.row].title
         cell.dateTime.text = allEvents[indexPath.row].timeDescription
         cell.location.text = allEvents[indexPath.row].location
         
         Organization.getLogoImage(orgID: allEvents[indexPath.row].hostID) { image in
             cell.orgLogo.backgroundColor = nil
-            cell.orgLogo.image = image ?? #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
+            if image == UIImage.empty {
+                cell.orgLogo.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
+            } else {
+                cell.orgLogo.image = image ?? #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
+            }
         }
         
         return cell
