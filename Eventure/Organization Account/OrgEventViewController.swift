@@ -26,7 +26,7 @@ class OrgEventViewController: UIViewController, EventProvider {
     private let refreshControl = UIRefreshControl()
     private let refreshControlAttributes: [NSAttributedString.Key: Any] = [
         NSMutableAttributedString.Key.foregroundColor: UIColor.gray,
-        .font: UIFont.systemFont(ofSize: 17, weight: .medium)
+        .font: UIFont.appFontMedium(17)
     ]
     
     // Date bounds

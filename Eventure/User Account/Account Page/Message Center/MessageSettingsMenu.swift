@@ -75,7 +75,7 @@ class MessageSettingsMenu: UITableViewController {
             let label = UILabel()
             label.textColor = AppColors.fatal
             label.text = "Clear Cache"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(label)
@@ -94,7 +94,7 @@ class MessageSettingsMenu: UITableViewController {
             let label = UILabel()
             label.textColor = AppColors.fatal
             label.text = "Clear All Messages"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             cell.addSubview(label)

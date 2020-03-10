@@ -59,7 +59,7 @@ class TicketImageBelowQR: UIView {
             let label = UILabel()
             label.numberOfLines = 2
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 14)
+            label.font = .appFontRegular(14)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -93,7 +93,7 @@ class TicketImageBelowQR: UIView {
             let label = UILabel()
             label.numberOfLines = 2
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16, weight: .medium)
+            label.font = .appFontMedium(16)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

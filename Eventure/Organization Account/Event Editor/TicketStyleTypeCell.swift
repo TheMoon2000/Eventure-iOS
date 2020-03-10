@@ -31,7 +31,7 @@ class TicketStyleTypeCell: UITableViewCell {
                 titleLabel.text = "Standard layout"
                 subtitleLabel.attributedText = "The standard layout displays the event title, time of the event, and location of the event above the QR code. Ticket type is shown at the bottom of the code.".attributedText(style: COMPACT_STYLE)
             }
-            subtitleLabel.font = .systemFont(ofSize: 14)
+            subtitleLabel.font = .appFontRegular(14)
             subtitleLabel.textColor = AppColors.prompt
         }
     }
@@ -118,7 +118,7 @@ class TicketStyleTypeCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             

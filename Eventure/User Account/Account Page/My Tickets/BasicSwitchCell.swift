@@ -28,6 +28,7 @@ class BasicSwitchCell: UITableViewCell {
         
         titleLabel = {
             let label = UILabel()
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

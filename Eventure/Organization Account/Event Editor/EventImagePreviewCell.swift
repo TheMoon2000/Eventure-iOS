@@ -52,7 +52,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
             label.textAlignment = .center
             label.numberOfLines = 0
             label.text = "Cover image are rendered in a container with 3:2 width-to-height radio. Additional content is clipped."
-            label.font = .systemFont(ofSize: 14)
+            label.font = .appFontRegular(14)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -103,7 +103,7 @@ class EventImagePreviewCell: UITableViewCell, UIImagePickerControllerDelegate, U
         chooseImageLabel = {
             let label = UILabel()
             label.text = "Choose Image"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

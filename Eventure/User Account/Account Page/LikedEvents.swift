@@ -61,7 +61,7 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
             let label = UILabel()
             label.text = "No favorited events."
             label.isHidden = true
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)

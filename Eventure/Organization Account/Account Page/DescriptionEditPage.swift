@@ -131,7 +131,7 @@ class DescriptionEditPage: UIViewController {
         descriptionPlaceholder = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.textColor = AppColors.placeholder
             label.isHidden = !Organization.current!.orgDescription.isEmpty //Fix Me
             label.text = "Please give a brief description of your club within \(descriptionMaxLength) characters."
@@ -148,7 +148,7 @@ class DescriptionEditPage: UIViewController {
         charCount = {
             let label = UILabel()
             label.textColor = .gray
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -166,7 +166,7 @@ class DescriptionEditPage: UIViewController {
             tv.isEditable = false
             tv.isScrollEnabled = false
             tv.textColor = AppColors.plainText
-            tv.font = .systemFont(ofSize: 17)
+            tv.font = .appFontRegular(17)
             tv.dataDetectorTypes = [.link, .phoneNumber]
             tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -191,7 +191,7 @@ class DescriptionEditPage: UIViewController {
     
     func textViewFormatter(tv: UITextView) {
         tv.backgroundColor = nil
-        tv.font = .systemFont(ofSize: 18)
+        tv.font = .appFontRegular(18)
         tv.allowsEditingTextAttributes = false
         
         let pStyle = NSMutableParagraphStyle()
@@ -237,9 +237,9 @@ class DescriptionEditPage: UIViewController {
     
     @objc private func editButtonPressed() {
         editButton.setTitleColor(AppColors.main, for: .normal)
-        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        editButton.titleLabel?.font = .appFontMedium(16)
         previewButton.setTitleColor(AppColors.control, for: .normal)
-        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        previewButton.titleLabel?.font = .appFontRegular(16)
         previewText.isHidden = true
         descriptionText.isHidden = false
         charCount.isHidden = false
@@ -259,9 +259,9 @@ class DescriptionEditPage: UIViewController {
         }
         
         editButton.setTitleColor(AppColors.control, for: .normal)
-        editButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        editButton.titleLabel?.font = .appFontRegular(16)
         previewButton.setTitleColor(AppColors.main, for: .normal)
-        previewButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        previewButton.titleLabel?.font = .appFontMedium(16)
         descriptionText.isHidden = true
         previewText.isHidden = false
         descriptionPlaceholder.isHidden = true

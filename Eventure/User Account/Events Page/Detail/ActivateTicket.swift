@@ -87,7 +87,7 @@ class ActivateTicket: UIViewController {
         dismissButton = {
             let button = UIButton(type: .system)
             button.setTitle("Done", for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(20)
             button.tintColor = .white
             button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10

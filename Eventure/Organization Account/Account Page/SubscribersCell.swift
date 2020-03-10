@@ -45,7 +45,7 @@ class SubscribersCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             
             return label
@@ -54,7 +54,7 @@ class SubscribersCell: UITableViewCell {
         subtitleLabel = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = UIColor.gray
             label.translatesAutoresizingMaskIntoConstraints = false
             

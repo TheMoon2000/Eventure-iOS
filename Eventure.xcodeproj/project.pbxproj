@@ -186,6 +186,7 @@
 		CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC824F922BC5F9900FFD251 /* ButtonCell.swift */; };
 		CCC90272231C6B7700D88799 /* CheckinNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */; };
 		CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCA5F7523177F76003D89E6 /* ImageFullScreenPage.swift */; };
+		CCCC5D0124183F8F00A82885 /* NewEventSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC5D0024183F8F00A82885 /* NewEventSearchResults.swift */; };
 		CCCE5DB3235F8CF5005CE5D7 /* UnsupportedContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DB2235F8CF5005CE5D7 /* UnsupportedContentCell.swift */; };
 		CCCE5DB5235FA052005CE5D7 /* PlainMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DB4235FA052005CE5D7 /* PlainMessageCell.swift */; };
 		CCCE5DB7235FEBCB005CE5D7 /* EventUpdateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCE5DB6235FEBCB005CE5D7 /* EventUpdateCell.swift */; };
@@ -454,6 +455,7 @@
 		CCC824F922BC5F9900FFD251 /* ButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonCell.swift; sourceTree = "<group>"; };
 		CCC90271231C6B7700D88799 /* CheckinNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinNavigationController.swift; sourceTree = "<group>"; };
 		CCCA5F7523177F76003D89E6 /* ImageFullScreenPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFullScreenPage.swift; sourceTree = "<group>"; };
+		CCCC5D0024183F8F00A82885 /* NewEventSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewEventSearchResults.swift; sourceTree = "<group>"; };
 		CCCE5DB2235F8CF5005CE5D7 /* UnsupportedContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsupportedContentCell.swift; sourceTree = "<group>"; };
 		CCCE5DB4235FA052005CE5D7 /* PlainMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainMessageCell.swift; sourceTree = "<group>"; };
 		CCCE5DB6235FEBCB005CE5D7 /* EventUpdateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventUpdateCell.swift; sourceTree = "<group>"; };
@@ -718,6 +720,7 @@
 				CC2DD02D22FF269B003AF5A0 /* EventViewController.swift */,
 				CCB5C8CD232A21C100ABA9B6 /* EventFooterView.swift */,
 				CCD65518231F4A3400088646 /* EventSearchResults.swift */,
+				CCCC5D0024183F8F00A82885 /* NewEventSearchResults.swift */,
 				CC2B455A2400BD0100A2F4F6 /* Filter settings */,
 				CC2DD03022FF2BD8003AF5A0 /* EventCell.swift */,
 				CC3A3ED323235F3000D16A8C /* EventProvider.swift */,
@@ -1399,6 +1402,7 @@
 				67E89387231C57F4004896F7 /* LikedEvents.swift in Sources */,
 				CC9A74F52330A97B0021A790 /* TicketDetails.swift in Sources */,
 				CCCA5F7623177F76003D89E6 /* ImageFullScreenPage.swift in Sources */,
+				CCCC5D0124183F8F00A82885 /* NewEventSearchResults.swift in Sources */,
 				CCB6C8D5236FFD7B00C6BC85 /* StatsManager.swift in Sources */,
 				CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */,
 				CC2CCD4F2331CF7B000C65E2 /* AdmissionType.swift in Sources */,

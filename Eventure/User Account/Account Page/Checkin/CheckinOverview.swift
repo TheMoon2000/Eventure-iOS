@@ -108,7 +108,7 @@ class CheckinOverview: UIViewController {
             let label = UILabel()
             label.numberOfLines = 3
             label.text = event.hostTitle
-            label.font = .systemFont(ofSize: 22, weight: .medium)
+            label.font = .appFontMedium(22)
             label.textColor = AppColors.label
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -126,7 +126,7 @@ class CheckinOverview: UIViewController {
             let label = UILabel()
             label.text = "invites you to"
             label.textColor = .darkGray
-            label.font = .systemFont(ofSize: 17.5)
+            label.font = .appFontRegular(17.5)
             
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
@@ -143,7 +143,7 @@ class CheckinOverview: UIViewController {
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 24, weight: .semibold)
+            label.font = .appFontSemibold(24)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             
@@ -158,7 +158,7 @@ class CheckinOverview: UIViewController {
         checkinButton = {
             let button = UIButton(type: .system)
             button.tintColor = .white
-            button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(24)
             button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
             button.titleEdgeInsets.left = 20
@@ -188,7 +188,7 @@ class CheckinOverview: UIViewController {
                 label.text = "Retrieving registrant information..."
             }
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(label)
             

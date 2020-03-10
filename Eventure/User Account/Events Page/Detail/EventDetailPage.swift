@@ -147,7 +147,7 @@ class EventDetailPage: UIViewController {
             button.isHidden = Organization.current != nil
             button.isEnabled = User.current != nil
             button.imageView?.contentMode = .scaleAspectFit
-            button.tintColor = AppColors.main
+            button.tintColor = AppColors.interest
             if User.current?.interestedEvents.contains(event.uuid) ?? false {
                 button.setImage(#imageLiteral(resourceName: "star_filled").withRenderingMode(.alwaysTemplate), for: .normal)
             } else {
@@ -157,7 +157,7 @@ class EventDetailPage: UIViewController {
             canvas.addSubview(button)
             
             button.centerYAnchor.constraint(equalTo: eventTitle.centerYAnchor).isActive = true
-            button.widthAnchor.constraint(equalToConstant: 35).isActive = true
+            button.widthAnchor.constraint(equalToConstant: 30).isActive = true
             button.heightAnchor.constraint(equalTo: button.widthAnchor).isActive = true
             button.leftAnchor.constraint(equalTo: eventTitle.rightAnchor, constant: 15).isActive = true
             button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true

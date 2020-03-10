@@ -62,7 +62,7 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
             let label = UILabel()
             label.text = "Oops, nothing here..."
             label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontRegular(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)

@@ -178,7 +178,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             label.numberOfLines = 5
             label.textColor = .white
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 14)
+            label.font = .appFontRegular(14)
             label.text = cameraDefaultText
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -196,7 +196,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             button.isHidden = true
             button.imageEdgeInsets.right = 10
             button.imageView?.contentMode = .scaleAspectFit
-            button.titleLabel?.font = .systemFont(ofSize: 15)
+            button.titleLabel?.font = .appFontRegular(15)
             button.setImage(#imageLiteral(resourceName: "light").withRenderingMode(.alwaysTemplate), for: .normal)
             button.setTitle(TORCH_ON, for: .normal)
             button.translatesAutoresizingMaskIntoConstraints = false

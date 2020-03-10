@@ -61,7 +61,7 @@ class MemberDisplayCell: UITableViewCell {
         nameLabel = {
             let label = UILabel()
             label.numberOfLines = 2
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
 
@@ -75,7 +75,7 @@ class MemberDisplayCell: UITableViewCell {
         roleLabel = {
             let label = UILabel()
             label.numberOfLines = 3
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -91,7 +91,7 @@ class MemberDisplayCell: UITableViewCell {
         auxiliaryLabel = {
             let label = UILabel()
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -105,7 +105,7 @@ class MemberDisplayCell: UITableViewCell {
         placeLabel = {
             let label = UILabel()
             label.textColor = .lightGray
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)

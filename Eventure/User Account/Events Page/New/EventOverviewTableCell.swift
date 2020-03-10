@@ -11,6 +11,8 @@ import UIKit
 class EventOverviewTableCell: UITableViewCell {
     
     private var bgView: UIView!
+    private var topLine: UIView!
+    private var bottomLine: UIView!
     private(set) var eventTitle: UILabel!
     private(set) var orgLogo: UIImageView!
     private var datetimeIcon: UIImageView!
@@ -36,6 +38,36 @@ class EventOverviewTableCell: UITableViewCell {
             view.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
             
             return view
+        }()
+        
+        topLine = {
+            let line = UIView()
+            line.alpha = 0.5
+            line.backgroundColor = AppColors.line
+            line.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(line)
+            
+            line.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            line.leftAnchor.constraint(equalTo: bgView.leftAnchor).isActive = true
+            line.rightAnchor.constraint(equalTo: bgView.rightAnchor).isActive = true
+            line.bottomAnchor.constraint(equalTo: bgView.topAnchor).isActive = true
+            
+            return line
+        }()
+        
+        bottomLine = {
+            let line = UIView()
+            line.alpha = 0.5
+            line.backgroundColor = AppColors.line
+            line.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(line)
+            
+            line.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            line.leftAnchor.constraint(equalTo: bgView.leftAnchor).isActive = true
+            line.rightAnchor.constraint(equalTo: bgView.rightAnchor).isActive = true
+            line.topAnchor.constraint(equalTo: bgView.bottomAnchor).isActive = true
+            
+            return line
         }()
         
         orgLogo = {

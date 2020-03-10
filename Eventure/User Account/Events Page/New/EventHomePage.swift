@@ -15,6 +15,8 @@ class EventHomePage: UIViewController {
     var categoryTable: UITableView!
     var loadingBG: UIVisualEffectView!
     var emptyLabel: UILabel!
+    var searchController: UISearchController!
+    var searchResultsTable: NewEventSearchResults!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,8 +35,8 @@ class EventHomePage: UIViewController {
             tv.delegate = self
             tv.tableFooterView = UIView()
             tv.backgroundColor = .clear
-            tv.refreshControl = UIRefreshControl()
-            tv.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+//            tv.refreshControl = UIRefreshControl()
+//            tv.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
             tv.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(tv)
             
@@ -63,6 +65,22 @@ class EventHomePage: UIViewController {
             
             return label
         }()
+        
+        searchResultsTable = NewEventSearchResults(parentVC: self)
+        
+        searchController = {
+            let sc = UISearchController(searchResultsController: searchResultsTable)
+            sc.searchResultsUpdater = searchResultsTable
+            sc.searchBar.placeholder = "Search All Events"
+            sc.searchBar.tintColor = AppColors.main
+            navigationItem.hidesSearchBarWhenScrolling = false
+            sc.obscuresBackgroundDuringPresentation = true
+            
+            navigationItem.searchController = sc
+            return sc
+        }()
+        
+        definesPresentationContext = true
     }
     
     @objc private func pullToRefresh() {

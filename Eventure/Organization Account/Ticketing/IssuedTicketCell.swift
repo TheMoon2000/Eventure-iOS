@@ -73,7 +73,7 @@ class IssuedTicketCell: UITableViewCell {
         ticketTitle = {
             let label = UILabel()
             label.numberOfLines = 0
-            label.font = .systemFont(ofSize: 19, weight: .medium)
+            label.font = .appFontMedium(19)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -103,7 +103,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.textColor = .gray
             label.text = "Issued on:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -119,7 +119,7 @@ class IssuedTicketCell: UITableViewCell {
             label.numberOfLines = 3
             label.textAlignment = .right
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -136,7 +136,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.textColor = .gray
             label.text = "Status:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -152,7 +152,7 @@ class IssuedTicketCell: UITableViewCell {
             label.numberOfLines = 5
             label.textAlignment = .right
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -168,7 +168,7 @@ class IssuedTicketCell: UITableViewCell {
             let label = UILabel()
             label.textColor = .gray
             label.text = "Redeemed on:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -184,7 +184,7 @@ class IssuedTicketCell: UITableViewCell {
             label.numberOfLines = 5
             label.textAlignment = .right
             label.textColor = AppColors.value
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             

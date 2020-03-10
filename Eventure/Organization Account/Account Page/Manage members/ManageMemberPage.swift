@@ -64,6 +64,7 @@ class ManageMemberPage: UIViewController {
         emptyLabel = {
             let label = UILabel()
             label.textColor = .gray
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             

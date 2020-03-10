@@ -69,7 +69,7 @@ class OrgEventCell: UICollectionViewCell {
         titleLabel = {
             let label = UILabel()
             label.text = "Title:"
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -81,7 +81,7 @@ class OrgEventCell: UICollectionViewCell {
         
         titleText = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
             label.textAlignment = .right
@@ -99,7 +99,7 @@ class OrgEventCell: UICollectionViewCell {
         timeLabel = {
             let label = UILabel()
             label.text = "When:"
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
             
@@ -113,7 +113,7 @@ class OrgEventCell: UICollectionViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.lineBreakMode = .byWordWrapping
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -128,7 +128,7 @@ class OrgEventCell: UICollectionViewCell {
         
         locationLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17, weight: .semibold)
+            label.font = .appFontSemibold(17)
             label.text = "Where:"
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)
@@ -142,7 +142,7 @@ class OrgEventCell: UICollectionViewCell {
         locationText = {
             let label = UILabel()
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textAlignment = .right
             label.translatesAutoresizingMaskIntoConstraints = false
             card.addSubview(label)

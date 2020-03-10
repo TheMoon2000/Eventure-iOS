@@ -49,7 +49,7 @@ class BuyTicketCell: UITableViewCell {
             label.numberOfLines = 0
             label.text = admissionType.typeName
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
             
@@ -63,7 +63,7 @@ class BuyTicketCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 5
             label.text = "$" + admissionType.priceDescription
-            label.font = .systemFont(ofSize: 15)
+            label.font = .appFontRegular(15)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -89,7 +89,7 @@ class BuyTicketCell: UITableViewCell {
             button.contentEdgeInsets.left = 16
             button.contentEdgeInsets.right = 16
             button.layer.cornerRadius = 8
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+            button.titleLabel?.font = .appFontSemibold(16)
             button.translatesAutoresizingMaskIntoConstraints = false
             button.setContentCompressionResistancePriority(.required, for: .horizontal)
             button.setContentHuggingPriority(.defaultHigh, for: .horizontal)

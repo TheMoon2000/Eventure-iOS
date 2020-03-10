@@ -26,7 +26,7 @@ class EventCodeView: UIView {
             label.numberOfLines = 0
             label.textAlignment = .center
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 24, weight: .semibold)
+            label.font = .appFontSemibold(24)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -41,7 +41,7 @@ class EventCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 5
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -88,7 +88,7 @@ class EventCodeView: UIView {
         orgTitle = {
             let label = UILabel()
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 17.5, weight: .medium)
+            label.font = .appFontMedium(17.5)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

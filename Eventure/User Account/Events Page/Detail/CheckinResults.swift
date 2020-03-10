@@ -105,7 +105,7 @@ class CheckinResults: UIViewController {
             label.numberOfLines = 5
             label.text = event.title
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 22, weight: .medium)
+            label.font = .appFontMedium(22)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
@@ -122,7 +122,7 @@ class CheckinResults: UIViewController {
             label.text = "Loading..."
             label.numberOfLines = 5
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16.5)
+            label.font = .appFontRegular(16.5)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             banner.contentView.addSubview(label)
@@ -157,7 +157,7 @@ class CheckinResults: UIViewController {
         emptyLabel = {
             let label = UILabel()
             label.text = "Loading registrants..."
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -210,7 +210,7 @@ class CheckinResults: UIViewController {
             label.numberOfLines = 3
             label.lineBreakMode = .byWordWrapping
             label.text = event.hostTitle
-            label.font = .systemFont(ofSize: 17.5, weight: .medium)
+            label.font = .appFontMedium(17.5)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             bottomBanner.contentView.addSubview(label)

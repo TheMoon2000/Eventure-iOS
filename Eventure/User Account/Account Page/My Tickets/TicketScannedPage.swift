@@ -66,7 +66,7 @@ class TicketScannedPage: UIViewController {
         orgTitle = {
             let label = UILabel()
             label.text = ticket.hostName + "'s"
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = AppColors.label
             label.textAlignment = .center
             label.numberOfLines = 5
@@ -83,7 +83,7 @@ class TicketScannedPage: UIViewController {
         eventTitle = {
             let label = UILabel()
             label.text = ticket.eventName
-            label.font = .systemFont(ofSize: 22, weight: .semibold)
+            label.font = .appFontSemibold(22)
             label.textColor = AppColors.label
             label.textAlignment = .center
             label.numberOfLines = 5
@@ -102,7 +102,7 @@ class TicketScannedPage: UIViewController {
             let label = UILabel()
             label.text = "\(ticket.quantity) × \(ticket.typeName) Ticket"
             label.numberOfLines = 3
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -128,7 +128,7 @@ class TicketScannedPage: UIViewController {
                 button.addTarget(self, action: #selector(claimTicket), for: .touchUpInside)
             }
             button.tintColor = .white
-            button.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(20)
             button.backgroundColor = AppColors.main
             button.layer.cornerRadius = 10
             button.contentEdgeInsets.left = 35

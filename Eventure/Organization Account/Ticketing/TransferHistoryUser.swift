@@ -148,7 +148,7 @@ class TransferHistoryUser: UITableViewCell {
         userName = {
             let label = UILabel()
             label.text = user.username
-            label.font = .systemFont(ofSize: 18, weight: .medium)
+            label.font = .appFontMedium(18)
             label.textColor = AppColors.label
             label.numberOfLines = 5
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -168,7 +168,7 @@ class TransferHistoryUser: UITableViewCell {
         userEmail = {
             let label = UILabel()
             label.text = user.email
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = .gray
             label.numberOfLines = 2
             label.translatesAutoresizingMaskIntoConstraints = false

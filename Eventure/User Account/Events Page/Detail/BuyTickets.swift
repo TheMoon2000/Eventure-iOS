@@ -41,7 +41,7 @@ class BuyTickets: UITableViewController {
         emptyLabel = {
             let label = UILabel()
             label.textColor = .gray
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
             

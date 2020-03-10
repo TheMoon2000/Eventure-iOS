@@ -59,7 +59,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
             
             tv.typingAttributes = [
                 NSAttributedString.Key.paragraphStyle: pStyle,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.font: UIFont.appFontRegular(17),
             ]
             tv.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tv)
@@ -76,7 +76,7 @@ class CommentCell: UITableViewCell, UITextViewDelegate {
             let label = UILabel()
             label.text = "Additional information"
             label.textColor = AppColors.placeholder
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             insertSubview(label, belowSubview: commentText)
             

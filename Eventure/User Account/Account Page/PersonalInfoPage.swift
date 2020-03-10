@@ -59,7 +59,7 @@ class PersonalInfoPage: UIViewController,UITableViewDelegate, UITableViewDataSou
             let label = UILabel()
             label.text = "Verifying password..."
             label.isHidden = true
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)

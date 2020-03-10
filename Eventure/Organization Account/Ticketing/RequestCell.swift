@@ -92,7 +92,7 @@ class RequestCell: UITableViewCell {
         dateLabel = {
             let label = UILabel()
             label.text = "Requested on:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -106,7 +106,7 @@ class RequestCell: UITableViewCell {
         
         dateValue = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -122,7 +122,7 @@ class RequestCell: UITableViewCell {
         emailLabel = {
             let label = UILabel()
             label.text = "User email:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -139,7 +139,7 @@ class RequestCell: UITableViewCell {
             button.tintColor = AppColors.link
             button.titleLabel?.textAlignment = .right
             button.titleLabel?.numberOfLines = 3
-            button.titleLabel?.font = .systemFont(ofSize: 16)
+            button.titleLabel?.font = .appFontRegular(16)
             button.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(button)
             
@@ -156,7 +156,7 @@ class RequestCell: UITableViewCell {
         noteLabel = {
             let label = UILabel()
             label.text = "Note:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -172,7 +172,7 @@ class RequestCell: UITableViewCell {
             let label = UILabel()
             label.numberOfLines = 20
             label.textAlignment = .right
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.value
             label.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(label)
@@ -192,7 +192,7 @@ class RequestCell: UITableViewCell {
             button.titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             button.imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             button.titleEdgeInsets.left = 8
-            button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(15)
             button.tintColor = GREEN
             button.backgroundColor = AppColors.passed.withAlphaComponent(0.1)
             button.translatesAutoresizingMaskIntoConstraints = false
@@ -209,7 +209,7 @@ class RequestCell: UITableViewCell {
             button.titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             button.imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             button.titleEdgeInsets.left = 5
-            button.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+            button.titleLabel?.font = .appFontMedium(15)
             button.tintColor = AppColors.fatal
             button.backgroundColor = AppColors.fatal.withAlphaComponent(0.1)
             button.translatesAutoresizingMaskIntoConstraints = false

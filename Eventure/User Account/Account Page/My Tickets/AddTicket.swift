@@ -51,7 +51,7 @@ class AddTicket: UITableViewController {
         let signButton = UIButton(type: .system)
         signButton.setTitle("–", for: .normal)
         signButton.tintColor = AppColors.main
-        signButton.titleLabel?.font = UIFont.systemFont(ofSize: 18)
+        signButton.titleLabel?.font = .appFontRegular(18)
         signButton.addTarget(self, action: #selector(dash), for: .touchUpInside)
         signButton.translatesAutoresizingMaskIntoConstraints = false
         

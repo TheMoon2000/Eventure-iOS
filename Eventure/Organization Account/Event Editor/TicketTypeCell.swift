@@ -43,7 +43,7 @@ class TicketTypeCell: UITableViewCell {
         titleLabel = {
             let label = UILabel()
             label.numberOfLines = 10
-            label.font = .systemFont(ofSize: 18, weight: .semibold)
+            label.font = .appFontSemibold(18)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -58,7 +58,7 @@ class TicketTypeCell: UITableViewCell {
             let label = UILabel()
             label.textColor = AppColors.plainText
             label.text = "Price per ticket:"
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -74,7 +74,7 @@ class TicketTypeCell: UITableViewCell {
             let label = UILabel()
             label.textAlignment = .right
             label.textColor = AppColors.plainText
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

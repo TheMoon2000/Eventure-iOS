@@ -100,9 +100,9 @@ class TagPickerView: UIViewController {
                 label.textAlignment = .center
                 label.numberOfLines = 0
                 if customSubtitle == "" {
-                    label.font = .systemFont(ofSize: 23, weight: .medium)
+                    label.font = .appFontMedium(23)
                 } else {
-                    label.font = .systemFont(ofSize: 25, weight: .semibold)
+                    label.font = .appFontSemibold(25)
                 }
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
@@ -121,7 +121,7 @@ class TagPickerView: UIViewController {
                 label.textAlignment = .center
                 label.numberOfLines = 0
                 label.textColor = AppColors.label
-                label.font = .systemFont(ofSize: 16)
+                label.font = .appFontRegular(16)
                 label.translatesAutoresizingMaskIntoConstraints = false
                 banner.contentView.addSubview(label)
                 

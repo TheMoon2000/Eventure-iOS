@@ -45,7 +45,7 @@ class TagCell: UICollectionViewCell {
             label.textAlignment = .center
             label.textColor = .white
             label.numberOfLines = 3
-            label.font = .systemFont(ofSize: 16, weight: .semibold)
+            label.font = .appFontSemibold(16)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             

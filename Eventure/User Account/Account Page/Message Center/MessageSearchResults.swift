@@ -35,7 +35,7 @@ class MessageSearchResults: UITableViewController {
             let label = UILabel()
             label.isHidden = false
             label.text = "No messages."
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)
@@ -73,7 +73,7 @@ class MessageSearchResults: UITableViewController {
         label.layoutMargins.left = 10
         label.textColor = AppColors.prompt
         label.text = headerTitle
-        label.font = .systemFont(ofSize: 15)
+        label.font = .appFontRegular(15)
         label.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(label)
         

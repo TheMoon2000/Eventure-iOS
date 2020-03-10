@@ -79,7 +79,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
             
             tv.typingAttributes = [
                 NSAttributedString.Key.paragraphStyle: pStyle,
-                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17),
+                NSAttributedString.Key.font: UIFont.appFontRegular(17),
                 NSAttributedString.Key.foregroundColor: AppColors.mainDark
             ]
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -129,7 +129,7 @@ class DraftLocationCell: UITableViewCell, UITextViewDelegate {
     func setPlaceholder(string: String) {
         placeholder.attributedText = string.attributedText(style: COMPACT_STYLE)
         placeholder.textColor = AppColors.placeholder
-        placeholder.font = .systemFont(ofSize: 17)
+        placeholder.font = .appFontRegular(17)
     }
 
     func textViewDidChange(_ textView: UITextView) {

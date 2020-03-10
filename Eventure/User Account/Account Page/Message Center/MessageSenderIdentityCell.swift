@@ -41,7 +41,7 @@ class MessageSenderIdentityCell: UITableViewCell {
         contactName = {
             let label = UILabel()
             label.numberOfLines = 5
-            label.font = .systemFont(ofSize: 17.5)
+            label.font = .appFontRegular(17.5)
             label.textColor = AppColors.label
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

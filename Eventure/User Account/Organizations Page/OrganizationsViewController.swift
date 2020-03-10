@@ -104,7 +104,7 @@ class OrganizationsViewController: UIViewController {
                 tab.setEnabled(false, forSegmentAt: 1)
                 tab.setEnabled(false, forSegmentAt: 2)
             }
-            tab.setTitleTextAttributes([.font: UIFont.appFontMedium(15)], for: .normal)
+            tab.setTitleTextAttributes([.font: UIFont.appFontMedium(14.5)], for: .normal)
             tab.tintColor = AppColors.main
             tab.selectedSegmentIndex = 0
             tab.translatesAutoresizingMaskIntoConstraints = false
@@ -369,7 +369,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
                 self.emptyLabel.text = self.filteredOrgs.isEmpty ? "No Organizations" : ""
                 let begin = (self.orgTable.numberOfSections, self.numberOfSections(in: self.orgTable))
                 if begin.0 == begin.1 {
-                    self.orgTable.reloadSections(IndexSet(integersIn: 0..<self.orgTable.numberOfSections), with: .none)
+                    self.orgTable.reloadSections(IndexSet(integersIn: 0..<self.orgTable.numberOfSections), with: .automatic)
                 } else if begin.1 > begin.0 {
                     self.orgTable.beginUpdates()
                     self.orgTable.insertSections([1], with: .fade)

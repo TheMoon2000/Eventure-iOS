@@ -46,7 +46,6 @@ class OrgDetailPage: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = AppColors.navbar
-        navigationController?.navigationBar.shadowImage = UIImage()
         
         var favImage = #imageLiteral(resourceName: "heart_empty")
         if User.current != nil && organization.subscribers.contains(User.current!.uuid) {
@@ -228,6 +227,12 @@ class OrgDetailPage: UIViewController {
             
             return label
         }()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.shadowImage = UIImage()
     }
     
     @objc private func subscribe(_ sender: UIBarButtonItem) {

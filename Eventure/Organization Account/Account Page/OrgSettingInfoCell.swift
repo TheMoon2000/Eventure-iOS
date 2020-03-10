@@ -41,7 +41,7 @@ class OrgSettingInfoCell: UITableViewCell {
         
         function = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.numberOfLines = 3
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -56,7 +56,7 @@ class OrgSettingInfoCell: UITableViewCell {
         
         sideLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.numberOfLines = 3
             label.textColor = UIColor.gray
             label.translatesAutoresizingMaskIntoConstraints = false

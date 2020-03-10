@@ -61,7 +61,7 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
             let label = UILabel()
             label.text = "No interested events"
             label.isHidden = true
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = .darkGray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)

@@ -44,6 +44,7 @@ class EventSearchResults: UITableViewController, UISearchResultsUpdating {
 
         view.backgroundColor = AppColors.canvas
         tableView.tableFooterView = UIView()
+        tableView.keyboardDismissMode = .interactive
         tableView.register(EventsCell.classForCoder(), forCellReuseIdentifier: "event")
     }
 

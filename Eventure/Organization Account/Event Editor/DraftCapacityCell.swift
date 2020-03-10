@@ -50,7 +50,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             let label = UILabel()
             label.text = title
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 17, weight: .medium)
+            label.font = .appFontMedium(17)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -70,7 +70,7 @@ class DraftCapacityCell: UITableViewCell, UITextFieldDelegate {
             textfield.placeholder = "0"
             textfield.delegate = self
             textfield.returnKeyType = .done
-            textfield.font = .systemFont(ofSize: 17)
+            textfield.font = .appFontRegular(17)
             textfield.translatesAutoresizingMaskIntoConstraints = false
             addSubview(textfield)
             

@@ -27,7 +27,7 @@ class TicketCodeView: UIView {
             label.numberOfLines = 0
             label.textAlignment = .center
             label.textColor = AppColors.label
-            label.font = .systemFont(ofSize: 24, weight: .semibold)
+            label.font = .appFontSemibold(24)
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
             
@@ -42,7 +42,7 @@ class TicketCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 5
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -92,7 +92,7 @@ class TicketCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 2
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 14)
+            label.font = .appFontRegular(14)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)
@@ -108,7 +108,7 @@ class TicketCodeView: UIView {
             let label = UILabel()
             label.numberOfLines = 2
             label.textAlignment = .center
-            label.font = .systemFont(ofSize: 16, weight: .medium)
+            label.font = .appFontMedium(16)
             label.textColor = AppColors.prompt
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

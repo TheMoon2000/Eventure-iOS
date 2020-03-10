@@ -38,7 +38,9 @@ class MessageCenter: UIViewController {
             sc.searchResultsUpdater = searchResults
             sc.searchBar.placeholder = "Search"
             sc.searchBar.tintColor = AppColors.main
-            sc.searchBar.searchTextField.font = .appFontRegular(17)
+            if #available(iOS 13.0, *) {
+                sc.searchBar.searchTextField.font = .appFontRegular(17)
+            }
             sc.dimsBackgroundDuringPresentation = true
             
             navigationItem.searchController = sc

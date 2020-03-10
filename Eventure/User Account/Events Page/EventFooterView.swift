@@ -20,7 +20,7 @@ class EventFooterView: UICollectionReusableView {
             label.alpha = 0.0
             label.text = "Load more..."
             label.textColor = .gray
-            label.font = .systemFont(ofSize: 16)
+            label.font = .appFontRegular(16)
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
             addSubview(label)

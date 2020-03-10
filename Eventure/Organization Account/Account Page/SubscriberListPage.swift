@@ -39,7 +39,7 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         
         backGroundLabel = {
             let label = UILabel()
-            label.font = .systemFont(ofSize: 17)
+            label.font = .appFontRegular(17)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(label)

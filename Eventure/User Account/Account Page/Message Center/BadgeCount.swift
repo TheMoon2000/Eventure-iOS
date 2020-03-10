@@ -49,7 +49,7 @@ class BadgeCount: UIView {
         badgeLabel = {
             let label = UILabel()
             label.text = "0"
-            label.font = .systemFont(ofSize: 12)
+            label.font = .appFontRegular(12)
             label.textColor = .white
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
