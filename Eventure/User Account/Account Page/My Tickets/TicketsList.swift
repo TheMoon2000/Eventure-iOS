@@ -93,6 +93,12 @@ class TicketsList: UIViewController, IndicatorInfoProvider {
         getTickets(pulled: true)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if tickets.isEmpty && loadingBG.isHidden { emptyLabel.text = emptyText }
+    }
+    
     @objc private func pullDownRefresh() {
         getTickets(pulled: true)
     }

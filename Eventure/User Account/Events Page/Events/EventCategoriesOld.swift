@@ -1,5 +1,5 @@
 //
-//  EventHomePage.swift
+//  EventCategories.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2020/2/10.
@@ -8,21 +8,20 @@
 
 import UIKit
 import SwiftyJSON
+import XLPagerTabStrip
 
-class EventHomePage: UIViewController {
+class EventCategories: UIViewController {
     
     var eventCategories = [Tag]()
     var categoryTable: UITableView!
     var loadingBG: UIVisualEffectView!
     var emptyLabel: UILabel!
-    var searchController: UISearchController!
-    var searchResultsTable: NewEventSearchResults!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = AppColors.background
-        title = "Categories"
+        view.backgroundColor = AppColors.tableBG
+        navigationItem.title = "Categories"
         
         setup()
         loadTags()
@@ -33,8 +32,10 @@ class EventHomePage: UIViewController {
             let tv = UITableView()
             tv.dataSource = self
             tv.delegate = self
+            tv.backgroundColor = AppColors.tableBG
             tv.tableFooterView = UIView()
             tv.backgroundColor = .clear
+            tv.contentInset.bottom = MainTabBarController.current.tabBar.bounds.height
 //            tv.refreshControl = UIRefreshControl()
 //            tv.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -65,22 +66,6 @@ class EventHomePage: UIViewController {
             
             return label
         }()
-        
-        searchResultsTable = NewEventSearchResults(parentVC: self)
-        
-        searchController = {
-            let sc = UISearchController(searchResultsController: searchResultsTable)
-            sc.searchResultsUpdater = searchResultsTable
-            sc.searchBar.placeholder = "Search All Events"
-            sc.searchBar.tintColor = AppColors.main
-            navigationItem.hidesSearchBarWhenScrolling = false
-            sc.obscuresBackgroundDuringPresentation = true
-            
-            navigationItem.searchController = sc
-            return sc
-        }()
-        
-        definesPresentationContext = true
     }
     
     @objc private func pullToRefresh() {
@@ -117,7 +102,7 @@ class EventHomePage: UIViewController {
 
 // Setup table view to display the event categories.
 
-extension EventHomePage: UITableViewDataSource, UITableViewDelegate {
+extension EventCategories: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return eventCategories.count
@@ -138,4 +123,10 @@ extension EventHomePage: UITableViewDataSource, UITableViewDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+extension EventCategories: IndicatorInfoProvider {
+    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
+        return IndicatorInfo(title: "Categories")
+    }
 }

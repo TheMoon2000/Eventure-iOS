@@ -96,6 +96,13 @@ class EventsInCategory: UIViewController, EventProvider {
         }()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
+        navigationController?.navigationBar.shadowImage = nil
+    }
+
     func fetchEventsIfNeeded() {
         loadEvents()
     }

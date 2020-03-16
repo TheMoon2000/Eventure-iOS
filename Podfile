@@ -5,7 +5,7 @@ target 'Eventure' do
   use_frameworks!
   pod 'SwiftyJSON'
   pod 'Down'
-  pod 'XLPagerTabStrip'
+#  pod 'XLPagerTabStrip'
   pod 'TTTAttributedLabel'
   pod 'TOCropViewController'
   pod 'SwiftCSVExport'

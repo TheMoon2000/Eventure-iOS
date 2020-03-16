@@ -8,10 +8,11 @@
 
 import UIKit
 
-struct Tag: Hashable {
+class Tag: Hashable, CustomStringConvertible {
     let id: Int
     let name: String
-        
+    var hasLogo: Bool?
+
     init(id: Int, name: String) {
         self.id = id
         self.name = name
@@ -28,5 +29,18 @@ struct Tag: Hashable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+    
+    func getLogo(_ handler: ((UIImage?) -> ())?) {
+        if hasLogo == true { handler?(LocalStorage.tagImages[id]) }
+
+        LocalStorage.getLogoForTag(id) { possibleImage in
+            self.hasLogo = possibleImage != nil
+            handler?(possibleImage)
+        }
+    }
+    
+    var description: String {
+        return "Tag(id: \(id), name: '\(name)', hasLogo: \(String(describing: hasLogo)))"
     }
 }

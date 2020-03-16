@@ -1,5 +1,5 @@
 //
-//  EventSearchResults.swift
+//  NewEventSearchResults.swift
 //  Eventure
 //
 //  Created by Jia Rui Shan on 2019/9/3.
@@ -8,22 +8,16 @@
 
 import UIKit
 import SwiftyJSON
+import XLPagerTabStrip
 
 class NewEventSearchResults: UITableViewController, UISearchResultsUpdating {
     
-    private var parentVC: EventHomePage!
     var allEvents = [Event]()
     var filteredEvents = [Event]()
     var finishedFetching = false
     
     private var LOADING = "Loading events..."
     private var emptyLabel: UILabel!
-    
-    required init(parentVC: EventHomePage) {
-        super.init(nibName: nil, bundle: nil)
-        
-        self.parentVC = parentVC
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +41,7 @@ class NewEventSearchResults: UITableViewController, UISearchResultsUpdating {
             
             return label
         }()
-        
+                
         
         loadEvents()
     }
@@ -99,7 +93,6 @@ class NewEventSearchResults: UITableViewController, UISearchResultsUpdating {
                     
                     DispatchQueue.main.async {
                         self.emptyLabel.text = ""
-                        self.updateSearchResults(for: self.parentVC.searchController)
                     }
                 }
             } else {
@@ -195,14 +188,15 @@ class NewEventSearchResults: UITableViewController, UISearchResultsUpdating {
         let detailPage = EventDetailPage()
         detailPage.hidesBottomBarWhenPushed = true
         detailPage.event = filteredEvents[indexPath.row]
-        if let oe = parentVC as? OrgEventViewController {
-            detailPage.orgEventView = oe
-        }
-        parentVC.navigationController?.pushViewController(detailPage, animated: true)
+        navigationController?.pushViewController(detailPage, animated: true)
     }
     
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+}
+
+
+extension NewEventSearchResults: IndicatorInfoProvider {
+    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
+        return IndicatorInfo(image: #imageLiteral(resourceName: "tab_search"))
     }
 }
+

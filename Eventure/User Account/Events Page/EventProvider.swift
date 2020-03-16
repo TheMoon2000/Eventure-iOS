@@ -14,3 +14,7 @@ protocol EventProvider: UIViewController {
     var end: Date? { get set }
     func fetchEventsIfNeeded()
 }
+
+protocol SearchProvider: UIViewController {
+    var searchController: UISearchController! { get }
+}

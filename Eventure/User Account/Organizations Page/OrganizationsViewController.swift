@@ -27,6 +27,8 @@ class OrganizationsViewController: UIViewController {
         }
     }
     
+    private var loaded = false
+    
     var customPushHandler: ((Organization) -> ())?
     
     /// The list of organizations that are actually displayed.
@@ -217,6 +219,7 @@ class OrganizationsViewController: UIViewController {
                 self.spinner.stopAnimating()
                 self.spinnerLabel.isHidden = true
                 self.refreshControl.endRefreshing()
+                self.loaded = true
             }
             
             guard error == nil else {
@@ -366,7 +369,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
             }
             
             DispatchQueue.main.async {
-                self.emptyLabel.text = self.filteredOrgs.isEmpty ? "No Organizations" : ""
+                self.emptyLabel.text = self.filteredOrgs.isEmpty && self.loaded ? "No Organizations" : ""
                 let begin = (self.orgTable.numberOfSections, self.numberOfSections(in: self.orgTable))
                 if begin.0 == begin.1 {
                     self.orgTable.reloadSections(IndexSet(integersIn: 0..<self.orgTable.numberOfSections), with: .automatic)

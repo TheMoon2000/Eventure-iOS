@@ -17,7 +17,7 @@ class TicketTabView: ButtonBarPagerTabStripViewController {
         settings.style.selectedBarBackgroundColor = AppColors.main
         settings.style.buttonBarItemFont = .appFontSemibold(15)
         settings.style.selectedBarHeight = 2.0
-        settings.style.buttonBarItemLeftRightMargin = 18
+        settings.style.buttonBarItemLeftRightMargin = 15
         settings.style.buttonBarItemTitleColor = AppColors.main
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0

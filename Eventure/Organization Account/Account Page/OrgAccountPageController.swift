@@ -264,6 +264,12 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         return [0, 30, 30, 30, 30][section]
     }
     
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let headerView = view as? UITableViewHeaderFooterView {
+            headerView.textLabel?.font = .appFontRegular(13.5)
+        }
+    }
+    
     //full screen profile picture when tapped
     
     @objc private func imageTapped(_ sender: UITapGestureRecognizer) {

@@ -130,6 +130,9 @@ struct AppColors {
     /// The background color for navigation bars.
     static var navbar = UIColor(named: "AppColors.navbar")!
     
+    /// A darker navigation bar background color.
+    static var darkerNavBar = UIColor(named: "AppColors.darkerNavBar")!
+    
     /// Dark background for scrollviews. In light mode, this is a very light gray.
     static var canvas = UIColor(named: "AppColors.canvas")!
     
@@ -171,6 +174,9 @@ struct AppColors {
     
     /// Application start time color.
     static var startTime = UIColor(named: "AppColors.start")!
+    
+    /// Background color for category cell images.
+    static var categoryBG = UIColor(named: "AppColors.categoryBG")!
 }
 
 let SAMPLE_TEXT = """
@@ -299,9 +305,9 @@ let DISABLED_ALPHA: CGFloat = 0.5
 /// Custom URLSessionConfiguration with no caching
 let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
-    config.requestCachePolicy = .reloadIgnoringLocalCacheData
-    config.urlCache = nil
-    config.timeoutIntervalForRequest = 20.0
+//    config.requestCachePolicy = .reloadIgnoringLocalCacheData
+//    config.urlCache = nil
+//    config.timeoutIntervalForRequest = 18.0
     return URLSession(configuration: config)
 }()
 
@@ -715,7 +721,7 @@ extension UIView {
             let label = UILabel()
             label.text = "Loading..."
             label.textAlignment = .center
-            label.font = .appFontLight(15)
+            label.font = .appFontRegular(15)
             label.textColor = .gray
             label.translatesAutoresizingMaskIntoConstraints = false
             loadingBG.contentView.addSubview(label)
@@ -876,7 +882,7 @@ extension UIImage {
             currentData = imageToResize.jpegData(compressionQuality: currentQuality)
         }
         
-        print("Image reduced from \(originalSize) to \(currentData?.count)")
+        print("Image reduced from \(String(describing: originalSize)) to \(String(describing: currentData?.count))")
         
         return currentData!
     }

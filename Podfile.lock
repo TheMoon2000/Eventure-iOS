@@ -9,7 +9,6 @@ PODS:
   - SwiftyJSON (5.0.0)
   - TOCropViewController (2.5.1)
   - TTTAttributedLabel (2.0.0)
-  - XLPagerTabStrip (9.0.0)
 
 DEPENDENCIES:
   - BonMot
@@ -20,7 +19,6 @@ DEPENDENCIES:
   - SwiftyJSON
   - TOCropViewController
   - TTTAttributedLabel
-  - XLPagerTabStrip
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -31,7 +29,6 @@ SPEC REPOS:
     - SwiftyJSON
     - TOCropViewController
     - TTTAttributedLabel
-    - XLPagerTabStrip
   trunk:
     - Charts
 
@@ -44,8 +41,7 @@ SPEC CHECKSUMS:
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TOCropViewController: 00dc36c4e4a0f4a45efa91adbf22df8a4fae01d3
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
-  XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
 
-PODFILE CHECKSUM: 79ab1d43ccf6581a111af005d87e80dff6c86537
+PODFILE CHECKSUM: 5a49c1b84e4623641e9003eef679e4ba4f775075
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.9.1
