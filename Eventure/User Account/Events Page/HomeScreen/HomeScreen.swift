@@ -68,7 +68,6 @@ class HomeScreen: ButtonBarPagerTabStripViewController {
         super.viewDidLoad()
         
         buttonBarView.removeFromSuperview()
-        buttonBarView.applyMildShadow()
         container.navigationItem.titleView = buttonBarView
         
         
@@ -90,7 +89,7 @@ class HomeScreen: ButtonBarPagerTabStripViewController {
         super.viewWillAppear(animated)
 
         if !didSetup {
-            let newInset = (self.view.frame.width - 110 - self.buttonBarView.contentSize.width) / 2
+            let newInset = (self.view.frame.width - 115 - self.buttonBarView.contentSize.width) / 2
             self.settings.style.buttonBarLeftContentInset = newInset
             self.settings.style.buttonBarRightContentInset = newInset
             super.viewDidLoad()

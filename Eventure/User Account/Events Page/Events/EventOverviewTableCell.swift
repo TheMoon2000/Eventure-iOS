@@ -19,6 +19,8 @@ class EventOverviewTableCell: UITableViewCell {
     private(set) var dateTime: UILabel!
     private var locationIcon: UIImageView!
     private(set) var location: UILabel!
+    
+    var lastUpdatedTime = Date()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

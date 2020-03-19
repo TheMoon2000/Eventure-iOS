@@ -107,11 +107,11 @@ class CategoryCell: UICollectionViewCell {
                 if possibleImage != nil {
                     self.logoImage = possibleImage
                 } else {
-                    self.logoImage = #imageLiteral(resourceName: "user_default")
+                    self.logoImage = #imageLiteral(resourceName: "default_category_BG")
                 }
             }
         } else if tag.hasLogo == false {
-            self.logoImage = #imageLiteral(resourceName: "user_default")
+            self.logoImage = #imageLiteral(resourceName: "default_category_BG")
         }
     }
     

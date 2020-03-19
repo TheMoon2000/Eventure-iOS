@@ -10,15 +10,33 @@ import UIKit
 import XLPagerTabStrip
 
 class Discover: UIViewController {
+    
+    private var canvas: UIScrollView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        title = "Highlights"
+        title = "Discover"
         view.backgroundColor = AppColors.background
+        
+        canvas = {
+            let sv = UIScrollView()
+            sv.backgroundColor = AppColors.canvas
+            sv.delegate = self
+            sv.alwaysBounceVertical = true
+            sv.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(sv)
+            
+            sv.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            sv.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            sv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            sv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            return sv
+        }()
+        
     }
-    
 
 }
 
@@ -27,4 +45,8 @@ extension Discover: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return .init(title: "Discover")
     }
+}
+
+extension Discover: UIScrollViewDelegate {
+    
 }

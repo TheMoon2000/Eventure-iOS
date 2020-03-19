@@ -98,6 +98,8 @@
 		CC39763E231025E3000CC35D /* NSString+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = CC39763A231025E3000CC35D /* NSString+AESCrypt.m */; };
 		CC39763F231025E3000CC35D /* NSData+AESCrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = CC39763B231025E3000CC35D /* NSData+AESCrypt.m */; };
 		CC3A3ED423235F3000D16A8C /* EventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3A3ED323235F3000D16A8C /* EventProvider.swift */; };
+		CC3AA9FF2420AFA500B9E4BA /* KeywordSuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3AA9FE2420AFA500B9E4BA /* KeywordSuggestionCell.swift */; };
+		CC3AAA01242362B600B9E4BA /* FloatingBannerUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3AAA00242362B600B9E4BA /* FloatingBannerUITest.swift */; };
 		CC3D875C231848B800F1F1E7 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */; };
 		CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */; };
 		CC3D87602318DC4000F1F1E7 /* EmailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875F2318DC4000F1F1E7 /* EmailCell.swift */; };
@@ -381,6 +383,8 @@
 		CC39763C231025E3000CC35D /* NSString+AESCrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+AESCrypt.h"; sourceTree = "<group>"; };
 		CC39763D231025E3000CC35D /* NSData+AESCrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+AESCrypt.h"; sourceTree = "<group>"; };
 		CC3A3ED323235F3000D16A8C /* EventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProvider.swift; sourceTree = "<group>"; };
+		CC3AA9FE2420AFA500B9E4BA /* KeywordSuggestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordSuggestionCell.swift; sourceTree = "<group>"; };
+		CC3AAA00242362B600B9E4BA /* FloatingBannerUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBannerUITest.swift; sourceTree = "<group>"; };
 		CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCheckinOverview.swift; sourceTree = "<group>"; };
 		CC3D875F2318DC4000F1F1E7 /* EmailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailCell.swift; sourceTree = "<group>"; };
@@ -1050,8 +1054,10 @@
 				CCD81579241A26CA00B47FC4 /* HomeScreenContainer.swift */,
 				CCD8156B241A0F6100B47FC4 /* HomeScreen.swift */,
 				CCD8157B241A27AA00B47FC4 /* DiscoverEvents.swift */,
+				CC3AAA00242362B600B9E4BA /* FloatingBannerUITest.swift */,
 				CCD8157D241A2D6D00B47FC4 /* CampusInfoOverview.swift */,
 				CC36CD2A241AA73600BBF39A /* EventSearchView.swift */,
+				CC3AA9FE2420AFA500B9E4BA /* KeywordSuggestionCell.swift */,
 			);
 			path = HomeScreen;
 			sourceTree = "<group>";
@@ -1360,6 +1366,7 @@
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
 				CC5FB2E5237A221F0069AEC1 /* EventAttendanceCell.swift in Sources */,
 				CCCE5DB7235FEBCB005CE5D7 /* EventUpdateCell.swift in Sources */,
+				CC3AA9FF2420AFA500B9E4BA /* KeywordSuggestionCell.swift in Sources */,
 				CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
 				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
@@ -1519,6 +1526,7 @@
 				CC5FB2E32379DF350069AEC1 /* EventDetailStats.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
+				CC3AAA01242362B600B9E4BA /* FloatingBannerUITest.swift in Sources */,
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
 				CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */,
 				CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */,

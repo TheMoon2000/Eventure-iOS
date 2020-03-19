@@ -162,7 +162,7 @@ class MainTabBarController: UITabBarController {
         dismiss(animated: true)
     }
     
-    
+    /// This method should be called immediately when the app launches.
     func loginSetup() {
         
         // Application setup

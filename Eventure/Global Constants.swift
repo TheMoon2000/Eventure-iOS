@@ -177,6 +177,9 @@ struct AppColors {
     
     /// Background color for category cell images.
     static var categoryBG = UIColor(named: "AppColors.categoryBG")!
+    
+    /// Keyword text color for event searching.
+    static var keyword = UIColor(named: "AppColors.keyword")!
 }
 
 let SAMPLE_TEXT = """
@@ -211,7 +214,7 @@ let PLAIN_STYLE =  """
 
 
     h1, h2, h3, h4, h5, h6 {
-        font-family: "Proxima Nova Semibold";
+        font-family: "Proxima Nova";
         font-weight: 600;
         letter-spacing: 1.5%;
         color: rgb(255, 120, 104);
@@ -273,7 +276,8 @@ let COMPACT_DARK = COMPACT_STYLE.replacingOccurrences(of: "#505050", with: "#D3D
 
 let TITLE_STYLE = """
     body {
-        font-family: "Proxima Nova Semibold";
+        font-family: "Proxima Nova";
+        font-weight: 600;
         font-size: 18px;
         line-height: 1.4;
         letter-spacing: 1%;

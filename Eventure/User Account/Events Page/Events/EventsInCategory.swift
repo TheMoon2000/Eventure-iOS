@@ -221,10 +221,12 @@ extension EventsInCategory: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = EventOverviewTableCell()
+        let cell = tableView.dequeueReusableCell(withIdentifier: "event", for: indexPath) as! EventOverviewTableCell
         cell.eventTitle.text = allEvents[indexPath.row].title
         cell.dateTime.text = allEvents[indexPath.row].timeDescription
         cell.location.text = allEvents[indexPath.row].location
+        cell.orgLogo.image = nil
+        cell.orgLogo.backgroundColor = AppColors.disabled
         
         Organization.getLogoImage(orgID: allEvents[indexPath.row].hostID) { image in
             cell.orgLogo.backgroundColor = nil

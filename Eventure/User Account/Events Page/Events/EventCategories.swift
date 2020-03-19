@@ -77,7 +77,6 @@ class EventCategories: UIViewController {
         if !pulled && !LocalStorage.tags.isEmpty {
             self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }
             self.categoryView.reloadSections(IndexSet(arrayLiteral: 0))
-            print("Loaded \(tags.count) tags from cache")
         } else {
             loadingBG.isHidden = false
             
@@ -148,8 +147,9 @@ extension EventCategories: UICollectionViewDataSource {
 extension EventCategories: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        navigationController?.pushViewController(EventsInCategory(category: tags[indexPath.row]),
-                                                 animated: true)
+        let vc = EventsInCategory(category: tags[indexPath.row])
+        vc.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

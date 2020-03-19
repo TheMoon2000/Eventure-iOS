@@ -50,6 +50,7 @@ class HomeScreenContainer: UIViewController, FlowProgressReporting {
     }
     
     @objc private func options() {
+        navigationController?.pushViewController(FloatingBannerUITest(), animated: true)
     }
     
     @objc private func search() {
