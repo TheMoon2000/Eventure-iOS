@@ -277,7 +277,9 @@ class EventDetailPage: UIViewController {
         if let v = tabStrip.viewControllers.first as? AboutViewController {
             v.event = self.event
         }
-        
+        print(event.title)
+        navigationController?.navigationBar.barTintColor = AppColors.navbar
+        navigationController?.navigationBar.setBackgroundImage(nil, for: .default)
         navigationController?.navigationBar.shadowImage = nil
     }
     

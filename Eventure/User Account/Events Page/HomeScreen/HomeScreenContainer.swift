@@ -55,8 +55,10 @@ class HomeScreenContainer: UIViewController, FlowProgressReporting {
     
     @objc private func search() {
         let vc = EventSearchView()
-        vc.modalPresentationStyle = .custom
-        present(vc, animated: true, completion: nil)
+        let nav = EventSearchNavController(rootViewController: vc)
+        nav.navigationBar.customize()
+        nav.modalPresentationStyle = .custom
+        present(nav, animated: true, completion: nil)
     }
     
 

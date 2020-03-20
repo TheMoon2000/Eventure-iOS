@@ -166,7 +166,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             
             label.leftAnchor.constraint(equalTo: startLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: startLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: canvas.rightAnchor, constant: -30).isActive = true
             
             return label
         }()
@@ -198,7 +198,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             
             label.leftAnchor.constraint(equalTo: endLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: endLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: locationText.rightAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: canvas.rightAnchor, constant: -30).isActive = true
             
             return label
         }()
@@ -231,7 +231,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             
             label.leftAnchor.constraint(equalTo: interestedLabel.rightAnchor, constant: 10).isActive = true
             label.topAnchor.constraint(equalTo: interestedLabel.topAnchor).isActive = true
-            label.rightAnchor.constraint(equalTo: endDate.rightAnchor).isActive = true
+            label.rightAnchor.constraint(equalTo: canvas.rightAnchor, constant: -30).isActive = true
             
             return label
         }()
@@ -260,7 +260,7 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
             
             button.titleLabel?.leftAnchor.constraint(equalTo: ticketLabel.rightAnchor, constant: 10).isActive = true
             button.titleLabel?.topAnchor.constraint(equalTo: ticketLabel.topAnchor).isActive = true
-            button.titleLabel?.rightAnchor.constraint(equalTo: interestedText.rightAnchor).isActive = true
+            button.titleLabel?.rightAnchor.constraint(equalTo: canvas.rightAnchor, constant: -30).isActive = true
             
             return button
         }()

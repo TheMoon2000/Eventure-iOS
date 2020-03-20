@@ -13,24 +13,18 @@ class EventSearchView: UIViewController {
     
     private var emptyLabel: UILabel!
     private var loadingBG: UIView!
+    
+    private var titleView: UIView!
     private var searchBar: UISearchBar!
     private var cancelButton: UIButton!
-    private var keywordsTable: UITableView!
     
+    private var keywordsTable: UITableView!
     private var eventsTable: UITableView!
     
     private var allEvents = [Event]()
     private var filteredEvents = [Event]()
     private var finishedFetching = false
-        
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
     
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        transitioningDelegate = self
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,36 +37,53 @@ class EventSearchView: UIViewController {
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
+        titleView = {
+            let v = UIView()
+            v.translatesAutoresizingMaskIntoConstraints = false
+            
+            v.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
+            v.heightAnchor.constraint(equalToConstant: 42).isActive = true
+            
+            return v
+        }()
+        
+        
         cancelButton = {
             let button = UIButton(type: .system)
             button.setTitle("Cancel", for: .normal)
             button.titleLabel?.font = .appFontMedium(17)
             button.tintColor = AppColors.main
             button.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(button)
+            titleView.addSubview(button)
             
-            button.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -15).isActive = true
+            button.rightAnchor.constraint(equalTo: titleView.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive = true
             
             button.addTarget(self, action: #selector(cancelSearch), for: .touchUpInside)
             
             return button
         }()
 
+        
         searchBar = {
             let sb = UISearchBar()
             sb.placeholder = "Search Events..."
-            sb.backgroundImage = UIImage()
+//            sb.backgroundImage = UIImage()
             sb.autocorrectionType = .no
             sb.tintColor = AppColors.main
-            sb.backgroundColor = .clear
+//            sb.backgroundColor = .clear
             sb.delegate = self
-            sb.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(sb)
             
-            sb.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 5).isActive = true
-            sb.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+            if #available(iOS 13.0, *) {
+                sb.searchTextField.font = .appFontRegular(17)
+            }
+            
+            sb.translatesAutoresizingMaskIntoConstraints = false
+            titleView.addSubview(sb)
+            
+            sb.leftAnchor.constraint(equalTo: titleView.safeAreaLayoutGuide.leftAnchor, constant: 5).isActive = true
+            sb.topAnchor.constraint(equalTo: titleView.safeAreaLayoutGuide.topAnchor, constant: 1).isActive = true
             sb.centerYAnchor.constraint(equalTo: cancelButton.centerYAnchor).isActive = true
-            sb.heightAnchor.constraint(equalToConstant: 36).isActive = true
+            sb.bottomAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
             sb.rightAnchor.constraint(equalTo: cancelButton.leftAnchor, constant: -5).isActive = true
             
             return sb
@@ -82,6 +93,7 @@ class EventSearchView: UIViewController {
             let table = UITableView()
             table.delegate = self
             table.dataSource = self
+            table.backgroundColor = AppColors.tableBG
             table.alwaysBounceVertical = true
             table.keyboardDismissMode = .interactive
             table.separatorColor = AppColors.line
@@ -93,7 +105,7 @@ class EventSearchView: UIViewController {
             
             table.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             table.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            table.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10).isActive = true
+            table.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5).isActive = true
             let b = table.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             b.priority = .defaultHigh
             b.isActive = true
@@ -106,7 +118,6 @@ class EventSearchView: UIViewController {
             table.isHidden = true // Initially hidden
             table.separatorStyle = .none
             table.backgroundColor = .clear
-            table.contentInset.top = 5
             table.contentInset.bottom = 5
             table.delegate = self
             table.dataSource = self
@@ -118,7 +129,7 @@ class EventSearchView: UIViewController {
             
             table.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
             table.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-            table.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 10).isActive = true
+            table.topAnchor.constraint(equalTo: keywordsTable.topAnchor).isActive = true
             let b = table.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             b.priority = .defaultHigh
             b.isActive = true
@@ -140,8 +151,18 @@ class EventSearchView: UIViewController {
             return label
         }()
         
+        navigationItem.titleView = titleView
+        
         searchBar.becomeFirstResponder()
         loadEvents()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.barTintColor = AppColors.tableBG
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
     }
     
     @objc private func cancelSearch() {
@@ -216,6 +237,8 @@ class EventSearchView: UIViewController {
     
     @objc private func refreshKeywords() {
         LocalStorage.updateKeywords { status in
+            self.keywordsTable.refreshControl?.endRefreshing()
+            
             if status == 0 {
                 self.keywordsTable.reloadSections([0], with: .automatic)
             } else if status == -1 && (self.searchBar.text ?? "").isEmpty {
@@ -226,85 +249,6 @@ class EventSearchView: UIViewController {
                 serverMaintenanceError(vc: self)
             }
         }
-    }
-}
-    
-// MARK - Animations.
-// Details: https://developer.apple.com/library/archive/featuredarticles/ViewControllerPGforiPhoneOS/CustomizingtheTransitionAnimations.html
-    
-extension EventSearchView {
-    
-    class PresentAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-        
-        func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-            return 0.35
-        }
-        
-        func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-            let container = transitionContext.containerView
-            let toView = transitionContext.view(forKey: .to)!
-            
-            let finalFrame = transitionContext.finalFrame(for: transitionContext.viewController(forKey: .to)!)
-            
-            toView.clipsToBounds = true
-            toView.layer.cornerRadius = 30
-            toView.transform = CGAffineTransform(scaleX: 1.0, y: 0.82)
-            toView.frame.origin = .zero
-            toView.frame.size.height = finalFrame.height * 0.8
-            toView.layer.opacity = 0.2
-            
-            container.addSubview(toView)
-            
-            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-                toView.layer.cornerRadius = 0
-                toView.transform = .identity
-                toView.frame.origin = .zero
-                toView.frame.size.height = finalFrame.height
-                toView.layer.opacity = 1.0
-            }, completion: { _ in
-                transitionContext.completeTransition(true)
-            })
-        }
-    }
-    
-    class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
-        
-        func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-            return 0.35
-        }
-        
-        func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-            let container = transitionContext.containerView
-            let fromView = transitionContext.view(forKey: .from)!
-                        
-            fromView.layer.cornerRadius = 0
-            fromView.layer.opacity = 1.0
-            fromView.endEditing(true)
-            (transitionContext.viewController(forKey: .from) as? EventSearchView)?.emptyLabel.isHidden = true
-            
-            container.addSubview(fromView)
-            
-            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut, animations: {
-                fromView.layer.cornerRadius = 30
-                fromView.transform = CGAffineTransform(scaleX: 1.0, y: 0.85)
-                fromView.frame.origin = .zero
-                fromView.layer.opacity = 0.0
-            }, completion: { _ in
-                transitionContext.completeTransition(true)
-            })
-        }
-    }
-    
-}
-
-extension EventSearchView: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PresentAnimator()
-        
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return DismissAnimator()
     }
 }
 
@@ -362,10 +306,7 @@ extension EventSearchView: UITableViewDataSource, UITableViewDelegate {
             let detailPage = EventDetailPage()
             detailPage.hidesBottomBarWhenPushed = true
             detailPage.event = filteredEvents[indexPath.row]
-//            navigationController?.pushViewController(detailPage, animated: true)
-            let nav = UINavigationController(rootViewController: detailPage)
-            nav.navigationBar.customize()
-            present(nav, animated: true, completion: nil)
+            navigationController?.pushViewController(detailPage, animated: true)
         }
     }
     

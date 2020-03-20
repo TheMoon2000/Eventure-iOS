@@ -103,7 +103,9 @@ class EventCategories: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        categoryView.collectionViewLayout.invalidateLayout()
+        DispatchQueue.main.async {
+            self.categoryView.collectionViewLayout.invalidateLayout()
+        }
     }
     
 

@@ -100,6 +100,7 @@
 		CC3A3ED423235F3000D16A8C /* EventProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3A3ED323235F3000D16A8C /* EventProvider.swift */; };
 		CC3AA9FF2420AFA500B9E4BA /* KeywordSuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3AA9FE2420AFA500B9E4BA /* KeywordSuggestionCell.swift */; };
 		CC3AAA01242362B600B9E4BA /* FloatingBannerUITest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3AAA00242362B600B9E4BA /* FloatingBannerUITest.swift */; };
+		CC3AAA032424344500B9E4BA /* EventSearchNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3AAA022424344500B9E4BA /* EventSearchNavController.swift */; };
 		CC3D875C231848B800F1F1E7 /* ScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */; };
 		CC3D875E23188AF600F1F1E7 /* EventCheckinOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */; };
 		CC3D87602318DC4000F1F1E7 /* EmailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3D875F2318DC4000F1F1E7 /* EmailCell.swift */; };
@@ -385,6 +386,7 @@
 		CC3A3ED323235F3000D16A8C /* EventProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventProvider.swift; sourceTree = "<group>"; };
 		CC3AA9FE2420AFA500B9E4BA /* KeywordSuggestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeywordSuggestionCell.swift; sourceTree = "<group>"; };
 		CC3AAA00242362B600B9E4BA /* FloatingBannerUITest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBannerUITest.swift; sourceTree = "<group>"; };
+		CC3AAA022424344500B9E4BA /* EventSearchNavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchNavController.swift; sourceTree = "<group>"; };
 		CC3D875B231848B800F1F1E7 /* ScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewController.swift; sourceTree = "<group>"; };
 		CC3D875D23188AF600F1F1E7 /* EventCheckinOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCheckinOverview.swift; sourceTree = "<group>"; };
 		CC3D875F2318DC4000F1F1E7 /* EmailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailCell.swift; sourceTree = "<group>"; };
@@ -1057,6 +1059,7 @@
 				CC3AAA00242362B600B9E4BA /* FloatingBannerUITest.swift */,
 				CCD8157D241A2D6D00B47FC4 /* CampusInfoOverview.swift */,
 				CC36CD2A241AA73600BBF39A /* EventSearchView.swift */,
+				CC3AAA022424344500B9E4BA /* EventSearchNavController.swift */,
 				CC3AA9FE2420AFA500B9E4BA /* KeywordSuggestionCell.swift */,
 			);
 			path = HomeScreen;
@@ -1535,6 +1538,7 @@
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
 				CC4E5A7223F277C8000F9636 /* Tag.swift in Sources */,
 				CC9A74F72330AC930021A790 /* TicketTabView.swift in Sources */,
+				CC3AAA032424344500B9E4BA /* EventSearchNavController.swift in Sources */,
 				CCB5C8CE232A21C100ABA9B6 /* EventFooterView.swift in Sources */,
 				CCAB884E235D19590053AA20 /* MessageSenderCell.swift in Sources */,
 				EB944580231F322E00631D8E /* OrgProfilePage.swift in Sources */,

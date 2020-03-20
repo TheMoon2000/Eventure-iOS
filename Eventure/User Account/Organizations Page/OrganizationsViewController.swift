@@ -261,9 +261,11 @@ class OrganizationsViewController: UIViewController {
 extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        
+        /* No more recommended clubs
         if User.current != nil && topTab.selectedSegmentIndex == 0 {
             return 2
-        }
+        }*/
         
         return 1
     }
