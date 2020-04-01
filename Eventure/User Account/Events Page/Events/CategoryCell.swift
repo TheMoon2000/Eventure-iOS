@@ -89,12 +89,6 @@ class CategoryCell: UICollectionViewCell {
         
     }
     
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        
-        initTime = Date()
-    }
-    
     func updateLogo(tag: Tag) {
         
         let currentInitTime = initTime

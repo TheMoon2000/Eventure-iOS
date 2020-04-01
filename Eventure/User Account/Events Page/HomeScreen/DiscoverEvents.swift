@@ -22,7 +22,7 @@ class Discover: UIViewController {
         
         canvas = {
             let sv = UIScrollView()
-            sv.backgroundColor = AppColors.canvas
+            sv.backgroundColor = .clear
             sv.delegate = self
             sv.alwaysBounceVertical = true
             sv.translatesAutoresizingMaskIntoConstraints = false

@@ -9,13 +9,13 @@
       "scale" : "2x"
     },
     {
+      "filename" : "icons8-double_right_filled.png",
       "idiom" : "universal",
-      "filename" : "icons8-music_record.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

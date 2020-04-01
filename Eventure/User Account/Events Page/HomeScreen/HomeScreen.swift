@@ -35,7 +35,7 @@ class HomeScreen: ButtonBarPagerTabStripViewController {
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
 //        settings.style.buttonBarLeftContentInset = 20
 //        settings.style.buttonBarRightContentInset = 20
-        settings.style.buttonBarHeight = 38
+        settings.style.buttonBarHeight = 37
         
         
         changeCurrentIndexProgressive = { (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in

@@ -180,6 +180,12 @@ struct AppColors {
     
     /// Keyword text color for event searching.
     static var keyword = UIColor(named: "AppColors.keyword")!
+    
+    /// Announcement box color for dining menus.
+    static var announcement = UIColor(named: "AppColors.announcement")!
+    
+    /// Darker color accompanying an announcement.
+    static var announcementDark = UIColor(named: "AppColors.announcementDark")
 }
 
 let SAMPLE_TEXT = """
@@ -584,6 +590,15 @@ extension Date {
         
         return df.string(from: self)
     }
+    
+    /// Returns the current hour of day (24-hour format).
+    static var currentHour: Int {
+        let df = DateFormatter()
+        df.locale = Locale(identifier: "en_US")
+        df.dateFormat = "H"
+        
+        return Int(df.string(from: Date())) ?? -1
+    }
 }
 
 extension URL {
@@ -927,6 +942,37 @@ extension UINavigationBar {
         titleTextAttributes = [.font: UIFont.appFontSemibold(17)]
     }
     
+}
+
+extension UILabel {
+
+    func addImageWith(name: String, behindText: Bool) {
+
+        let attachment = NSTextAttachment()
+        attachment.image = UIImage(named: name)
+        let attachmentString = NSAttributedString(attachment: attachment)
+
+        guard let txt = self.text else {
+            return
+        }
+
+        if behindText {
+            let strLabelText = NSMutableAttributedString(string: txt)
+            strLabelText.append(attachmentString)
+            self.attributedText = strLabelText
+        } else {
+            let strLabelText = NSAttributedString(string: txt)
+            let mutableAttachmentString = NSMutableAttributedString(attributedString: attachmentString)
+            mutableAttachmentString.append(strLabelText)
+            self.attributedText = mutableAttachmentString
+        }
+    }
+
+    func removeImage() {
+        let text = self.text
+        self.attributedText = nil
+        self.text = text
+    }
 }
 
 class GenericNavigationController: UINavigationController {

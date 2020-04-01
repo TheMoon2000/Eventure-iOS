@@ -130,7 +130,7 @@ extension LocalStorage {
     /// Fetch the logo for a tag.
     static func getLogoForTag(_ tagID: Int, handler: ((UIImage?) -> ())?) {
         
-        if tagImages[tagID] != nil {
+        if tagImages.keys.contains(tagID) {
             handler?(tagImages[tagID])
             // Update the logo images secretly anyway
         }

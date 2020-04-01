@@ -21,7 +21,9 @@ class HomeScreenContainer: UIViewController, FlowProgressReporting {
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(options))
         navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "search"), style: .plain, target: self, action: #selector(search))
-                
+        
+        navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
+        
         // Do any additional setup after loading the view.
         homescreen = {
             let hs = HomeScreen(container: self)
@@ -44,7 +46,7 @@ class HomeScreenContainer: UIViewController, FlowProgressReporting {
         super.viewWillAppear(animated)
         
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-//        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.shadowImage = UIImage()
         
         navigationController?.navigationBar.barTintColor = AppColors.darkerNavBar
     }

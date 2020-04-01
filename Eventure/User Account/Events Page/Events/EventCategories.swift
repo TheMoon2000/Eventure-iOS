@@ -19,7 +19,7 @@ class EventCategories: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = AppColors.canvas
+        view.backgroundColor = AppColors.darkerNavBar
 
         // Do any additional setup after loading the view.
         setup()
@@ -29,10 +29,16 @@ class EventCategories: UIViewController {
     private func setup() {
         categoryView = {
             let cv = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-            cv.backgroundColor = .clear
+            cv.backgroundColor = AppColors.background
             cv.register(CategoryCell.classForCoder(), forCellWithReuseIdentifier: "category")
             cv.contentInset.bottom = MainTabBarController.current.tabBar.bounds.height
             cv.scrollIndicatorInsets.bottom = cv.contentInset.bottom
+            cv.scrollIndicatorInsets.top = 2
+            cv.layer.masksToBounds = true
+            cv.layer.cornerRadius = 15
+            cv.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            cv.layer.shadowOpacity = 0.04
+            cv.layer.shadowOffset.height = -0.5
             cv.refreshControl = UIRefreshControl()
             cv.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
             cv.delegate = self
@@ -129,7 +135,7 @@ extension EventCategories: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "category", for: indexPath) as! CategoryCell
         
-        cell.prepareForReuse()
+        cell.initTime = Date()
         cell.logoImage = nil
         
         let tag = tags[indexPath.row]
