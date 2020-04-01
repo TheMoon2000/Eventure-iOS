@@ -17,6 +17,7 @@ class AllDiningHalls: UIViewController {
     
     private var loader: UIVisualEffectView!
     private var tabs: DiningMenuTabsMain!
+    private var emptyLabel: UILabel!
     
     private var navigator: UIVisualEffectView!
     private var navigatorTitle: UILabel!
@@ -30,11 +31,26 @@ class AllDiningHalls: UIViewController {
                 
         title = "Dining Hall Menus"
         view.backgroundColor = AppColors.canvas
+        
+        navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "unknown"), style: .plain, target: self, action: #selector(showDefinitions))
                 
         loader = view.addLoader()
         loader.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loader.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
 
+        emptyLabel = {
+            let label = UILabel()
+            label.textColor = .gray
+            label.font = .appFontRegular(17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            return label
+        }()
+        
         navigator = {
             let v = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
             v.backgroundColor = AppColors.canvas.withAlphaComponent(0.5)
@@ -138,22 +154,22 @@ class AllDiningHalls: UIViewController {
             navigatorTitle.text = "Today‘s Breakfast"
             previousButton.isEnabled = false
         case (0, 1):
-            navigatorTitle.text = "Today‘s Lunch"
+            navigatorTitle.text = "Today’s Lunch"
         case (0, 2):
-            navigatorTitle.text = "Today's Dinner"
+            navigatorTitle.text = "Today’s Dinner"
         case (1, 0):
-            navigatorTitle.text = "Tomorrow's Breakfast"
+            navigatorTitle.text = "Tomorrow’s Breakfast"
         case (1, 1):
-            navigatorTitle.text = "Tomorrow's Lunch"
+            navigatorTitle.text = "Tomorrow’s Lunch"
         case (1, 2):
-            navigatorTitle.text = "Tomorrow's Dinner"
+            navigatorTitle.text = "Tomorrow’s Dinner"
         default:
             let mealName = ["Breakfast", "Lunch", "Dinner"][mealtime]
             let df = DateFormatter()
             df.dateFormat = "EEEE"
             df.locale = .init(identifier: "en_US")
             let day = Date().addingTimeInterval(86400 * Double(currentDay))
-            navigatorTitle.text = df.string(from: day) + "‘s \(mealName)"
+            navigatorTitle.text = df.string(from: day) + "’s \(mealName)"
         }
         
         if (currentDay, mealtime) == (6, 2) {
@@ -185,6 +201,12 @@ class AllDiningHalls: UIViewController {
         tabs.viewControllers.forEach { ($0 as? DiningMenuVC)?.updateMeal(day: currentDay, mealTime: mealtime) }
     }
     
+    @objc private func showDefinitions() {
+        let nav = DiningHallIconNavController(rootViewController: DiningHallIcons())
+        nav.modalPresentationStyle = .custom
+        present(nav, animated: true)
+    }
+    
     private func showTabs() {
         
         guard !diningMenus.isEmpty else { return }
@@ -203,6 +225,8 @@ class AllDiningHalls: UIViewController {
             addChild(tabs)
             tabs.didMove(toParent: self)
             
+            tabs.viewControllers.forEach { ($0 as? DiningMenuVC)?.updateMeal(day: currentDay, mealTime: mealtime) }
+            
             return tabs
         }()
     }
@@ -220,14 +244,12 @@ class AllDiningHalls: UIViewController {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                UIView.transition(with: self.loader, duration: 0.2, options: .curveEaseOut, animations: {
-                    self.loader.isHidden = true
-                })
-            }
-            
             guard error == nil else {
                 internetUnavailableError(vc: self)
+                DispatchQueue.main.async {
+                    self.loader.isHidden = true
+                    self.emptyLabel.text = CONNECTION_ERROR
+                }
                 return
             }
             
@@ -254,10 +276,15 @@ class AllDiningHalls: UIViewController {
                 
                 self.diningMenus = tmp
                 DispatchQueue.main.async {
+                    self.loader.isHidden = true
                     self.showTabs()
                 }
             } else {
                 print("An error occurred while parsing dining menus!")
+                DispatchQueue.main.async {
+                    self.loader.isHidden = true
+                    self.emptyLabel.text = SERVER_ERROR
+                }
             }
         }
         

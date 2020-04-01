@@ -120,6 +120,9 @@
 		CC44AB26242FF795008438EA /* CampusInfoWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC44AB25242FF795008438EA /* CampusInfoWidget.swift */; };
 		CC44AB2C2432C1C8008438EA /* DiningHallMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC44AB2B2432C1C7008438EA /* DiningHallMessageCell.swift */; };
 		CC455F8A24339EF100679256 /* DiningMenuItemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC455F8924339EF100679256 /* DiningMenuItemCell.swift */; };
+		CC455FAC2435352C00679256 /* DiningHallIconNav.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC455FAB2435352C00679256 /* DiningHallIconNav.swift */; };
+		CC455FAE243535F300679256 /* DiningHallIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC455FAD243535F300679256 /* DiningHallIcons.swift */; };
+		CC455FB02435460B00679256 /* DiningIconDefinitionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC455FAF2435460B00679256 /* DiningIconDefinitionCell.swift */; };
 		CC46772D2319956600A9FF18 /* Campus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC46772C2319956600A9FF18 /* Campus.swift */; };
 		CC4ACC3622EA45E8002297EF /* InteractivePopNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */; };
 		CC4CB5C6230525BB00DC30AD /* OrganizationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */; };
@@ -414,6 +417,9 @@
 		CC44AB25242FF795008438EA /* CampusInfoWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CampusInfoWidget.swift; sourceTree = "<group>"; };
 		CC44AB2B2432C1C7008438EA /* DiningHallMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiningHallMessageCell.swift; sourceTree = "<group>"; };
 		CC455F8924339EF100679256 /* DiningMenuItemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiningMenuItemCell.swift; sourceTree = "<group>"; };
+		CC455FAB2435352C00679256 /* DiningHallIconNav.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiningHallIconNav.swift; sourceTree = "<group>"; };
+		CC455FAD243535F300679256 /* DiningHallIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiningHallIcons.swift; sourceTree = "<group>"; };
+		CC455FAF2435460B00679256 /* DiningIconDefinitionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiningIconDefinitionCell.swift; sourceTree = "<group>"; };
 		CC46772C2319956600A9FF18 /* Campus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Campus.swift; sourceTree = "<group>"; };
 		CC4ACC3522EA45E8002297EF /* InteractivePopNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractivePopNavigation.swift; sourceTree = "<group>"; };
 		CC4CB5C5230525BB00DC30AD /* OrganizationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationCell.swift; sourceTree = "<group>"; };
@@ -872,13 +878,24 @@
 		CC44AB00242C77BF008438EA /* Campus Info */ = {
 			isa = PBXGroup;
 			children = (
+				CC455FB12435462000679256 /* Dining Halls */,
+			);
+			path = "Campus Info";
+			sourceTree = "<group>";
+		};
+		CC455FB12435462000679256 /* Dining Halls */ = {
+			isa = PBXGroup;
+			children = (
 				CC44AB07242C7C79008438EA /* AllDiningHalls.swift */,
+				CC455FAB2435352C00679256 /* DiningHallIconNav.swift */,
+				CC455FAD243535F300679256 /* DiningHallIcons.swift */,
+				CC455FAF2435460B00679256 /* DiningIconDefinitionCell.swift */,
 				CC44AB01242C77DB008438EA /* DiningMenuVC.swift */,
 				CC455F8924339EF100679256 /* DiningMenuItemCell.swift */,
 				CC44AB2B2432C1C7008438EA /* DiningHallMessageCell.swift */,
 				CC44AB05242C7B2F008438EA /* DiningMenuTabsMain.swift */,
 			);
-			path = "Campus Info";
+			path = "Dining Halls";
 			sourceTree = "<group>";
 		};
 		CC4E5A7323F28167000F9636 /* Events */ = {
@@ -1564,6 +1581,7 @@
 				67705BD2231395900024FBBA /* PersonalInfoPage.swift in Sources */,
 				CC405DCA2307F11D00B85BEC /* OrgDescriptionText.swift in Sources */,
 				CCAB8850235D34510053AA20 /* MessageSearchResults.swift in Sources */,
+				CC455FAE243535F300679256 /* DiningHallIcons.swift in Sources */,
 				CC5FB2E32379DF350069AEC1 /* EventDetailStats.swift in Sources */,
 				CCE99AC7231210D100823A60 /* DatePickerBottomCell.swift in Sources */,
 				EB944581231F322E00631D8E /* OrgSettingInfoCell.swift in Sources */,
@@ -1571,6 +1589,7 @@
 				CCA0381A231DB6A20011AE22 /* CheckinUserCell.swift in Sources */,
 				CC2CCD5F233407B7000C65E2 /* IssuedTicketCell.swift in Sources */,
 				CC595CEA235B119C003D74F6 /* AccountNotification.swift in Sources */,
+				CC455FB02435460B00679256 /* DiningIconDefinitionCell.swift in Sources */,
 				CC0646D922FDF1CC000BF3CD /* User.swift in Sources */,
 				CC595CEF235B82C9003D74F6 /* TicketNotification.swift in Sources */,
 				CC18F564229AD518008FABEA /* MainTabBarController.swift in Sources */,
@@ -1609,6 +1628,7 @@
 				CC8960C9233C2242000E8C3D /* BuyTicketCell.swift in Sources */,
 				CC101FFA22F5473B0025217A /* RegisterOrganization.swift in Sources */,
 				CCA0381E231DC8C10011AE22 /* DraftCapacityCell.swift in Sources */,
+				CC455FAC2435352C00679256 /* DiningHallIconNav.swift in Sources */,
 				CC8469CD230FDF0A004E7B9D /* DraftOtherInfoPage.swift in Sources */,
 				CC36CD2B241AA73600BBF39A /* EventSearchView.swift in Sources */,
 				CCD8157E241A2D6D00B47FC4 /* CampusInfoOverview.swift in Sources */,

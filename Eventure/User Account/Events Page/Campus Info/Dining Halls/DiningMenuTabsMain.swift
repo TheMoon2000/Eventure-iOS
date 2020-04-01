@@ -37,6 +37,7 @@ class DiningMenuTabsMain: ButtonBarPagerTabStripViewController {
         settings.style.buttonBarItemsShouldFillAvailableWidth = true
         settings.style.buttonBarLeftContentInset = 0
         settings.style.buttonBarRightContentInset = 0
+        settings.style.buttonBarHeight = 38
         
         changeCurrentIndexProgressive = { (oldCell: ButtonBarViewCell?, newCell: ButtonBarViewCell?, progressPercentage: CGFloat, changeCurrentIndex: Bool, animated: Bool) -> Void in
             guard changeCurrentIndex == true else { return }
@@ -66,7 +67,7 @@ class DiningMenuTabsMain: ButtonBarPagerTabStripViewController {
         }
                 
         return groupedByLocation.sorted { $0.key < $1.key } . map { (location, menuList) in
-            DiningMenuVC(name: location, menu: menuList)
+            return DiningMenuVC(name: location, menu: menuList)
         }
         
     }
