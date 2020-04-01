@@ -50,6 +50,7 @@ class DiningMenuVC: UIViewController, IndicatorInfoProvider {
             tv.allowsSelection = false
             tv.tableFooterView = UIView()
             tv.contentInset.bottom = 55
+            tv.scrollIndicatorInsets.bottom = 50
             tv.dataSource = self
             tv.delegate = self
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -129,7 +130,7 @@ extension DiningMenuVC: UITableViewDataSource, UITableViewDelegate {
             container.backgroundColor = AppColors.background
         } else {
             container.effect = UIBlurEffect(style: .light)
-            container.backgroundColor = nil
+            container.backgroundColor = AppColors.background.withAlphaComponent(0.5)
         }
         
         let label: UILabel = {

@@ -35,27 +35,7 @@ class DiningMenuItemCell: UITableViewCell {
             return label
         }()
         
-        let itemString = NSMutableAttributedString(string: diningItem.itemName + "  ")
-        
-        let orderedOptions = DiningItem.strToRawValue
-            .sorted { $0.value < $1.value }
-            .map { (name: $0.key, option: DiningItem.Options(rawValue: $0.value)) }
-                
-        for i in 0..<orderedOptions.count {
-            if diningItem.options.contains(orderedOptions[i].option) {
-                if let image = UIImage(named: orderedOptions[i].name) {
-                    let formattedImage = i >= 9 ? image.tintedImage(color: AppColors.label) : image
-                    let offset: CGFloat = i >= 9 ? -4.0 : -3.0
-                    itemString.append(NSAttributedString.composed(of: [
-                        formattedImage.styled(with: .baselineOffset(offset))
-                    ]))
-                } else {
-                    print("WARNING: image for \(orderedOptions[i].name) not found!")
-                }
-            }
-        }
-                        
-        title.attributedText = itemString.styled(with: .lineHeightMultiple(1.15))
+        title.attributedText = diningItem.attributedString
     }
     
     required init?(coder: NSCoder) {
