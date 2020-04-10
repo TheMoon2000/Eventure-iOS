@@ -58,6 +58,9 @@ class LocalStorage {
         if let tagData = fileData["Tags"] as? [Int: String] {
             for cachedTag in tagData {
                 tags[cachedTag.key] = Tag(id: cachedTag.key, name: cachedTag.value)
+                if tagImages.keys.contains(tags[cachedTag.key]!.id) {
+                    tags[cachedTag.key]?.hasLogo = true
+                }
             }
         }
         
@@ -166,6 +169,7 @@ extension LocalStorage {
                 DispatchQueue.main.async {
                     handler?(newLogo)
                 }
+                saveToCache()
             } else {
                 DispatchQueue.main.async {
                     handler?(nil)

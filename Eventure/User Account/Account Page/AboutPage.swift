@@ -16,7 +16,7 @@ class AboutPage: UIViewController {
     private var titleLabel: UILabel!
     private var detailMessage: UITextView!
     
-    var aboutText = "Eventure is a mobile app developed by a group of students from UC Berkeley (**Calpha Dev**) as a platform dedicated to college students for on-campus event exploration and promotion. See our [privacy policy](https://eventure.calpha.dev/privacy) for details.\n\n If you have any questions or concerns, please email us at support@eventure-app.com."
+    var aboutText = "Eventure is a mobile app developed by a group of students from UC Berkeley (**Calpha Dev**) as a platform dedicated to college students for on-campus event exploration and promotion. See our [privacy policy](https://eventure-app.com/privacy) for details.\n\n If you have any questions or concerns, please email us at <support@eventure-app.com>."
     
     override func viewDidLoad() {
         super.viewDidLoad()

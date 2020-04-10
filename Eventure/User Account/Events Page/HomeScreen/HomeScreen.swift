@@ -78,6 +78,8 @@ class HomeScreen: ButtonBarPagerTabStripViewController {
         containerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         containerView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant:  MainTabBarController.current.tabBar.bounds.height).isActive = true
+        
+        containerView.isScrollEnabled = false
                 
         DispatchQueue.main.async {
             self.moveToViewController(at: 1, animated: false)

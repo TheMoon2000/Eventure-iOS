@@ -95,7 +95,6 @@ class CategoryCell: UICollectionViewCell {
         
         if tag.hasLogo != false {
             tag.getLogo { possibleImage in
-                
                 if self.initTime! > currentInitTime! { return }
                 
                 if possibleImage != nil {

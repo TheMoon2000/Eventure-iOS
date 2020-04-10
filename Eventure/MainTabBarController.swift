@@ -104,9 +104,6 @@ class MainTabBarController: UITabBarController {
             if vc is HomeScreenContainer {
                 nav = InteractivePopNavigationController(rootViewController: vc)
                 nav.navigationBar.customize()
-//                nav.navigationBar.isUserInteractionEnabled = false
-//                nav.view.isUserInteractionEnabled = false
-//                nav.navigationBar.isHidden = true
             } else {
                 nav = UINavigationController(rootViewController: vc)
                 nav.navigationBar.customize()
@@ -169,6 +166,8 @@ class MainTabBarController: UITabBarController {
         loadSupportedCampuses()
         checkForNotices()
         LocalStorage.recoverFromCache()
+        
+        try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
         
         if let type = UserDefaults.standard.string(forKey: KEY_ACCOUNT_TYPE) {
             if type == ACCOUNT_TYPE_ORG, let current = Organization.cachedOrgAccount(at: CURRENT_USER_PATH) {

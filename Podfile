@@ -12,6 +12,7 @@ target 'Eventure' do
   pod 'SwiftLoggly', '~> 1.0'
   pod 'BonMot'
   pod 'Charts'
+  pod 'MarqueeLabel'
   # pod 'Braintree'
   # pod 'Braintree/DataCollector'
   # pod 'Braintree/Venmo'

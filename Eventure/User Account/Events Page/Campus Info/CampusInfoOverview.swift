@@ -107,7 +107,6 @@ extension CampusInfoOverview: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        print(equalSpacing)
         return equalSpacing
     }
     

@@ -20,6 +20,8 @@ class OrganizationsViewController: UIViewController {
     private var spinnerLabel: UILabel!
     private var orgTable: UITableView!
     private var emptyLabel: UILabel!
+    private var failPage: UIView!
+    private var updater: ((UITraitCollection) -> ())?
     
     private var organizations = Set<Organization>() {
         didSet {
@@ -54,6 +56,7 @@ class OrganizationsViewController: UIViewController {
                 topTabBg.effect = UIBlurEffect(style: .extraLight)
             }
         }
+        updater?(traitCollection)
     }
     
     override func viewDidLoad() {
@@ -120,7 +123,7 @@ class OrganizationsViewController: UIViewController {
             
             return tab
         }()
-        
+                
         orgTable = {
             let orgTable = UITableView()
             orgTable.dataSource = self
@@ -184,6 +187,15 @@ class OrganizationsViewController: UIViewController {
             return label
         }()
         
+        (failPage, updater) = view.addConnectionNotice {
+            self.spinner.startAnimating()
+            self.spinnerLabel.isHidden = false
+            self.loadOrganizations()
+        }
+        
+        failPage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        failPage.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: 20).isActive = true
+        
         loadOrganizations()
     }
     
@@ -220,12 +232,15 @@ class OrganizationsViewController: UIViewController {
                 self.spinnerLabel.isHidden = true
                 self.refreshControl.endRefreshing()
                 self.loaded = true
+                self.orgTable.isHidden = false
             }
             
             guard error == nil else {
                 DispatchQueue.main.async {
-                    self.emptyLabel.text = CONNECTION_ERROR
-                    internetUnavailableError(vc: self, handler: nil)
+//                    self.emptyLabel.text = CONNECTION_ERROR
+//                    internetUnavailableError(vc: self, handler: nil)
+                    self.failPage.isHidden = false
+                    self.orgTable.isHidden = true
                 }
                 return
             }
@@ -371,7 +386,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
             }
             
             DispatchQueue.main.async {
-                self.emptyLabel.text = self.filteredOrgs.isEmpty && self.loaded ? "No Organizations" : ""
+                self.emptyLabel.text = self.filteredOrgs.isEmpty && self.loaded && !self.orgTable.isHidden ? "No Organizations" : ""
                 let begin = (self.orgTable.numberOfSections, self.numberOfSections(in: self.orgTable))
                 if begin.0 == begin.1 {
                     self.orgTable.reloadSections(IndexSet(integersIn: 0..<self.orgTable.numberOfSections), with: .automatic)

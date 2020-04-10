@@ -34,8 +34,6 @@ class EventSearchView: UIViewController {
         view.backgroundColor = AppColors.tableBG
 
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         titleView = {
             let v = UIView()

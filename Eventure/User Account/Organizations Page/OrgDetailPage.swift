@@ -126,6 +126,7 @@ class OrgDetailPage: UIViewController {
                 label.numberOfLines = 2
                 label.text = organization.title
                 label.font = .appFontSemibold(18)
+                label.textColor = AppColors.label
                 label.translatesAutoresizingMaskIntoConstraints = false
                 
                 return label
@@ -134,7 +135,7 @@ class OrgDetailPage: UIViewController {
             descriptionLabel = {
                 let label = UILabel()
                 label.font = .appFontRegular(16.5)
-                label.textColor = .lightGray
+                label.textColor = AppColors.prompt
                 let noun = organization.subscribers.count == 1 ? "Subscriber" : "Subscribers"
                 label.text = "\(organization.subscribers.count) " + noun
                 label.textColor = .gray

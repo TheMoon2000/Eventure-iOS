@@ -12,9 +12,12 @@ import XLPagerTabStrip
 class EventCategories: UIViewController {
     
     private var tags = [Tag]()
+    private var canvas: UIView!
     private var categoryView: UICollectionView!
     private var emptyLabel: UILabel!
     private var loadingBG: UIVisualEffectView!
+    private var fallback: UIView!
+    private var updater: ((UITraitCollection) -> ())?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,29 +30,50 @@ class EventCategories: UIViewController {
     }
     
     private func setup() {
+        
+        canvas = {
+            let canvas = UIView()
+            canvas.backgroundColor = AppColors.background
+            canvas.clipsToBounds = true
+            canvas.layer.cornerRadius = 15
+            canvas.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            canvas.layer.shadowOpacity = 0.04
+            canvas.layer.shadowOffset.height = -0.5
+            canvas.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(canvas)
+            
+            canvas.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+            canvas.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+            canvas.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+            canvas.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            
+            return canvas
+        }()
+        
+        (fallback, updater) = canvas.addConnectionNotice {
+            self.loadTags(true)
+        }
+        fallback.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        fallback.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -MainTabBarController.current.tabBar.bounds.height / 2).isActive = true
+                
         categoryView = {
             let cv = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-            cv.backgroundColor = AppColors.background
+            cv.backgroundColor = .clear
             cv.register(CategoryCell.classForCoder(), forCellWithReuseIdentifier: "category")
             cv.contentInset.bottom = MainTabBarController.current.tabBar.bounds.height
             cv.scrollIndicatorInsets.bottom = cv.contentInset.bottom
-            cv.scrollIndicatorInsets.top = 2
-            cv.layer.masksToBounds = true
-            cv.layer.cornerRadius = 15
-            cv.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-            cv.layer.shadowOpacity = 0.04
-            cv.layer.shadowOffset.height = -0.5
+            // cv.scrollIndicatorInsets.top = 2
             cv.refreshControl = UIRefreshControl()
             cv.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
             cv.delegate = self
             cv.dataSource = self
             cv.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(cv)
+            canvas.addSubview(cv)
             
-            cv.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-            cv.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-            cv.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-            cv.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            cv.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor).isActive = true
+            cv.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor).isActive = true
+            cv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 8).isActive = true
+            cv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
             
             return cv
         }()
@@ -59,7 +83,7 @@ class EventCategories: UIViewController {
             label.textColor = .gray
             label.font = .appFontRegular(17)
             label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
+            canvas.addSubview(label)
             
             label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
             label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
@@ -67,9 +91,15 @@ class EventCategories: UIViewController {
             return label
         }()
         
-        loadingBG = view.addLoader()
+        loadingBG = canvas.addLoader()
         loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        updater?(traitCollection)
     }
     
     
@@ -78,7 +108,7 @@ class EventCategories: UIViewController {
     }
     
     private func loadTags(_ pulled: Bool = false) {
-        
+                
         // By default, we can directly use the cache.
         if !pulled && !LocalStorage.tags.isEmpty {
             self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }
@@ -89,13 +119,17 @@ class EventCategories: UIViewController {
             LocalStorage.updateTags { status in
                 self.loadingBG.isHidden = true
                 self.categoryView.refreshControl?.endRefreshing()
-                
+                self.categoryView.isHidden = false
+
                 if status == 0 {
                     self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }
                     self.categoryView.reloadSections(IndexSet(arrayLiteral: 0))
                 } else if status == -1 {
-                    internetUnavailableError(vc: self) {
-                        self.emptyLabel.text = CONNECTION_ERROR
+                    self.fallback.isHidden = false
+                    self.emptyLabel.text = ""
+                    if pulled {
+                        LocalStorage.tags.removeAll()
+                        self.categoryView.isHidden = true
                     }
                 } else if status == -2 {
                     serverMaintenanceError(vc: self) {
@@ -186,7 +220,7 @@ extension EventCategories: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: tagWidth, height: tagWidth)
     }
-    
+        
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return equalSpacing
     }
@@ -196,7 +230,7 @@ extension EventCategories: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: equalSpacing,
+        return UIEdgeInsets(top: max(0, equalSpacing - 8),
                             left: equalSpacing,
                             bottom: equalSpacing,
                             right: equalSpacing)

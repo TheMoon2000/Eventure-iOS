@@ -32,7 +32,10 @@ class Tag: Hashable, CustomStringConvertible {
     }
     
     func getLogo(_ handler: ((UIImage?) -> ())?) {
-        if hasLogo == true { handler?(LocalStorage.tagImages[id]) }
+        if hasLogo == true {
+            handler?(LocalStorage.tagImages[id])
+            return
+        }
 
         LocalStorage.getLogoForTag(id) { possibleImage in
             self.hasLogo = possibleImage != nil

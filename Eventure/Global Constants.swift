@@ -166,7 +166,7 @@ struct AppColors {
     /// Emphasis color for values within messages.
     static var emphasis = UIColor(named: "AppColors.emphasis")!
     
-    /// Spinner tint color.
+    /// A lighter control color used for spinners and other UI elements.
     static var lightControl = UIColor(named: "AppColors.lightControl")!
     
     /// A light gray tint color.
@@ -186,6 +186,9 @@ struct AppColors {
     
     /// Darker color accompanying an announcement.
     static var announcementDark = UIColor(named: "AppColors.announcementDark")
+    
+    /// Used for reload button colors.
+    static var lightTitle = UIColor(named: "AppColors.lightTitle")!
 }
 
 let SAMPLE_TEXT = """
@@ -261,7 +264,7 @@ let PLAIN_STYLE =  """
     }
 """
 
-let PLAIN_DARK = PLAIN_STYLE.replacingOccurrences(of: "#525252", with: "#C4C4C5").replacingOccurrences(of: "#4A4A4A", with: "#D2D2D2")
+let PLAIN_DARK = PLAIN_STYLE.replacingOccurrences(of: "#525252", with: "#C9C9C9").replacingOccurrences(of: "#4A4A4A", with: "#D7D7D7")
 
 let COMPACT_STYLE = """
     body {
@@ -315,9 +318,9 @@ let DISABLED_ALPHA: CGFloat = 0.5
 /// Custom URLSessionConfiguration with no caching
 let CUSTOM_SESSION: URLSession = {
     let config = URLSessionConfiguration.default
-//    config.requestCachePolicy = .reloadIgnoringLocalCacheData
-//    config.urlCache = nil
-//    config.timeoutIntervalForRequest = 18.0
+    config.requestCachePolicy = .reloadIgnoringLocalCacheData
+    config.urlCache = nil
+    config.timeoutIntervalForRequest = 18.0
     return URLSession(configuration: config)
 }()
 
@@ -584,11 +587,32 @@ extension Date {
             df.dateFormat = "'Yesterday' h:mm a"
         } else if today.timeIntervalSince(self.midnight) <= 7 * 86400 {
             df.dateFormat = "EEEE, h:mm a"
+        } else if YEAR_FORMATTER.string(from: self) == YEAR_FORMATTER.string(from: Date()) {
+            df.dateFormat = "MMMM d"
         } else {
             df.dateFormat = "MMM d, yyyy"
         }
         
         return df.string(from: self)
+    }
+    
+    var elapsedTimeDescription: String {
+        let todayMidnight = Date().midnight
+        let secondsPassed = Date().timeIntervalSince(self)
+        if secondsPassed < 60 {
+            let pluralSuffix = Int(secondsPassed) != 1 ? "s" : ""
+            return "\(Int(secondsPassed)) second\(pluralSuffix) ago"
+        } else if secondsPassed < 3600 {
+            let minutes = Int(secondsPassed / 60)
+            let pluralSuffix = minutes != 1 ? "s" : ""
+            return "\(minutes) minute\(pluralSuffix) ago"
+        } else if todayMidnight == midnight {
+            let hours = Int(secondsPassed / 3600)
+            let pluralSuffix = hours != 1 ? "s" : ""
+            return "\(hours) hour\(pluralSuffix) ago"
+        } else {
+            return mediumString
+        }
     }
     
     /// Returns the current hour of day (24-hour format).
@@ -719,6 +743,8 @@ extension UIView {
             
             v.widthAnchor.constraint(equalToConstant: 110).isActive = true
             v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
+            v.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
+            v.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor).isActive = true
             
             return v
         }()
@@ -752,6 +778,93 @@ extension UIView {
         }()
         
         return loadingBG
+    }
+    
+    func addConnectionNotice(_ refresh: @escaping (() -> ())) -> (view: UIView, updater: ((UITraitCollection) -> ())) {
+        
+        let container: UIView = {
+            let view = UIView()
+            view.isHidden = true
+            view.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(view)
+            
+            view.leftAnchor.constraint(greaterThanOrEqualTo: safeAreaLayoutGuide.leftAnchor, constant: 40).isActive = true
+            view.rightAnchor.constraint(lessThanOrEqualTo: safeAreaLayoutGuide.rightAnchor, constant: -40).isActive = true
+            
+            return view
+        }()
+        
+        let imageView: UIImageView = {
+            let iv = UIImageView(image: #imageLiteral(resourceName: "offline_bear"))
+            iv.contentMode = .scaleAspectFit
+            iv.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(iv)
+            
+            iv.widthAnchor.constraint(equalToConstant: 180).isActive = true
+            iv.heightAnchor.constraint(equalToConstant: 160).isActive = true
+            iv.centerXAnchor.constraint(equalTo: container.centerXAnchor).isActive = true
+            iv.topAnchor.constraint(equalTo: container.topAnchor).isActive = true
+            iv.leftAnchor.constraint(greaterThanOrEqualTo: container.leftAnchor).isActive = true
+            iv.rightAnchor.constraint(lessThanOrEqualTo: container.rightAnchor).isActive = true
+            
+            return iv
+        }()
+        
+        let label: UILabel = {
+            let label = UILabel()
+            label.text = "Your inner bear has fallen."
+            label.textColor = AppColors.lightTitle
+            label.font = .appFontRegular(16)
+            label.numberOfLines = 5
+            label.textAlignment = .center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(label)
+            
+            label.leftAnchor.constraint(greaterThanOrEqualTo: container.leftAnchor).isActive = true
+            label.rightAnchor.constraint(lessThanOrEqualTo: container.rightAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 15).isActive = true
+            
+            return label
+        }()
+        
+        let button: UIButton = {
+            let button = ClosureButton(type: .system)
+            button.setTitle("Get Back Online", for: .normal)
+            button.tintColor = AppColors.prompt
+            button.titleLabel?.font = .appFontMedium(16)
+            button.setTitleColor(AppColors.lightTitle, for: .normal)
+            button.contentEdgeInsets.left = 22
+            button.contentEdgeInsets.right = 22
+            button.layer.borderWidth = 1
+            button.layer.cornerRadius = 6
+            button.layer.borderColor = AppColors.line.cgColor
+            button.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(button)
+            
+            
+            button.leftAnchor.constraint(greaterThanOrEqualTo: container.leftAnchor).isActive = true
+            button.rightAnchor.constraint(lessThanOrEqualTo: container.rightAnchor).isActive = true
+            button.topAnchor.constraint(greaterThanOrEqualTo: label.bottomAnchor, constant: 15).isActive = true
+            button.bottomAnchor.constraint(lessThanOrEqualTo: container.bottomAnchor, constant: -10).isActive = true
+            button.centerXAnchor.constraint(equalTo: imageView.centerXAnchor).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 36).isActive = true
+                
+            button.action = {
+                refresh()
+                container.isHidden = true
+            }
+            
+            return button
+        }()
+        
+        return (container, { traits in
+            if #available(iOS 13.0, *) {
+                traits.performAsCurrent {
+                    button.layer.borderColor = AppColors.line.cgColor
+                }
+            }
+            
+        })
     }
     
     func applyMildShadow() {
@@ -985,6 +1098,28 @@ class GenericNavigationController: UINavigationController {
         navigationBar.isTranslucent = false
     }
     
+}
+
+class ClosureButton: UIButton {
+    var action: (() -> ())?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        sharedInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        sharedInit()
+    }
+    
+    private func sharedInit() {
+        addTarget(self, action: #selector(touchUpInside), for: .touchUpInside)
+    }
+    
+    @objc private func touchUpInside() {
+        action?()
+    }
 }
 
 /// Documents directory URL.

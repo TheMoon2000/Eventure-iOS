@@ -277,8 +277,6 @@ class User: Profile {
         json.dictionaryObject?["Comments"] = self.comments
         json.dictionaryObject?["# checked in"] = self.numberOfAttendedEvents
         
-        try? FileManager.default.createDirectory(at: ACCOUNT_DIR, withIntermediateDirectories: true, attributes: nil)
-        
         
         let encrypted = NSData(data: try! json.rawData()).aes256Encrypt(withKey: AES_KEY)!
         

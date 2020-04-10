@@ -4,6 +4,7 @@ PODS:
     - Charts/Core (= 3.4.0)
   - Charts/Core (3.4.0)
   - Down (0.9.0)
+  - MarqueeLabel (4.0.2)
   - SwiftCSVExport (2.0.1)
   - SwiftLoggly (1.0.7)
   - SwiftyJSON (5.0.0)
@@ -14,6 +15,7 @@ DEPENDENCIES:
   - BonMot
   - Charts
   - Down
+  - MarqueeLabel
   - SwiftCSVExport
   - SwiftLoggly (~> 1.0)
   - SwiftyJSON
@@ -31,17 +33,19 @@ SPEC REPOS:
     - TTTAttributedLabel
   trunk:
     - Charts
+    - MarqueeLabel
 
 SPEC CHECKSUMS:
   BonMot: aa82119ff2ffa184223d8a31c72aed84fbb009e0
   Charts: 74c9f256eaf0460c0c416522d1cf8c634ea6b286
   Down: 1cdbca4963b542d0ef34ebb3e10ff48382bdf761
+  MarqueeLabel: f762aa681ae201f66c1d511858b171f75d83013a
   SwiftCSVExport: a2baa3904699e9d5b66dc1a15111d8172ade84dc
   SwiftLoggly: e698435ac1442ac0be4f4e2f74615ee1a0bd4547
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
   TOCropViewController: 00dc36c4e4a0f4a45efa91adbf22df8a4fae01d3
   TTTAttributedLabel: 8cffe8e127e4e82ff3af1e5386d4cd0ad000b656
 
-PODFILE CHECKSUM: 5a49c1b84e4623641e9003eef679e4ba4f775075
+PODFILE CHECKSUM: a11c539a1aab3cafc4780029af36fbf9783aac9b
 
 COCOAPODS: 1.9.1
