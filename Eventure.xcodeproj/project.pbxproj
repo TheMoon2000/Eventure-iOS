@@ -145,6 +145,8 @@
 		CC62F842241F4CFD0002BDC0 /* EventCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC62F841241F4CFD0002BDC0 /* EventCategories.swift */; };
 		CC62F844241F527A0002BDC0 /* CategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC62F843241F527A0002BDC0 /* CategoryCell.swift */; };
 		CC64524D22BE8E0600FBEF58 /* NavBackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */; };
+		CC65A49924455385004AA894 /* PopularEventsPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65A49824455385004AA894 /* PopularEventsPreview.swift */; };
+		CC65A49B24455608004AA894 /* EventPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC65A49A24455608004AA894 /* EventPreviewCell.swift */; };
 		CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */; };
 		CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */; };
 		CC66A5C02329F530002DA953 /* SettingsSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */; };
@@ -449,6 +451,8 @@
 		CC62F841241F4CFD0002BDC0 /* EventCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCategories.swift; sourceTree = "<group>"; };
 		CC62F843241F527A0002BDC0 /* CategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCell.swift; sourceTree = "<group>"; };
 		CC64524C22BE8E0600FBEF58 /* NavBackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBackCell.swift; sourceTree = "<group>"; };
+		CC65A49824455385004AA894 /* PopularEventsPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopularEventsPreview.swift; sourceTree = "<group>"; };
+		CC65A49A24455608004AA894 /* EventPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPreviewCell.swift; sourceTree = "<group>"; };
 		CC66A5B82329C4EC002DA953 /* CheckinSortSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckinSortSettings.swift; sourceTree = "<group>"; };
 		CC66A5BA2329C706002DA953 /* SortSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortSettingsCell.swift; sourceTree = "<group>"; };
 		CC66A5BF2329F530002DA953 /* SettingsSwitchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSwitchCell.swift; sourceTree = "<group>"; };
@@ -1015,6 +1019,8 @@
 				CCEA43E9243ECACB002F3E76 /* DiscoverBannerCell.swift */,
 				CCEA43EB243EFA9E002F3E76 /* BannerArticleContent.swift */,
 				CC0775962440469F002627CA /* AnnouncementContent.swift */,
+				CC65A49824455385004AA894 /* PopularEventsPreview.swift */,
+				CC65A49A24455608004AA894 /* EventPreviewCell.swift */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -1440,6 +1446,7 @@
 			files = (
 				CC2EE6F1230707330044C6ED /* UpcomingEvents.swift in Sources */,
 				CC5FB2E5237A221F0069AEC1 /* EventAttendanceCell.swift in Sources */,
+				CC65A49924455385004AA894 /* PopularEventsPreview.swift in Sources */,
 				CCCE5DB7235FEBCB005CE5D7 /* EventUpdateCell.swift in Sources */,
 				CC077595243FEBDC002627CA /* Announcement.swift in Sources */,
 				CC3AA9FF2420AFA500B9E4BA /* KeywordSuggestionCell.swift in Sources */,
@@ -1534,6 +1541,7 @@
 				CC1345F52367D5F900ACC6FC /* TicketNotificationCell.swift in Sources */,
 				CC2B454323FFAEBD00A2F4F6 /* EventOverviewTableCell.swift in Sources */,
 				CCC824F822BC53F700FFD251 /* GenderSelectionCell.swift in Sources */,
+				CC65A49B24455608004AA894 /* EventPreviewCell.swift in Sources */,
 				CCC824FA22BC5F9900FFD251 /* ButtonCell.swift in Sources */,
 				CC62F842241F4CFD0002BDC0 /* EventCategories.swift in Sources */,
 				671346242364E735004C3CEA /* RoleList.swift in Sources */,

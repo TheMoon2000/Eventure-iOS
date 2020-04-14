@@ -64,7 +64,7 @@ class AnnouncementContent: UIViewController {
             border.layer.shadowOpacity = 0.06
             border.layer.shadowOffset.height = 2
             border.layer.shadowRadius = 5
-            border.layer.borderColor = AppColors.line.cgColor
+            border.layer.borderColor = AppColors.lineLight.cgColor
             border.backgroundColor = AppColors.background
             border.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(border)
@@ -155,7 +155,7 @@ class AnnouncementContent: UIViewController {
                 self.bodyText.attributedText = self.announcement.content.attributedText()
             }
             
-            self.border.layer.borderColor = AppColors.line.cgColor
+            self.border.layer.borderColor = AppColors.lineLight.cgColor
         }
         
     }

@@ -45,7 +45,7 @@ class MemberDisplayCell: UITableViewCell {
         profilePicture = {
             let iv = UIImageView(image: #imageLiteral(resourceName: "guest").withRenderingMode(.alwaysTemplate))
             iv.tintColor = AppColors.mainDisabled
-            iv.layer.cornerRadius = 2
+            iv.layer.cornerRadius = 3
             iv.layer.masksToBounds = true
             iv.translatesAutoresizingMaskIntoConstraints = false
             bgView.addSubview(iv)

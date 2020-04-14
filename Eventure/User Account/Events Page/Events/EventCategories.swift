@@ -13,11 +13,17 @@ class EventCategories: UIViewController {
     
     private var tags = [Tag]()
     private var canvas: UIView!
+    private var fadingContainer: UIView!
     private var categoryView: UICollectionView!
     private var emptyLabel: UILabel!
     private var loadingBG: UIVisualEffectView!
     private var fallback: UIView!
     private var updater: ((UITraitCollection) -> ())?
+    
+    private var popularEventsHeading: UILabel!
+    private var popularEventsView: PopularEventsPreview!
+    
+    private var gradientLayer: CAGradientLayer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +45,7 @@ class EventCategories: UIViewController {
             canvas.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
             canvas.layer.shadowOpacity = 0.04
             canvas.layer.shadowOffset.height = -0.5
+            
             canvas.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(canvas)
             
@@ -56,27 +63,54 @@ class EventCategories: UIViewController {
         fallback.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         fallback.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -MainTabBarController.current.tabBar.bounds.height / 2).isActive = true
                 
+        fadingContainer = {
+            let v = UIView()
+            v.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(v)
+            
+            v.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor).isActive = true
+            v.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor).isActive = true
+            v.topAnchor.constraint(equalTo: canvas.topAnchor).isActive = true
+            v.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
+            
+            return v
+        }()
+        
         categoryView = {
             let cv = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
             cv.backgroundColor = .clear
             cv.register(CategoryCell.classForCoder(), forCellWithReuseIdentifier: "category")
-            cv.contentInset.bottom = MainTabBarController.current.tabBar.bounds.height
             cv.scrollIndicatorInsets.bottom = cv.contentInset.bottom
-            // cv.scrollIndicatorInsets.top = 2
+            cv.contentInset.top = 8
+            cv.contentInset.bottom = MainTabBarController.current.tabBar.bounds.height
+            cv.scrollIndicatorInsets.top = 8
             cv.refreshControl = UIRefreshControl()
             cv.refreshControl?.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
             cv.delegate = self
             cv.dataSource = self
             cv.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(cv)
+            fadingContainer.addSubview(cv)
             
-            cv.leftAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.leftAnchor).isActive = true
-            cv.rightAnchor.constraint(equalTo: canvas.safeAreaLayoutGuide.rightAnchor).isActive = true
-            cv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 8).isActive = true
-            cv.bottomAnchor.constraint(equalTo: canvas.bottomAnchor).isActive = true
+            cv.leftAnchor.constraint(equalTo: fadingContainer.safeAreaLayoutGuide.leftAnchor).isActive = true
+            cv.rightAnchor.constraint(equalTo: fadingContainer.safeAreaLayoutGuide.rightAnchor).isActive = true
+            cv.topAnchor.constraint(equalTo: fadingContainer.topAnchor).isActive = true
+            cv.bottomAnchor.constraint(equalTo: fadingContainer.bottomAnchor).isActive = true
             
             return cv
         }()
+        
+        gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [UIColor.clear.cgColor, AppColors.background.cgColor, AppColors.background.cgColor]
+        gradientLayer.needsDisplayOnBoundsChange = true
+        fadingContainer.layer.mask = gradientLayer
+        
+        DispatchQueue.main.async {
+            self.gradientLayer.frame = self.categoryView.frame
+            self.gradientLayer.locations = [
+                NSNumber(value: Double(1.0 / self.fadingContainer.frame.height)),
+                NSNumber(value: Double(5.0 / self.fadingContainer.frame.height)),
+                1.0]
+        }
         
         emptyLabel = {
             let label = UILabel()
@@ -147,8 +181,6 @@ class EventCategories: UIViewController {
             self.categoryView.collectionViewLayout.invalidateLayout()
         }
     }
-    
-
 }
 
 extension EventCategories: IndicatorInfoProvider {
@@ -241,6 +273,7 @@ extension EventCategories: UICollectionViewDelegateFlowLayout {
         
         coordinator.animate(alongsideTransition: { context in
             self.categoryView.collectionViewLayout.invalidateLayout()
+            self.gradientLayer.frame = self.categoryView.frame
         }, completion: nil)
     }
     

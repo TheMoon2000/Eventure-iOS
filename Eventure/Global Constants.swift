@@ -106,6 +106,9 @@ struct AppColors {
     /// A light gray color used for border lines.
     static var line = UIColor(named: "AppColors.line")!
     
+    /// A lighter line color suitable for white backgrounds.
+    static var lineLight = UIColor(named: "AppColors.lineLight")!
+    
     /// A dark gray color intended for title labels.
     static var label = UIColor(named: "AppColors.label")!
     
@@ -868,7 +871,7 @@ extension UIView {
     }
     
     func applyMildShadow() {
-        self.layer.shadowOpacity = 0.04
+        self.layer.shadowOpacity = 0.05
         self.layer.shadowOffset.height = 0.5
     }
 }

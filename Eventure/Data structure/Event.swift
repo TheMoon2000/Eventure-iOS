@@ -35,6 +35,7 @@ class Event {
     var requiresTicket = false
     var ticketStyle: QRStyle = .standard
     var lastModified: Date?
+    var views: Int = 0
     
     var hasBannerImage = false
     var bannerImage: UIImage?
@@ -153,6 +154,7 @@ class Event {
         secureCheckin = (dictionary["Strict"]?.int ?? 0) == 1
         requiresTicket = (dictionary["Requires ticket"]?.int ?? 0) == 1
         isPublic = (dictionary["Public"]?.int ?? 0) == 1
+        views = dictionary["Views"]?.int ?? 0
         
         if let int_raw = dictionary["Interested"]?.string {
             if let intArray = JSON(parseJSON: int_raw).arrayObject as? [Int] {
@@ -406,6 +408,7 @@ class Event {
         main.dictionaryObject?["Requires ticket"] = requiresTicket ? 1 : 0
         main.dictionaryObject?["Ticket types"] = admissionTypesEncoded
         main.dictionaryObject?["Ticket QR style"] = ticketStyle.rawValue
+        main.dictionaryObject?["Views"] = views
         
         return main
     }

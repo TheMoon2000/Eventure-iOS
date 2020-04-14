@@ -37,7 +37,7 @@ class OrgEventCell: UICollectionViewCell {
             view.backgroundColor = AppColors.card
             view.layer.borderWidth = 1
             view.layer.cornerRadius = 7
-            view.layer.masksToBounds = true
+            view.clipsToBounds = true
             view.layer.borderColor = AppColors.line.cgColor
             view.applyMildShadow()
             view.translatesAutoresizingMaskIntoConstraints = false

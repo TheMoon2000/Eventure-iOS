@@ -39,6 +39,12 @@ class Discover: UIViewController {
     private var senderLabel: UILabel!
     private var announcementLabel: MarqueeLabel!
     
+    private var popularEventsBG: UIView!
+    private var popularEventsHeading: UILabel!
+    private var popularEvents: UICollectionView!
+    private var popularEventsLabel: UILabel!
+    private var popularEventsLoader: UIActivityIndicatorView!
+    
     private var loadingBG: UIVisualEffectView!
 
     override func viewDidLoad() {
@@ -75,7 +81,9 @@ class Discover: UIViewController {
         
         canvas = {
             let sv = UIScrollView()
+            sv.contentInset.bottom = MainTabBarController.current.tabBar.bounds.height
             sv.isHidden = true
+            sv.alwaysBounceVertical = true
             sv.backgroundColor = AppColors.background
             sv.translatesAutoresizingMaskIntoConstraints = false
             baseView.addSubview(sv)
@@ -99,11 +107,11 @@ class Discover: UIViewController {
             cv.dataSource = self
             cv.delegate = self
             cv.translatesAutoresizingMaskIntoConstraints = false
-            baseView.addSubview(cv)
+            canvas.addSubview(cv)
             
             cv.leftAnchor.constraint(equalTo: baseView.leftAnchor).isActive = true
             cv.rightAnchor.constraint(equalTo: baseView.rightAnchor).isActive = true
-            cv.topAnchor.constraint(equalTo: baseView.topAnchor, constant: 5).isActive = true
+            cv.topAnchor.constraint(equalTo: canvas.topAnchor, constant: 5).isActive = true
             
             let h = cv.heightAnchor.constraint(equalTo: cv.widthAnchor, multiplier: 0.5)
             h.priority = .defaultHigh
@@ -118,7 +126,7 @@ class Discover: UIViewController {
             let pc = UIPageControl()
             pc.hidesForSinglePage = true
             pc.translatesAutoresizingMaskIntoConstraints = false
-            baseView.addSubview(pc)
+            canvas.addSubview(pc)
             
             pc.centerXAnchor.constraint(equalTo: baseView.safeAreaLayoutGuide.centerXAnchor).isActive = true
             pc.bottomAnchor.constraint(equalTo: bannerView.bottomAnchor, constant: -10).isActive = true
@@ -193,6 +201,113 @@ class Discover: UIViewController {
             return label
         }()
         
+        popularEventsBG = {
+            let bg = UIView()
+            bg.backgroundColor = AppColors.tableBG.withAlphaComponent(0.8)
+            bg.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(bg)
+            
+            bg.leftAnchor.constraint(equalTo: baseView.leftAnchor).isActive = true
+            bg.rightAnchor.constraint(equalTo: baseView.rightAnchor).isActive = true
+            bg.topAnchor.constraint(equalTo: announcementContainer.bottomAnchor, constant: 30).isActive = true
+            bg.bottomAnchor.constraint(lessThanOrEqualTo: canvas.bottomAnchor, constant: -20).isActive = true
+            
+            let topLine = UIView()
+            topLine.backgroundColor = AppColors.line
+            topLine.translatesAutoresizingMaskIntoConstraints = false
+            bg.addSubview(topLine)
+            
+            topLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            topLine.leftAnchor.constraint(equalTo: bg.leftAnchor).isActive = true
+            topLine.rightAnchor.constraint(equalTo: bg.rightAnchor).isActive = true
+            topLine.topAnchor.constraint(equalTo: bg.topAnchor).isActive = true
+            
+            let bottomLine = UIView()
+            bottomLine.backgroundColor = AppColors.line
+            bottomLine.translatesAutoresizingMaskIntoConstraints = false
+            bg.addSubview(bottomLine)
+            
+            bottomLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            bottomLine.leftAnchor.constraint(equalTo: bg.leftAnchor).isActive = true
+            bottomLine.rightAnchor.constraint(equalTo: bg.rightAnchor).isActive = true
+            bottomLine.bottomAnchor.constraint(equalTo: bg.bottomAnchor).isActive = true
+            
+            return bg
+        }()
+        
+        popularEventsHeading = {
+            let label = UILabel()
+            label.text = "Popular Events"
+            label.font = .appFontSemibold(20)
+            label.textColor = AppColors.label
+            label.translatesAutoresizingMaskIntoConstraints = false
+            popularEventsBG.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: announcementContainer.leftAnchor).isActive = true
+            label.topAnchor.constraint(equalTo: popularEventsBG.topAnchor, constant: 20).isActive = true
+            
+            return label
+        }()
+        
+        popularEvents = {
+            let cvc = PopularEventsPreview()
+            let cv = cvc.collectionView!
+            
+            cvc.finishedLoadingHandler = { status in
+                self.popularEventsLoader.stopAnimating()
+                if status == .nothing {
+                    self.popularEventsLabel.text = "Oops, you came at an unfortunate time."
+                } else if status == .error {
+                    self.popularEventsLabel.text = CONNECTION_ERROR
+                } else if status == .success {
+                    self.popularEventsLabel.text = ""
+                }
+            }
+            
+            cv.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(cv)
+            
+            cv.leftAnchor.constraint(equalTo: baseView.leftAnchor).isActive = true
+            cv.rightAnchor.constraint(equalTo: baseView.rightAnchor).isActive = true
+            cv.topAnchor.constraint(equalTo: popularEventsHeading.bottomAnchor, constant: 5).isActive = true
+            cv.heightAnchor.constraint(equalToConstant: 145).isActive = true
+            cv.bottomAnchor.constraint(equalTo: popularEventsBG.bottomAnchor, constant: -20).isActive = true
+            
+            addChild(cvc)
+            cvc.didMove(toParent: self)
+            
+            return cv
+        }()
+        
+        popularEventsLoader = {
+            let loader = UIActivityIndicatorView()
+            loader.hidesWhenStopped = true
+            loader.startAnimating()
+            loader.color = AppColors.lightControl
+            loader.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(loader)
+            
+            loader.centerXAnchor.constraint(equalTo: popularEvents.centerXAnchor).isActive = true
+            loader.centerYAnchor.constraint(equalTo: popularEvents.centerYAnchor).isActive = true
+            
+            return loader
+        }()
+        
+        popularEventsLabel = {
+            let label = UILabel()
+            label.textColor = AppColors.prompt
+            label.numberOfLines = 5
+            label.textAlignment = .center
+            label.font = .appFontRegular(16)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            canvas.addSubview(label)
+            
+            label.leftAnchor.constraint(equalTo: popularEventsBG.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
+            label.rightAnchor.constraint(equalTo: popularEventsBG.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive =  true
+            label.centerYAnchor.constraint(equalTo: popularEvents.centerYAnchor).isActive = true
+            
+            return label
+        }()
         
         loadingBG = view.addLoader()
     }
@@ -213,7 +328,7 @@ class Discover: UIViewController {
         }
     }
     
-    @objc private func getAllInfo() {
+    private func getAllInfo() {
         
         loadingBG.isHidden = false
         
