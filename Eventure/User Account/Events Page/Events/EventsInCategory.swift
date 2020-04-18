@@ -79,21 +79,7 @@ class EventsInCategory: UIViewController, EventProvider {
         
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-        
-        emptyLabel = {
-            let label = UILabel()
-            label.textColor = .gray
-            label.font = .appFontRegular(17)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: loadingBG.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: loadingBG.centerYAnchor).isActive = true
-            
-            return label
-        }()
+        emptyLabel = view.addCenteredLabel()
     }
     
     override func viewWillAppear(_ animated: Bool) {

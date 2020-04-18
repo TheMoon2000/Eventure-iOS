@@ -120,7 +120,8 @@ class BannerArticleContent: UIViewController {
             tv.backgroundColor = .clear
             tv.delegate = self
             tv.isEditable = false
-            tv.textContainerInset = .zero
+            tv.textContainerInset.top = 12
+            tv.textContainerInset.bottom = 12
             tv.textContainer.lineFragmentPadding = .zero
             tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -155,7 +156,7 @@ class BannerArticleContent: UIViewController {
     }
     
     @objc private func more() {
-        let alert = UIAlertController(title: "This article is associated with \(bannerInfo.link!.absoluteString)", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "This article is associated with \(bannerInfo.link!.absoluteString).", message: nil, preferredStyle: .actionSheet)
         alert.addAction(.init(title: "Visit Link", style: .default, handler: { _ in
             let vc = SFSafariViewController(url: self.bannerInfo.link!)
             vc.preferredControlTintColor = AppColors.main

@@ -34,8 +34,6 @@ class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewData
         title = "Subscribers"
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         backGroundLabel = {
             let label = UILabel()

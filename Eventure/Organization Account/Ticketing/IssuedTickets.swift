@@ -57,8 +57,6 @@ class IssuedTickets: UITableViewController, IndicatorInfoProvider {
         tableView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(showMore)))
                 
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         emptyLabel = {
             let label = UILabel()

@@ -212,7 +212,7 @@ class TagPickerView: UIViewController {
             return button
         }()
         
-        loadingBG = view.addLoader()
+        loadingBG = view.addLoader(withConstraints: false)
         loadingBG.centerXAnchor.constraint(equalTo: tagPicker.centerXAnchor).isActive = true
         loadingBG.centerYAnchor.constraint(equalTo: tagPicker.centerYAnchor, constant: (topBanner.frame.height - bottomBanner.frame.height) / 2).isActive = true
 

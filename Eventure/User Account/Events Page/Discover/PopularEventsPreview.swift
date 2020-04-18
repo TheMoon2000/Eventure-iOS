@@ -53,7 +53,7 @@ class PopularEventsPreview: UICollectionViewController {
     }
 
     
-    private func getPopularEvents() {
+    func getPopularEvents() {
         
         var parameters = [String: String]()
         if let user = User.current {

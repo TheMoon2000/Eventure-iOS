@@ -50,8 +50,6 @@ class TicketPurchases: UITableViewController, IndicatorInfoProvider {
         tableView.register(CheckinUserCell().classForCoder, forCellReuseIdentifier: "user")
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         emptyLabel = {
             let label = UILabel()

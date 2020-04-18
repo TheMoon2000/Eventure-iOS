@@ -73,8 +73,6 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         }()
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: myTableView.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: myTableView.centerYAnchor).isActive = true
         
         retrieveEvents()
     }
@@ -132,7 +130,10 @@ class LikedEvents: UIViewController, UITableViewDelegate, UITableViewDataSource 
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "events/ListInterested",
-                           parameters: ["userId": String(User.current?.uuid ?? 0)])!
+                           parameters: [
+                              "userId": String(User.current?.uuid ?? 0),
+                              "listFavorites": "1"
+                           ])!
         var request = URLRequest(url: url)
         request.addAuthHeader()
         

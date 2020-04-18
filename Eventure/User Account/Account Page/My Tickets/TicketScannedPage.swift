@@ -33,8 +33,6 @@ class TicketScannedPage: UIViewController {
         super.viewDidLoad()
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         navigationItem.rightBarButtonItem = .init(title: "Close", style: .done, target: self, action: #selector(close))
         

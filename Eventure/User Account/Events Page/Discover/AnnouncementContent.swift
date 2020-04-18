@@ -13,6 +13,7 @@ import SafariServices
 class AnnouncementContent: UIViewController {
     
     private var announcement: Announcement!
+    private var fromHistory = false
     
     private var canvas: UIScrollView!
     private var border: UIView!
@@ -21,10 +22,11 @@ class AnnouncementContent: UIViewController {
     
     private let padding: CGFloat = 18.0
     
-    required init(_ announcement: Announcement) {
+    required init(_ announcement: Announcement, fromHistory: Bool = false) {
         super.init(nibName: nil, bundle: nil)
         
         self.announcement = announcement
+        self.fromHistory = fromHistory
     }
     
     required init?(coder: NSCoder) {
@@ -37,6 +39,7 @@ class AnnouncementContent: UIViewController {
         view.backgroundColor = AppColors.background
         
         title = announcement.title
+        navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
         
         if announcement.link != nil {
             navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(more))
@@ -90,7 +93,8 @@ class AnnouncementContent: UIViewController {
             tv.backgroundColor = .clear
             tv.delegate = self
             tv.isEditable = false
-            tv.textContainerInset = .zero
+            tv.textContainerInset.top = 12
+            tv.textContainerInset.bottom = 12
             tv.textContainer.lineFragmentPadding = .zero
             tv.linkTextAttributes[.foregroundColor] = AppColors.link
             tv.translatesAutoresizingMaskIntoConstraints = false
@@ -134,12 +138,18 @@ class AnnouncementContent: UIViewController {
     }
     
     @objc private func more() {
-        let alert = UIAlertController(title: "This article is associated with \(announcement.link!.absoluteString)", message: nil, preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: "This article is associated with \(announcement.link!.absoluteString).", message: nil, preferredStyle: .actionSheet)
         alert.addAction(.init(title: "Visit Link", style: .default, handler: { _ in
             let vc = SFSafariViewController(url: self.announcement.link!)
             vc.preferredControlTintColor = AppColors.main
             self.present(vc, animated: true)
         }))
+        if !fromHistory {
+            alert.addAction(.init(title: "Previous Announcements", style: .default, handler: { _ in
+                let vc = ArchivedAnnouncements()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }))
+        }
         alert.addAction(.init(title: "Cancel", style: .cancel))
         
         present(alert, animated: true)

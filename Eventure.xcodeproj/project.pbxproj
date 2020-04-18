@@ -171,6 +171,8 @@
 		CC8B62FE236BFD05007BEC57 /* MajorDistributionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8B62FD236BFD05007BEC57 /* MajorDistributionCell.swift */; };
 		CC8E75DE22FFD96100AEB00C /* OrgEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */; };
 		CC94F00122F7E4AD00E87E2A /* OrganizationRegistrationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */; };
+		CC97ACC62448E1BD00FC9383 /* ArchivedAnnouncements.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97ACC52448E1BD00FC9383 /* ArchivedAnnouncements.swift */; };
+		CC97ACC82448E90300FC9383 /* AnnouncementHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC97ACC72448E90300FC9383 /* AnnouncementHistoryCell.swift */; };
 		CC9A74F52330A97B0021A790 /* TicketDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A74F42330A97B0021A790 /* TicketDetails.swift */; };
 		CC9A74F72330AC930021A790 /* TicketTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9A74F62330AC930021A790 /* TicketTabView.swift */; };
 		CC9B0561241AA79E00CABBEC /* EventDetailTabStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9B0560241AA79E00CABBEC /* EventDetailTabStrip.swift */; };
@@ -478,6 +480,8 @@
 		CC8B62FD236BFD05007BEC57 /* MajorDistributionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MajorDistributionCell.swift; sourceTree = "<group>"; };
 		CC8E75DD22FFD96100AEB00C /* OrgEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgEventCell.swift; sourceTree = "<group>"; };
 		CC94F00022F7E4AC00E87E2A /* OrganizationRegistrationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrganizationRegistrationData.swift; sourceTree = "<group>"; };
+		CC97ACC52448E1BD00FC9383 /* ArchivedAnnouncements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedAnnouncements.swift; sourceTree = "<group>"; };
+		CC97ACC72448E90300FC9383 /* AnnouncementHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementHistoryCell.swift; sourceTree = "<group>"; };
 		CC9A74F42330A97B0021A790 /* TicketDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketDetails.swift; sourceTree = "<group>"; };
 		CC9A74F62330AC930021A790 /* TicketTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketTabView.swift; sourceTree = "<group>"; };
 		CC9B0560241AA79E00CABBEC /* EventDetailTabStrip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailTabStrip.swift; sourceTree = "<group>"; };
@@ -1021,6 +1025,8 @@
 				CC0775962440469F002627CA /* AnnouncementContent.swift */,
 				CC65A49824455385004AA894 /* PopularEventsPreview.swift */,
 				CC65A49A24455608004AA894 /* EventPreviewCell.swift */,
+				CC97ACC52448E1BD00FC9383 /* ArchivedAnnouncements.swift */,
+				CC97ACC72448E90300FC9383 /* AnnouncementHistoryCell.swift */,
 			);
 			path = Discover;
 			sourceTree = "<group>";
@@ -1573,6 +1579,7 @@
 				CC66A5B92329C4EC002DA953 /* CheckinSortSettings.swift in Sources */,
 				CC23293223163B720097A915 /* UpdatePasswordPage.swift in Sources */,
 				CC405DCE2307F47000B85BEC /* OrgInfoTabStrip.swift in Sources */,
+				CC97ACC82448E90300FC9383 /* AnnouncementHistoryCell.swift in Sources */,
 				CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */,
 				CC595CF1235C1A3E003D74F6 /* InviteNotification.swift in Sources */,
 				CC188CF8236648860060909D /* CalendarPreference.swift in Sources */,
@@ -1610,6 +1617,7 @@
 				CC2EE6EB2306F9750044C6ED /* OrgDetailPage.swift in Sources */,
 				CCAB884B235D0F930053AA20 /* MessageCenter.swift in Sources */,
 				CC20505B2335F1F000F6A114 /* ActivateTicket.swift in Sources */,
+				CC97ACC62448E1BD00FC9383 /* ArchivedAnnouncements.swift in Sources */,
 				CC3312822322121C00DC03D2 /* AboutPage.swift in Sources */,
 				CCDBEF8B23A60A9400B445D1 /* ApplicationDateCell.swift in Sources */,
 				CC2CCD47233184CD000C65E2 /* TicketTypes.swift in Sources */,

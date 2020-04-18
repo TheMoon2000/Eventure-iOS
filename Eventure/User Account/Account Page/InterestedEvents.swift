@@ -73,8 +73,6 @@ class InterestedEvents: UIViewController, UITableViewDelegate, UITableViewDataSo
         }()
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: myTableView.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: myTableView.centerYAnchor).isActive = true
         
         retrieveEvents()
     }

@@ -730,7 +730,7 @@ extension UIView {
     }
     
     /// Insert a standardized loading view into the target view.
-    func addLoader() -> UIVisualEffectView {
+    func addLoader(withConstraints: Bool = true) -> UIVisualEffectView {
         
         let loadingBG: UIVisualEffectView = {
             var effect = UIBlurEffect(style: .extraLight)
@@ -746,8 +746,11 @@ extension UIView {
             
             v.widthAnchor.constraint(equalToConstant: 110).isActive = true
             v.heightAnchor.constraint(equalTo: v.widthAnchor).isActive = true
-            v.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
-            v.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            if withConstraints {
+                v.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
+                v.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor).isActive = true
+            }
             
             return v
         }()
@@ -868,6 +871,25 @@ extension UIView {
             }
             
         })
+    }
+    
+    func addCenteredLabel() -> UILabel {
+        return {
+            let label = UILabel()
+            label.textColor = .gray
+            label.numberOfLines = 2
+            label.textAlignment = .center
+            label.font = .appFontRegular(17)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            self.addSubview(label)
+            
+            label.centerXAnchor.constraint(equalTo: safeAreaLayoutGuide.centerXAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: safeAreaLayoutGuide.centerYAnchor).isActive = true
+            label.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 30).isActive = true
+            label.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30).isActive = true
+            
+            return label
+        }()
     }
     
     func applyMildShadow() {

@@ -87,8 +87,6 @@ class MessageCenter: UIViewController {
         }()
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(oneTimeUpdate), name: NEW_NOTIFICATION, object: nil)
                         

@@ -41,7 +41,7 @@ class Discover: UIViewController {
     
     private var popularEventsBG: UIView!
     private var popularEventsHeading: UILabel!
-    private var popularEvents: UICollectionView!
+    private var popularEventsController: PopularEventsPreview!
     private var popularEventsLabel: UILabel!
     private var popularEventsLoader: UIActivityIndicatorView!
     
@@ -141,7 +141,9 @@ class Discover: UIViewController {
         
         (failPage, updater) = baseView.addConnectionNotice {
             self.getAllInfo()
-//            self.canvas.isHidden = false
+            self.popularEventsController.getPopularEvents()
+            self.popularEventsLabel.text = ""
+            self.popularEventsLoader.startAnimating()
         }
         failPage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
         failPage.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -MainTabBarController.current.tabBar.bounds.height / 2).isActive = true
@@ -249,7 +251,7 @@ class Discover: UIViewController {
             return label
         }()
         
-        popularEvents = {
+        popularEventsController = {
             let cvc = PopularEventsPreview()
             let cv = cvc.collectionView!
             
@@ -276,7 +278,7 @@ class Discover: UIViewController {
             addChild(cvc)
             cvc.didMove(toParent: self)
             
-            return cv
+            return cvc
         }()
         
         popularEventsLoader = {
@@ -287,8 +289,8 @@ class Discover: UIViewController {
             loader.translatesAutoresizingMaskIntoConstraints = false
             canvas.addSubview(loader)
             
-            loader.centerXAnchor.constraint(equalTo: popularEvents.centerXAnchor).isActive = true
-            loader.centerYAnchor.constraint(equalTo: popularEvents.centerYAnchor).isActive = true
+            loader.centerXAnchor.constraint(equalTo: popularEventsController.collectionView.centerXAnchor).isActive = true
+            loader.centerYAnchor.constraint(equalTo: popularEventsController.collectionView.centerYAnchor).isActive = true
             
             return loader
         }()
@@ -304,7 +306,7 @@ class Discover: UIViewController {
             
             label.leftAnchor.constraint(equalTo: popularEventsBG.safeAreaLayoutGuide.leftAnchor, constant: 20).isActive = true
             label.rightAnchor.constraint(equalTo: popularEventsBG.safeAreaLayoutGuide.rightAnchor, constant: -20).isActive =  true
-            label.centerYAnchor.constraint(equalTo: popularEvents.centerYAnchor).isActive = true
+            label.centerYAnchor.constraint(equalTo: popularEventsController.collectionView.centerYAnchor).isActive = true
             
             return label
         }()

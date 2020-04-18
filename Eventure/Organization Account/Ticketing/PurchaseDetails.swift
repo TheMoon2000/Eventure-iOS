@@ -31,8 +31,6 @@ class PurchaseDetails: UITableViewController {
         tableView.backgroundColor = AppColors.canvas
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         lookupTransferHistory()
     }

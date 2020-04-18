@@ -112,22 +112,9 @@ class EventCategories: UIViewController {
                 1.0]
         }
         
-        emptyLabel = {
-            let label = UILabel()
-            label.textColor = .gray
-            label.font = .appFontRegular(17)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            canvas.addSubview(label)
-            
-            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-            label.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
-            
-            return label
-        }()
+        emptyLabel = canvas.addCenteredLabel()
         
         loadingBG = canvas.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

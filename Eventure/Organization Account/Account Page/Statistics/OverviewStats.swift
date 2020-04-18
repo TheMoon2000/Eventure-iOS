@@ -68,8 +68,6 @@ class OverviewStats: UIViewController, IndicatorInfoProvider {
         }()
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: statCollection.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: statCollection.centerYAnchor).isActive = true
         
         fetchStats()
     }

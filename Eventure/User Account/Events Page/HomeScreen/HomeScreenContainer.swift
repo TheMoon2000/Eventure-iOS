@@ -20,6 +20,7 @@ class HomeScreenContainer: UIViewController, FlowProgressReporting {
         title = "Events"
         
         navigationItem.leftBarButtonItem = .init(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(options))
+        navigationItem.leftBarButtonItem?.isEnabled = false
         navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "search"), style: .plain, target: self, action: #selector(search))
         
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)

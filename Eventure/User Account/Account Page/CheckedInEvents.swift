@@ -74,8 +74,6 @@ class CheckedInEvents: UIViewController, UITableViewDelegate, UITableViewDataSou
         }()
         
         loadingBG = view.addLoader()
-        loadingBG.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        loadingBG.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor).isActive = true
         
         retrieveEvents()
     }
