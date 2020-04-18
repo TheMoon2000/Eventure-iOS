@@ -8,11 +8,15 @@
 
 import UIKit
 import XLPagerTabStrip
+import SafariServices
 
 class CampusInfoOverview: UIViewController {
     
     private var miniApps: UICollectionView!
     private var emptyLabel: UILabel!
+    
+    let titles = ["Dining Hall Menus", "Reserve Study Room"]
+    let widgetIcons = [#imageLiteral(resourceName: "dining"), #imageLiteral(resourceName: "library")]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,8 +105,9 @@ extension CampusInfoOverview: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let cell = CampusInfoWidget()
-        cell.name.text = indexPath.row == 0 ? "Dining Hall Menus" : "Widget item"
+        cell.name.text = titles[indexPath.row]
         
+        print(widgetFit.widgetWidth)
         return CGSize(width: widgetFit.widgetWidth, height: cell.preferredHeight(width: widgetFit.widgetWidth))
     }
     
@@ -135,21 +140,15 @@ extension CampusInfoOverview: UICollectionViewDelegateFlowLayout {
 extension CampusInfoOverview: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "widget", for: indexPath) as! CampusInfoWidget
         
-        switch indexPath.row {
-        case 0:
-            cell.name.text = "Dining Hall Menus"
-            cell.icon.image = #imageLiteral(resourceName: "dining")
-        default:
-            cell.name.text = "Widget item"
-            cell.icon.image = [#imageLiteral(resourceName: "windmill"), #imageLiteral(resourceName: "paper_plane"), #imageLiteral(resourceName: "rgb"), #imageLiteral(resourceName: "leaf")].randomElement()!
-        }
+        cell.name.text = titles[indexPath.row]
+        cell.icon.image = widgetIcons[indexPath.row]
         
         return cell
     }
@@ -161,6 +160,10 @@ extension CampusInfoOverview: UICollectionViewDelegate, UICollectionViewDataSour
             let vc = AllDiningHalls()
             vc.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(vc, animated: true)
+        case 1:
+            let vc = SFSafariViewController(url: URL(string: "https://berkeley.libcal.com")!)
+            vc.preferredControlTintColor = AppColors.main
+            self.present(vc, animated: true)
         default:
             break
         }
