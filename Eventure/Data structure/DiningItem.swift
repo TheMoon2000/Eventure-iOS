@@ -11,7 +11,7 @@ import SwiftyJSON
 
 class DiningItem: CustomStringConvertible {
     let itemName: String
-    let category: Category
+    let category: String
     let options: Options
     
     lazy var attributedString: NSAttributedString = {
@@ -58,7 +58,7 @@ class DiningItem: CustomStringConvertible {
     ]
     
     /// Create a new dining item based on the provided information.
-    init(name: String, category: Category, options: JSON) {
+    init(name: String, category: String, options: JSON) {
         self.itemName = name
         self.category = category
         
@@ -113,26 +113,5 @@ extension DiningItem {
             }
         }
     }
-    
-    enum Category: String {
-        case bearFit = "Bear Fit"
-        case breakfast = "Breakfast"
-        case brunch = "Brunch"
-        case byoBar = "BYO Bar"
-        case centerOfThePlate = "Center of the Plate"
-        case danish = "Danish"
-        case deliSalad = "Deli Salad"
-        case dessert = "Dessert"
-        case entrees = "Entrees"
-        case fusion = "Fusion"
-        case grilled = "Grilled"
-        case hotGrains = "Hot Grains"
-        case kosherDeli = "Kosher Deli"
-        case kosherEntrees = "Kosher Entrees"
-        case muffin = "Muffin"
-        case pastas = "Pastas"
-        case pizza = "Pizza"
-        case soups = "Soups"
-        case specialtySalads = "Specialty Salads"
-    }
+
 }

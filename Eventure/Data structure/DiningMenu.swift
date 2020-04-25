@@ -9,11 +9,14 @@
 import Foundation
 import SwiftyJSON
 
+let SPECIAL_NAMES = ["LOC", "DAY", "IS_OPEN", "MSG"]
+
 class DiningMenu {
     let location: String
     let isOpen: Bool
     let day: Int
     let message: String?
+    var menuItems = [String: [DiningItem]]()
     var mealTime: Int { -1 } // Should be overwritten.
     
     init(json: JSON) {
@@ -30,370 +33,98 @@ class DiningMenu {
     }
     
     var diningItems: [(name: String, items: [DiningItem])] {
-        return []
+        return menuItems.sorted { (pair1, pair2) -> Bool in
+            return pair1.key < pair2.key
+        }.map { (name: $0.key, items: $0.value) }
     }
 }
 
 class BreakfastMenu: DiningMenu {
-    
-    var breakfast: [DiningItem]?
-    var hotGrains: [DiningItem]?
-    var muffin: [DiningItem]?
-    var danish: [DiningItem]?
-    var byoBar: [DiningItem]?
+        
     override var mealTime: Int { 0 }
     
     override init(json: JSON) {
-        
-        let dict = json.dictionaryValue
-                        
-        if let stringData = dict["ENTREES"]?.string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .breakfast, options: options))
-            }
-            breakfast = tmp
-        }
-        
-        if let stringData = dict["HOT GRAINS"]?.string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .hotGrains, options: options))
-            }
-            hotGrains = tmp
-        }
-        
-        if let stringData = dict["MUFFIN"]?.string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .muffin, options: options))
-            }
-            muffin = tmp
-        }
-        
-        if let stringData = dict["DANISH"]?.string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .danish, options: options))
-            }
-            danish = tmp
-        }
-        
-        if let stringData = dict["BYO BAR"]?.string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .byoBar, options: options))
-            }
-            byoBar = tmp
-        }
-        
         super.init(json: json)
-    }
 
-    override var diningItems: [(name: String, items: [DiningItem])] {
-        return [breakfast, hotGrains, muffin, danish, byoBar]
-            .filter { $0 != nil && $0!.count > 0 }
-            .map { ($0![0].category.rawValue, $0!) }
+        let dictionary = json.dictionaryValue
+                
+        for (categoryName, info) in dictionary {
+            
+            var dishes = [DiningItem]()
+            
+            if SPECIAL_NAMES.contains(categoryName) { continue }
+            
+            for (name, options) in JSON(parseJSON: info.stringValue).dictionaryValue {
+                dishes.append(.init(name: name, category: categoryName, options: options))
+            }
+            
+            if !dishes.isEmpty {
+                menuItems[categoryName] = dishes
+            }
+        }
+        
     }
     
 }
 
 class LunchDiningMenu: DiningMenu {
-    
-    var brunch: [DiningItem]?
-    var entrees: [DiningItem]?
-    var bearFit: [DiningItem]?
-    var grilled: [DiningItem]?
-    var pizza: [DiningItem]?
-    var pastas: [DiningItem]?
-    var desserts: [DiningItem]?
-    var soups: [DiningItem]?
-    var deliSalad: [DiningItem]?
-    var hotGrains: [DiningItem]?
-    var muffin: [DiningItem]?
-    var fusion: [DiningItem]?
-    var centerOfThePlate: [DiningItem]?
-    var specialtySalads: [DiningItem]?
-    var kosherDeli: [DiningItem]?
-    var danish: [DiningItem]?
-    
+        
     override var mealTime: Int { 1 }
     
     override init(json: JSON) {
+        super.init(json: json)
         
-        if let stringData = json["BREAKFAST"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .breakfast, options: options))
+        let dictionary = json.dictionaryValue
+                
+        for (categoryName, info) in dictionary {
+            
+            var dishes = [DiningItem]()
+            
+            if SPECIAL_NAMES.contains(categoryName) { continue }
+            
+            for (name, options) in JSON(parseJSON: info.stringValue).dictionaryValue {
+                dishes.append(.init(name: name, category: categoryName, options: options))
             }
-            brunch = tmp
-        }
-        
-        if let stringData = json["ENTREES"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .entrees, options: options))
+            
+            if !dishes.isEmpty {
+                menuItems[categoryName] = dishes
             }
-            entrees = tmp
-        }
-        
-        if let stringData = json["BEAR FIT"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .bearFit, options: options))
-            }
-            bearFit = tmp
-        }
-        
-        if let stringData = json["GRILLED"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .grilled, options: options))
-            }
-            grilled = tmp
-        }
-        
-        if let stringData = json["PIZZAS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .pizza, options: options))
-            }
-            pizza = tmp
-        }
-        
-        if let stringData = json["PASTAS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .pastas, options: options))
-            }
-            pastas = tmp
-        }
-        
-        if let stringData = json["DESSERTS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .dessert, options: options))
-            }
-            desserts = tmp
-        }
-        
-        if let stringData = json["SOUPS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .soups, options: options))
-            }
-            soups = tmp
-        }
-        
-        if let stringData = json["DELI AND SALAD BAR"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .deliSalad, options: options))
-            }
-            deliSalad = tmp
-        }
-        
-        if let stringData = json["HOT GRAINS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .hotGrains, options: options))
-            }
-            hotGrains = tmp
-        }
-        
-        if let stringData = json["MUFFIN"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .muffin, options: options))
-            }
-            muffin = tmp
-        }
-        
-        if let stringData = json["FUSION"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .bearFit, options: options))
-            }
-            bearFit = tmp
-        }
-        
-        if let stringData = json["CENTER OF THE PLATE"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .centerOfThePlate, options: options))
-            }
-            centerOfThePlate = tmp
-        }
-        
-        if let stringData = json["SPECIALTY SALADS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .specialtySalads, options: options))
-            }
-            specialtySalads = tmp
-        }
-        
-        if let stringData = json["KOSHER DELI"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .kosherDeli, options: options))
-            }
-            kosherDeli = tmp
-        }
-        
-        if let stringData = json["DANISH"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .danish, options: options))
-            }
-            danish = tmp
         }
 
-        super.init(json: json)
     }
     
-    override var diningItems: [(name: String, items: [DiningItem])] {
-        return [
-            brunch, entrees, bearFit, grilled, pizza, pastas, desserts, soups, deliSalad, hotGrains, muffin, fusion, centerOfThePlate, specialtySalads, kosherDeli, danish
-        ]
-            .filter { $0 != nil && $0!.count > 0 }
-            .map { ($0![0].category.rawValue, $0!) }
-    }
 }
 
 class DinnerDiningMenu: DiningMenu {
     
-    var soups: [DiningItem]?
-    var deliSalad: [DiningItem]?
-    var entrees: [DiningItem]?
-    var bearFit: [DiningItem]?
-    var grilled: [DiningItem]?
-    var pizza: [DiningItem]?
-    var pastas: [DiningItem]?
-    var desserts: [DiningItem]?
-    var fusion: [DiningItem]?
-    var centerOfThePlate: [DiningItem]?
-    var specialtySalads: [DiningItem]?
-    var kosherEntrees: [DiningItem]?
-    var kosherDeli: [DiningItem]?
-    
     override var mealTime: Int { 2 }
     
     override init(json: JSON) {
-        
-        if let stringData = json["SOUPS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .soups, options: options))
-            }
-            soups = tmp
-        }
-        
-        if let stringData = json["DELI AND SALAD BAR"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .deliSalad, options: options))
-            }
-            deliSalad = tmp
-        }
-        
-        if let stringData = json["ENTREES"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .entrees, options: options))
-            }
-            entrees = tmp
-        }
-        
-        if let stringData = json["BEAR FIT"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .bearFit, options: options))
-            }
-            bearFit = tmp
-        }
-        
-        if let stringData = json["GRILLED"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .grilled, options: options))
-            }
-            grilled = tmp
-        }
-        
-        if let stringData = json["PIZZAS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .pizza, options: options))
-            }
-            pizza = tmp
-        }
-        
-        if let stringData = json["PASTAS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .pastas, options: options))
-            }
-            pastas = tmp
-        }
-        
-        if let stringData = json["DESSERTS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .dessert, options: options))
-            }
-            desserts = tmp
-        }
-        
-        if let stringData = json["FUSION"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .fusion, options: options))
-            }
-            fusion = tmp
-        }
-        
-        if let stringData = json["CENTER OF THE PLATE"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .centerOfThePlate, options: options))
-            }
-            centerOfThePlate = tmp
-        }
-        
-        if let stringData = json["SPECIALTY SALADS"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .specialtySalads, options: options))
-            }
-            specialtySalads = tmp
-        }
-        
-        if let stringData = json["KOSHER ENTREES"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .kosherEntrees, options: options))
-            }
-            kosherEntrees = tmp
-        }
-        
-        if let stringData = json["KOSHER DELI"].string, let array = JSON(parseJSON: stringData).dictionary {
-            var tmp = [DiningItem]()
-            for (name, options) in array {
-                tmp.append(DiningItem(name: name, category: .kosherDeli, options: options))
-            }
-            kosherDeli = tmp
-        }
-        
         super.init(json: json)
+        
+        let dictionary = json.dictionaryValue
+                
+        for (categoryName, info) in dictionary {
+            
+            var dishes = [DiningItem]()
+            
+            if SPECIAL_NAMES.contains(categoryName) { continue }
+            
+            for (name, options) in JSON(parseJSON: info.stringValue).dictionaryValue {
+                dishes.append(.init(name: name, category: categoryName, options: options))
+            }
+            
+            if !dishes.isEmpty {
+                menuItems[categoryName] = dishes
+            }
+        }
+        
     }
     
     override var diningItems: [(name: String, items: [DiningItem])] {
-        return [
-            soups, deliSalad, entrees, bearFit, grilled, pizza, pastas, desserts, fusion, centerOfThePlate, specialtySalads, kosherEntrees, kosherDeli
-        ]
-            .filter { $0 != nil && $0!.count > 0 }
-            .map { ($0![0].category.rawValue, $0!) }
+        return menuItems.sorted { (pair1, pair2) -> Bool in
+            return pair1.key < pair2.key
+        }.map { (name: $0.key, items: $0.value) }
     }
     
 }

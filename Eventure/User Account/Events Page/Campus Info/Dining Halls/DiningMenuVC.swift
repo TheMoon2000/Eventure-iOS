@@ -136,7 +136,7 @@ extension DiningMenuVC: UITableViewDataSource, UITableViewDelegate {
         let label: UILabel = {
             let label = UILabel()
             label.text = diningMenu?.diningItems[section - offset].name
-            label.font = .appFontSemibold(17)
+            label.font = .appFontSemibold(16)
             label.numberOfLines = 3
             label.translatesAutoresizingMaskIntoConstraints = false
             container.contentView.addSubview(label)
