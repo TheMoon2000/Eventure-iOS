@@ -154,12 +154,7 @@ class Organization: CustomStringConvertible {
     }
 
     var description: String {
-        var str = "Organization (\"\(String(describing: title))\":\n"
-        str += "  id = \(String(describing: id))\n"
-        str += "  website = \(String(describing: website))\n"
-        str += "  tags = \(tags.description)\n"
-        str += "  date registered = \(String(describing: dateRegistered))\n"
-        str += "  # of subscribers = \(subscribers.count))"
+        var str = "Organization<\"\(String(describing: title))\">)"
 
         return str
     }
@@ -366,29 +361,18 @@ class Organization: CustomStringConvertible {
     /// Load the logo image for an organization.
     func getLogoImage(_ handler: ((Organization) -> ())?) {
         if !hasLogo { return }
-
-        let url = URL.with(base: API_BASE_URL,
-                           API_Name: "events/GetLogo",
-                           parameters: ["id": id])!
-        var request = URLRequest(url: url)
-        request.addAuthHeader()
-
-        let task = CUSTOM_SESSION.dataTask(with: request) {
-            data, response, error in
-
-            guard error == nil else {
-                print("WARNING: Get logo image returned error for organization!")
-                return // Don't display any alert here
-            }
-            if let newLogo = UIImage(data: data!), self.logoImage != newLogo {
-                self.logoImage = newLogo
+        
+        Organization.getLogoImage(orgID: id) { image in
+            self.logoImage = image
+            if image != nil {
+                self.hasLogo = true
                 DispatchQueue.main.async {
                     handler?(self)
                 }
+            } else {
+                self.hasLogo = false
             }
         }
-
-        task.resume()
     }
     
     static func getLogoImage(orgID: String, _ handler: @escaping ((UIImage?) -> ())) {
@@ -410,6 +394,7 @@ class Organization: CustomStringConvertible {
 
             guard error == nil else {
                 print("WARNING: Get logo image returned error for organization!")
+                print(error!)
                 return
             }
             DispatchQueue.main.async {
@@ -419,7 +404,6 @@ class Organization: CustomStringConvertible {
                     cachedLogos[orgID] = imgData
                     handler(imgData)
                 } else {
-                    cachedLogos[orgID] = UIImage.empty
                     handler(nil)
                 }
             }

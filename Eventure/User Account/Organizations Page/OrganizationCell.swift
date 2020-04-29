@@ -10,8 +10,8 @@ import UIKit
 
 class OrganizationCell: UITableViewCell {
         
-    var logoImage: UIImageView!
-    var orgTitle: UILabel!
+    private var logoImage: UIImageView!
+    private var orgTitle: UILabel!
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -20,7 +20,7 @@ class OrganizationCell: UITableViewCell {
         backgroundColor = AppColors.background
         
         logoImage = {
-            let iv = UIImageView()
+            let iv = UIImageView(image: #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate))
             iv.tintColor = AppColors.mainDisabled
             iv.layer.cornerRadius = 2
             iv.layer.masksToBounds = true
@@ -52,15 +52,17 @@ class OrganizationCell: UITableViewCell {
         }()
     }
 
+    /// This is the only place where changing the cell display is possible.
     func setup(with org: Organization) {
         
         orgTitle.text = org.title
         
         if org.logoImage == nil {
-            // Set logo to default placeholder
             logoImage.image = #imageLiteral(resourceName: "group").withRenderingMode(.alwaysTemplate)
             org.getLogoImage { orgWithLogo in
-                self.setup(with: orgWithLogo)
+                if let img = orgWithLogo.logoImage {
+                    self.logoImage.image = img
+                }
             }
         } else {
             logoImage.image = org.logoImage

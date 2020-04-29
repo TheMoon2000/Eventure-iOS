@@ -23,18 +23,17 @@ class OrganizationsViewController: UIViewController {
     private var failPage: UIView!
     private var updater: ((UITraitCollection) -> ())?
     
-    private var organizations = Set<Organization>() {
-        didSet {
-            self.updateFiltered()
-        }
-    }
+    private var organizations = Set<Organization>()
+    
+    // Group organizations by their first alphabets.
+    private var orgsByAlphabets = [(Character, [Organization])]()
     
     private var loaded = false
     
     var customPushHandler: ((Organization) -> ())?
     
     /// The list of organizations that are actually displayed.
-    private var filteredOrgs = [Organization]()
+    private var filteredOrgs = [(firstLetter: Character, orgs: [Organization])]()
     
     /// A subset of organizations that are recommended for the user, ordered by the size of the intersection between the user's tags and the org's tags.
     private var recommendedOrgs = [Organization]()
@@ -133,6 +132,7 @@ class OrganizationsViewController: UIViewController {
             orgTable.contentInset.top = 50
             orgTable.scrollIndicatorInsets.top = 50
             orgTable.backgroundColor = .clear
+            orgTable.keyboardDismissMode = .interactive
             orgTable.addSubview(refreshControl)
             orgTable.register(OrganizationCell.classForCoder(), forCellReuseIdentifier: "org")
             orgTable.translatesAutoresizingMaskIntoConstraints = false
@@ -247,17 +247,27 @@ class OrganizationsViewController: UIViewController {
             
             if let orgs = try? JSON(data: data!).arrayValue {
                 var tmp = Set<Organization>()
+                var firstLetters = [Character: [Organization]]()
                 for org in orgs {
                     let orgObj = Organization(orgInfo: org)
                     
                     // Only show active organizations
                     if orgObj.active {
                         tmp.insert(orgObj)
+                        let c = orgObj.title.uppercased().first ?? "?"
+                        if firstLetters.keys.contains(c) {
+                            firstLetters[c]?.append(orgObj)
+                        } else {
+                            firstLetters[c] = [orgObj]
+                        }
                     }
                 }
+                                
                 DispatchQueue.main.async {
                     self.organizations = tmp
+                    self.orgsByAlphabets = firstLetters.sorted { $0.key < $1.key }
                     self.emptyLabel.text = tmp.isEmpty ? "No Organizations" : ""
+                    self.updateFiltered(animated: true)
                 }
             } else {
                 DispatchQueue.main.async {
@@ -276,33 +286,27 @@ class OrganizationsViewController: UIViewController {
 extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        
-        /* No more recommended clubs
-        if User.current != nil && topTab.selectedSegmentIndex == 0 {
-            return 2
-        }*/
-        
-        return 1
+        return filteredOrgs.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredOrgs.count
+        return filteredOrgs[section].orgs.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = OrganizationCell()
-        cell.setup(with: filteredOrgs[indexPath.row])
+        cell.setup(with: filteredOrgs[indexPath.section].orgs[indexPath.row])
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if customPushHandler != nil {
-            customPushHandler?(filteredOrgs[indexPath.row])
+            customPushHandler?(filteredOrgs[indexPath.section].orgs[indexPath.row])
         } else {
             tableView.deselectRow(at: indexPath, animated: true)
-            let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.row])
+            let orgDetail = OrgDetailPage(organization: filteredOrgs[indexPath.section].orgs[indexPath.row])
             orgDetail.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(orgDetail, animated: true)
         }
@@ -316,7 +320,7 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        if tableView.numberOfSections == 1 || organizations.isEmpty { return nil }
+        if organizations.isEmpty { return nil }
         
         let container = UIView()
         container.backgroundColor = AppColors.canvas.withAlphaComponent(0.92)
@@ -324,11 +328,7 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
         let label = UILabel()
         label.layoutMargins.left = 10
         label.textColor = .gray
-        if tableView.numberOfSections == 2 {
-            label.text = ["Recommended", "All Organizations"][section]
-        } else {
-            label.text = "All Organizations"
-        }
+        label.text = String(filteredOrgs[section].firstLetter)
         label.font = .appFontRegular(14)
         label.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(label)
@@ -339,6 +339,11 @@ extension OrganizationsViewController: UITableViewDelegate, UITableViewDataSourc
         
         return container
     }
+    
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        if filteredOrgs.count <= 2 { return nil }
+        return filteredOrgs.map { String($0.firstLetter) }
+    }
 }
 
 extension OrganizationsViewController: UISearchResultsUpdating {
@@ -346,33 +351,47 @@ extension OrganizationsViewController: UISearchResultsUpdating {
         self.updateFiltered(animated: false)
     }
     
+    func filter(_ org: Organization, _ searchText: String, _ tabName: String) -> Bool {
+        
+        var contains = searchText.isEmpty
+        
+        for target in [org.title] {
+            if target.lowercased().contains(searchText) {
+                contains = true
+            }
+        }
+        
+        if !contains { return false }
+        
+        if tabName == "Subscribed" {
+            contains = contains && org.subscribers.contains(User.current!.userID)
+        } else if tabName == "My Clubs" {
+            contains = contains && (User.current?.memberships.contains { $0.orgID == org.id } ?? false)
+        }
+        
+        return contains
+    }
+    
     private func updateFiltered(animated: Bool = true) {
         let searchText = searchController.searchBar.text!.lowercased()
         let tabName = topTab.titleForSegment(at: topTab.selectedSegmentIndex)!
         DispatchQueue.global(qos: .default).async {
-            self.filteredOrgs = self.organizations.filter { (org: Organization) -> Bool in
-                
-                var contains = false
-                
-                for target in [org.title, org.orgDescription] {
-                    if target.lowercased().contains(searchText) {
-                        contains = true
-                    }
+            
+            // The code here is ran in a background thread to avoid the app from lagging
+            
+            var newSorted = [(firstLetter: Character, orgs: [Organization])]()
+            
+            for (c, orgs) in self.orgsByAlphabets {
+                var shouldDisplay = orgs.filter { org in self.filter(org, searchText, tabName) }
+                shouldDisplay.sort { $0.title.lowercased() < $1.title.lowercased() }
+                if !shouldDisplay.isEmpty {
+                    newSorted.append((c, shouldDisplay))
                 }
-                
-                if !contains && !searchText.isEmpty { return false }
-                
-                if tabName == "Subscribed" {
-                    return org.subscribers.contains(User.current!.userID)
-                } else if tabName == "My Clubs" {
-                    return User.current?.memberships.contains { $0.orgID == org.id } ?? false
-                }
-                
-                return true
             }
             
-            self.filteredOrgs.sort(by: { $0.title.lowercased() < $1.title.lowercased() })
-                        
+            self.filteredOrgs = newSorted
+                                   
+            /*
             if let current = User.current {
                 let rec = self.organizations.filter { org in
                     return !org.tags.intersection(current.tags).isEmpty
@@ -383,24 +402,29 @@ extension OrganizationsViewController: UISearchResultsUpdating {
                     if in1 != in2 { return in1 > in2 }
                     return org1.title.lowercased() <= org2.title.lowercased()
                 }
-            }
+            }*/
             
             DispatchQueue.main.async {
                 self.emptyLabel.text = self.filteredOrgs.isEmpty && self.loaded && !self.orgTable.isHidden ? "No Organizations" : ""
-                let begin = (self.orgTable.numberOfSections, self.numberOfSections(in: self.orgTable))
-                if begin.0 == begin.1 {
-                    self.orgTable.reloadSections(IndexSet(integersIn: 0..<self.orgTable.numberOfSections), with: .automatic)
-                } else if begin.1 > begin.0 {
+                
+                // Figure out how many sections there are right now and how many there will be
+                /*
+                let (now, next) = (self.orgTable.numberOfSections, self.filteredOrgs.count)
+                
+                if now == next {
+                    self.orgTable.reloadSections(IndexSet(integersIn: 0..<now), with: .automatic)
+                } else if next > now {
                     self.orgTable.beginUpdates()
-                    self.orgTable.insertSections([1], with: .fade)
-                    self.orgTable.reloadSections([0], with: .fade)
+                    self.orgTable.insertSections(.init(integersIn: now..<next), with: .fade)
                     self.orgTable.endUpdates()
                 } else {
                     self.orgTable.beginUpdates()
-                    self.orgTable.deleteSections([1], with: .fade)
-                    self.orgTable.reloadSections([0], with: .fade)
+                    self.orgTable.deleteSections(.init(integersIn: next..<now), with: .fade)
                     self.orgTable.endUpdates()
-                }
+                }*/
+                
+                self.orgTable.reloadData()
+                self.orgTable.reloadSectionIndexTitles()
             }
         }
         
