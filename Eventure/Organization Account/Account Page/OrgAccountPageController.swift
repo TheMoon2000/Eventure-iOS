@@ -72,12 +72,14 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
                 let picker = UIImagePickerController()
+                picker.navigationBar.tintColor = AppColors.main
                 picker.delegate = self
                 picker.sourceType = .photoLibrary
                 self.present(picker, animated: true)
             }))
             alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
                 let picker = UIImagePickerController()
+                picker.navigationBar.tintColor = AppColors.main
                 picker.delegate = self
                 picker.sourceType = .camera
                 self.present(picker, animated: true)
@@ -155,7 +157,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         switch (indexPath.section, indexPath.row) {
         case (0, 0):
             let profileCell = ProfilePreviewCell()
-            profileCell.icon.isUserInteractionEnabled = true
+            profileCell.icon.isUserInteractionEnabled = Organization.current?.logoImage != nil
             profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             profileCell.titleLabel.text = Organization.current!.title
             if let logo = Organization.current?.logoImage {
@@ -304,7 +306,7 @@ class OrgAccountPageController: UIViewController, UITableViewDelegate, UITableVi
         cropper.aspectRatioLockEnabled = true
         cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
         cropper.delegate = self
-        picker.present(cropper, animated: true)
+        picker.pushViewController(cropper, animated: true)
     }
     
     
@@ -328,6 +330,6 @@ extension OrgAccountPageController: TOCropViewControllerDelegate {
     }
     
     func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
-        self.dismiss(animated: true, completion: nil)
+        cropViewController.navigationController?.popViewController(animated: true)
     }
 }

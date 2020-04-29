@@ -125,7 +125,7 @@ class AccountViewController: UIViewController, UINavigationControllerDelegate, U
         cropper.aspectRatioLockEnabled = true
         cropper.allowedAspectRatios = [TOCropViewControllerAspectRatioPreset.presetSquare.rawValue as NSNumber]
         cropper.delegate = self
-        picker.present(cropper, animated: true)
+        picker.pushViewController(cropper, animated: true)
     }
     
 }
@@ -147,7 +147,7 @@ extension AccountViewController: TOCropViewControllerDelegate {
     }
     
     func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
-        self.dismiss(animated: true, completion: nil)
+        cropViewController.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -201,12 +201,14 @@ extension AccountViewController: UITableViewDataSource, UITableViewDelegate {
             alert.addAction(.init(title: "Cancel", style: .cancel))
             alert.addAction(.init(title: "Photo Library", style: .default, handler: { _ in
                 let picker = UIImagePickerController()
+                picker.navigationBar.tintColor = AppColors.main
                 picker.delegate = self
                 picker.sourceType = .photoLibrary
                 self.present(picker, animated: true)
             }))
             alert.addAction(.init(title: "Camera", style: .default, handler: { _ in
                 let picker = UIImagePickerController()
+                picker.navigationBar.tintColor = AppColors.main
                 picker.delegate = self
                 picker.sourceType = .camera
                 self.present(picker, animated: true)
@@ -288,7 +290,7 @@ extension AccountViewController: UITableViewDataSource, UITableViewDelegate {
             
         case (0, 0):
             let profileCell = ProfilePreviewCell()
-            profileCell.icon.isUserInteractionEnabled = true
+            profileCell.icon.isUserInteractionEnabled = User.current?.profilePicture != nil
             profileCell.icon.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imageTapped)))
             profileCell.titleLabel.text = User.current?.displayedName ?? "Not logged in"
             if profileCell.titleLabel.text!.isEmpty {

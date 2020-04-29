@@ -10,6 +10,7 @@ import UIKit
 import BonMot
 import XLPagerTabStrip
 
+/// This class is responsible for displaying the dining menu for a particular dining hall for a particular meal.
 class DiningMenuVC: UIViewController, IndicatorInfoProvider {
     
     private var name: String!

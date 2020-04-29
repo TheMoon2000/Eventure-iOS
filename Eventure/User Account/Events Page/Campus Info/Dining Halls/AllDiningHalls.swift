@@ -19,6 +19,7 @@ class AllDiningHalls: UIViewController {
     private var tabs: DiningMenuTabsMain!
     private var emptyLabel: UILabel!
     
+    /// The navigator is the banner at the bottom of your screen.
     private var navigator: UIVisualEffectView!
     private var navigatorTitle: UILabel!
     private var previousButton: UIButton!
@@ -207,6 +208,7 @@ class AllDiningHalls: UIViewController {
         present(nav, animated: true)
     }
     
+    /// Make the tab view visible.
     private func showTabs() {
         
         guard !diningMenus.isEmpty else { return }
@@ -253,6 +255,7 @@ class AllDiningHalls: UIViewController {
                 return
             }
             
+            // Create an array of 21 (3 meals × 7 days) dictionaries. Each element is a dining menu.
             var tmp = [[String: DiningMenu]].init(repeating: [:], count: 21)
             
             if let info = try? JSON(data: data!).dictionaryValue {
