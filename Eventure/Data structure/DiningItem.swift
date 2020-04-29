@@ -9,23 +9,27 @@
 import Foundation
 import SwiftyJSON
 
+/// Represents a particular item in a dining hall for a particular meal time.
 class DiningItem: CustomStringConvertible {
     let itemName: String
     let category: String
     let options: Options
     
+    /// Returns an attributed string for the dining item including its option icons.
     lazy var attributedString: NSAttributedString = {
         let itemString = NSMutableAttributedString(string: self.itemName + "  ")
         
         let orderedOptions = DiningItem.strToRawValue
-            .sorted { $0.value < $1.value }
-            .map { (name: $0.key, option: DiningItem.Options(rawValue: $0.value)) }
-                
+            .sorted { $0.value < $1.value } // Sort the options by their integer raw values
+            .map { (name: $0.key, option: DiningItem.Options(rawValue: $0.value)) } // Convert to a tuple
+        
         for i in 0..<orderedOptions.count {
             if options.contains(orderedOptions[i].option) {
                 if let image = UIImage(named: orderedOptions[i].name) {
+                    // Options greater than 9 need to be adjusted for iOS dark mode
                     let formattedImage = i >= 9 ? image.tintedImage(color: AppColors.label) : image
                     let offset: CGFloat = i >= 9 ? -4.0 : -3.0
+                    
                     itemString.append(NSAttributedString.composed(of: [
                         formattedImage.styled(with: .baselineOffset(offset))
                     ]))
@@ -35,9 +39,10 @@ class DiningItem: CustomStringConvertible {
             }
         }
                         
-        return itemString.styled(with: .lineHeightMultiple(1.15))
+        return itemString.styled(with: .lineHeightMultiple(1.15)) // Add line height
     }()
     
+    /// A dictionary used to translate option names to their integral representation.
     static let strToRawValue: [String: Int] = [
         "Milk":              1,
         "Egg":               1 << 1,
@@ -81,6 +86,7 @@ class DiningItem: CustomStringConvertible {
 
 extension DiningItem {
     
+    /// Represents one or many options that a dining item could have.
     struct Options: OptionSet {
         let rawValue: Int
         
