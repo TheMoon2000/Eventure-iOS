@@ -41,9 +41,7 @@ class AnnouncementContent: UIViewController {
         title = announcement.title
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
         
-        if announcement.link != nil {
-            navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(more))
-        }
+        navigationItem.rightBarButtonItem = .init(image: #imageLiteral(resourceName: "more"), style: .plain, target: self, action: #selector(more))
 
         canvas = {
             let sv = UIScrollView()
@@ -102,7 +100,7 @@ class AnnouncementContent: UIViewController {
             
             tv.leftAnchor.constraint(equalTo: border.leftAnchor, constant: 20).isActive = true
             tv.rightAnchor.constraint(equalTo: border.rightAnchor, constant: -20).isActive = true
-            tv.topAnchor.constraint(equalTo: border.topAnchor, constant: 20).isActive = true
+            tv.topAnchor.constraint(equalTo: border.topAnchor, constant: 8).isActive = true
             
             return tv
         }()
@@ -116,7 +114,7 @@ class AnnouncementContent: UIViewController {
             
             label.leftAnchor.constraint(equalTo: bodyText.leftAnchor).isActive = true
             label.rightAnchor.constraint(equalTo: bodyText.rightAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: bodyText.bottomAnchor, constant: 30).isActive = true
+            label.topAnchor.constraint(equalTo: bodyText.bottomAnchor, constant: 10).isActive = true
             label.bottomAnchor.constraint(equalTo: border.bottomAnchor, constant: -20).isActive = true
             
             return label
@@ -138,12 +136,16 @@ class AnnouncementContent: UIViewController {
     }
     
     @objc private func more() {
-        let alert = UIAlertController(title: "This article is associated with \(announcement.link!.absoluteString).", message: nil, preferredStyle: .actionSheet)
-        alert.addAction(.init(title: "Visit Link", style: .default, handler: { _ in
-            let vc = SFSafariViewController(url: self.announcement.link!)
-            vc.preferredControlTintColor = AppColors.main
-            self.present(vc, animated: true)
-        }))
+        let alert = UIAlertController()
+        if announcement.link != nil {
+            alert.title = "This article is associated with \(announcement.link!.absoluteString)."
+            alert.addAction(.init(title: "Visit Link", style: .default, handler: { _ in
+                let vc = SFSafariViewController(url: self.announcement.link!)
+                vc.preferredControlTintColor = AppColors.main
+                self.present(vc, animated: true)
+            }))
+        }
+        
         if !fromHistory {
             alert.addAction(.init(title: "Previous Announcements", style: .default, handler: { _ in
                 let vc = ArchivedAnnouncements()

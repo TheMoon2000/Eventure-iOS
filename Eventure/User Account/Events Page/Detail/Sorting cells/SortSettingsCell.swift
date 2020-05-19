@@ -14,7 +14,17 @@ class SortSettingsCell: UITableViewCell {
     private(set) var sortTitle: UILabel!
     private(set) var img: UIImageView!
     
-    private(set) var style: Style = .middle
+    var style: Style = .middle {
+        didSet {
+            if style == .top {
+                bgView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            } else if style == .bottom {
+                bgView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
+            } else {
+                bgView.layer.maskedCorners = []
+            }
+        }
+    }
     
     var checked = false {
         didSet {
@@ -35,6 +45,7 @@ class SortSettingsCell: UITableViewCell {
             let view = UIView()
             view.backgroundColor = AppColors.subview
             view.layer.cornerRadius = 7
+//            view.clipsToBounds = true
             view.applyMildShadow()
             if style == .top {
                 view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

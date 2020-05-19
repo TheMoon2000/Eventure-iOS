@@ -597,4 +597,31 @@ extension Organization {
         static let appURL           = PushableSettings(rawValue: 1 << 8)
         static let appStartEnd      = PushableSettings(rawValue: 1 << 9)
     }
+    
+    struct Category: Hashable {
+        let id: Int
+        let name: String
+        
+        init?(json: JSON) {
+            guard let dictionary = json.dictionary else { return nil }
+            guard let id = dictionary["id"]?.int else { return nil }
+            guard let name = dictionary["Name"]?.string else { return nil }
+            
+            self.id = id
+            self.name = name
+        }
+        
+        init(id: Int, name: String) {
+            self.id = id
+            self.name = name
+        }
+        
+        static func == (lhs: Category, rhs: Category) -> Bool {
+            return lhs.id == rhs.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+    }
 }

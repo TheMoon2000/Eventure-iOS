@@ -57,12 +57,6 @@ class EventCategories: UIViewController {
             return canvas
         }()
         
-        (fallback, updater) = canvas.addConnectionNotice {
-            self.loadTags(true)
-        }
-        fallback.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        fallback.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -MainTabBarController.current.tabBar.bounds.height / 2).isActive = true
-                
         fadingContainer = {
             let v = UIView()
             v.translatesAutoresizingMaskIntoConstraints = false
@@ -99,6 +93,13 @@ class EventCategories: UIViewController {
             return cv
         }()
         
+        (fallback, updater) = canvas.addConnectionNotice {
+            self.loadTags(true)
+        }
+        
+        fallback.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        fallback.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -MainTabBarController.current.tabBar.bounds.height / 2).isActive = true
+        
         gradientLayer = CAGradientLayer()
         gradientLayer.colors = [UIColor.clear.cgColor, AppColors.background.cgColor, AppColors.background.cgColor]
         gradientLayer.needsDisplayOnBoundsChange = true
@@ -130,8 +131,8 @@ class EventCategories: UIViewController {
     
     private func loadTags(_ pulled: Bool = false) {
                 
-        // By default, we can directly use the cache.
-        if !pulled && !LocalStorage.tags.isEmpty {
+        // No longer read tags from cache
+        if !pulled && !LocalStorage.tags.isEmpty && false {
             self.tags = LocalStorage.tags.values.sorted { $0.name < $1.name }
             self.categoryView.reloadSections(IndexSet(arrayLiteral: 0))
         } else {

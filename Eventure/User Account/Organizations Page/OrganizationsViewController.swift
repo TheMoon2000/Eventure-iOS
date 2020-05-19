@@ -74,7 +74,6 @@ class OrganizationsViewController: UIViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
         
-        
         if #available(iOS 13.0, *) {
             searchController.searchBar.searchTextField.font = .appFontRegular(17)
         }
@@ -203,10 +202,22 @@ class OrganizationsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         navigationController?.navigationBar.shadowImage = nil
+        
+        let settingsItem = UIBarButtonItem(image: #imageLiteral(resourceName: "options"), style: .plain, target: self, action: #selector(openSettings))
+        settingsItem.isEnabled = LocalStorage.categories != nil
+        navigationItem.leftBarButtonItem = settingsItem
     }
     
     @objc private func selectionChanged() {
         updateFiltered()
+    }
+    
+    @objc private func openSettings() {
+        let settings = OrgFilterSettings()
+        let nav = UINavigationController(rootViewController: settings)
+        nav.navigationBar.customize()
+        
+        present(nav, animated: true)
     }
     
     @objc private func loadOrganizations() {

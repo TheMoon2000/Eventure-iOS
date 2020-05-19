@@ -24,7 +24,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - BonMot
     - Down
     - SwiftCSVExport
     - SwiftLoggly
@@ -32,6 +31,7 @@ SPEC REPOS:
     - TOCropViewController
     - TTTAttributedLabel
   trunk:
+    - BonMot
     - Charts
     - MarqueeLabel
 

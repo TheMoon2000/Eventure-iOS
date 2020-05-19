@@ -318,10 +318,17 @@ class User: Profile {
             }
             
             if let json = try? JSON(data: data!) {
+                
+                // Record information to retain from old `User` instance
                 let currentImage = User.current?.profilePicture
                 let calendarIdentifiers = User.current?.calendarIdentifiers
+                let enabledNotifications = User.current?.enabledNotifications
+                
                 User.current = User(userInfo: json)
+                
+                // Copy over the retained information
                 User.current?.profilePicture = currentImage
+                User.current?.enabledNotifications = enabledNotifications ?? .all
                 User.current?.calendarIdentifiers = calendarIdentifiers ?? [:]
                 NotificationCenter.default.post(name: USER_SYNC_SUCCESS, object: nil)
             } else {
@@ -745,8 +752,8 @@ extension User {
         static let newTickets           = EnabledNotifications(rawValue: 1 << 3)
         static let others               = EnabledNotifications(rawValue: 1 << 4)
         
-        static let none                 = EnabledNotifications(rawValue: 0)
         static let all                  = EnabledNotifications(rawValue: 1 << 5 - 1)
+        static let none: EnabledNotifications = []
     }
     
     struct PushableSettings: OptionSet {
@@ -778,6 +785,23 @@ extension User {
         }
     }
     
+    /// An object representing what year groups the user is interested in when browsing for organizations.
+    struct YearGroup: OptionSet {
+        let rawValue: Int
+        
+        static let undergraduate    = YearGroup(rawValue: 1)
+        static let graduate         = YearGroup(rawValue: 2)
+        static let both             = YearGroup(rawValue: 3)
+        
+        var stringValue: String {
+            return [
+                0: "Neither",
+                1: "Undergraduate",
+                2: "Graduate",
+                3: "Both"
+            ][rawValue] ?? "Error"
+        }
+    }
 }
 
 

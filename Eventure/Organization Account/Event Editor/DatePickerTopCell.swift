@@ -123,3 +123,5 @@ class DatePickerTopCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
 }
+
+typealias GenericRoundCell = DatePickerTopCell

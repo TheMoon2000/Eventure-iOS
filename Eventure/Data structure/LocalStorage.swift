@@ -32,6 +32,12 @@ class LocalStorage {
     /// Maps major IDs to `Major` objects.
     static var majors = [Int: Major]()
     
+    /// Contains a list of `Category` objects for organizations.
+    static var categories: [Organization.Category]?
+    
+    /// Other settings that the user may set.
+    static var otherSettings = OtherSettings()
+    
     private init() {}
     
     /// This method should be called when the app launches to read from the cache.
@@ -68,8 +74,20 @@ class LocalStorage {
             keywords = keywordData
         }
         
+        if let categoryData = fileData["Org Categories"] as? [Int: String] {
+            categories = categoryData.map { (key, value) in
+                return Organization.Category(id: key, name: value)
+            }
+        }
+        
+        if let settingsData = fileData["Other Settings"] as? Data {
+            otherSettings = OtherSettings(data: settingsData)
+            print(otherSettings.yearGroup.stringValue)
+        }
+        
         updateMajors()
         updateKeywords()
+        updateOrgCategories()
     }
     
     /// Called when the app is about to terminate.
@@ -77,6 +95,7 @@ class LocalStorage {
         rawCache["Tag images"] = tagImages
         rawCache["Keywords"] = keywords
         rawCache["Majors"] = majors.mapValues { try! $0.encodedJSON.rawData() }
+        rawCache["Other Settings"] = otherSettings.serialize()
         if !NSKeyedArchiver.archiveRootObject(rawCache, toFile: CACHE_PATH) {
             print("Unable to save to location \(CACHE_PATH)")
         } else {
@@ -115,6 +134,7 @@ extension LocalStorage {
                 if json?["status"]!.stringValue == INTERNAL_ERROR {
                     DispatchQueue.main.async { handler?(-2) }
                 } else {
+                    self.tags.removeAll()
                     for (tagIndex, tagName) in json!["tagIDs"]?.dictionaryValue ?? [:] {
                         let tag = Tag(id: Int(tagIndex) ?? -1, name: tagName.stringValue)
                         self.tags[tag.id] = tag
@@ -248,4 +268,69 @@ extension LocalStorage {
         task.resume()
     }
     
+    static func updateOrgCategories(_ handler: ((Int) -> ())? = nil) {
+        let url = URL(string: API_BASE_URL + "events/GetOrgCategories")!
+        var request = URLRequest(url: url)
+        request.addAuthHeader()
+        
+        let task = CUSTOM_SESSION.dataTask(with: request) {
+            data, response, error in
+            
+            guard error == nil else {
+                DispatchQueue.main.async { handler?(-1) }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+                    updateOrgCategories()
+                }
+                return
+            }
+            
+            
+            if let json = try? JSON(data: data!), let catArray = json.array {
+                
+                var tmp = [Organization.Category]()
+                var dict = [Int: String]() // Used for local storage
+                
+                for cat in catArray {
+                    if let category = Organization.Category(json: cat) {
+                        tmp.append(category)
+                        dict[category.id] = category.name
+                    }
+                }
+                
+                categories = tmp.sorted { $0.name < $1.name }
+                rawCache["Org Categories"] = dict
+                
+                print("\(tmp.count) categories are loaded")
+                DispatchQueue.main.async { handler?(0) }
+            }
+        }
+        
+        task.resume()
+    }
+    
+}
+
+extension LocalStorage {
+    
+    /// An object that stores miscellaneous settings for a user.
+    struct OtherSettings {
+        var yearGroup: User.YearGroup = .both
+    
+        init(data: Data) {
+            guard let json = try? JSON(data: data) else { return }
+            
+            let dictionary = json.dictionaryValue
+            
+            yearGroup = .init(rawValue: dictionary["Year group"]?.int ?? 3)
+        }
+        
+        init() {}
+        
+        func serialize() -> Data {
+            var json = JSON()
+            json.dictionaryObject?["Year group"] = yearGroup.rawValue
+            
+            return try! json.rawData()
+        }
+    }
 }
