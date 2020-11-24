@@ -110,9 +110,7 @@ class MessageSettingsMenu: UITableViewController {
         cell.switchHandler = { _ in
             let toggled: User.EnabledNotifications = [.newEvents, .eventUpdates, .membershipInvites, .newTickets, .others][indexPath.row]
             User.current?.enabledNotifications.formSymmetricDifference(toggled)
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
             User.current?.pushSettings(.preferences) { success in
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if !success {
                     internetUnavailableError(vc: self)
                 }

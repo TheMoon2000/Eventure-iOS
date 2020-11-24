@@ -268,7 +268,7 @@ extension LocalStorage {
         task.resume()
     }
     
-    static func updateOrgCategories(_ handler: ((Int) -> ())? = nil) {
+    static func updateOrgCategories(_ handler: ((Int) -> Void)? = nil) {
         let url = URL(string: API_BASE_URL + "events/GetOrgCategories")!
         var request = URLRequest(url: url)
         request.addAuthHeader()
@@ -302,6 +302,8 @@ extension LocalStorage {
                 
                 print("\(tmp.count) categories are loaded")
                 DispatchQueue.main.async { handler?(0) }
+            } else {
+                DispatchQueue.main.async { handler?(-2) }
             }
         }
         

@@ -102,14 +102,22 @@ class DatePickerTopCell: UITableViewCell {
         }()
     }
     
-    func expand() {
-        UIView.animate(withDuration: 0.2) {
+    func expand(animated: Bool = true) {
+        if animated {
+            UIView.animate(withDuration: 0.2) {
+                self.indicator.transform = CGAffineTransform(rotationAngle: .pi / 2)
+            }
+        } else {
             self.indicator.transform = CGAffineTransform(rotationAngle: .pi / 2)
         }
     }
     
-    func collapse() {
-        UIView.animate(withDuration: 0.2) {
+    func collapse(animated: Bool = true) {
+        if animated {
+            UIView.animate(withDuration: 0.2) {
+                self.indicator.transform = CGAffineTransform(rotationAngle: 0)
+            }
+        } else {
             self.indicator.transform = CGAffineTransform(rotationAngle: 0)
         }
     }

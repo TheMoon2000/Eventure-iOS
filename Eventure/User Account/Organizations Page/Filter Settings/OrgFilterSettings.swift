@@ -12,10 +12,30 @@ class OrgFilterSettings: UIViewController {
     
     private var contentCells = [UITableViewCell]()
     private var settingsTable: UITableView!
-    private var selectedCategories = Set<Organization.Category>()
+    private var selectedCategories = Set<Organization.Category>() {
+        didSet {
+            if selectedCategories != oldValue {
+                parentVC.selectedCategories = selectedCategories.isEmpty ? nil : selectedCategories
+            }
+        }
+    }
     
     static var yearGroupExpanded = false
     static var categoriesExpanded = false
+    
+    private var parentVC: OrganizationsViewController!
+    
+    required init(parent: OrganizationsViewController) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.parentVC = parent
+        selectedCategories = parentVC.selectedCategories ?? []
+    }
+ 
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,8 +73,11 @@ class OrgFilterSettings: UIViewController {
             return tv
         }()
         
+        // Part 1: set up year levels
+        
         let yearLevelCell = GenericRoundCell(title: "Year Level")
         yearLevelCell.rightLabel.text = LocalStorage.otherSettings.yearGroup.stringValue
+        if OrgFilterSettings.yearGroupExpanded { yearLevelCell.expand(animated: false) }
         contentCells.append(yearLevelCell)
         
         let undergradCell = SortSettingsCell(style: .top)
@@ -67,14 +90,28 @@ class OrgFilterSettings: UIViewController {
         gradCell.sortTitle.text = "Graduate"
         contentCells.append(gradCell)
         
+        // Adjust alpha value depending on whether the cells are automatically expanded
+        for cell in [undergradCell, gradCell] {
+            cell.sortTitle.alpha = OrgFilterSettings.yearGroupExpanded ? 1.0 : 0.0
+            cell.img.alpha = cell.sortTitle.alpha
+        }
+        
+        
+        // Part 2: set up categories
+        
         let categoriesCell = GenericRoundCell(title: "Categories")
         categoriesCell.rightLabel.text = selectedCategories.isEmpty ? "All" : "\(selectedCategories.count) selected"
+        if OrgFilterSettings.categoriesExpanded { categoriesCell.expand(animated: false) }
+        
         contentCells.append(categoriesCell)
         
         if let categories = LocalStorage.categories {
             let cells = categories.map { category -> SortSettingsCell in
                 let cell = SortSettingsCell(style: .middle)
                 cell.sortTitle.text = category.name
+                cell.checked = selectedCategories.contains(category)
+                cell.sortTitle.alpha = OrgFilterSettings.categoriesExpanded ? 1.0 : 0.0
+                cell.img.alpha = cell.sortTitle.alpha
                 return cell
             }
             
@@ -90,6 +127,7 @@ class OrgFilterSettings: UIViewController {
 
 }
 
+// MARK: - Table view data source & delegate
 
 extension OrgFilterSettings: UITableViewDataSource, UITableViewDelegate {
     

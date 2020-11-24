@@ -400,16 +400,14 @@ class User: Profile {
                 alert.addAction(.init(title: "Add All Future Events", style: .default, handler: { _ in
                     self.interestPreference = .alwaysAdd
                     event.addToCalendar()
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     self.pushSettings(.preferences) { _ in
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                        NetworkStatus.removeTask()
                     }
                 }))
                 alert.addAction(.init(title: "Never Add", style: .default, handler: { _ in
                     self.interestPreference = .never
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     self.pushSettings(.preferences) { _ in
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                        NetworkStatus.removeTask()
                     }
                 }))
                 alert.addAction(.init(title: "Don't Add This Event", style: .cancel))
@@ -482,16 +480,14 @@ class User: Profile {
                 alert.addAction(.init(title: "Add All Future Events", style: .default, handler: { _ in
                     self.favoritePreference = .alwaysAdd
                     event.addToCalendar()
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     self.pushSettings(.preferences) { _ in
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                        NetworkStatus.removeTask()
                     }
                 }))
                 alert.addAction(.init(title: "Never Add", style: .default, handler: { _ in
                     self.favoritePreference = .never
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
                     self.pushSettings(.preferences) { _ in
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                        NetworkStatus.removeTask()
                     }
                 }))
                 alert.addAction(.init(title: "Don't Add This Event", style: .cancel))
@@ -591,6 +587,8 @@ class User: Profile {
     */
     func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())?) {
         
+        NetworkStatus.addTask()
+
         var body = JSON()
         
         if settings.contains(.displayedName) {
@@ -662,6 +660,8 @@ class User: Profile {
         
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
+            
+            NetworkStatus.removeTask()
             
             guard error == nil else {
                 DispatchQueue.main.async {

@@ -67,10 +67,7 @@ class InterestPreference: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         User.current?.interestPreference = choices[indexPath.row]
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         User.current?.pushSettings(.preferences) { successful in
-            
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             if !successful {
                 internetUnavailableError(vc: self)
             }

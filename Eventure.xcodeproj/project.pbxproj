@@ -159,6 +159,8 @@
 		CC6DEED622BA8ACC00248AB7 /* FinishRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */; };
 		CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7440CA233D2AD600AA374D /* InitiateTicketRequest.swift */; };
 		CC7C797823080EC90051C7E6 /* OrgContactInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */; };
+		CC7F821024B313FA0080074F /* ChooseYearLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7F820F24B313FA0080074F /* ChooseYearLevel.swift */; };
+		CC7F821224B49A040080074F /* UpdateOrgCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7F821124B49A040080074F /* UpdateOrgCategories.swift */; };
 		CC8469C7230FDB9B004E7B9D /* EventDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469C6230FDB9B004E7B9D /* EventDraft.swift */; };
 		CC8469C9230FDD26004E7B9D /* DraftDescriptionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */; };
 		CC8469CB230FDE6B004E7B9D /* DraftTimeLocationPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */; };
@@ -464,11 +466,13 @@
 		CC686ED1232F459100144CBF /* Ticket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ticket.swift; sourceTree = "<group>"; };
 		CC69A08D22F699F500C9920E /* SeparatorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparatorCell.swift; sourceTree = "<group>"; };
 		CC6D276E22F23685007E2C5A /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
-		CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscribersCell.swift; path = "Eventure/Organization Account/Account Page/SubscribersCell.swift"; sourceTree = SOURCE_ROOT; };
+		CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SubscribersCell.swift; path = "Eventure/Organization Account/Account Page/Cells/SubscribersCell.swift"; sourceTree = SOURCE_ROOT; };
 		CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DescriptionEditPage.swift; path = "Eventure/Organization Account/Account Page/DescriptionEditPage.swift"; sourceTree = SOURCE_ROOT; };
 		CC6DEED522BA8ACC00248AB7 /* FinishRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishRegistration.swift; sourceTree = "<group>"; };
 		CC7440CA233D2AD600AA374D /* InitiateTicketRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitiateTicketRequest.swift; sourceTree = "<group>"; };
 		CC7C797723080EC90051C7E6 /* OrgContactInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrgContactInfo.swift; sourceTree = "<group>"; };
+		CC7F820F24B313FA0080074F /* ChooseYearLevel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseYearLevel.swift; sourceTree = "<group>"; };
+		CC7F821124B49A040080074F /* UpdateOrgCategories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateOrgCategories.swift; sourceTree = "<group>"; };
 		CC8469C6230FDB9B004E7B9D /* EventDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDraft.swift; sourceTree = "<group>"; };
 		CC8469C8230FDD26004E7B9D /* DraftDescriptionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftDescriptionPage.swift; sourceTree = "<group>"; };
 		CC8469CA230FDE6B004E7B9D /* DraftTimeLocationPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraftTimeLocationPage.swift; sourceTree = "<group>"; };
@@ -1009,6 +1013,17 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		CC7F820E24B313A80080074F /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
+				CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */,
+				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
+				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		CC92F61624716F120006DC7C /* Filter Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1064,15 +1079,14 @@
 				CCA6CF77231A68A8005D8BB2 /* OrgAccountPageController.swift */,
 				CC6D86AE23218F4B0068B7F2 /* DescriptionEditPage.swift */,
 				EB94457B231F322E00631D8E /* OrgProfilePage.swift */,
-				EB94457C231F322E00631D8E /* OrgSettingInfoCell.swift */,
 				EB94457D231F322E00631D8E /* OrgSettingInfoPage.swift */,
 				EB94457E231F322E00631D8E /* SubscriberListPage.swift */,
-				CCDBEF8A23A60A9400B445D1 /* ApplicationDateCell.swift */,
+				CC7F820F24B313FA0080074F /* ChooseYearLevel.swift */,
+				CC7F821124B49A040080074F /* UpdateOrgCategories.swift */,
+				CC7F820E24B313A80080074F /* Cells */,
 				CC2B99CE2365052800E1AC42 /* Manage members */,
-				CC6D86AD23218F4B0068B7F2 /* SubscribersCell.swift */,
 				CC0329B3236A1A55000376D3 /* Statistics */,
 				CC2050582335302E00F6A114 /* CheckinVerification.swift */,
-				CC3760AB231F864800051C06 /* ProfilePreviewCell.swift */,
 			);
 			path = "Account Page";
 			sourceTree = "<group>";
@@ -1469,6 +1483,7 @@
 				CC3AA9FF2420AFA500B9E4BA /* KeywordSuggestionCell.swift in Sources */,
 				CC7440CB233D2AD600AA374D /* InitiateTicketRequest.swift in Sources */,
 				CCC4A0AF22F24EA000AB9557 /* TagCell.swift in Sources */,
+				CC7F821224B49A040080074F /* UpdateOrgCategories.swift in Sources */,
 				CC2CCD5B23336EB1000C65E2 /* TicketPurchases.swift in Sources */,
 				CCB6C8D923700D2500C6BC85 /* EventOverview.swift in Sources */,
 				CCAB8854235D5BA30053AA20 /* EventUpdateNotification.swift in Sources */,
@@ -1663,6 +1678,7 @@
 				CCE176A922BD773A003E3315 /* ForgotPassword.swift in Sources */,
 				DD1BB0D82310B3560082C4EE /* OtherViewController.swift in Sources */,
 				CC66A5BB2329C706002DA953 /* SortSettingsCell.swift in Sources */,
+				CC7F821024B313FA0080074F /* ChooseYearLevel.swift in Sources */,
 				CC92F61824716F3A0006DC7C /* OrgFilterSettings.swift in Sources */,
 				CC44AB2C2432C1C8008438EA /* DiningHallMessageCell.swift in Sources */,
 				CCCE5DB3235F8CF5005CE5D7 /* UnsupportedContentCell.swift in Sources */,

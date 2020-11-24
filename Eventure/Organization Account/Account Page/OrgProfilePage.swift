@@ -27,9 +27,21 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         super.viewDidLoad()
         
         title = "Organization Profile"
-        
         navigationItem.backBarButtonItem = .init(title: "Back", style: .plain, target: nil, action: nil)
         
+        spinner = UIActivityIndicatorView(style: .gray)
+        spinner.startAnimating()
+        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
+        if Organization.needsUpload {
+            navigationItem.rightBarButtonItem = saveBarButton
+        }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(onOrgNeedsUpload), name: ORG_NEEDS_UPLOAD, object: nil)
+        
+        setupTableView()
+    }
+    
+    private func setupTableView() {
         tableView = UITableView(frame: .zero, style: .grouped)
         tableView.backgroundColor = AppColors.tableBG
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -116,15 +128,18 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         
         contentCells.append(section1)
         
-        //Tag Area
         let section2: [UITableViewCell] = {
             var section = [UITableViewCell]()
-            let tagCell = SettingsItemCell()
-            tagCell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
-            tagCell.icon.tintColor = AppColors.link
-            tagCell.titleLabel.text = "Manage Tags"
+            let levelCell = SettingsItemCell()
+            levelCell.icon.image = #imageLiteral(resourceName: "year_level")
+            levelCell.titleLabel.text = "Year Level"
+            section.append(levelCell)
             
-            section.append(tagCell)
+            let categoryCell = SettingsItemCell()
+            categoryCell.icon.tintColor = AppColors.link
+            categoryCell.icon.image = #imageLiteral(resourceName: "tag").withRenderingMode(.alwaysTemplate)
+            categoryCell.titleLabel.text = "Categories"
+            section.append(categoryCell)
             
             return section
         }()
@@ -194,20 +209,19 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
         }()
         
         contentCells.append(section4)
-        
-        spinner = UIActivityIndicatorView(style: .gray)
-        spinner.startAnimating()
-        
-        saveBarButton = .init(title: "Save", style: .done, target: self, action: #selector(save))
-        navigationItem.rightBarButtonItem = saveBarButton
-            
+    }
+    
+    @objc private func onOrgNeedsUpload() {
+        if navigationItem.rightBarButtonItem == nil {
+            navigationItem.rightBarButtonItem = saveBarButton
+        }
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return [
             "Organization Website",
             "Contact Email",
-            "Organization Tags",
+            "Target Audience",
             "Organization Description",
             "Application Window"
             ][section]
@@ -219,18 +233,16 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             return
         }
         
-        guard Organization.needsUpload else {
-            return
-        }
-        
         navigationItem.rightBarButtonItem = .init(customView: spinner)
         
         // Calling the API to save data
-        
-        Organization.current!.pushSettings([.tags, .email, .orgDescription, .website]) {
-            successful in
+        Organization.current!.pushSettings([.tags, .email, .orgDescription, .website, .categories, .yearLevel]) { successful in
             
-            self.navigationItem.rightBarButtonItem = self.saveBarButton
+            if Organization.needsUpload {
+                self.navigationItem.rightBarButtonItem = self.saveBarButton
+            } else {
+                self.navigationItem.rightBarButtonItem = nil
+            }
             
             if successful {
                 Organization.needsUpload = false
@@ -245,7 +257,6 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
                     self.parentVC?.present(alert, animated: true, completion: nil)
                 }
             }
-            
         }
             
     }
@@ -291,37 +302,13 @@ class OrgProfilePage: UITableViewController, EditableInfoProvider {
             navigationController?.pushViewController(editPage, animated: true)
             
         case [2, 0]:
-            //This is the case when you hit Tags cell: org changing their tags
-            let tagPicker = TagPickerView()
-            tagPicker.customTitle = "Choose 1 - 3 tags that best describe your organization."
-            tagPicker.customSubtitle = ""
-            tagPicker.maxPicks = 3
-            tagPicker.selectedTags = Organization.current!.tags
-            tagPicker.customButtonTitle = "Done"
-            
-            tagPicker.customContinueMethod = { tagPicker in
-                tagPicker.loadingBG.isHidden = false
-                
-                Organization.current?.pushSettings(.tags) { success in
-                    tagPicker.loadingBG.isHidden = true
-                    if success {
-                        Organization.current!.tags = tagPicker.selectedTags
-                        self.navigationController?.popViewController(animated: true)
-                    } else {
-                        internetUnavailableError(vc: self)
-                    }
-                }
-            }
-            
-            tagPicker.customDisappearHandler = { tags in
-                Organization.current?.tags = tags
-                Organization.current?.pushSettings(.tags, nil)
-            }
-            
-            //push the TagPicker Page
-            tagPicker.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(tagPicker, animated: true)
-        
+            let yearPage = ChooseYearLevel()
+            yearPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(yearPage, animated: true)
+        case [2, 1]:
+            let orgCategoriesPage = UpdateOrgCategories()
+            orgCategoriesPage.hidesBottomBarWhenPushed = true
+            navigationController?.pushViewController(orgCategoriesPage, animated: true)
         case [4, 0]:
             appStartExpanded.toggle()
             if let startDateCell = tableView.cellForRow(at: [4, 1]) as? ApplicationDateCell {

@@ -181,7 +181,8 @@ class AddMemberPage: UITableViewController {
     }
     
     private func getName(email: String, targetCell: GenericTextCell) {
-                
+        NetworkStatus.addTask()
+        
         let currentDate = Date()
         lastUpdateTime = currentDate
     
@@ -196,9 +197,7 @@ class AddMemberPage: UITableViewController {
                         
             if self.lastUpdateTime > currentDate { return }
             
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
+            NetworkStatus.removeTask()
             
             guard error == nil else { return }
             
@@ -217,7 +216,7 @@ class AddMemberPage: UITableViewController {
     
     private func removeMember(_ member: Membership) {
         
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        NetworkStatus.addTask()
         
         let url = URL.with(base: API_BASE_URL,
                            API_Name: "account/RemoveMember",
@@ -228,9 +227,10 @@ class AddMemberPage: UITableViewController {
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
+            NetworkStatus.removeTask()
+            
             guard error == nil else {
                 DispatchQueue.main.async {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
                     internetUnavailableError(vc: self)
                 }
                 return

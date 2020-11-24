@@ -23,9 +23,17 @@ class OrganizationsViewController: UIViewController {
     private var failPage: UIView!
     private var updater: ((UITraitCollection) -> ())?
     
+    /// The set of all organizations.
     private var organizations = Set<Organization>()
     
-    // Group organizations by their first alphabets.
+    /// The set of all categories selected by the user.
+    var selectedCategories: Set<Organization.Category>? {
+        didSet {
+            updateFiltered() // This will trigger an update to the table view.
+        }
+    }
+    
+    /// Group organizations by their first alphabets.
     private var orgsByAlphabets = [(Character, [Organization])]()
     
     private var loaded = false
@@ -213,7 +221,7 @@ class OrganizationsViewController: UIViewController {
     }
     
     @objc private func openSettings() {
-        let settings = OrgFilterSettings()
+        let settings = OrgFilterSettings(parent: self)
         let nav = UINavigationController(rootViewController: settings)
         nav.navigationBar.customize()
         
@@ -261,6 +269,7 @@ class OrganizationsViewController: UIViewController {
                 var firstLetters = [Character: [Organization]]()
                 for org in orgs {
                     let orgObj = Organization(orgInfo: org)
+                    print(orgObj.title)
                     
                     // Only show active organizations
                     if orgObj.active {
@@ -362,6 +371,7 @@ extension OrganizationsViewController: UISearchResultsUpdating {
         self.updateFiltered(animated: false)
     }
     
+    /// Applies a number of filtering criteria to determine whether the given organization should be displayed within the current context.
     func filter(_ org: Organization, _ searchText: String, _ tabName: String) -> Bool {
         
         var contains = searchText.isEmpty
@@ -378,6 +388,10 @@ extension OrganizationsViewController: UISearchResultsUpdating {
             contains = contains && org.subscribers.contains(User.current!.userID)
         } else if tabName == "My Clubs" {
             contains = contains && (User.current?.memberships.contains { $0.orgID == org.id } ?? false)
+        }
+        
+        if let c = selectedCategories {
+            contains = contains && !c.isDisjoint(with: org.categories)
         }
         
         return contains

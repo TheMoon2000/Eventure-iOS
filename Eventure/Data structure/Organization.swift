@@ -30,11 +30,15 @@ class Organization: CustomStringConvertible {
     var active: Bool { didSet { save() } }
     var dateRegistered: String { didSet { save() } }
     var logoImage: UIImage? { didSet { save(requireReupload: false) } }
-    var hasLogo: Bool
     var subscribers = Set<Int>() { didSet { save() } }
     var roles = Set<String>() { didSet { save() } }
     var departments = Set<String>() { didSet { save() } }
     var members = Set<Membership>() { didSet { save() } }
+    var categories: Set<Organization.Category> { didSet { save() } }
+    var yearLevel: YearLevel = .both { didSet { save() } }
+    
+    // These two attributes are loaded later than the initialization phase. They should not be cached.
+    var hasLogo: Bool
     var numberOfEvents = 0
 
     // Profile Information
@@ -59,8 +63,14 @@ class Organization: CustomStringConvertible {
     static var waitingForSync = false
 
     /// Whether the changes made locally are yet to be uploaded.
-    static var needsUpload = false
-
+    static var needsUpload = false {
+        didSet {
+            if needsUpload {
+                NotificationCenter.default.post(name: ORG_NEEDS_UPLOAD, object: nil)
+            }
+        }
+    }
+    
     var profileStatus: String {
         var allEmpty = true
         for item in [website, contactEmail, orgDescription, contactName] {
@@ -96,11 +106,12 @@ class Organization: CustomStringConvertible {
         active = true
         dateRegistered = ""
         hasLogo = false
+        categories = []
     }
 
     init(orgInfo: JSON) {
         let dictionary = orgInfo.dictionary!
-
+        
         id = dictionary["ID"]?.string ?? ""
         title = dictionary["Title"]?.string ?? ""
         orgDescription = dictionary["Description"]?.string ?? ""
@@ -124,6 +135,15 @@ class Organization: CustomStringConvertible {
         for memInfo in (dictionary["Members"]?.arrayValue ?? []) {
             members.insert(Membership(memberInfo: memInfo))
         }
+        
+        var categories_tmp = Set<Organization.Category>()
+        for (id, name) in dictionary["Categories"]?.dictionaryObject as? [String: String] ?? [:] {
+            categories_tmp.insert(Category(id: Int(id) ?? -1, name: name))
+        }
+        categories = categories_tmp
+        
+        yearLevel = YearLevel(rawValue: dictionary["Year level"]?.int ?? 3)
+        
 
         password_MD5 = dictionary["Password MD5"]?.string ?? ""
         contactName = dictionary["Contact name"]?.string ?? ""
@@ -154,7 +174,7 @@ class Organization: CustomStringConvertible {
     }
 
     var description: String {
-        var str = "Organization<\"\(String(describing: title))\">)"
+        let str = "Organization<\"\(String(describing: title))\">)"
 
         return str
     }
@@ -216,7 +236,7 @@ class Organization: CustomStringConvertible {
     
     func pushSettings(_ settings: PushableSettings, _ handler: ((Bool) -> ())? = nil) {
         
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        NetworkStatus.addTask()
         
         var body = JSON()
         
@@ -256,6 +276,14 @@ class Organization: CustomStringConvertible {
             body.dictionaryObject?["Application URL"] = appURL?.path
         }
         
+        if settings.contains(.categories) {
+            body.dictionaryObject?["Categories"] = categories.map { $0.id } .description
+        }
+        
+        if settings.contains(.yearLevel) {
+            body.dictionaryObject?["Year level"] = yearLevel.rawValue
+        }
+        
         if settings.contains(.appStartEnd) {
             if appStart != nil {
                 body.dictionaryObject?["Application start"] = DATE_FORMATTER.string(from: appStart!)
@@ -265,7 +293,7 @@ class Organization: CustomStringConvertible {
                 body.dictionaryObject?["Application deadline"] = DATE_FORMATTER.string(from: appDeadline!)
             }
         }
-        
+                
         pushToServer(handler, customJSON: body)
     }
     
@@ -280,13 +308,11 @@ class Organization: CustomStringConvertible {
         request.addAuthHeader()
         request.httpMethod = "POST"
         request.httpBody = try? customJSON.rawData()
-        
+                
         let task = CUSTOM_SESSION.dataTask(with: request) {
             data, response, error in
             
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
+            NetworkStatus.removeTask()
             
             guard error == nil else {
                 DispatchQueue.main.async {
@@ -329,6 +355,8 @@ class Organization: CustomStringConvertible {
         json.dictionaryObject?["Members"] = members.map { $0.encodedJSON }
         json.dictionaryObject?["Departments"] = departments.description
         json.dictionaryObject?["Roles"] = roles.description
+        json.dictionaryObject?["Year level"] = yearLevel.rawValue
+        json.dictionaryObject?["Categories"] = categories.encoded
         
         json.dictionaryObject?["Application URL"] = appURL?.path
         
@@ -524,7 +552,6 @@ class Organization: CustomStringConvertible {
                 }
             default:
                 self.logoImage = original
-                print(msg)
                 DispatchQueue.main.async {
                     handler?(false)
                 }
@@ -596,6 +623,8 @@ extension Organization {
         static let departments      = PushableSettings(rawValue: 1 << 7)
         static let appURL           = PushableSettings(rawValue: 1 << 8)
         static let appStartEnd      = PushableSettings(rawValue: 1 << 9)
+        static let categories       = PushableSettings(rawValue: 1 << 10)
+        static let yearLevel        = PushableSettings(rawValue: 1 << 11)
     }
     
     struct Category: Hashable {
@@ -624,4 +653,27 @@ extension Organization {
             hasher.combine(id)
         }
     }
+    
+    struct YearLevel: OptionSet {
+        let rawValue: Int
+        
+        static let undergradudate   = YearLevel(rawValue: 1)
+        static let graduate         = YearLevel(rawValue: 2)
+        static let both             = YearLevel(rawValue: 3)
+    }
+}
+
+extension Set where Element == Organization.Category {
+    
+    /// Encodes org category set as string dictionary.
+    var encoded: JSON {
+        var dict = [String: String]()
+        
+        for category in self {
+            dict[category.id.description] = category.name
+        }
+        
+        return JSON(dict)
+    }
+    
 }

@@ -24,8 +24,8 @@ let API_BASE_URL = "https://api.eventure-app.com/"
 let PHP7_API_BASE_URL = "https://php7.api.eventure-app.com/"
 
 /// Credentials: DO NOT include when committing
-let USERNAME = "__replace__"
-let PASSWORD = "__replace__"
+let USERNAME = "Eventure 1.2.1"
+let PASSWORD = "af9140470b0d340e6832b79e0c78754100cf"
 
 let AES_KEY = "aes key"
 let INTERNAL_ERROR = "internal error"
@@ -729,7 +729,7 @@ extension UIView {
         return height
     }
     
-    /// Insert a standardized loading view into the target view.
+    /// Insert a standardized loading view into the target view. The loading view is hidden by default.
     func addLoader(withConstraints: Bool = true) -> UIVisualEffectView {
         
         let loadingBG: UIVisualEffectView = {
@@ -1208,3 +1208,37 @@ let TICKET_ACTIVATED = Notification.Name("ticket activated")
 let NEW_TICKET_REQUEST = Notification.Name("new ticket request")
 let TICKET_TRANSFER_STATUS = Notification.Name(rawValue: "ticket transfer status")
 let NEW_NOTIFICATION = Notification.Name(rawValue: "notification")
+let ORG_NEEDS_UPLOAD = Notification.Name("org needs upload")
+
+// Network status
+class NetworkStatus {
+    
+    private static var numberOfActivities = 0 {
+        didSet {
+            if numberOfActivities < 0 {
+                numberOfActivities = 0
+            }
+        }
+    }
+    
+    private init() {}
+    
+    /// Enqueue a network task, and show the network indicator.
+    static func addTask() {
+        DispatchQueue.main.async {
+            NetworkStatus.numberOfActivities += 1
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        }
+    }
+    
+    /// Dequeue a network task. If there are no more tasks, then hide the network indicator.
+    static func removeTask() {
+        DispatchQueue.main.async {
+            NetworkStatus.numberOfActivities -= 1
+            if NetworkStatus.numberOfActivities == 0 {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
+        }
+    }
+    
+}

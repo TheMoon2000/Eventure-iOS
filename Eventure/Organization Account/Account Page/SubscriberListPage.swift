@@ -13,8 +13,6 @@ import SwiftyJSON
 class SubscriberListPage: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     
-    
-    
     //define variables that stores all the subscribers of the club
     static var changed: Bool = false
     

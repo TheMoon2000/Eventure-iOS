@@ -313,13 +313,13 @@ class OtherViewController: UIViewController, IndicatorInfoProvider {
         guard let location = sender.title(for: .normal) else { return }
         guard location != "TBA" else { return }
         
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        NetworkStatus.addTask()
         
         CLGeocoder().geocodeAddressString(location) { placemarks, error in
             
             print(placemarks as Any, error as Any)
             
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            NetworkStatus.removeTask()
             guard let placemark = placemarks?.first else { return }
             
             DispatchQueue.main.async {
